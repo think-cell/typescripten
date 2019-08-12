@@ -1,3 +1,5 @@
 *.exe
 *.ilk
 *.pdb
+*.wasm
+*.wasm.map
