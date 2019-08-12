@@ -1,0 +1,20 @@
+#include <emscripten/val.h>
+#include "js_bootstrap.h"
+
+using emscripten::val;
+using tc::js::js_ptr;
+using tc::js::IAny;
+using tc::js::globals::Array;
+using tc::js::globals::console;
+
+int main() {
+    console()->log(js_ptr<IAny>(val("Hello World!")));
+
+    js_ptr<Array<int>> arr(val::array());
+    arr->push(1);
+    arr->push(2);
+    arr->push(3);
+    console()->log(arr);
+    printf("length=%d; 2==%d\n", arr->length(), arr->operator[](1));
+    return 0;
+}
