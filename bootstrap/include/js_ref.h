@@ -1,6 +1,7 @@
 #pragma once
 
 #include <emscripten/val.h>
+#include <emscripten/wire.h>
 #include <type_traits>
 #include "tc_move.h"
 #include "range_defines.h"
