@@ -34,9 +34,13 @@ struct js_ptr final {
     static_assert(!std::is_const<T>::value, "We cannot guarantee constness of JS values");
     static_assert(std::is_convertible<T*, IJsBase*>::value);
 
-    explicit js_ptr() noexcept : js_ptr(emscripten::val::undefined()) {}
-    explicit js_ptr(emscripten::val const& m_emval) noexcept : m_emval(m_emval) {}
-    explicit js_ptr(emscripten::val&& m_emval) noexcept : m_emval(tc_move(m_emval)) {}
+    // js_ptr is non-nullable.
+    explicit js_ptr(emscripten::val const& m_emval) noexcept : m_emval(m_emval) {
+        _ASSERT(!m_emval.isUndefined() && !m_emval.isNull());
+    }
+    explicit js_ptr(emscripten::val&& m_emval) noexcept : m_emval(tc_move(m_emval)) {
+        _ASSERT(!m_emval.isUndefined() && !m_emval.isNull());
+    }
 
     /**
      * Upcasting.
