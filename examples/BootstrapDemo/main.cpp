@@ -2,15 +2,15 @@
 #include "js_bootstrap.h"
 
 using emscripten::val;
-using tc::js::js_ptr;
+using tc::js::js_ref;
 using tc::js::IAny;
 using tc::js::globals::Array;
 using tc::js::globals::console;
 
 int main() {
-    console()->log(js_ptr<IAny>(val("Hello World!")));
+    console()->log(js_ref<IAny>(val("Hello World!")));
 
-    js_ptr<Array<int>> arr(val::array());
+    js_ref<Array<int>> arr(val::array());
     arr->push(1);
     arr->push(2);
     arr->push(3);

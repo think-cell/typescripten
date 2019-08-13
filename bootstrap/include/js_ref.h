@@ -21,24 +21,24 @@ protected:
     }
 
     // Make sure the class and its descendants are abstract.
-    virtual void __IJsBase_and_derived_are_abstract_Use_js_ptr_instead() = 0;
+    virtual void __IJsBase_and_derived_are_abstract_Use_js_ref_instead() = 0;
 };
 
 struct IAny : virtual IJsBase {
 };
 
 template<typename T>
-struct js_ptr final {
+struct js_ref final {
     static_assert(std::is_class<T>::value);  // void is explicitly excluded as well, even though void* is base of all pointers.
     static_assert(!std::is_volatile<T>::value);
     static_assert(!std::is_const<T>::value, "We cannot guarantee constness of JS values");
     static_assert(std::is_convertible<T*, IJsBase*>::value);
 
-    // js_ptr is non-nullable.
-    explicit js_ptr(emscripten::val const& m_emval) noexcept : m_emval(m_emval) {
+    // js_ref is non-nullable.
+    explicit js_ref(emscripten::val const& m_emval) noexcept : m_emval(m_emval) {
         _ASSERT(!m_emval.isUndefined() && !m_emval.isNull());
     }
-    explicit js_ptr(emscripten::val&& m_emval) noexcept : m_emval(tc_move(m_emval)) {
+    explicit js_ref(emscripten::val&& m_emval) noexcept : m_emval(tc_move(m_emval)) {
         _ASSERT(!m_emval.isUndefined() && !m_emval.isNull());
     }
 
@@ -54,16 +54,16 @@ struct js_ptr final {
      * We do not allow arrays, so this sounds like std::is_convertible<> (although it's not defined via the word 'convertible').
      */
     template<typename U, std::enable_if_t<std::is_convertible<U*, T*>::value>* = nullptr>
-    js_ptr(js_ptr<U> const& jsOther) noexcept : js_ptr(jsOther.m_emval) {}
+    js_ref(js_ref<U> const& jsOther) noexcept : js_ref(jsOther.m_emval) {}
 
     template<typename U, std::enable_if_t<std::is_convertible<U*, T*>::value>* = nullptr>
-    js_ptr(js_ptr<U>&& jsOther) noexcept : js_ptr(tc_move(jsOther.m_emval)) {}
+    js_ref(js_ref<U>&& jsOther) noexcept : js_ref(tc_move(jsOther.m_emval)) {}
 
     template<typename U, typename = std::enable_if_t<std::is_convertible<U*, T*>::value>>
-    js_ptr& operator=(js_ptr<U> const& jsOther) noexcept { m_emval = jsOther.m_emval; return *this; }
+    js_ref& operator=(js_ref<U> const& jsOther) noexcept { m_emval = jsOther.m_emval; return *this; }
 
     template<typename U, typename = std::enable_if_t<std::is_convertible<U*, T*>::value>>
-    js_ptr& operator=(js_ptr<U>&& jsOther) noexcept { m_emval = tc_move(jsOther.m_emval); return *this; }
+    js_ref& operator=(js_ref<U>&& jsOther) noexcept { m_emval = tc_move(jsOther.m_emval); return *this; }
 
     /**
      * Downcasting.
@@ -74,10 +74,10 @@ struct js_ptr final {
      * No type checking is performed on JS side.
      */
     template<typename U, std::enable_if_t<std::is_convertible<T*, U*>::value>* = nullptr>
-    explicit js_ptr(js_ptr<U> const& jsOther) noexcept : js_ptr(jsOther.m_emval) {}
+    explicit js_ref(js_ref<U> const& jsOther) noexcept : js_ref(jsOther.m_emval) {}
 
     template<typename U, std::enable_if_t<std::is_convertible<T*, U*>::value>* = nullptr>
-    explicit js_ptr(js_ptr<U>&& jsOther) noexcept : js_ptr(tc_move(jsOther.m_emval)) {}
+    explicit js_ref(js_ref<U>&& jsOther) noexcept : js_ref(tc_move(jsOther.m_emval)) {}
 
     emscripten::val get() const& noexcept { return m_emval; }
     emscripten::val get() && noexcept { return tc_move(m_emval); }
@@ -85,13 +85,13 @@ struct js_ptr final {
 private:
     emscripten::val m_emval;
 
-    friend struct js_ptr;
+    friend struct js_ref;
 
     struct CArrowProxy final : T, tc::nonmovable {
         explicit CArrowProxy(emscripten::val const& m_emval) noexcept : IJsBase(m_emval) {}
         T* operator->() && noexcept { return this; }
     private:
-        void __IJsBase_and_derived_are_abstract_Use_js_ptr_instead() override {
+        void __IJsBase_and_derived_are_abstract_Use_js_ref_instead() override {
             // Should never be called.
             assert(false);
         }
@@ -102,12 +102,12 @@ public:
 };
 
 template<typename> struct IsJsPtr : std::false_type {};
-template<typename T> struct IsJsPtr<js_ptr<T>> : std::true_type {};
+template<typename T> struct IsJsPtr<js_ref<T>> : std::true_type {};
 } // namespace no_adl
 
 using no_adl::IJsBase;
 using no_adl::IAny;
-using no_adl::js_ptr;
+using no_adl::js_ref;
 using no_adl::IsJsPtr;
 
 } // namespace tc::js
@@ -122,15 +122,15 @@ namespace emscripten::internal {
     };
 
     template<typename T>
-    struct BindingType<tc::js::js_ptr<T>> {
+    struct BindingType<tc::js::js_ref<T>> {
         typedef typename BindingType<emscripten::val>::WireType WireType;
 
-        static WireType toWireType(tc::js::js_ptr<T> const& js) {
+        static WireType toWireType(tc::js::js_ref<T> const& js) {
             return BindingType<emscripten::val>::toWireType(js.get());
         }
 
         static auto fromWireType(WireType v) {
-          return tc::js::js_ptr<T>(BindingType<emscripten::val>::fromWireType(v));
+          return tc::js::js_ref<T>(BindingType<emscripten::val>::fromWireType(v));
         }
     };
 }
