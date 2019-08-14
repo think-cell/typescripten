@@ -1,5 +1,6 @@
 #include <emscripten/val.h>
 #include "js_bootstrap.h"
+#include "js_callback.h"
 
 using emscripten::val;
 using tc::js::js_ref;
@@ -16,5 +17,9 @@ int main() {
     arr->push(3);
     console()->log(arr);
     printf("length=%d; 2==%d\n", arr->length(), arr->operator[](1));
+
+    arr.get().call<void>("forEach", tc::js::CScopedCallback([](int item, val, val) noexcept {
+        printf("item[]=%d\n", item);
+    }));
     return 0;
 }
