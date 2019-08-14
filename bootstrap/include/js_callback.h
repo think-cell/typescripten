@@ -5,11 +5,13 @@
 #include <tuple>
 #include <type_traits>
 
+#include "casts.h"
 #include "range_defines.h"
 #include "type_traits.h"
 #include "noncopyable.h"
 #include "tag_type.h"
 #include "tc_move.h"
+#include "type_list.h"
 #include <boost/callable_traits.hpp>
 
 namespace tc::js {
@@ -18,109 +20,78 @@ DEFINE_TAG_TYPE(pass_this)
 DEFINE_TAG_TYPE(pass_all_arguments)
 
 namespace callback_detail {
-using ArgumentPointer = void*;
-using FunctionPointer = emscripten::val(*)(ArgumentPointer, emscripten::val&, emscripten::val&) noexcept;
-
 namespace no_adl {
-struct CUniqueDetachableEmscriptenVal : tc::nonmovable {
-    CUniqueDetachableEmscriptenVal(FunctionPointer pFunction, ArgumentPointer pArgument) noexcept;
-    ~CUniqueDetachableEmscriptenVal() { m_emval.call<void>("detach"); }
+template<typename, bool bPassedAllArguments = false>
+struct CCallableWrapper final {};
 
-    const emscripten::val get() const { return m_emval; }
-    operator const emscripten::val() const { return m_emval; }
-
-private:
-    emscripten::val m_emval;
-};
-} // namespace no_adl
-using no_adl::CUniqueDetachableEmscriptenVal;
-
-template<typename T, typename... Ts>
-using contains_tag = std::disjunction<std::is_same<T, Ts>...>;
-
-enum class CallableWrapperState {
-    NoPassAllArguments,
-    HadPassAllArguments
-};
-
-namespace no_adl {
-template<typename, CallableWrapperState = CallableWrapperState::NoPassAllArguments>
-struct CallableWrapper final {};
-
-template<typename R, typename... Args, CallableWrapperState State>
-struct CallableWrapper<R(Args...), State> final {
-    static_assert(!contains_tag<pass_this_t, Args...>::value);
-    static_assert(!contains_tag<pass_all_arguments_t, Args...>::value);
+template<typename R, typename... Args, bool bPassedAllArguments>
+struct CCallableWrapper<R(Args...), bPassedAllArguments> final {
+    static_assert(!tc::type::contains<tc::type::list<Args...>, pass_this_t>::value);
+    static_assert(!tc::type::contains<tc::type::list<Args...>, pass_all_arguments_t>::value);
+    static_assert(!tc::type::any_of<tc::type::list<Args...>, std::is_reference>::value);
+    static_assert(!std::is_reference<R>::value);
 
     template<typename Fn>
-    emscripten::val operator()(Fn&& fn, emscripten::val& /*emvalThis*/, emscripten::val& emvalArguments) const& noexcept {
-        return CallHelper<std::make_index_sequence<sizeof...(Args)>>()(std::forward<Fn>(fn), emvalArguments);
+    emscripten::val operator()(Fn&& fn, emscripten::val const& /*emvalThis*/, emscripten::val const& emvalArgs) const& noexcept {
+        return CCallHelper<std::make_index_sequence<sizeof...(Args)>>()(std::forward<Fn>(fn), emvalArgs);
     }
 
 private:
-    template<std::size_t Index>
-    static emscripten::val GetArrayElement(emscripten::val const& emvalArray) noexcept {
-        return emvalArray[Index];
-    }
-
-    template<typename Fn>
-    static emscripten::val CallAndWrapVal(Fn&& fn) noexcept {
-        if constexpr (std::is_same<void, decltype(fn())>::value) {
-            fn();
-            return emscripten::val::undefined();
-        } else {
-            return emscripten::val(fn());
-        }
-    }
-
     template<typename>
-    struct CallHelper final {};
+    struct CCallHelper final {};
 
     template<std::size_t... Indices>
-    struct CallHelper<std::index_sequence<Indices...>> final {
+    struct CCallHelper<std::index_sequence<Indices...>> final {
         template<typename Fn>
-        emscripten::val operator()(Fn&& fn, emscripten::val& emvalArguments) const& noexcept {
-            if constexpr (State == CallableWrapperState::NoPassAllArguments) {
-                _ASSERT(emvalArguments["length"].as<std::size_t>() == sizeof...(Args));
-            } else if constexpr (State == CallableWrapperState::HadPassAllArguments) {
-                _ASSERT(emvalArguments["length"].as<std::size_t>() >= sizeof...(Args));
+        emscripten::val operator()(Fn&& fn, emscripten::val const& emvalArgs) const& noexcept {
+            if constexpr (bPassedAllArguments) {
+                _ASSERT(sizeof...(Args) <= emvalArgs["length"].as<std::size_t>());
             } else {
-                _ASSERT(false);
+                _ASSERTEQUAL(sizeof...(Args), emvalArgs["length"].as<std::size_t>());
             }
-            return CallAndWrapVal([&]() noexcept { return fn(GetArrayElement<Indices>(emvalArguments).template as<Args>()...); });
+
+            auto fnWithArgs = [&]() noexcept { return fn(emvalArgs[Indices].template as<Args>()...); };
+            if constexpr (std::is_same<void, decltype(fnWithArgs())>::value) {
+                fnWithArgs();
+                return emscripten::val::undefined();
+            } else {
+                return emscripten::val(fnWithArgs());
+            }
         }
     };
 };
 
-template<typename R, typename TThis, typename... Args, CallableWrapperState State>
-struct CallableWrapper<R(pass_this_t, TThis, Args...), State> final {
-    static_assert(!contains_tag<pass_this_t, TThis, Args...>::value);
+template<typename R, typename TThis, typename... Args, bool bPassedAllArguments>
+struct CCallableWrapper<R(pass_this_t, TThis, Args...), bPassedAllArguments> final {
+    static_assert(!tc::type::contains<tc::type::list<Args...>, pass_this_t>::value);
+    static_assert(!std::is_reference<TThis>::value);
 
     template<typename Fn>
-    emscripten::val operator()(Fn&& fn, emscripten::val& emvalThis, emscripten::val& emvalArguments) const& noexcept {
-        return CallableWrapper<R(Args...), State>()(
+    emscripten::val operator()(Fn&& fn, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) const& noexcept {
+        return CCallableWrapper<R(Args...), bPassedAllArguments>()(
             [&](auto&&... args) noexcept {
                 return fn(pass_this, emvalThis.template as<TThis>(), std::forward<decltype(args)>(args)...);
             },
             emvalThis,
-            emvalArguments
+            emvalArgs
         );
     }
 };
 
-template<typename R, typename TArgs, typename... Args, CallableWrapperState State>
-struct CallableWrapper<R(pass_all_arguments_t, TArgs, Args...), State> final {
-    static_assert(!contains_tag<pass_all_arguments_t, TArgs, Args...>::value);
-    static_assert(State == CallableWrapperState::NoPassAllArguments);
+template<typename R, typename TArgs, typename... Args, bool bPassedAllArguments>
+struct CCallableWrapper<R(pass_all_arguments_t, TArgs, Args...), bPassedAllArguments> final {
+    static_assert(!tc::type::contains<tc::type::list<Args...>, pass_all_arguments_t>::value);
+    static_assert(!std::is_reference<TArgs>::value);
+    static_assert(!bPassedAllArguments);
 
     template<typename Fn>
-    emscripten::val operator()(Fn&& fn, emscripten::val& emvalThis, emscripten::val& emvalArguments) const& noexcept {
-        return CallableWrapper<R(Args...), CallableWrapperState::HadPassAllArguments>()(
+    emscripten::val operator()(Fn&& fn, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) const& noexcept {
+        return CCallableWrapper<R(Args...), /*bPassedAllArguments=*/true>()(
             [&](auto&&... args) noexcept {
-                return fn(pass_all_arguments, emvalArguments.template as<TArgs>(), std::forward<decltype(args)>(args)...);
+                return fn(pass_all_arguments, emvalArgs.template as<TArgs>(), std::forward<decltype(args)>(args)...);
             },
             emvalThis,
-            emvalArguments
+            emvalArgs
         );
     }
 };
@@ -130,49 +101,62 @@ template<typename T, typename... Ts> struct drop_first_tuple_type<std::tuple<T, 
     typedef std::tuple<Ts...> type;
 };
 } // namespace no_adl
-using no_adl::CallableWrapper;
+using no_adl::CCallableWrapper;
 using no_adl::drop_first_tuple_type;
 
 template<typename T>
-emscripten::val MemberFunctionWrapper(T pmfMember, void* pThis, emscripten::val& emvalThis, emscripten::val& emvalArguments) noexcept {
+emscripten::val MemberFunctionWrapper(T pmfMember, void* pvThis, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) noexcept {
     using ThisType = boost::callable_traits::class_of_t<T>;
     static_assert(boost::callable_traits::is_noexcept<T>::value, "Member functions exported to JS should be noexcept");
-    static_assert(!std::is_copy_constructible_v<ThisType>, "The struct with JS-exported member functions should not have copy constructors");
-    static_assert(!std::is_move_constructible_v<ThisType>, "The struct with JS-exported member functions should not have move constructors");
+    static_assert(!std::is_copy_constructible<ThisType>::value, "The struct with JS-exported member functions should not have copy constructors");
+    static_assert(!std::is_move_constructible<ThisType>::value, "The struct with JS-exported member functions should not have move constructors");
 
-    return CallableWrapper<
+    return CCallableWrapper<
         boost::callable_traits::apply_return_t<
             typename drop_first_tuple_type<boost::callable_traits::args_t<T>>::type,
             boost::callable_traits::return_type_t<T>
         >
-    >()([pThis, pmfMember](auto&&... args) noexcept {
-        return (static_cast<ThisType*>(pThis)->*pmfMember)(std::forward<decltype(args)>(args)...);
-    }, emvalThis, emvalArguments);
+    >()([&](auto&&... args) noexcept {
+        return (tc::void_cast<ThisType>(pvThis)->*pmfMember)(std::forward<decltype(args)>(args)...);
+    }, emvalThis, emvalArgs);
 }
+
+using FirstArgument = void*;
+using FunctionPointer = emscripten::val(*)(FirstArgument, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) noexcept;
+
+namespace no_adl {
+// We do not care about slicing to emscripten::val, because this class is
+// only stored as a by-value field.
+struct CUniqueDetachableEmscriptenVal : tc::nonmovable, emscripten::val {
+    CUniqueDetachableEmscriptenVal(FunctionPointer pfunc, FirstArgument arg0) noexcept;
+    ~CUniqueDetachableEmscriptenVal();
+};
+} // namespace no_adl
+using no_adl::CUniqueDetachableEmscriptenVal;
 } // namespace callback_detail
 
-#define TC_WASM_UNIQUE_NAME_IMPL2(Prefix, Line, Counter) Prefix##_##Line##_##Counter
-#define TC_WASM_UNIQUE_NAME_IMPL1(Prefix, Line, Counter) TC_WASM_UNIQUE_NAME_IMPL2(Prefix, Line, Counter)
-#define TC_WASM_UNIQUE_NAME(Prefix) TC_WASM_UNIQUE_NAME_IMPL1(Prefix, __LINE__, __COUNTER__)
+#define TC_JS_UNIQUE_NAME_IMPL2(Prefix, Line, Counter) Prefix##_##Line##_##Counter
+#define TC_JS_UNIQUE_NAME_IMPL1(Prefix, Line, Counter) TC_JS_UNIQUE_NAME_IMPL2(Prefix, Line, Counter)
+#define TC_JS_UNIQUE_NAME(Prefix) TC_JS_UNIQUE_NAME_IMPL1(Prefix, __LINE__, __COUNTER__)
 
-#define TC_WASM_MEMBER_FUNCTION_NAMED_WRAPPER(FieldName, WrapperName, MemberPointer) \
-    static emscripten::val WrapperName(void* pThis, emscripten::val& emvalThis, emscripten::val& emvalArguments) noexcept { \
-        return ::tc::js::callback_detail::MemberFunctionWrapper(MemberPointer, pThis, emvalThis, emvalArguments); \
+#define TC_JS_MEMBER_FUNCTION_NAMED_WRAPPER(FieldName, WrapperName, MemberPointer) \
+    static emscripten::val WrapperName(void* pvThis, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) noexcept { \
+        return ::tc::js::callback_detail::MemberFunctionWrapper(MemberPointer, pvThis, emvalThis, emvalArgs); \
     } \
-    const ::tc::js::callback_detail::CUniqueDetachableEmscriptenVal FieldName{&WrapperName, static_cast<void*>(this)};
+    const ::tc::js::callback_detail::CUniqueDetachableEmscriptenVal FieldName{&WrapperName, this};
 
-#define TC_WASM_MEMBER_FUNCTION_WRAPPER(FieldName, MemberPointer) \
-    TC_WASM_MEMBER_FUNCTION_NAMED_WRAPPER(FieldName, TC_WASM_UNIQUE_NAME(_tc_js_member_function_wrapper), MemberPointer)
+#define TC_JS_MEMBER_FUNCTION_WRAPPER(FieldName, MemberPointer) \
+    TC_JS_MEMBER_FUNCTION_NAMED_WRAPPER(FieldName, TC_JS_UNIQUE_NAME(_tc_js_member_function_wrapper), MemberPointer)
 
-#define TC_WASM_NAMED_MEMBER_JS_FUNCTION(ClassName, FieldName, ReturnType, MethodName) \
-    void TC_WASM_UNIQUE_NAME(_tc_js_member_function_type_check)() { \
-        STATICASSERTSAME(ClassName&, decltype(*this), "ClassName specified in TC_WASM_NAMED_MEMBER_JS_FUNCTION is incorrect"); \
+#define TC_JS_NAMED_MEMBER_FUNCTION(ClassName, FieldName, ReturnType, MethodName, Arguments) \
+    void TC_JS_UNIQUE_NAME(_tc_js_member_function_type_check)() { \
+        STATICASSERTSAME(ClassName&, decltype(*this), "ClassName specified in TC_JS_NAMED_MEMBER_FUNCTION is incorrect"); \
     } \
-    TC_WASM_MEMBER_FUNCTION_WRAPPER(FieldName, &ClassName::MethodName) \
-    ReturnType MethodName
+    TC_JS_MEMBER_FUNCTION_WRAPPER(FieldName, &ClassName::MethodName) \
+    ReturnType MethodName Arguments noexcept
 
-#define TC_WASM_MEMBER_JS_FUNCTION(ClassName, FieldName, ReturnType) \
-    TC_WASM_NAMED_MEMBER_JS_FUNCTION(ClassName, FieldName, ReturnType, TC_WASM_UNIQUE_NAME(_tc_js_member_function_impl))
+#define TC_JS_MEMBER_FUNCTION(ClassName, FieldName, ReturnType, Arguments) \
+    TC_JS_NAMED_MEMBER_FUNCTION(ClassName, FieldName, ReturnType, TC_JS_UNIQUE_NAME(_tc_js_member_function_impl), Arguments)
 
 // ---------------------------------------- Scoped/heap callbacks ----------------------------------------
 template<typename T, typename... Args> constexpr auto KeepThisCallback(Args&&...) noexcept;
@@ -220,25 +204,31 @@ using no_adl::IsSCallbackResult;
 } // namespace callback_detail
 
 namespace no_adl {
+// We do not care about slicing to emscripten::val, because this class is only stored by-value.
 template<typename Fn>
-struct CScopedCallback final : tc::nonmovable {
+struct CScopedCallback final : callback_detail::CUniqueDetachableEmscriptenVal {
     static_assert(!std::is_reference<Fn>::value);
-    explicit CScopedCallback(Fn&& fn) noexcept : m_fn(tc_move(fn)) {}
+    static_assert(
+        !callback_detail::IsSCallbackResult<boost::callable_traits::return_type_t<Fn>>::value,
+        "CScopedCallback cannot return SCallbackResult. If you want callback to self-manage lifetime, use NewHeapCallback"
+    );
+    static_assert(boost::callable_traits::is_noexcept<Fn>::value, "Callbacks for JS should be noexcept");
+
+    template<typename FnSrc>
+    CScopedCallback(FnSrc&& fn) noexcept : CUniqueDetachableEmscriptenVal(&FnWrapper, this), m_fn(std::forward<FnSrc>(fn)) {}
 
 private:
     Fn m_fn;
-    TC_WASM_MEMBER_JS_FUNCTION(CScopedCallback, m_emvalCall, emscripten::val)(tc::js::pass_this_t, emscripten::val emvalThis, tc::js::pass_all_arguments_t, emscripten::val emvalArguments) noexcept {
-        static_assert(
-            !callback_detail::IsSCallbackResult<boost::callable_traits::return_type_t<Fn>>::value,
-            "CScopedCallback cannot return SCallbackResult. If you want callback to self-manage lifetime, use NewHeapCallback"
-        );
-        static_assert(boost::callable_traits::is_noexcept<Fn>::value, "Callbacks for JS should be noexcept");
-        return callback_detail::CallableWrapper<boost::callable_traits::function_type_t<Fn>>()(m_fn, emvalThis, emvalArguments);
-    }
 
-    friend emscripten::internal::BindingType<CScopedCallback>;
+    static emscripten::val FnWrapper(void* pThis, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) noexcept {
+        return callback_detail::CCallableWrapper<boost::callable_traits::function_type_t<Fn>>()(
+            tc::void_cast<CScopedCallback>(pThis)->m_fn,
+            emvalThis,
+            emvalArgs
+        );
+    }
 };
-template<typename Fn> CScopedCallback(Fn&&) -> CScopedCallback<tc::decay_t<Fn>>;
+template<typename Fn> CScopedCallback(Fn) -> CScopedCallback<Fn>;
 } // namespace no_adl
 using no_adl::CScopedCallback;
 
@@ -254,30 +244,36 @@ template<typename Fn> emscripten::val NewHeapCallback(Fn&& fn) noexcept;
 
 namespace callback_detail {
 namespace no_adl {
+// We do not care about slicing to emscripten::val, because this class is only
+// created by NewHeapCallback and deleted by itself.
 template<typename Fn>
-struct CHeapCallback final : tc::nonmovable {
+struct CHeapCallback final : CUniqueDetachableEmscriptenVal {
 private:
     static_assert(!std::is_reference<Fn>::value);
-    explicit CHeapCallback(Fn&& fn) noexcept : m_fn(tc_move(fn)) {}
+    static_assert(
+        callback_detail::IsSCallbackResult<boost::callable_traits::return_type_t<Fn>>::value,
+        "CHeapCallback's functor should return SCallbackResult<> to signal destruction. Alternatively, use CScopedCallback"
+    );
+    static_assert(boost::callable_traits::is_noexcept<Fn>::value, "Callbacks for JS should be noexcept");
+
+    template<typename FnSrc>
+    explicit CHeapCallback(FnSrc&& fn) noexcept : CUniqueDetachableEmscriptenVal(&FnWrapper, this), m_fn(std::forward<FnSrc>(fn)) {}
 
     friend emscripten::val tc::js::NewHeapCallback(Fn&& fn) noexcept;
 
     Fn m_fn;
-    TC_WASM_MEMBER_JS_FUNCTION(CHeapCallback, m_emvalCall, emscripten::val)(tc::js::pass_this_t, emscripten::val emvalThis, tc::js::pass_all_arguments_t, emscripten::val emvalArguments) noexcept {
-        static_assert(
-            callback_detail::IsSCallbackResult<boost::callable_traits::return_type_t<Fn>>::value,
-            "CHeapCallback's functor should return SCallbackResult<> to signal destruction. Alternatively, use CScopedCallback"
-        );
-        static_assert(boost::callable_traits::is_noexcept<Fn>::value, "Callbacks for JS should be noexcept");
-        return CallableWrapper<boost::callable_traits::function_type_t<Fn>>()([&](auto&&... args) noexcept {
-            auto result = m_fn(std::forward<decltype(args)>(args)...);
+    static emscripten::val FnWrapper(void* pvThis, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) noexcept {
+        return CCallableWrapper<boost::callable_traits::function_type_t<Fn>>()([&](auto&&... args) noexcept {
+            auto pcbThis = tc::void_cast<CHeapCallback>(pvThis);
+            auto result = pcbThis->m_fn(std::forward<decltype(args)>(args)...);
             if (!result.ShouldKeepAlive()) {
-                delete this;
+                delete pcbThis;
             }
             return result.Extract();
-        }, emvalThis, emvalArguments);
+        }, emvalThis, emvalArgs);
     }
 };
+template<typename Fn> CHeapCallback(Fn) -> CHeapCallback<Fn>;
 } // namespace no_adl
 using no_adl::CHeapCallback;
 } // namespace callback_detail
@@ -308,7 +304,7 @@ inline constexpr auto DeleteThisCallback() noexcept {
 
 template<typename Fn>
 emscripten::val NewHeapCallback(Fn&& fn) noexcept { // TODO: even std::bad_alloc?
-    return (new callback_detail::CHeapCallback<tc::decay_t<Fn>>(tc_move(fn)))->m_emvalCall;
+    return *(new callback_detail::CHeapCallback(std::forward<Fn>(fn)));
 }
 
 // ---------------------------------------- Fires-once callback ----------------------------------------
@@ -352,27 +348,29 @@ emscripten::val NewFiresOnceCallback(Fn&& fn) noexcept { // TODO: even std::bad_
 } // namespace tc::js
 
 // ---------------------------------------- Custom embind marshalling ----------------------------------------
+// Even though CScopedCallback<> and CUniqueDetachableEmscriptenVal are subclasses of emscripten::val,
+// template specializations and embind's bindings are invariant, so we have to provide our own.
 namespace emscripten::internal {
 	template<typename Fn>
 	struct BindingType<tc::js::CScopedCallback<Fn>> {
-		typedef internal::EM_VAL WireType;
+		typedef BindingType<val>::WireType WireType;
 		static WireType toWireType(tc::js::CScopedCallback<Fn> const& cbl) {
-			return BindingType<val>::toWireType(cbl.m_emvalCall);
+			return BindingType<val>::toWireType(cbl);
 		}
 	};
 
 	template<typename T>
 	struct TypeID<T, std::enable_if_t<tc::js::callback_detail::IsCScopedCallback<tc::remove_cvref_t<T>>::value>> {
 		static constexpr TYPEID get() {
-			return LightTypeID<val>::get();
+			return TypeID<val>::get();
 		}
 	};
 
 	template<>
 	struct BindingType<tc::js::callback_detail::CUniqueDetachableEmscriptenVal> {
-		typedef internal::EM_VAL WireType;
+		typedef BindingType<val>::WireType WireType;
 		static WireType toWireType(tc::js::callback_detail::CUniqueDetachableEmscriptenVal const& v) {
-			return BindingType<val>::toWireType(v.get());
+			return BindingType<val>::toWireType(v);
 		}
 	};
 
@@ -384,7 +382,7 @@ namespace emscripten::internal {
 	    >::value
 	>> {
 		static constexpr TYPEID get() {
-			return LightTypeID<val>::get();
+			return TypeID<val>::get();
 		}
 	};
 }

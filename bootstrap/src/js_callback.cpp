@@ -30,19 +30,23 @@ using PointerNumber = std::uintptr_t;
  * We cannot guarantee that pointers are safely-derived unless emscripten passes us integer representation of
  * a safely-derived pointer, so we require relaxed pointer safety.
  */
-static_assert(sizeof(PointerNumber) >= sizeof(std::intptr_t));
-static_assert(sizeof(PointerNumber) >= sizeof(FunctionPointer), "PointerNumber is not large enough to hold FunctionPointer, cannot pass it to JavaScript");
-static_assert(sizeof(PointerNumber) >= sizeof(ArgumentPointer), "PointerNumber is not large enough to hold ArgumentPointer, cannot pass it to JavaScript");
+static_assert(sizeof(std::intptr_t) <= sizeof(PointerNumber));
+static_assert(sizeof(FunctionPointer) <= sizeof(PointerNumber), "PointerNumber is not large enough to hold FunctionPointer, cannot pass it to JavaScript");
+static_assert(sizeof(FirstArgument) <= sizeof(PointerNumber), "PointerNumber is not large enough to hold FirstArgument, cannot pass it to JavaScript");
 
 // TODO: is it really noexcept? JS can fail if compiled/loaded incorrectly.
-CUniqueDetachableEmscriptenVal::CUniqueDetachableEmscriptenVal(FunctionPointer pFunction, ArgumentPointer pArgument) noexcept : m_emval(emscripten::val::undefined()) {
+CUniqueDetachableEmscriptenVal::CUniqueDetachableEmscriptenVal(FunctionPointer pfunc, FirstArgument arg0) noexcept : emscripten::val(emscripten::val::undefined()) {
     _ASSERT(std::get_pointer_safety() == std::pointer_safety::preferred || std::get_pointer_safety() == std::pointer_safety::relaxed);
-    m_emval = emscripten::val::module_property("tc_js_callback_detail_js_CreateJsFunction")(reinterpret_cast<PointerNumber>(pFunction), reinterpret_cast<PointerNumber>(pArgument));
+    emscripten::val::operator=(emscripten::val::module_property("tc_js_callback_detail_js_CreateJsFunction")(reinterpret_cast<PointerNumber>(pfunc), reinterpret_cast<PointerNumber>(arg0)));
 }
 
-emscripten::val Call(PointerNumber iFunctionPtr, PointerNumber iArgumentPtr, emscripten::val emvalThis, emscripten::val emvalArgs) noexcept {
+CUniqueDetachableEmscriptenVal::~CUniqueDetachableEmscriptenVal() {
+    call<void>("detach");
+}
+
+emscripten::val Call(PointerNumber iFunctionPtr, PointerNumber iArg0, emscripten::val emvalThis, emscripten::val emvalArgs) noexcept {
     return reinterpret_cast<FunctionPointer>(iFunctionPtr)(
-        reinterpret_cast<ArgumentPointer>(iArgumentPtr),
+        reinterpret_cast<FirstArgument>(iArg0),
         emvalThis,
         emvalArgs
     );
