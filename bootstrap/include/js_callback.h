@@ -24,12 +24,11 @@ namespace no_adl {
 template<typename, bool bPassedAllArguments = false>
 struct CCallableWrapper final {};
 
-template<typename R, typename... Args, bool bPassedAllArguments>
-struct CCallableWrapper<R(Args...), bPassedAllArguments> final {
+template<typename... Args, bool bPassedAllArguments>
+struct CCallableWrapper<tc::type::list<Args...>, bPassedAllArguments> final {
     static_assert(!tc::type::contains<tc::type::list<Args...>, pass_this_t>::value);
     static_assert(!tc::type::contains<tc::type::list<Args...>, pass_all_arguments_t>::value);
     static_assert(!tc::type::any_of<tc::type::list<Args...>, std::is_reference>::value);
-    static_assert(!std::is_reference<R>::value);
 
     template<typename Fn>
     emscripten::val operator()(Fn&& fn, emscripten::val const& /*emvalThis*/, emscripten::val const& emvalArgs) const& noexcept {
@@ -51,6 +50,7 @@ private:
             }
 
             auto fnWithArgs = [&]() noexcept { return fn(emvalArgs[Indices].template as<Args>()...); };
+            static_assert(!std::is_reference<decltype(fnWithArgs())>::value);
             if constexpr (std::is_same<void, decltype(fnWithArgs())>::value) {
                 fnWithArgs();
                 return emscripten::val::undefined();
@@ -61,14 +61,14 @@ private:
     };
 };
 
-template<typename R, typename TThis, typename... Args, bool bPassedAllArguments>
-struct CCallableWrapper<R(pass_this_t, TThis, Args...), bPassedAllArguments> final {
+template<typename TThis, typename... Args, bool bPassedAllArguments>
+struct CCallableWrapper<tc::type::list<pass_this_t, TThis, Args...>, bPassedAllArguments> final {
     static_assert(!tc::type::contains<tc::type::list<Args...>, pass_this_t>::value);
     static_assert(!std::is_reference<TThis>::value);
 
     template<typename Fn>
     emscripten::val operator()(Fn&& fn, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) const& noexcept {
-        return CCallableWrapper<R(Args...), bPassedAllArguments>()(
+        return CCallableWrapper<tc::type::list<Args...>, bPassedAllArguments>()(
             [&](auto&&... args) noexcept {
                 return fn(pass_this, emvalThis.template as<TThis>(), std::forward<decltype(args)>(args)...);
             },
@@ -78,15 +78,15 @@ struct CCallableWrapper<R(pass_this_t, TThis, Args...), bPassedAllArguments> fin
     }
 };
 
-template<typename R, typename TArgs, typename... Args, bool bPassedAllArguments>
-struct CCallableWrapper<R(pass_all_arguments_t, TArgs, Args...), bPassedAllArguments> final {
+template<typename TArgs, typename... Args, bool bPassedAllArguments>
+struct CCallableWrapper<tc::type::list<pass_all_arguments_t, TArgs, Args...>, bPassedAllArguments> final {
     static_assert(!tc::type::contains<tc::type::list<Args...>, pass_all_arguments_t>::value);
     static_assert(!std::is_reference<TArgs>::value);
     static_assert(!bPassedAllArguments);
 
     template<typename Fn>
     emscripten::val operator()(Fn&& fn, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) const& noexcept {
-        return CCallableWrapper<R(Args...), /*bPassedAllArguments=*/true>()(
+        return CCallableWrapper<tc::type::list<Args...>, /*bPassedAllArguments=*/true>()(
             [&](auto&&... args) noexcept {
                 return fn(pass_all_arguments, emvalArgs.template as<TArgs>(), std::forward<decltype(args)>(args)...);
             },
@@ -95,14 +95,8 @@ struct CCallableWrapper<R(pass_all_arguments_t, TArgs, Args...), bPassedAllArgum
         );
     }
 };
-
-template<typename> struct drop_first_tuple_type final {};
-template<typename T, typename... Ts> struct drop_first_tuple_type<std::tuple<T, Ts...>> final {
-    typedef std::tuple<Ts...> type;
-};
 } // namespace no_adl
 using no_adl::CCallableWrapper;
-using no_adl::drop_first_tuple_type;
 
 template<typename T>
 emscripten::val MemberFunctionWrapper(T pmfMember, void* pvThis, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) noexcept {
@@ -111,14 +105,11 @@ emscripten::val MemberFunctionWrapper(T pmfMember, void* pvThis, emscripten::val
     static_assert(!std::is_copy_constructible<ThisType>::value, "The struct with JS-exported member functions should not have copy constructors");
     static_assert(!std::is_move_constructible<ThisType>::value, "The struct with JS-exported member functions should not have move constructors");
 
-    return CCallableWrapper<
-        boost::callable_traits::apply_return_t<
-            typename drop_first_tuple_type<boost::callable_traits::args_t<T>>::type,
-            boost::callable_traits::return_type_t<T>
-        >
-    >()([&](auto&&... args) noexcept {
-        return (tc::void_cast<ThisType>(pvThis)->*pmfMember)(std::forward<decltype(args)>(args)...);
-    }, emvalThis, emvalArgs);
+    return CCallableWrapper<tc::type::drop_first_t<boost::callable_traits::args_t<T, tc::type::list>>>()(
+        [&](auto&&... args) noexcept {
+            return (tc::void_cast<ThisType>(pvThis)->*pmfMember)(std::forward<decltype(args)>(args)...);
+        }, emvalThis, emvalArgs
+    );
 }
 
 using FirstArgument = void*;
@@ -221,7 +212,7 @@ private:
     Fn m_fn;
 
     static emscripten::val FnWrapper(void* pThis, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) noexcept {
-        return callback_detail::CCallableWrapper<boost::callable_traits::function_type_t<Fn>>()(
+        return callback_detail::CCallableWrapper<boost::callable_traits::args_t<Fn, tc::type::list>>()(
             tc::void_cast<CScopedCallback>(pThis)->m_fn,
             emvalThis,
             emvalArgs
@@ -263,7 +254,7 @@ private:
 
     Fn m_fn;
     static emscripten::val FnWrapper(void* pvThis, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) noexcept {
-        return CCallableWrapper<boost::callable_traits::function_type_t<Fn>>()([&](auto&&... args) noexcept {
+        return CCallableWrapper<boost::callable_traits::args_t<Fn, tc::type::list>>()([&](auto&&... args) noexcept {
             auto pcbThis = tc::void_cast<CHeapCallback>(pvThis);
             auto result = pcbThis->m_fn(std::forward<decltype(args)>(args)...);
             if (!result.ShouldKeepAlive()) {
