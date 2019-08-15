@@ -102,21 +102,21 @@ public:
     CArrowProxy operator->() const& noexcept { return CArrowProxy(m_emval); }
 };
 
-template<typename> struct IsJsPtr : std::false_type {};
-template<typename T> struct IsJsPtr<js_ref<T>> : std::true_type {};
+template<typename> struct IsJsRef : std::false_type {};
+template<typename T> struct IsJsRef<js_ref<T>> : std::true_type {};
 } // namespace no_adl
 
 using no_adl::IJsBase;
 using no_adl::IAny;
 using no_adl::js_ref;
-using no_adl::IsJsPtr;
+using no_adl::IsJsRef;
 
 } // namespace tc::js
 
 // Custom marshalling
 namespace emscripten::internal {
     template<typename T>
-    struct TypeID<T, std::enable_if_t<tc::js::IsJsPtr<std::remove_cv_t<std::remove_reference_t<T>>>::value>> {
+    struct TypeID<T, std::enable_if_t<tc::js::IsJsRef<std::remove_cv_t<std::remove_reference_t<T>>>::value>> {
         static constexpr TYPEID get() {
             return LightTypeID<val>::get();
         }
