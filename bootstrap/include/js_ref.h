@@ -28,8 +28,9 @@ protected:
 struct IAny : virtual IJsBase {
 };
 
+// Non-final, but non-polymorphic as well. Derive with care and remember to add specialization for tc::js::IsJsRef.
 template<typename T>
-struct js_ref final {
+struct js_ref {
     static_assert(std::is_class<T>::value);  // void is explicitly excluded as well, even though void* is base of all pointers.
     static_assert(!std::is_volatile<T>::value);
     static_assert(!std::is_const<T>::value, "We cannot guarantee constness of JS values");
@@ -103,7 +104,9 @@ public:
 };
 
 template<typename> struct IsJsRef : std::false_type {};
-template<typename T> struct IsJsRef<js_ref<T>> : std::true_type {};
+template<typename T> struct IsJsRef<js_ref<T>> : std::true_type {
+    using value_type = T;
+};
 } // namespace no_adl
 
 using no_adl::IJsBase;
@@ -123,15 +126,15 @@ namespace emscripten::internal {
     };
 
     template<typename T>
-    struct BindingType<tc::js::js_ref<T>> {
+    struct BindingType<T, std::enable_if_t<tc::js::IsJsRef<T>::value>> {
         typedef typename BindingType<emscripten::val>::WireType WireType;
 
-        static WireType toWireType(tc::js::js_ref<T> const& js) {
+        static WireType toWireType(T const& js) {
             return BindingType<emscripten::val>::toWireType(js.get());
         }
 
         static auto fromWireType(WireType v) {
-          return tc::js::js_ref<T>(BindingType<emscripten::val>::fromWireType(v));
+          return tc::js::js_ref<typename tc::js::IsJsRef<T>::value_type>(BindingType<emscripten::val>::fromWireType(v));
         }
     };
 }
