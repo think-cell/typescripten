@@ -41,3 +41,9 @@ Module.TestHeapCallbackPassAllArguments = function(callback) {
     Module.assertEquals(callback(1, null), undefined);
     Module.assertEquals(callback(0, null), undefined);
 }
+
+Module.TestHeapCallbackWithStringReturn = function(callback) {
+    Module.assertEquals(callback(2), "12");
+    Module.assertEquals(callback(1), "11");
+    Module.assertEquals(callback(0), "10");
+}

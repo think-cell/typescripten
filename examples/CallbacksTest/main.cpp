@@ -114,6 +114,15 @@ int main() {
             else
                 return tc::js::KeepThisCallback();
         }));
+        RUN_TEST(TestHeapCallbackWithStringReturn, tc::js::NewHeapCallback([expectedX = 2](int x) mutable noexcept {
+            _ASSERTEQUAL(x, expectedX);
+            char buf[2] = { '1', static_cast<char>(x + '0') };
+            expectedX--;
+            if (x == 0)
+                return tc::js::DeleteThisCallback<std::string>(buf, buf + 2);
+            else
+                return tc::js::KeepThisCallback<std::string>(buf, buf + 2);
+        }));
     }
     return 0;
 }
