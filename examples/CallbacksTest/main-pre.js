@@ -1,5 +1,5 @@
-Module.assertEquals = function(a, b) {
-   if (a !== b) throw new Error('Expected ' + a + ', got ' + b);
+Module.assertEquals = function(got, expected) {
+   if (got !== expected) throw new Error('Got ' + got + ', expected ' + expected);
 }
 
 Module.TestSum = function(sum) {
