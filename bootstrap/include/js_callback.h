@@ -21,31 +21,28 @@ DEFINE_TAG_TYPE(pass_all_arguments)
 
 namespace callback_detail {
 namespace no_adl {
-template<typename, bool bPassedAllArguments = false>
-struct CCallableWrapper final {};
-
-template<typename... Args, bool bPassedAllArguments>
-struct CCallableWrapper<tc::type::list<Args...>, bPassedAllArguments> final {
-    static_assert(!tc::type::contains<tc::type::list<Args...>, pass_this_t>::value);
-    static_assert(!tc::type::contains<tc::type::list<Args...>, pass_all_arguments_t>::value);
-    static_assert(!tc::type::any_of<tc::type::list<Args...>, std::is_reference>::value);
+template<typename lArgs, bool bPassedAllArguments = false>
+struct CCallableWrapper final {
+    static_assert(!tc::type::contains<lArgs, pass_this_t>::value);
+    static_assert(!tc::type::contains<lArgs, pass_all_arguments_t>::value);
+    static_assert(!tc::type::any_of<lArgs, std::is_reference>::value);
 
     template<typename Fn>
     emscripten::val operator()(Fn&& fn, emscripten::val const& /*emvalThis*/, emscripten::val const& emvalArgs) const& noexcept {
         if constexpr (bPassedAllArguments) {
-            _ASSERT(sizeof...(Args) <= emvalArgs["length"].as<std::size_t>());
+            _ASSERT(tc::type::size<lArgs>::value <= emvalArgs["length"].as<std::size_t>());
         } else {
-            _ASSERTEQUAL(sizeof...(Args), emvalArgs["length"].as<std::size_t>());
+            _ASSERTEQUAL(tc::type::size<lArgs>::value, emvalArgs["length"].as<std::size_t>());
         }
-        return CCallHelper<std::make_index_sequence<sizeof...(Args)>>()(std::forward<Fn>(fn), emvalArgs);
+        return CCallHelper<lArgs, std::make_index_sequence<tc::type::size<lArgs>::value>>()(std::forward<Fn>(fn), emvalArgs);
     }
 
 private:
-    template<typename>
+    template<typename, typename>
     struct CCallHelper final {};
 
-    template<std::size_t... Indices>
-    struct CCallHelper<std::index_sequence<Indices...>> final {
+    template<typename... Args, std::size_t... Indices>
+    struct CCallHelper<tc::type::list<Args...>, std::index_sequence<Indices...>> final {
         template<typename Fn>
         emscripten::val operator()(Fn&& fn, emscripten::val const& emvalArgs) const& noexcept {
             auto fnWithArgs = [&]() noexcept { return fn(emvalArgs[Indices].template as<Args>()...); };
@@ -61,14 +58,17 @@ private:
     };
 };
 
-template<typename TThis, typename... Args, bool bPassedAllArguments>
-struct CCallableWrapper<tc::type::list<pass_this_t, TThis, Args...>, bPassedAllArguments> final {
-    static_assert(!tc::type::contains<tc::type::list<Args...>, pass_this_t>::value);
+template<typename TThis, typename... ArgsTail, bool bPassedAllArguments>
+struct CCallableWrapper<tc::type::list<pass_this_t, TThis, ArgsTail...>, bPassedAllArguments> final {
+private:
+    using lArgsTail = tc::type::list<ArgsTail...>;
+public:
+    static_assert(!tc::type::contains<lArgsTail, pass_this_t>::value);
     static_assert(!std::is_reference<TThis>::value);
 
     template<typename Fn>
     emscripten::val operator()(Fn&& fn, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) const& noexcept {
-        return CCallableWrapper<tc::type::list<Args...>, bPassedAllArguments>()(
+        return CCallableWrapper<lArgsTail, bPassedAllArguments>()(
             [&](auto&&... args) noexcept {
                 return fn(pass_this, emvalThis.template as<TThis>(), std::forward<decltype(args)>(args)...);
             },
@@ -78,15 +78,18 @@ struct CCallableWrapper<tc::type::list<pass_this_t, TThis, Args...>, bPassedAllA
     }
 };
 
-template<typename TArgs, typename... Args, bool bPassedAllArguments>
-struct CCallableWrapper<tc::type::list<pass_all_arguments_t, TArgs, Args...>, bPassedAllArguments> final {
-    static_assert(!tc::type::contains<tc::type::list<Args...>, pass_all_arguments_t>::value);
+template<typename TArgs, typename... ArgsTail, bool bPassedAllArguments>
+struct CCallableWrapper<tc::type::list<pass_all_arguments_t, TArgs, ArgsTail...>, bPassedAllArguments> final {
+private:
+    using lArgsTail = tc::type::list<ArgsTail...>;
+public:
+    static_assert(!tc::type::contains<lArgsTail, pass_all_arguments_t>::value);
     static_assert(!std::is_reference<TArgs>::value);
     static_assert(!bPassedAllArguments);
 
     template<typename Fn>
     emscripten::val operator()(Fn&& fn, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) const& noexcept {
-        return CCallableWrapper<tc::type::list<Args...>, /*bPassedAllArguments=*/true>()(
+        return CCallableWrapper<lArgsTail, /*bPassedAllArguments=*/true>()(
             [&](auto&&... args) noexcept {
                 return fn(pass_all_arguments, emvalArgs.template as<TArgs>(), std::forward<decltype(args)>(args)...);
             },
