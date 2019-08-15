@@ -32,6 +32,11 @@ struct CCallableWrapper<tc::type::list<Args...>, bPassedAllArguments> final {
 
     template<typename Fn>
     emscripten::val operator()(Fn&& fn, emscripten::val const& /*emvalThis*/, emscripten::val const& emvalArgs) const& noexcept {
+        if constexpr (bPassedAllArguments) {
+            _ASSERT(sizeof...(Args) <= emvalArgs["length"].as<std::size_t>());
+        } else {
+            _ASSERTEQUAL(sizeof...(Args), emvalArgs["length"].as<std::size_t>());
+        }
         return CCallHelper<std::make_index_sequence<sizeof...(Args)>>()(std::forward<Fn>(fn), emvalArgs);
     }
 
@@ -43,15 +48,10 @@ private:
     struct CCallHelper<std::index_sequence<Indices...>> final {
         template<typename Fn>
         emscripten::val operator()(Fn&& fn, emscripten::val const& emvalArgs) const& noexcept {
-            if constexpr (bPassedAllArguments) {
-                _ASSERT(sizeof...(Args) <= emvalArgs["length"].as<std::size_t>());
-            } else {
-                _ASSERTEQUAL(sizeof...(Args), emvalArgs["length"].as<std::size_t>());
-            }
-
             auto fnWithArgs = [&]() noexcept { return fn(emvalArgs[Indices].template as<Args>()...); };
-            static_assert(!std::is_reference<decltype(fnWithArgs())>::value);
-            if constexpr (std::is_same<void, decltype(fnWithArgs())>::value) {
+            using ReturnType = decltype(fnWithArgs());
+            static_assert(!std::is_reference<ReturnType>::value);
+            if constexpr (std::is_same<void, ReturnType>::value) {
                 fnWithArgs();
                 return emscripten::val::undefined();
             } else {
