@@ -101,6 +101,17 @@ public:
 } // namespace no_adl
 using no_adl::CCallableWrapper;
 
+template<typename Pmf, typename = tc::void_t<boost::callable_traits::class_of_t<Pmf>>>
+using MemberFunctionExpectedArgs_t =
+    tc::type::drop_first_t<boost::callable_traits::args_t<Pmf, tc::type::list>>;
+
+template<typename Pmf>
+using MemberFunctionJsSignature_t =
+    boost::callable_traits::apply_return<
+        tc::type::apply<std::tuple, MemberFunctionExpectedArgs_t<Pmf>>,
+        boost::callable_traits::return_type<Pmf>
+    >;
+
 template<typename T>
 emscripten::val MemberFunctionWrapper(T pmfMember, void* pvThis, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) noexcept {
     using ThisType = boost::callable_traits::class_of_t<T>;
@@ -108,7 +119,7 @@ emscripten::val MemberFunctionWrapper(T pmfMember, void* pvThis, emscripten::val
     static_assert(!std::is_copy_constructible<ThisType>::value, "The struct with JS-exported member functions should not have copy constructors");
     static_assert(!std::is_move_constructible<ThisType>::value, "The struct with JS-exported member functions should not have move constructors");
 
-    return CCallableWrapper<tc::type::drop_first_t<boost::callable_traits::args_t<T, tc::type::list>>>()(
+    return CCallableWrapper<MemberFunctionExpectedArgs_t<T>>()(
         [&](auto&&... args) noexcept {
             return (tc::void_cast<ThisType>(pvThis)->*pmfMember)(std::forward<decltype(args)>(args)...);
         }, emvalThis, emvalArgs
@@ -163,6 +174,8 @@ struct SCallbackResult final {
     constexpr bool ShouldKeepAlive() const& noexcept { return m_bKeepAlive; }
     constexpr T Extract() noexcept { return tc_move(m_tResult); }
 
+    using value_type = T;
+
     template<typename, typename... Args> friend constexpr auto tc::js::KeepThisCallback(Args&&...) noexcept;
     template<typename, typename... Args> friend constexpr auto tc::js::DeleteThisCallback(Args&&...) noexcept;
 
@@ -180,6 +193,8 @@ template<>
 struct SCallbackResult<void> final {
     constexpr bool ShouldKeepAlive() const& noexcept { return m_bKeepAlive; }
     constexpr void Extract() noexcept {};
+
+    using value_type = void;
 
     template<typename, typename... Args> friend constexpr auto tc::js::KeepThisCallback(Args&&...) noexcept;
     template<typename, typename... Args> friend constexpr auto tc::js::DeleteThisCallback(Args&&...) noexcept;
