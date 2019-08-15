@@ -1,6 +1,8 @@
 #pragma once
 #include <emscripten/val.h>
 #include <emscripten/wire.h>
+#include <cstdint>
+#include <memory>
 #include <utility>
 #include <tuple>
 #include <type_traits>
@@ -128,13 +130,21 @@ emscripten::val MemberFunctionWrapper(T pmfMember, void* pvThis, emscripten::val
 
 using FirstArgument = void*;
 using FunctionPointer = emscripten::val(*)(FirstArgument, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) noexcept;
+using PointerNumber = std::uintptr_t;
 
 namespace no_adl {
 // We do not care about slicing to emscripten::val, because this class is
 // only stored as a by-value field.
 struct CUniqueDetachableEmscriptenVal : tc::nonmovable, emscripten::val {
-    CUniqueDetachableEmscriptenVal(FunctionPointer pfunc, FirstArgument arg0) noexcept;
-    ~CUniqueDetachableEmscriptenVal();
+    CUniqueDetachableEmscriptenVal(FunctionPointer pfunc, FirstArgument arg0) noexcept : emscripten::val(emscripten::val::undefined()) {
+        // See comments about correctness in js_callback.cpp.
+        _ASSERT(std::get_pointer_safety() == std::pointer_safety::preferred || std::get_pointer_safety() == std::pointer_safety::relaxed);
+        emscripten::val::operator=(emscripten::val::module_property("tc_js_callback_detail_js_CreateJsFunction")(reinterpret_cast<PointerNumber>(pfunc), reinterpret_cast<PointerNumber>(arg0)));
+    }
+
+    ~CUniqueDetachableEmscriptenVal() {
+        call<void>("detach");
+    }
 };
 } // namespace no_adl
 using no_adl::CUniqueDetachableEmscriptenVal;

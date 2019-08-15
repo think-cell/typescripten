@@ -1,13 +1,8 @@
-#include <memory>
-#include <cstdint>
 #include <emscripten/bind.h>
-#include "range_defines.h"
 #include "js_callback.h"
 
 namespace tc::js {
 namespace callback_detail {
-using PointerNumber = std::uintptr_t;
-
 /**
  * [basic.compound] 6.7.2
  * (3) The type of a pointer to cv void or a pointer to an object type is called an object pointer type. ...
@@ -33,16 +28,6 @@ using PointerNumber = std::uintptr_t;
 static_assert(sizeof(std::intptr_t) <= sizeof(PointerNumber));
 static_assert(sizeof(FunctionPointer) <= sizeof(PointerNumber), "PointerNumber is not large enough to hold FunctionPointer, cannot pass it to JavaScript");
 static_assert(sizeof(FirstArgument) <= sizeof(PointerNumber), "PointerNumber is not large enough to hold FirstArgument, cannot pass it to JavaScript");
-
-// TODO: is it really noexcept? JS can fail if compiled/loaded incorrectly.
-CUniqueDetachableEmscriptenVal::CUniqueDetachableEmscriptenVal(FunctionPointer pfunc, FirstArgument arg0) noexcept : emscripten::val(emscripten::val::undefined()) {
-    _ASSERT(std::get_pointer_safety() == std::pointer_safety::preferred || std::get_pointer_safety() == std::pointer_safety::relaxed);
-    emscripten::val::operator=(emscripten::val::module_property("tc_js_callback_detail_js_CreateJsFunction")(reinterpret_cast<PointerNumber>(pfunc), reinterpret_cast<PointerNumber>(arg0)));
-}
-
-CUniqueDetachableEmscriptenVal::~CUniqueDetachableEmscriptenVal() {
-    call<void>("detach");
-}
 
 emscripten::val Call(PointerNumber iFunctionPtr, PointerNumber iArg0, emscripten::val emvalThis, emscripten::val emvalArgs) noexcept {
     return reinterpret_cast<FunctionPointer>(iFunctionPtr)(
