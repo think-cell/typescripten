@@ -1,5 +1,5 @@
 #include <emscripten/val.h>
-#include "for_each.h"
+#include "range.h"
 #include "js_bootstrap.h"
 #include "js_callback.h"
 
@@ -23,6 +23,9 @@ int main() {
 
     tc::for_each(arr, [](int item) {
         printf("item[]=%d\n", item);
+    });
+    tc::for_each(tc::filter(tc::transform(arr, [](int x) { return x * x; }), [](int x) { return x >= 2; }), [](int item) {
+        printf("filtered_transformed_item[]=%d\n", item);
     });
     return 0;
 }
