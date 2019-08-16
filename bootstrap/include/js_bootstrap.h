@@ -1,6 +1,7 @@
 #pragma once
 
 #include <emscripten/val.h>
+#include <string>
 #include "js_types.h"
 #include "js_callback.h"
 
@@ -24,6 +25,13 @@ struct Array : virtual tc::js::IJsBase {
     }
 };
 
+struct String : virtual tc::js::IJsBase {
+    int length() { return m_emval["length"].template as<int>(); }
+
+    // TODO: make it explicit_cast?
+    explicit operator std::string() { return m_emval.template as<std::string>(); }
+};
+
 struct Console : virtual tc::js::IJsBase {
     // TODO: cannot return js_ref<js_function> because of overloads.
     // TODO: perfect forwarding?
@@ -34,6 +42,7 @@ struct Console : virtual tc::js::IJsBase {
 } // namespace no_adl
 
 using no_adl::Array;
+using no_adl::String;
 using no_adl::Console;
 
 inline auto console() { return js_ref<Console>(emscripten::val::global("console")); }

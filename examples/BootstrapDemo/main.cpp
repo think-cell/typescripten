@@ -10,10 +10,16 @@ using emscripten::val;
 using tc::js::js_ref;
 using tc::js::IAny;
 using tc::js::globals::Array;
+using tc::js::globals::String;
 using tc::js::globals::console;
 
 int main() {
-    console()->log(js_ref<IAny>(val("Hello World!")));
+    {
+        js_ref<String> message(val("Hello World"));
+        _ASSERTEQUAL(message->length(), 11);
+        _ASSERTEQUAL(message->operator std::string(), "Hello World");
+        console()->log(message);
+    }
 
     js_ref<Array<int>> arr(val::array());
     arr->push(1);
