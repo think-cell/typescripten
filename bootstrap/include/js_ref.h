@@ -127,7 +127,7 @@ namespace emscripten::internal {
     template<typename T>
     struct TypeID<T, std::enable_if_t<tc::js::IsJsRef<std::remove_cv_t<std::remove_reference_t<T>>>::value>> {
         static constexpr TYPEID get() {
-            return LightTypeID<val>::get();
+            return TypeID<val>::get();
         }
     };
 
