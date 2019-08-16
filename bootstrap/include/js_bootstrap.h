@@ -19,7 +19,7 @@ struct Array : virtual tc::js::IJsBase {
     // Generator range. This adds operator() to array interface (which did not exist before), but it's ok.
     template<typename Fn>
     void operator()(Fn fn) noexcept {
-        m_emval.call<void>("forEach", CScopedCallback([&](T value, emscripten::val, emscripten::val) noexcept {
+        m_emval.call<void>("forEach", CScopedCallback([&](T value, tc::js::js_ref<tc::js::IAny>, tc::js::js_ref<tc::js::IAny>) noexcept {
             fn(tc_move(value));
         }));
     }
