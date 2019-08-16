@@ -141,7 +141,7 @@ namespace emscripten::internal {
         }
 
         static auto fromWireType(WireType v) {
-          return tc::js::js_ref<typename tc::js::IsJsRef<T>::value_type>(BindingType<emscripten::val>::fromWireType(v));
+            return tc::js::js_ref<typename tc::js::IsJsRef<T>::value_type>(BindingType<emscripten::val>::fromWireType(v));
         }
     };
 }
