@@ -1,7 +1,7 @@
 #pragma once
 
 #include <emscripten/val.h>
-#include "js_ref.h"
+#include "js_types.h"
 
 namespace tc::js::globals {
 
@@ -12,7 +12,7 @@ struct Array : virtual tc::js::IJsBase {
 
     void push(T item) { m_emval.call<void>("push", item); }
 
-    T operator[](int i) { return m_emval[i].template as<T>(); }
+    auto operator[](int i) { return wrapper_detail::CPropertyProxy<T, int>(m_emval, i); }
 };
 
 struct Console : virtual tc::js::IJsBase {

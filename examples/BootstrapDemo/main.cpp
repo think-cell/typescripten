@@ -16,7 +16,9 @@ int main() {
     arr->push(2);
     arr->push(3);
     console()->log(arr);
-    printf("length=%d; 2==%d\n", arr->length(), arr[1]);
+    printf("length=%d; 2==%d\n", arr->length(), static_cast<int>(arr[1]));
+    arr[1] = 15;
+    printf("15==%d\n", static_cast<int>(arr[1]));
 
     arr.get().call<void>("forEach", tc::js::CScopedCallback([](int item, val, val) noexcept {
         printf("item[]=%d\n", item);
