@@ -1,5 +1,7 @@
 #include <emscripten/val.h>
+#include <vector>
 #include "range.h"
+#include "range_defines.h"
 #include "js_bootstrap.h"
 #include "js_callback.h"
 
@@ -17,15 +19,29 @@ int main() {
     arr->push(2);
     arr->push(3);
     console()->log(arr);
-    printf("length=%d; 2==%d\n", arr->length(), static_cast<int>(arr[1]));
+    _ASSERTEQUAL(arr->length(), 3);
+    _ASSERTEQUAL(arr[1], 2);
     arr[1] = 15;
-    printf("15==%d\n", static_cast<int>(arr[1]));
+    _ASSERTEQUAL(arr[1], 15);
 
-    tc::for_each(arr, [](int item) {
-        printf("item[]=%d\n", item);
-    });
-    tc::for_each(tc::filter(tc::transform(arr, [](int x) { return x * x; }), [](int x) { return x >= 2; }), [](int item) {
-        printf("filtered_transformed_item[]=%d\n", item);
-    });
+    {
+        std::vector<int> result;
+        tc::for_each(arr, [&](int item) { result.push_back(item); });
+        _ASSERTEQUAL(result, (std::vector{1, 15, 3}));
+    }
+
+    {
+        std::vector<int> result;
+        tc::for_each(
+            tc::filter(
+                tc::transform(arr,
+                    [](int x) { return x * x; }
+                ),
+                [](int x) { return x >= 2; }
+            ),
+            [&](int item) { result.push_back(item); }
+        );
+        _ASSERTEQUAL(result, (std::vector{225, 9}));
+    }
     return 0;
 }
