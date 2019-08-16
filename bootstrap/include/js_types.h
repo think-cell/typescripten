@@ -6,15 +6,14 @@
 #include "tc_move.h"
 #include "js_ref.h"
 
-#include <stdio.h>
 namespace tc::js {
 namespace wrapper_detail {
 namespace no_adl {
 template<typename T, typename Name>
 struct CPropertyProxy : tc::nonmovable {
-    CPropertyProxy(emscripten::val& m_emval, Name m_name)
-        : m_emval(m_emval)
-        , m_name(m_name) {
+    CPropertyProxy(emscripten::val m_emval, Name m_name)
+        : m_emval(tc_move(m_emval))
+        , m_name(tc_move(m_name)) {
     }
 
     // TODO: it's still possible to use incorrectly:
@@ -28,7 +27,7 @@ struct CPropertyProxy : tc::nonmovable {
     }
 
 private:
-    emscripten::val& m_emval;
+    emscripten::val m_emval;
     Name m_name;
 };
 } // namespace no_adl
