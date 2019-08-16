@@ -1,4 +1,5 @@
 #include <emscripten/val.h>
+#include "for_each.h"
 #include "js_bootstrap.h"
 #include "js_callback.h"
 
@@ -20,8 +21,8 @@ int main() {
     arr[1] = 15;
     printf("15==%d\n", static_cast<int>(arr[1]));
 
-    arr.get().call<void>("forEach", tc::js::CScopedCallback([](int item, val, val) noexcept {
+    tc::for_each(arr, [](int item) {
         printf("item[]=%d\n", item);
-    }));
+    });
     return 0;
 }
