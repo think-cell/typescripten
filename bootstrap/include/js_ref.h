@@ -3,6 +3,7 @@
 #include <emscripten/val.h>
 #include <emscripten/wire.h>
 #include <type_traits>
+#include "type_traits.h"
 #include "tc_move.h"
 #include "range_defines.h"
 #include "noncopyable.h"
@@ -125,7 +126,7 @@ using no_adl::IsJsRef;
 // Custom marshalling
 namespace emscripten::internal {
     template<typename T>
-    struct TypeID<T, std::enable_if_t<tc::js::IsJsRef<std::remove_cv_t<std::remove_reference_t<T>>>::value>> {
+    struct TypeID<T, std::enable_if_t<tc::js::IsJsRef<tc::remove_cvref_t<T>>::value>> {
         static constexpr TYPEID get() {
             return TypeID<val>::get();
         }
