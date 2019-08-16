@@ -81,6 +81,16 @@ struct js_ref {
     emscripten::val get() const& noexcept { return m_emval; }
     emscripten::val get() && noexcept { return tc_move(m_emval); }
 
+    template<typename... Args>
+    auto operator()(Args&&... args) const& noexcept {
+        return CArrowProxy(m_emval)(std::forward<Args>(args)...);
+    }
+
+    template<typename Index>
+    auto operator[](Index&& index) const& noexcept {
+        return CArrowProxy(m_emval)[std::forward<Index>(index)];
+    }
+
 private:
     emscripten::val m_emval;
 

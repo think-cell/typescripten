@@ -149,7 +149,7 @@ int main() {
         js_ref<IJsFunction<std::string(std::string)>> cb = tc::js::NewHeapCallback([](std::string str) noexcept {
             return tc::js::DeleteThisCallback("hello " + str);
         });
-       _ASSERTEQUAL(cb->operator()("world"), "hello world");
+       _ASSERTEQUAL(cb("world"), "hello world");
     }
     return 0;
 }
