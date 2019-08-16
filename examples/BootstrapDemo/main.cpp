@@ -17,7 +17,7 @@ int main() {
     {
         js_ref<String> message(val("Hello World"));
         _ASSERTEQUAL(message->length(), 11);
-        _ASSERTEQUAL(message->operator std::string(), "Hello World");
+        _ASSERTEQUAL(std::string(message), "Hello World");
         console()->log(message);
     }
 

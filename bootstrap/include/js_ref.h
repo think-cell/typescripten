@@ -93,6 +93,11 @@ struct js_ref {
         return CArrowProxy(m_emval)[std::forward<Index>(index)];
     }
 
+    template<typename U>
+    explicit operator U() const& noexcept {
+        return U(CArrowProxy(m_emval));
+    }
+
 private:
     emscripten::val m_emval;
 
