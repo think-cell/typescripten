@@ -4,6 +4,7 @@
 #include <emscripten/wire.h>
 #include <type_traits>
 #include "type_traits.h"
+#include "type_list.h"
 #include "tc_move.h"
 #include "range_defines.h"
 #include "noncopyable.h"
@@ -115,11 +116,17 @@ template<typename> struct IsJsRef : std::false_type {};
 template<typename T> struct IsJsRef<js_ref<T>> : std::true_type {
     using value_type = T;
 };
+
+template<typename, typename = void> struct IsJsRefOptional : std::false_type {};
+template<typename T> struct IsJsRefOptional<std::optional<T>, tc::void_t<typename IsJsRef<T>::value_type>> : std::true_type {
+    using value_type = typename IsJsRef<T>::value_type;
+};
 } // namespace no_adl
 
 using no_adl::IJsBase;
 using no_adl::js_ref;
 using no_adl::IsJsRef;
+using no_adl::IsJsRefOptional;
 
 } // namespace tc::js
 
@@ -142,6 +149,34 @@ namespace emscripten::internal {
 
         static auto fromWireType(WireType v) {
             return tc::js::js_ref<typename tc::js::IsJsRef<T>::value_type>(BindingType<emscripten::val>::fromWireType(v));
+        }
+    };
+
+    template<typename T>
+    struct TypeID<T, std::enable_if_t<tc::js::IsJsRefOptional<tc::remove_cvref_t<T>>::value>> {
+        static constexpr TYPEID get() {
+            return TypeID<val>::get();
+        }
+    };
+
+    template<typename T>
+    struct BindingType<T, std::enable_if_t<tc::js::IsJsRefOptional<T>::value>> {
+        typedef typename BindingType<emscripten::val>::WireType WireType;
+
+        static WireType toWireType(T const& optjs) {
+            if (optjs)
+                return BindingType<emscripten::val>::toWireType(optjs->get());
+            else
+                return BindingType<emscripten::val>::toWireType(emscripten::val::undefined());
+        }
+
+        static auto fromWireType(WireType wire) {
+            auto emval = BindingType<emscripten::val>::fromWireType(wire);
+            std::optional<tc::js::js_ref<typename tc::js::IsJsRefOptional<T>::value_type>> result;
+            if (!emval.isUndefined()) {
+                result.emplace(tc_move(emval));
+            }
+            return result;
         }
     };
 }

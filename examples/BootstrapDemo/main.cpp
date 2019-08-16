@@ -1,4 +1,5 @@
 #include <emscripten/val.h>
+#include <optional>
 #include <vector>
 #include "range.h"
 #include "range_defines.h"
@@ -42,6 +43,32 @@ int main() {
             [&](int item) { result.push_back(item); }
         );
         _ASSERTEQUAL(result, (std::vector{225, 9}));
+    }
+
+    {
+        // Test optional
+        using OptionalAny = std::optional<tc::js::js_ref<tc::js::IAny>>;
+        static_assert(tc::js::IsJsRefOptional<OptionalAny>::value);
+        static_assert(
+            std::is_same<
+                typename emscripten::internal::BindingType<OptionalAny>::WireType,
+                typename emscripten::internal::BindingType<emscripten::val>::WireType
+            >::value);
+
+        {
+            emscripten::val emval{OptionalAny()};
+            _ASSERT(!emval.template as<OptionalAny>());
+            _ASSERT(emval.isUndefined());
+        }
+        {
+            emscripten::val emvalOrigin = emscripten::val::object();
+            emscripten::val emval{OptionalAny(emvalOrigin)};
+            auto oanyParsed = emval.template as<OptionalAny>();
+            _ASSERT(oanyParsed);
+            _ASSERT(oanyParsed->get().strictlyEquals(emvalOrigin));
+            _ASSERT(!emval.isUndefined());
+            _ASSERT(emval.strictlyEquals(emvalOrigin));
+        }
     }
     return 0;
 }
