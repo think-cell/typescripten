@@ -18,7 +18,7 @@ protected:
     explicit IJsBase(emscripten::val&& m_emval) noexcept : m_emval(tc_move(m_emval)) {}
     explicit IJsBase() : m_emval(emscripten::val::undefined()) {
         // Should never be called.
-        _ASSERT(false);
+        _ASSERTFALSE;
     }
 
     // Make sure the class and its descendants are abstract.
