@@ -2,7 +2,6 @@
 #include <type_traits>
 #include "type_traits.h"
 #include "range_defines.h"
-#include "js_bootstrap.h"
 #include "js_callback.h"
 
 using emscripten::val;
