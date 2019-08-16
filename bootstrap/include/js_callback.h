@@ -15,7 +15,7 @@
 #include "tc_move.h"
 #include "type_list.h"
 #include <boost/callable_traits.hpp>
-#include "js_ref.h"
+#include "js_types.h"
 
 namespace tc::js {
 // ---------------------------------------- Passing member functions to JS ----------------------------------------

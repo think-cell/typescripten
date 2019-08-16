@@ -3,7 +3,6 @@
 #include <emscripten/val.h>
 #include <emscripten/wire.h>
 #include <type_traits>
-#include "type_traits.h"
 #include "tc_move.h"
 #include "range_defines.h"
 #include "noncopyable.h"
@@ -24,30 +23,6 @@ protected:
 
     // Make sure the class and its descendants are abstract.
     virtual void __IJsBase_and_derived_are_abstract_Use_js_ref_instead() = 0;
-};
-
-struct IAny : virtual IJsBase {
-};
-
-template<typename, typename = void, typename = void>
-struct IJsFunction {};
-
-template<typename R, typename... Args, typename TThis, typename TArgs>
-struct IJsFunction<R(Args...), TThis, TArgs> : virtual IJsBase {
-    static_assert(tc::is_decayed<R>::value);
-    static_assert(std::conjunction<tc::is_decayed<Args>...>::value);
-    static_assert(tc::is_decayed<TThis>::value);
-    static_assert(tc::is_decayed<TArgs>::value);
-};
-
-template<typename R, typename... Args>
-struct IJsFunction<R(Args...), void, void> : virtual IJsBase {
-    static_assert(tc::is_decayed<R>::value);
-    static_assert(std::conjunction<tc::is_decayed<Args>...>::value);
-
-    R operator()(Args... args) noexcept {
-        return m_emval(tc_move(args)...).template as<R>();
-    }
 };
 
 // Non-final, but non-polymorphic as well. Derive with care and remember to add specialization for tc::js::IsJsRef.
@@ -132,8 +107,6 @@ template<typename T> struct IsJsRef<js_ref<T>> : std::true_type {
 } // namespace no_adl
 
 using no_adl::IJsBase;
-using no_adl::IAny;
-using no_adl::IJsFunction;
 using no_adl::js_ref;
 using no_adl::IsJsRef;
 
