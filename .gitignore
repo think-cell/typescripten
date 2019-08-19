@@ -3,3 +3,4 @@
 *.pdb
 *.wasm
 *.wasm.map
+node_modules/

@@ -1,0 +1,1 @@
+global.ts = require('typescript');
