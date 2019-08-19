@@ -19,37 +19,37 @@ using tc::js::pass_all_arguments_t;
     CreateCallback(TestPrint, (js_ref<IJsFunction<void(std::string)>>), void, (std::string sMessage), { \
         _ASSERTEQUAL(sMessage, "hello"); \
     })\
-    CreateCallback(TestPassAllArguments, (js_ref<IJsFunction<void(int), void, val>>), void, (pass_all_arguments_t, val emvalArgs, int a), { \
+    CreateCallback(TestPassAllArguments, (js_ref<IJsFunction<void(pass_all_arguments_t, val, int)>>), void, (pass_all_arguments_t, val emvalArgs, int a), { \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(emvalArgs[1].as<std::string>(), "message"); \
         _ASSERTEQUAL(emvalArgs["length"].as<int>(), 3); \
     }) \
-    CreateCallback(TestPassThis, (js_ref<IJsFunction<void(int, std::string, val), val>>), void, (pass_this_t, val emvalThis, int a, std::string b, val c), { \
+    CreateCallback(TestPassThis, (js_ref<IJsFunction<void(pass_this_t, val, int, std::string, val)>>), void, (pass_this_t, val emvalThis, int a, std::string b, val c), { \
         _ASSERTEQUAL(emvalThis["secretField"].as<std::string>(), "secretValue"); \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(b, "message"); \
         _ASSERT(c.isNull()); \
     }) \
-    CreateCallback(TestPassThisPassAllArguments, (js_ref<IJsFunction<void(int), val, val>>), void, (pass_this_t, val emvalThis, pass_all_arguments_t, val emvalArgs, int a), { \
+    CreateCallback(TestPassThisPassAllArguments, (js_ref<IJsFunction<void(pass_this_t, val, pass_all_arguments_t, val, int)>>), void, (pass_this_t, val emvalThis, pass_all_arguments_t, val emvalArgs, int a), { \
         _ASSERTEQUAL(emvalThis["secretField"].as<std::string>(), "secretValue"); \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(emvalArgs[1].as<std::string>(), "message"); \
         _ASSERTEQUAL(emvalArgs["length"].as<int>(), 3); \
     }) \
-    CreateCallback(TestPassAllArgumentsAndReturn, (js_ref<IJsFunction<std::string(int), void, val>>), std::string, (pass_all_arguments_t, val emvalArgs, int a), { \
+    CreateCallback(TestPassAllArgumentsAndReturn, (js_ref<IJsFunction<std::string(pass_all_arguments_t, val, int)>>), std::string, (pass_all_arguments_t, val emvalArgs, int a), { \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(emvalArgs[1].as<std::string>(), "message"); \
         _ASSERTEQUAL(emvalArgs["length"].as<int>(), 3); \
         return "returnValue"; \
     }) \
-    CreateCallback(TestPassThisAndReturn, (js_ref<IJsFunction<std::string(int, std::string, val), val>>), std::string, (pass_this_t, val emvalThis, int a, std::string b, val c), { \
+    CreateCallback(TestPassThisAndReturn, (js_ref<IJsFunction<std::string(pass_this_t, val, int, std::string, val)>>), std::string, (pass_this_t, val emvalThis, int a, std::string b, val c), { \
         _ASSERTEQUAL(emvalThis["secretField"].as<std::string>(), "secretValue"); \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(b, "message"); \
         _ASSERT(c.isNull()); \
         return "returnValue"; \
     }) \
-    CreateCallback(TestPassThisPassAllArgumentsAndReturn, (js_ref<IJsFunction<std::string(int), val, val>>), std::string, (pass_this_t, val emvalThis, pass_all_arguments_t, val emvalArgs, int a), { \
+    CreateCallback(TestPassThisPassAllArgumentsAndReturn, (js_ref<IJsFunction<std::string(pass_this_t, val, pass_all_arguments_t, val, int)>>), std::string, (pass_this_t, val emvalThis, pass_all_arguments_t, val emvalArgs, int a), { \
         _ASSERTEQUAL(emvalThis["secretField"].as<std::string>(), "secretValue"); \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(emvalArgs[1].as<std::string>(), "message"); \
@@ -126,7 +126,7 @@ int main() {
             else
                 return tc::js::KeepThisCallback(x + 10);
         }));
-        RUN_TEST(TestHeapCallbackPassAllArguments, (js_ref<IJsFunction<void(int), void, val>>), tc::js::NewHeapCallback([expectedX = 2](pass_all_arguments_t, val emvalArgs, int x) mutable noexcept {
+        RUN_TEST(TestHeapCallbackPassAllArguments, (js_ref<IJsFunction<void(pass_all_arguments_t, val, int)>>), tc::js::NewHeapCallback([expectedX = 2](pass_all_arguments_t, val emvalArgs, int x) mutable noexcept {
             _ASSERTEQUAL(x, emvalArgs[0].as<int>());
             _ASSERTEQUAL(2, emvalArgs["length"].as<int>());
             _ASSERTEQUAL(x, expectedX);

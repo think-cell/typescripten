@@ -23,23 +23,18 @@ DEFINE_TAG_TYPE(pass_this)
 DEFINE_TAG_TYPE(pass_all_arguments)
 
 namespace no_adl {
-template<typename, typename = void, typename = void>
+template<typename>
 struct IJsFunction {};
 
-template<typename R, typename... Args, typename TThis, typename TArgs>
-struct IJsFunction<R(Args...), TThis, TArgs> : virtual IJsBase {
-    static_assert(tc::is_decayed<R>::value);
-    static_assert(std::conjunction<tc::is_decayed<Args>...>::value);
-    static_assert(tc::is_decayed<TThis>::value);
-    static_assert(tc::is_decayed<TArgs>::value);
-};
-
 template<typename R, typename... Args>
-struct IJsFunction<R(Args...), void, void> : virtual IJsBase {
+struct IJsFunction<R(Args...)> : virtual IJsBase {
     static_assert(tc::is_decayed<R>::value);
     static_assert(std::conjunction<tc::is_decayed<Args>...>::value);
 
     R operator()(Args... args) noexcept {
+        // These are limitations of emscripten::val, can be worked around.
+        static_assert(std::is_same<tc::type::find_unique_if_result::type_not_found, tc::type::find_unique<tc::type::list<Args...>, pass_this_t>>::value, "Cannot call a JS function which needs 'this'");
+        static_assert(std::is_same<tc::type::find_unique_if_result::type_not_found, tc::type::find_unique<tc::type::list<Args...>, pass_all_arguments_t>>::value, "Cannot call a JS function which takes an array of arguments");
         return m_emval(tc_move(args)...).template as<R>();
     }
 };
@@ -63,10 +58,6 @@ struct CCallableWrapper final {
         }
         return CCallHelper<ListArgs, std::make_index_sequence<tc::type::size<ListArgs>::value>>()(std::forward<Fn>(fn), emvalArgs);
     }
-
-    using JsFunctionListArgs = ListArgs;
-    using JsFunctionTThis = void;
-    using JsFunctionTArgs = void;
 
 private:
     template<typename, typename>
@@ -98,11 +89,6 @@ public:
     static_assert(!tc::type::has_unique<ListArgsTail, pass_this_t>::value);
     static_assert(!std::is_reference<TThis>::value);
 
-    using JsFunctionListArgs = typename TailCCallableWrapper::JsFunctionListArgs;
-    static_assert(std::is_same<typename TailCCallableWrapper::JsFunctionTThis, void>::value);
-    using JsFunctionTThis = TThis;
-    using JsFunctionTArgs = typename TailCCallableWrapper::JsFunctionTArgs;
-
     template<typename Fn>
     emscripten::val operator()(Fn&& fn, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) const& noexcept {
         return TailCCallableWrapper()(
@@ -121,14 +107,10 @@ private:
     using ListArgsTail = tc::type::list<ArgsTail...>;
     using TailCCallableWrapper = CCallableWrapper<ListArgsTail, /*bPassedAllArguments=*/true>;
 public:
+    static_assert(!tc::type::has_unique<ListArgsTail, pass_this_t>::value);
     static_assert(!tc::type::has_unique<ListArgsTail, pass_all_arguments_t>::value);
     static_assert(!std::is_reference<TArgs>::value);
     static_assert(!bPassedAllArguments);
-
-    using JsFunctionListArgs = typename TailCCallableWrapper::JsFunctionListArgs;
-    using JsFunctionTThis = typename TailCCallableWrapper::JsFunctionTThis;
-    static_assert(std::is_same<typename TailCCallableWrapper::JsFunctionTArgs, void>::value);
-    using JsFunctionTArgs = TArgs;
 
     template<typename Fn>
     emscripten::val operator()(Fn&& fn, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) const& noexcept {
@@ -143,28 +125,6 @@ public:
 };
 } // namespace no_adl
 using no_adl::CCallableWrapper;
-
-template<typename>
-struct CJsFunctionInterface {};
-
-template<typename FromR, typename... FromArgs>
-struct CJsFunctionInterface<FromR(FromArgs...)> {
-private:
-    using ListFromArgs = tc::type::list<FromArgs...>;
-
-    template<typename... Args>
-    using SpecifyReturnValue = FromR(Args...);
-
-public:
-    typedef IJsFunction<
-        tc::type::apply_t<SpecifyReturnValue, typename CCallableWrapper<ListFromArgs>::JsFunctionListArgs>,
-        typename CCallableWrapper<ListFromArgs>::JsFunctionTThis,
-        typename CCallableWrapper<ListFromArgs>::JsFunctionTArgs
-    > type;
-};
-
-template<typename T>
-using CJsFunctionInterface_t = typename CJsFunctionInterface<T>::type;
 
 template<typename Pmf, typename = tc::void_t<boost::callable_traits::class_of_t<Pmf>>>
 using MemberFunctionExpectedArgs_t =
@@ -199,8 +159,8 @@ struct RequireRelaxedPointerSafety {
 // We do not care about slicing to js_ref<>, because this class is
 // only stored as a by-value field.
 template<typename T>
-struct CUniqueDetachableJsFunction : tc::nonmovable, RequireRelaxedPointerSafety, js_ref<T> { // TODO: private inheritance?
-    CUniqueDetachableJsFunction(FunctionPointer pfunc, FirstArgument arg0) noexcept : js_ref<T>(
+struct CUniqueDetachableJsFunction : tc::nonmovable, RequireRelaxedPointerSafety, js_ref<IJsFunction<T>> { // TODO: private inheritance?
+    CUniqueDetachableJsFunction(FunctionPointer pfunc, FirstArgument arg0) noexcept : js_ref<IJsFunction<T>>(
         emscripten::val::module_property("tc_js_callback_detail_js_CreateJsFunction")(reinterpret_cast<PointerNumber>(pfunc), reinterpret_cast<PointerNumber>(arg0))
     ) {}
 
@@ -214,7 +174,7 @@ using no_adl::CUniqueDetachableJsFunction;
 
 template<typename T>
 struct IsJsRef<callback_detail::CUniqueDetachableJsFunction<T>> : std::true_type {
-    using element_type = T;
+    using element_type = IJsFunction<T>;
 };
 
 #define TC_JS_MEMBER_FUNCTION(ClassName, FieldName, ReturnType, Arguments) \
@@ -224,9 +184,7 @@ struct IsJsRef<callback_detail::CUniqueDetachableJsFunction<T>> : std::true_type
     static emscripten::val FieldName##_tc_js_wrapper(void* pvThis, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) noexcept { \
         return ::tc::js::callback_detail::MemberFunctionWrapper(&ClassName::FieldName##_tc_js_impl, pvThis, emvalThis, emvalArgs); \
     } \
-    ::tc::js::callback_detail::CUniqueDetachableJsFunction<\
-        ::tc::js::callback_detail::CJsFunctionInterface_t<ReturnType Arguments> \
-    > const FieldName{&FieldName##_tc_js_wrapper, this}; \
+    ::tc::js::callback_detail::CUniqueDetachableJsFunction<ReturnType Arguments> const FieldName{&FieldName##_tc_js_wrapper, this}; \
     ReturnType FieldName##_tc_js_impl Arguments noexcept
 
 // ---------------------------------------- Scoped/heap callbacks ----------------------------------------
@@ -278,7 +236,7 @@ using no_adl::SCallbackResult;
 using no_adl::IsSCallbackResult;
 
 template<typename Fn>
-using CScopedCallbackBase_t = callback_detail::CUniqueDetachableJsFunction<CJsFunctionInterface_t<boost::callable_traits::function_type_t<Fn>>>;
+using CScopedCallbackBase_t = callback_detail::CUniqueDetachableJsFunction<boost::callable_traits::function_type_t<Fn>>;
 } // namespace callback_detail
 
 namespace no_adl {
@@ -326,12 +284,12 @@ template<typename Fn> auto NewHeapCallback(Fn&& fn) noexcept;
 namespace callback_detail {
 template<typename Fn>
 using CHeapCallbackBase_t =
-     callback_detail::CUniqueDetachableJsFunction<CJsFunctionInterface_t<
+     callback_detail::CUniqueDetachableJsFunction<
          boost::callable_traits::apply_return_t<
              boost::callable_traits::args_t<Fn>,
              typename boost::callable_traits::return_type_t<Fn>::value_type
          >
-     >>;
+     >;
 
 namespace no_adl {
 // We do not care about slicing to emscripten::val, because this class is only
