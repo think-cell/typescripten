@@ -24,23 +24,23 @@ DEFINE_TAG_TYPE(pass_all_arguments)
 
 namespace callback_detail {
 namespace no_adl {
-template<typename LArgs, bool bPassedAllArguments = false>
+template<typename ListArgs, bool bPassedAllArguments = false>
 struct CCallableWrapper final {
-    static_assert(!tc::type::contains<LArgs, pass_this_t>::value);
-    static_assert(!tc::type::contains<LArgs, pass_all_arguments_t>::value);
-    static_assert(!tc::type::any_of<LArgs, std::is_reference>::value);
+    static_assert(!tc::type::contains<ListArgs, pass_this_t>::value);
+    static_assert(!tc::type::contains<ListArgs, pass_all_arguments_t>::value);
+    static_assert(!tc::type::any_of<ListArgs, std::is_reference>::value);
 
     template<typename Fn>
     emscripten::val operator()(Fn&& fn, emscripten::val const& /*emvalThis*/, emscripten::val const& emvalArgs) const& noexcept {
         if constexpr (bPassedAllArguments) {
-            _ASSERT(tc::type::size<LArgs>::value <= emvalArgs["length"].as<std::size_t>());
+            _ASSERT(tc::type::size<ListArgs>::value <= emvalArgs["length"].as<std::size_t>());
         } else {
-            _ASSERTEQUAL(tc::type::size<LArgs>::value, emvalArgs["length"].as<std::size_t>());
+            _ASSERTEQUAL(tc::type::size<ListArgs>::value, emvalArgs["length"].as<std::size_t>());
         }
-        return CCallHelper<LArgs, std::make_index_sequence<tc::type::size<LArgs>::value>>()(std::forward<Fn>(fn), emvalArgs);
+        return CCallHelper<ListArgs, std::make_index_sequence<tc::type::size<ListArgs>::value>>()(std::forward<Fn>(fn), emvalArgs);
     }
 
-    using JsFunctionLArgs = LArgs;
+    using JsFunctionListArgs = ListArgs;
     using JsFunctionTThis = void;
     using JsFunctionTArgs = void;
 
@@ -68,13 +68,13 @@ private:
 template<typename TThis, typename... ArgsTail, bool bPassedAllArguments>
 struct CCallableWrapper<tc::type::list<pass_this_t, TThis, ArgsTail...>, bPassedAllArguments> final {
 private:
-    using LArgsTail = tc::type::list<ArgsTail...>;
-    using TailCCallableWrapper = CCallableWrapper<LArgsTail, bPassedAllArguments>;
+    using ListArgsTail = tc::type::list<ArgsTail...>;
+    using TailCCallableWrapper = CCallableWrapper<ListArgsTail, bPassedAllArguments>;
 public:
-    static_assert(!tc::type::contains<LArgsTail, pass_this_t>::value);
+    static_assert(!tc::type::contains<ListArgsTail, pass_this_t>::value);
     static_assert(!std::is_reference<TThis>::value);
 
-    using JsFunctionLArgs = typename TailCCallableWrapper::JsFunctionLArgs;
+    using JsFunctionListArgs = typename TailCCallableWrapper::JsFunctionListArgs;
     static_assert(std::is_same<typename TailCCallableWrapper::JsFunctionTThis, void>::value);
     using JsFunctionTThis = TThis;
     using JsFunctionTArgs = typename TailCCallableWrapper::JsFunctionTArgs;
@@ -94,14 +94,14 @@ public:
 template<typename TArgs, typename... ArgsTail, bool bPassedAllArguments>
 struct CCallableWrapper<tc::type::list<pass_all_arguments_t, TArgs, ArgsTail...>, bPassedAllArguments> final {
 private:
-    using LArgsTail = tc::type::list<ArgsTail...>;
-    using TailCCallableWrapper = CCallableWrapper<LArgsTail, /*bPassedAllArguments=*/true>;
+    using ListArgsTail = tc::type::list<ArgsTail...>;
+    using TailCCallableWrapper = CCallableWrapper<ListArgsTail, /*bPassedAllArguments=*/true>;
 public:
-    static_assert(!tc::type::contains<LArgsTail, pass_all_arguments_t>::value);
+    static_assert(!tc::type::contains<ListArgsTail, pass_all_arguments_t>::value);
     static_assert(!std::is_reference<TArgs>::value);
     static_assert(!bPassedAllArguments);
 
-    using JsFunctionLArgs = typename TailCCallableWrapper::JsFunctionLArgs;
+    using JsFunctionListArgs = typename TailCCallableWrapper::JsFunctionListArgs;
     using JsFunctionTThis = typename TailCCallableWrapper::JsFunctionTThis;
     static_assert(std::is_same<typename TailCCallableWrapper::JsFunctionTArgs, void>::value);
     using JsFunctionTArgs = TArgs;
@@ -125,15 +125,17 @@ struct CJsFunctionInterface {};
 
 template<typename FromR, typename... FromArgs>
 struct CJsFunctionInterface<FromR(FromArgs...)> {
-    using LFromArgs = tc::type::list<FromArgs...>;
+private:
+    using ListFromArgs = tc::type::list<FromArgs...>;
 
     template<typename... Args>
-    using ConstructSignature = FromR(Args...);
+    using SpecifyReturnValue = FromR(Args...);
 
+public:
     typedef IJsFunction<
-        tc::type::apply_t<ConstructSignature, typename CCallableWrapper<LFromArgs>::JsFunctionLArgs>,
-        typename CCallableWrapper<LFromArgs>::JsFunctionTThis,
-        typename CCallableWrapper<LFromArgs>::JsFunctionTArgs
+        tc::type::apply_t<SpecifyReturnValue, typename CCallableWrapper<ListFromArgs>::JsFunctionListArgs>,
+        typename CCallableWrapper<ListFromArgs>::JsFunctionTThis,
+        typename CCallableWrapper<ListFromArgs>::JsFunctionTArgs
     > type;
 };
 
@@ -165,7 +167,7 @@ using PointerNumber = std::uintptr_t;
 namespace no_adl {
 // See comments about memory correctness in js_callback.cpp.
 struct RequireRelaxedPointerSafety {
-    RequireRelaxedPointerSafety() {
+    RequireRelaxedPointerSafety() noexcept {
         _ASSERT(std::get_pointer_safety() == std::pointer_safety::preferred || std::get_pointer_safety() == std::pointer_safety::relaxed);
     }
 };
@@ -188,7 +190,7 @@ using no_adl::CUniqueDetachableJsFunction;
 
 template<typename T>
 struct IsJsRef<callback_detail::CUniqueDetachableJsFunction<T>> : std::true_type {
-    using element_type = IJsFunction<T>;
+    using element_type = T;
 };
 
 #define TC_JS_UNIQUE_NAME_IMPL2(Prefix, Line, Counter) Prefix##_##Line##_##Counter
@@ -199,9 +201,9 @@ struct IsJsRef<callback_detail::CUniqueDetachableJsFunction<T>> : std::true_type
     static emscripten::val WrapperName(void* pvThis, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) noexcept { \
         return ::tc::js::callback_detail::MemberFunctionWrapper(MemberPointer, pvThis, emvalThis, emvalArgs); \
     } \
-    const ::tc::js::callback_detail::CUniqueDetachableJsFunction<\
+    ::tc::js::callback_detail::CUniqueDetachableJsFunction<\
         ::tc::js::callback_detail::CJsFunctionInterface_t<ReturnType Arguments> \
-    > FieldName{&WrapperName, this};
+    > const FieldName{&WrapperName, this};
 
 #define TC_JS_NAMED_MEMBER_FUNCTION(ClassName, FieldName, ReturnType, MethodName, Arguments) \
     void TC_JS_UNIQUE_NAME(_tc_js_member_function_type_check)() { \
