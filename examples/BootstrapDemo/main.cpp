@@ -13,6 +13,23 @@ using tc::js::globals::Array;
 using tc::js::globals::String;
 using tc::js::globals::console;
 
+template<typename T>
+void TestOptionalNumber() {
+    {
+        std::optional<T> iValue;
+        val emval(iValue);
+        _ASSERT(emval.isUndefined());
+        _ASSERT(!emval.isNumber());
+    }
+    {
+        std::optional<T> iValue(123);
+        val emval(iValue);
+        _ASSERT(!emval.isUndefined());
+        _ASSERT(emval.isNumber());
+        _ASSERT(emval.as<int>() == 123);
+    }
+}
+
 int main() {
     {
         js_ref<String> message(val("Hello World"));
@@ -75,6 +92,18 @@ int main() {
             _ASSERT(!emval.isUndefined());
             _ASSERT(emval.strictlyEquals(emvalOrigin));
         }
+    }
+
+    {
+        TestOptionalNumber<char>();
+        TestOptionalNumber<signed char>();
+        TestOptionalNumber<unsigned char>();
+        TestOptionalNumber<signed short>();
+        TestOptionalNumber<unsigned short>();
+        TestOptionalNumber<signed int>();
+        TestOptionalNumber<unsigned int>();
+        TestOptionalNumber<signed long>();
+        TestOptionalNumber<unsigned long>();
     }
     return 0;
 }
