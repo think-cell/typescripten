@@ -2,6 +2,7 @@
 
 #include <emscripten/val.h>
 #include <emscripten/wire.h>
+#include <optional>
 #include <type_traits>
 #include "type_traits.h"
 #include "type_list.h"
@@ -119,12 +120,12 @@ public:
 
 template<typename> struct IsJsRef : std::false_type {};
 template<typename T> struct IsJsRef<js_ref<T>> : std::true_type {
-    using value_type = T;
+    using element_type = T;
 };
 
 template<typename, typename = void> struct IsJsRefOptional : std::false_type {};
-template<typename T> struct IsJsRefOptional<std::optional<T>, tc::void_t<typename IsJsRef<T>::value_type>> : std::true_type {
-    using value_type = typename IsJsRef<T>::value_type;
+template<typename T> struct IsJsRefOptional<std::optional<T>, std::enable_if_t<IsJsRef<T>::value>> : std::true_type {
+    using element_type = typename IsJsRef<T>::element_type;
 };
 } // namespace no_adl
 
@@ -153,7 +154,7 @@ namespace emscripten::internal {
         }
 
         static auto fromWireType(WireType v) {
-            return tc::js::js_ref<typename tc::js::IsJsRef<T>::value_type>(BindingType<emscripten::val>::fromWireType(v));
+            return tc::js::js_ref<typename tc::js::IsJsRef<T>::element_type>(BindingType<emscripten::val>::fromWireType(v));
         }
     };
 
@@ -177,7 +178,7 @@ namespace emscripten::internal {
 
         static auto fromWireType(WireType wire) {
             auto emval = BindingType<emscripten::val>::fromWireType(wire);
-            std::optional<tc::js::js_ref<typename tc::js::IsJsRefOptional<T>::value_type>> result;
+            std::optional<tc::js::js_ref<typename tc::js::IsJsRefOptional<T>::element_type>> result;
             if (!emval.isUndefined()) {
                 result.emplace(tc_move(emval));
             }

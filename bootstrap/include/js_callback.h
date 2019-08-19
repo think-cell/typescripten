@@ -188,7 +188,7 @@ using no_adl::CUniqueDetachableJsFunction;
 
 template<typename T>
 struct IsJsRef<callback_detail::CUniqueDetachableJsFunction<T>> : std::true_type {
-    using value_type = IJsFunction<T>;
+    using element_type = IJsFunction<T>;
 };
 
 #define TC_JS_UNIQUE_NAME_IMPL2(Prefix, Line, Counter) Prefix##_##Line##_##Counter
