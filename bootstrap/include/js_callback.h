@@ -193,27 +193,17 @@ struct IsJsRef<callback_detail::CUniqueDetachableJsFunction<T>> : std::true_type
     using element_type = T;
 };
 
-#define TC_JS_UNIQUE_NAME_IMPL2(Prefix, Line, Counter) Prefix##_##Line##_##Counter
-#define TC_JS_UNIQUE_NAME_IMPL1(Prefix, Line, Counter) TC_JS_UNIQUE_NAME_IMPL2(Prefix, Line, Counter)
-#define TC_JS_UNIQUE_NAME(Prefix) TC_JS_UNIQUE_NAME_IMPL1(Prefix, __LINE__, __COUNTER__)
-
-#define TC_JS_MEMBER_FUNCTION_NAMED_WRAPPER(FieldName, ReturnType, Arguments, WrapperName, MemberPointer) \
-    static emscripten::val WrapperName(void* pvThis, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) noexcept { \
-        return ::tc::js::callback_detail::MemberFunctionWrapper(MemberPointer, pvThis, emvalThis, emvalArgs); \
+#define TC_JS_MEMBER_FUNCTION(ClassName, FieldName, ReturnType, Arguments) \
+    void FieldName##_tc_js_type_check() { \
+        STATICASSERTSAME(ClassName&, decltype(*this), "ClassName specified in TC_JS_MEMBER_FUNCTION is incorrect"); \
+    } \
+    static emscripten::val FieldName##_tc_js_wrapper(void* pvThis, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) noexcept { \
+        return ::tc::js::callback_detail::MemberFunctionWrapper(&ClassName::FieldName##_tc_js_impl, pvThis, emvalThis, emvalArgs); \
     } \
     ::tc::js::callback_detail::CUniqueDetachableJsFunction<\
         ::tc::js::callback_detail::CJsFunctionInterface_t<ReturnType Arguments> \
-    > const FieldName{&WrapperName, this};
-
-#define TC_JS_NAMED_MEMBER_FUNCTION(ClassName, FieldName, ReturnType, MethodName, Arguments) \
-    void TC_JS_UNIQUE_NAME(_tc_js_member_function_type_check)() { \
-        STATICASSERTSAME(ClassName&, decltype(*this), "ClassName specified in TC_JS_NAMED_MEMBER_FUNCTION is incorrect"); \
-    } \
-    TC_JS_MEMBER_FUNCTION_NAMED_WRAPPER(FieldName, ReturnType, Arguments, TC_JS_UNIQUE_NAME(_tc_js_member_function_wrapper), &ClassName::MethodName) \
-    ReturnType MethodName Arguments noexcept
-
-#define TC_JS_MEMBER_FUNCTION(ClassName, FieldName, ReturnType, Arguments) \
-    TC_JS_NAMED_MEMBER_FUNCTION(ClassName, FieldName, ReturnType, TC_JS_UNIQUE_NAME(_tc_js_member_function_impl), Arguments)
+    > const FieldName{&FieldName##_tc_js_wrapper, this}; \
+    ReturnType FieldName##_tc_js_impl Arguments noexcept
 
 // ---------------------------------------- Scoped/heap callbacks ----------------------------------------
 template<typename T, typename... Args> constexpr auto KeepThisCallback(Args&&...) noexcept;
