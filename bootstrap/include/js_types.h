@@ -61,9 +61,13 @@ struct IJsFunction<R(Args...), void, void> : virtual IJsBase {
         return m_emval(tc_move(args)...).template as<R>();
     }
 };
+
+template<typename T>
+struct IsJsIntegralEnum : std::false_type {};
 } // namespace no_adl
 using no_adl::IAny;
 using no_adl::IJsFunction;
+using no_adl::IsJsIntegralEnum;
 } // namespace tc::js
 
 // Custom marshalling
@@ -99,6 +103,27 @@ namespace emscripten::internal {
                 result.emplace(tc_move(emval).as<T>());
             }
             return result;
+        }
+    };
+
+    template<typename T>
+    struct TypeID<T, std::enable_if_t<tc::js::IsJsIntegralEnum<tc::remove_cvref_t<T>>::value>> {
+        static constexpr TYPEID get() {
+            return TypeID<std::underlying_type_t<tc::remove_cvref_t<T>>>::get();
+        }
+    };
+
+    template<typename T>
+    struct BindingType<T, std::enable_if_t<tc::js::IsJsIntegralEnum<T>::value>> {
+        using UnderlyingType = std::underlying_type_t<T>;
+        typedef typename BindingType<UnderlyingType>::WireType WireType;
+
+        static WireType toWireType(T const& en) {
+            return BindingType<UnderlyingType>::toWireType(static_cast<UnderlyingType>(en));
+        }
+
+        static auto fromWireType(WireType wire) {
+            return static_cast<T>(BindingType<UnderlyingType>::fromWireType(wire));
         }
     };
 }

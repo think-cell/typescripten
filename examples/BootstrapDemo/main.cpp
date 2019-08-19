@@ -14,6 +14,12 @@ using tc::js::globals::Array;
 using tc::js::globals::String;
 using tc::js::globals::console;
 
+enum class MyIntEnum { Foo = 10 };
+
+namespace tc::js {
+template<> struct IsJsIntegralEnum<MyIntEnum> : std::true_type {};
+} // namespace tc::js
+
 template<typename T>
 void TestOptionalNumber() {
     {
@@ -67,6 +73,13 @@ int main() {
             [&](int item) { result.push_back(item); }
         );
         _ASSERTEQUAL(result, (std::vector{225, 9}));
+    }
+
+    {
+        emscripten::val emval(MyIntEnum::Foo);
+        _ASSERT(emval.isNumber());
+        _ASSERTEQUAL(emval.template as<int>(), 10);
+        _ASSERTEQUAL(emval.template as<MyIntEnum>(), MyIntEnum::Foo);
     }
 
     {
