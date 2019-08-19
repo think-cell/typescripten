@@ -25,6 +25,21 @@ struct Array : virtual tc::js::IJsBase {
     }
 };
 
+template<typename T>
+struct ReadonlyArray : virtual tc::js::IJsBase {
+    int length() { return m_emval["length"].template as<int>(); }
+
+    auto operator[](int i) { return m_emval[i].template as<T>(); }
+
+    // Generator range. This adds operator() to array interface (which did not exist before), but it's ok.
+    template<typename Fn>
+    void operator()(Fn fn) noexcept {
+        m_emval.call<void>("forEach", CScopedCallback([&](T value, tc::js::js_ref<tc::js::IAny>, tc::js::js_ref<tc::js::IAny>) noexcept {
+            fn(tc_move(value));
+        }));
+    }
+};
+
 struct String : virtual tc::js::IJsBase {
     int length() { return m_emval["length"].template as<int>(); }
 
@@ -42,6 +57,7 @@ struct Console : virtual tc::js::IJsBase {
 } // namespace no_adl
 
 using no_adl::Array;
+using no_adl::ReadonlyArray;
 using no_adl::String;
 using no_adl::Console;
 
