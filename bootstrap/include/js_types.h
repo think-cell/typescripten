@@ -87,7 +87,7 @@ template<typename T, typename = void>
 struct IsNativeBindingOptional : std::false_type {};
 
 template<typename T>
-struct IsNativeBindingOptional<std::optional<T>, std::enable_if_t<tc::type::contains<NativeBindingTypes, T>::value>> : std::true_type {};
+struct IsNativeBindingOptional<std::optional<T>, std::enable_if_t<tc::type::has_unique<NativeBindingTypes, T>::value>> : std::true_type {};
 } // namespace types_detail
 } // namespace tc::js
 

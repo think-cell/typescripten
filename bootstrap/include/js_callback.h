@@ -26,8 +26,8 @@ namespace callback_detail {
 namespace no_adl {
 template<typename ListArgs, bool bPassedAllArguments = false>
 struct CCallableWrapper final {
-    static_assert(!tc::type::contains<ListArgs, pass_this_t>::value);
-    static_assert(!tc::type::contains<ListArgs, pass_all_arguments_t>::value);
+    static_assert(!tc::type::has_unique<ListArgs, pass_this_t>::value);
+    static_assert(!tc::type::has_unique<ListArgs, pass_all_arguments_t>::value);
     static_assert(!tc::type::any_of<ListArgs, std::is_reference>::value);
 
     template<typename Fn>
@@ -71,7 +71,7 @@ private:
     using ListArgsTail = tc::type::list<ArgsTail...>;
     using TailCCallableWrapper = CCallableWrapper<ListArgsTail, bPassedAllArguments>;
 public:
-    static_assert(!tc::type::contains<ListArgsTail, pass_this_t>::value);
+    static_assert(!tc::type::has_unique<ListArgsTail, pass_this_t>::value);
     static_assert(!std::is_reference<TThis>::value);
 
     using JsFunctionListArgs = typename TailCCallableWrapper::JsFunctionListArgs;
@@ -97,7 +97,7 @@ private:
     using ListArgsTail = tc::type::list<ArgsTail...>;
     using TailCCallableWrapper = CCallableWrapper<ListArgsTail, /*bPassedAllArguments=*/true>;
 public:
-    static_assert(!tc::type::contains<ListArgsTail, pass_all_arguments_t>::value);
+    static_assert(!tc::type::has_unique<ListArgsTail, pass_all_arguments_t>::value);
     static_assert(!std::is_reference<TArgs>::value);
     static_assert(!bPassedAllArguments);
 
