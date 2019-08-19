@@ -64,59 +64,39 @@ struct IJsFunction<R(Args...), void, void> : virtual IJsBase {
 } // namespace no_adl
 using no_adl::IAny;
 using no_adl::IJsFunction;
-
-namespace types_detail {
-namespace no_adl {
-using NativeBindingTypes = tc::type::list<
-    char,
-    signed char,
-    unsigned char,
-    signed short,
-    unsigned short,
-    signed int,
-    unsigned int,
-    signed long,
-    unsigned long,
-    float,
-    double
->;
-} // namespace no_adl
-using no_adl::NativeBindingTypes;
-
-template<typename T, typename = void>
-struct IsNativeBindingOptional : std::false_type {};
-
-template<typename T>
-struct IsNativeBindingOptional<std::optional<T>, std::enable_if_t<tc::type::has_unique<NativeBindingTypes, T>::value>> : std::true_type {};
-} // namespace types_detail
 } // namespace tc::js
 
 // Custom marshalling
 namespace emscripten::internal {
-    // TODO: optimize by providing JS-side toWireType/fromWireType and getting rid of emscripten::val
+    // TODO: optimize by providing JS-side toWireType/fromWireType for integrals/bools and getting rid of emscripten::val
     template<typename T>
-    struct TypeID<T, std::enable_if_t<tc::js::types_detail::IsNativeBindingOptional<tc::remove_cvref_t<T>>::value>> {
+    struct TypeID<T, tc::void_t<std::enable_if_t<tc::is_instance<std::optional, tc::remove_cvref_t<T>>::value>>> {
         static constexpr TYPEID get() {
+            // Ensure that the underlying type can be marshalled.
+            TypeID<typename tc::remove_cvref_t<T>::value_type>::get();
             return TypeID<val>::get();
         }
     };
 
     template<typename T>
-    struct BindingType<T, std::enable_if_t<tc::js::types_detail::IsNativeBindingOptional<T>::value>> {
+    struct BindingType<std::optional<T>> {
         typedef typename BindingType<emscripten::val>::WireType WireType;
 
-        static WireType toWireType(T const& opti) {
-            if (opti)
-                return BindingType<emscripten::val>::toWireType(emscripten::val(opti.value()));
-            else
+        static WireType toWireType(std::optional<T> const& optv) {
+            if (optv) {
+                emscripten::val emval(optv.value());
+                _ASSERT(!emval.isUndefined());
+                return BindingType<emscripten::val>::toWireType(emval);
+            } else {
                 return BindingType<emscripten::val>::toWireType(emscripten::val::undefined());
+            }
         }
 
         static auto fromWireType(WireType wire) {
             auto emval = BindingType<emscripten::val>::fromWireType(wire);
-            T result;
+            std::optional<T> result;
             if (!emval.isUndefined()) {
-                result.emplace(tc_move(emval).as<typename T::value_type>());
+                result.emplace(tc_move(emval).as<T>());
             }
             return result;
         }

@@ -5,6 +5,7 @@
 #include "range_defines.h"
 #include "js_bootstrap.h"
 #include "js_callback.h"
+#include "js_types.h"
 
 using emscripten::val;
 using tc::js::js_ref;
@@ -71,7 +72,6 @@ int main() {
     {
         // Test optional
         using OptionalAny = std::optional<tc::js::js_ref<tc::js::IAny>>;
-        static_assert(tc::js::IsJsRefOptional<OptionalAny>::value);
         static_assert(
             std::is_same<
                 typename emscripten::internal::BindingType<OptionalAny>::WireType,
@@ -91,6 +91,12 @@ int main() {
             _ASSERT(oanyParsed->get().strictlyEquals(emvalOrigin));
             _ASSERT(!emval.isUndefined());
             _ASSERT(emval.strictlyEquals(emvalOrigin));
+        }
+        {
+            OptionalAny oany;
+            emscripten::val emval(oany);
+            _ASSERT(!emval.template as<OptionalAny>());
+            _ASSERT(emval.isUndefined());
         }
     }
 
