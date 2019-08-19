@@ -292,7 +292,7 @@ struct IsJsRef<CScopedCallback<Fn>> : IsJsRef<callback_detail::CScopedCallbackBa
 namespace callback_detail {
 namespace no_adl {
 template<typename T> struct IsCScopedCallback : std::false_type {};
-template<typename Fn> struct IsCScopedCallback<tc::js::CScopedCallback<Fn>> : std::true_type {};
+template<typename Fn> struct IsCScopedCallback<CScopedCallback<Fn>> : std::true_type {};
 } // namespace no_adl
 using no_adl::IsCScopedCallback;
 } // namespace callback_detail

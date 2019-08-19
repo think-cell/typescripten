@@ -9,7 +9,7 @@ namespace tc::js::globals {
 
 namespace no_adl {
 template<typename T>
-struct Array : virtual tc::js::IJsBase {
+struct Array : virtual IJsBase {
     int length() { return m_emval["length"].template as<int>(); }
 
     void push(T item) { m_emval.call<void>("push", item); }
@@ -19,14 +19,14 @@ struct Array : virtual tc::js::IJsBase {
     // Generator range. This adds operator() to array interface (which did not exist before), but it's ok.
     template<typename Fn>
     void operator()(Fn fn) noexcept {
-        m_emval.call<void>("forEach", CScopedCallback([&](T value, tc::js::js_ref<tc::js::IAny>, tc::js::js_ref<tc::js::IAny>) noexcept {
+        m_emval.call<void>("forEach", CScopedCallback([&](T value, js_ref<IAny>, js_ref<IAny>) noexcept {
             fn(tc_move(value));
         }));
     }
 };
 
 template<typename T>
-struct ReadonlyArray : virtual tc::js::IJsBase {
+struct ReadonlyArray : virtual IJsBase {
     int length() { return m_emval["length"].template as<int>(); }
 
     auto operator[](int i) { return m_emval[i].template as<T>(); }
@@ -34,20 +34,20 @@ struct ReadonlyArray : virtual tc::js::IJsBase {
     // Generator range. This adds operator() to array interface (which did not exist before), but it's ok.
     template<typename Fn>
     void operator()(Fn fn) noexcept {
-        m_emval.call<void>("forEach", CScopedCallback([&](T value, tc::js::js_ref<tc::js::IAny>, tc::js::js_ref<tc::js::IAny>) noexcept {
+        m_emval.call<void>("forEach", CScopedCallback([&](T value, js_ref<IAny>, js_ref<IAny>) noexcept {
             fn(tc_move(value));
         }));
     }
 };
 
-struct String : virtual tc::js::IJsBase {
+struct String : virtual IJsBase {
     int length() { return m_emval["length"].template as<int>(); }
 
     // TODO: make it explicit_cast?
     explicit operator std::string() { return m_emval.template as<std::string>(); }
 };
 
-struct Console : virtual tc::js::IJsBase {
+struct Console : virtual IJsBase {
     // TODO: cannot return js_ref<js_function> because of overloads.
     // TODO: perfect forwarding?
     // TODO: allow passing options, ints, etc

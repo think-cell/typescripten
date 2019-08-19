@@ -8,7 +8,7 @@
 namespace tc::js::globals {
 
 namespace no_adl {
-struct ts : virtual tc::js::IJsBase {
+struct ts : virtual IJsBase {
 };
 } // namespace no_adl
 
