@@ -7,7 +7,6 @@
 #include "js_callback.h"
 #include "js_types.h"
 
-using emscripten::val;
 using tc::js::js_ref;
 using tc::js::IAny;
 using tc::js::globals::Array;
@@ -24,13 +23,13 @@ template<typename T>
 void TestOptionalNumber() {
     {
         std::optional<T> iValue;
-        val emval(iValue);
+        emscripten::val emval(iValue);
         _ASSERT(emval.isUndefined());
         _ASSERT(!emval.isNumber());
     }
     {
         std::optional<T> iValue(123);
-        val emval(iValue);
+        emscripten::val emval(iValue);
         _ASSERT(!emval.isUndefined());
         _ASSERT(emval.isNumber());
         _ASSERT(emval.as<int>() == 123);
@@ -39,13 +38,13 @@ void TestOptionalNumber() {
 
 int main() {
     {
-        js_ref<String> message(val("Hello World"));
+        js_ref<String> message(emscripten::val("Hello World"));
         _ASSERTEQUAL(message->length(), 11);
         _ASSERTEQUAL(std::string(message), "Hello World");
         console()->log(message);
     }
 
-    js_ref<Array<int>> arr(val::array());
+    js_ref<Array<int>> arr(emscripten::val::array());
     arr->push(1);
     arr->push(2);
     arr->push(3);
