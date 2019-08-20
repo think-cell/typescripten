@@ -26,8 +26,8 @@ namespace callback_detail {
 namespace no_adl {
 template<typename ListArgs, bool bPassedAllArguments = false>
 struct CCallableWrapper final {
-    static_assert(!tc::type::has_unique<ListArgs, pass_this_t>::value);
-    static_assert(!tc::type::has_unique<ListArgs, pass_all_arguments_t>::value);
+    static_assert(!tc::type::find_unique<ListArgs, pass_this_t>::found);
+    static_assert(!tc::type::find_unique<ListArgs, pass_all_arguments_t>::found);
     static_assert(tc::type::all_of<ListArgs, IsJsInteropable>::value);
 
     static inline constexpr bool c_bInstantiated = true;
@@ -69,7 +69,7 @@ private:
     using ListArgsTail = tc::type::list<ArgsTail...>;
     using TailCCallableWrapper = CCallableWrapper<ListArgsTail, bPassedAllArguments>;
 public:
-    static_assert(!tc::type::has_unique<ListArgsTail, pass_this_t>::value);
+    static_assert(!tc::type::find_unique<ListArgsTail, pass_this_t>::found);
     static_assert(IsJsInteropable<TThis>::value);
 
     static inline constexpr bool c_bInstantiated = true;
@@ -92,8 +92,8 @@ private:
     using ListArgsTail = tc::type::list<ArgsTail...>;
     using TailCCallableWrapper = CCallableWrapper<ListArgsTail, /*bPassedAllArguments=*/true>;
 public:
-    static_assert(!tc::type::has_unique<ListArgsTail, pass_this_t>::value);
-    static_assert(!tc::type::has_unique<ListArgsTail, pass_all_arguments_t>::value);
+    static_assert(!tc::type::find_unique<ListArgsTail, pass_this_t>::found);
+    static_assert(!tc::type::find_unique<ListArgsTail, pass_all_arguments_t>::found);
     static_assert(IsJsInteropable<TArgs>::value);
     static_assert(!bPassedAllArguments);
 

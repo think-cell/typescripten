@@ -137,7 +137,7 @@ struct IsJsInteropable<T, std::enable_if_t<IsJsRef<T>::value>> : std::true_type 
 template<typename T>
 struct IsJsInteropable<
     T,
-    std::enable_if_t<tc::type::has_unique<
+    std::enable_if_t<tc::type::find_unique<
         tc::type::list<
             void,
             char, signed char, unsigned char,
@@ -150,7 +150,7 @@ struct IsJsInteropable<
             std::string
         >,
         T
-    >::value>
+    >::found>
 > : std::true_type {};
 } // namespace tc::js
 
