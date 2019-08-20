@@ -52,7 +52,7 @@ using no_adl::IsJsIntegralEnum;
 namespace emscripten::internal {
     // TODO: optimize by providing JS-side toWireType/fromWireType for integrals/bools and getting rid of emscripten::val
     template<typename T>
-    struct TypeID<T, tc::void_t<std::enable_if_t<tc::is_instance<std::optional, tc::remove_cvref_t<T>>::value>>> {
+    struct TypeID<T, std::enable_if_t<tc::is_instance<std::optional, tc::remove_cvref_t<T>>::value>> {
         static constexpr TYPEID get() {
             // Ensure that the underlying type can be marshalled.
             TypeID<typename tc::remove_cvref_t<T>::value_type>::get();
