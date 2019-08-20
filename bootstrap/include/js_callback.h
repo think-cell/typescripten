@@ -197,6 +197,10 @@ struct IsJsRef<callback_detail::CUniqueDetachableJsFunction<T>> : std::true_type
     ReturnType FieldName##_tc_js_impl Arguments noexcept
 
 // ---------------------------------------- Lambda wrapper callback ----------------------------------------
+// This callback wraps lambda (or any callable) so it can be immediately passed as js_ref<IJsFunction<...>>.
+// It takes ownership of the lambda. Whenever the wrapper is destroyed, corresponding JS function is turned
+// into no-op.
+//
 // Heap-allocated "fire-and-forget" callbacks are explicitly out of scope for the library: there are typically
 // no guarantees on when they're called and we want the user to think about that carefully and make sure all
 // proper cancellations are in place (e.g. by using member callback tied to the object which initiates the request).
