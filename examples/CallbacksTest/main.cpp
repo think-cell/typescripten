@@ -148,9 +148,10 @@ int main() {
     }
     {
         printf("Calling callbacks through js_ref\n");
-        js_ref<IJsFunction<std::string(std::string)>> cb = tc::js::NewHeapCallback([](std::string str) noexcept {
-            return tc::js::DeleteThisCallback("hello " + str);
+        tc::js::CScopedCallback cbStorage([](std::string str) noexcept {
+            return std::string("hello " + str);
         });
+        js_ref<IJsFunction<std::string(std::string)>> cb = cbStorage;
        _ASSERTEQUAL(cb("world"), "hello world");
     }
     return 0;
