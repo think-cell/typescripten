@@ -2,6 +2,7 @@
 
 #include <emscripten/val.h>
 #include <emscripten/wire.h>
+#include <string>
 #include <type_traits>
 #include "type_traits.h"
 #include "type_list.h"
@@ -127,6 +128,30 @@ using no_adl::IJsBase;
 using no_adl::js_ref;
 using no_adl::IsJsRef;
 
+template<typename, typename = void>
+struct IsJsInteropable : std::false_type {};
+
+template<typename T>
+struct IsJsInteropable<T, std::enable_if_t<IsJsRef<T>::value>> : std::true_type {};
+
+template<typename T>
+struct IsJsInteropable<
+    T,
+    std::enable_if_t<tc::type::has_unique<
+        tc::type::list<
+            void,
+            char, signed char, unsigned char,
+            signed short, unsigned short,
+            signed int, unsigned int,
+            signed long, unsigned long,
+            float, double,
+            bool,
+            emscripten::val,
+            std::string
+        >,
+        T
+    >::value>
+> : std::true_type {};
 } // namespace tc::js
 
 // Custom marshalling
@@ -149,5 +174,13 @@ namespace emscripten::internal {
         static auto fromWireType(WireType v) {
             return tc::js::js_ref<typename tc::js::IsJsRef<T>::element_type>(BindingType<emscripten::val>::fromWireType(v));
         }
+    };
+
+    template<typename T>
+    struct TypeID<T, std::enable_if_t<!tc::js::IsJsInteropable<tc::remove_cvref_t<T>>::value>> {
+        static_assert(
+            tc::js::IsJsInteropable<tc::remove_cvref_t<T>>::value,
+            "js_ref.h is included, prohibiting passing generic non-IsJsInteropable types to emscripten for extra type safety, even if there is a corresponding EMSCRIPTEN_BINDINGS"
+        );
     };
 }

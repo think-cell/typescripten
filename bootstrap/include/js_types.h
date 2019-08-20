@@ -46,13 +46,28 @@ struct IsJsIntegralEnum : std::false_type {};
 } // namespace no_adl
 using no_adl::IAny;
 using no_adl::IsJsIntegralEnum;
+
+template<typename T>
+struct IsJsInteropable<T, std::enable_if_t<IsJsIntegralEnum<T>::value>> : std::true_type {};
+
+namespace optional_detail {
+template<typename T>
+using IsOptionalOfJsInteropable = std::bool_constant<
+    tc::is_instance<std::optional, T>::value &&
+    IsJsInteropable<typename T::value_type>::value &&
+    !tc::is_instance<std::optional, typename T::value_type>::value
+>;
+} // namespace optional_detail
+
+template<typename T>
+struct IsJsInteropable<T, std::enable_if_t<tc::js::optional_detail::IsOptionalOfJsInteropable<T>::value>> : std::true_type {};
 } // namespace tc::js
 
 // Custom marshalling
 namespace emscripten::internal {
     // TODO: optimize by providing JS-side toWireType/fromWireType for integrals/bools and getting rid of emscripten::val
     template<typename T>
-    struct TypeID<T, std::enable_if_t<tc::is_instance<std::optional, tc::remove_cvref_t<T>>::value>> {
+    struct TypeID<T, std::enable_if_t<tc::js::optional_detail::IsOptionalOfJsInteropable<tc::remove_cvref_t<T>>::value>> {
         static constexpr TYPEID get() {
             // Ensure that the underlying type can be marshalled.
             TypeID<typename tc::remove_cvref_t<T>::value_type>::get();
@@ -61,10 +76,10 @@ namespace emscripten::internal {
     };
 
     template<typename T>
-    struct BindingType<std::optional<T>> {
+    struct BindingType<T, std::enable_if_t<tc::js::optional_detail::IsOptionalOfJsInteropable<T>::value>> {
         typedef typename BindingType<emscripten::val>::WireType WireType;
 
-        static WireType toWireType(std::optional<T> const& optv) {
+        static WireType toWireType(T const& optv) {
             if (optv) {
                 emscripten::val emval(optv.value());
                 _ASSERT(!emval.isUndefined());
@@ -76,9 +91,9 @@ namespace emscripten::internal {
 
         static auto fromWireType(WireType wire) {
             auto emval = BindingType<emscripten::val>::fromWireType(wire);
-            std::optional<T> result;
+            T result;
             if (!emval.isUndefined()) {
-                result.emplace(tc_move(emval).as<T>());
+                result.emplace(tc_move(emval).as<typename T::value_type>());
             }
             return result;
         }

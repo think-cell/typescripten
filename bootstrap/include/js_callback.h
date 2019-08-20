@@ -28,7 +28,9 @@ template<typename ListArgs, bool bPassedAllArguments = false>
 struct CCallableWrapper final {
     static_assert(!tc::type::has_unique<ListArgs, pass_this_t>::value);
     static_assert(!tc::type::has_unique<ListArgs, pass_all_arguments_t>::value);
-    static_assert(!tc::type::any_of<ListArgs, std::is_reference>::value);
+    static_assert(tc::type::all_of<ListArgs, IsJsInteropable>::value);
+
+    static inline constexpr bool c_bInstantiated = true;
 
     template<typename Fn>
     emscripten::val operator()(Fn&& fn, emscripten::val const& /*emvalThis*/, emscripten::val const& emvalArgs) const& noexcept {
@@ -50,7 +52,7 @@ private:
         emscripten::val operator()(Fn&& fn, emscripten::val const& emvalArgs) const& noexcept {
             auto fnWithArgs = [&]() noexcept { return fn(emvalArgs[Indices].template as<Args>()...); };
             using ReturnType = decltype(fnWithArgs());
-            static_assert(!std::is_reference<ReturnType>::value);
+            static_assert(IsJsInteropable<ReturnType>::value);
             if constexpr (std::is_same<void, ReturnType>::value) {
                 fnWithArgs();
                 return emscripten::val::undefined();
@@ -68,7 +70,9 @@ private:
     using TailCCallableWrapper = CCallableWrapper<ListArgsTail, bPassedAllArguments>;
 public:
     static_assert(!tc::type::has_unique<ListArgsTail, pass_this_t>::value);
-    static_assert(!std::is_reference<TThis>::value);
+    static_assert(IsJsInteropable<TThis>::value);
+
+    static inline constexpr bool c_bInstantiated = true;
 
     template<typename Fn>
     emscripten::val operator()(Fn&& fn, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) const& noexcept {
@@ -90,8 +94,10 @@ private:
 public:
     static_assert(!tc::type::has_unique<ListArgsTail, pass_this_t>::value);
     static_assert(!tc::type::has_unique<ListArgsTail, pass_all_arguments_t>::value);
-    static_assert(!std::is_reference<TArgs>::value);
+    static_assert(IsJsInteropable<TArgs>::value);
     static_assert(!bPassedAllArguments);
+
+    static inline constexpr bool c_bInstantiated = true;
 
     template<typename Fn>
     emscripten::val operator()(Fn&& fn, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) const& noexcept {
@@ -132,8 +138,9 @@ struct IJsFunction {};
 
 template<typename R, typename... Args>
 struct IJsFunction<R(Args...)> : virtual IJsBase {
-    static_assert(tc::is_decayed<R>::value);
-    static_assert(std::conjunction<tc::is_decayed<Args>...>::value);
+    static_assert(IsJsInteropable<R>::value);
+    // Implicit instantiation of CCallableWrapper to ensure Args are correct.
+    static_assert(callback_detail::CCallableWrapper<tc::type::list<Args...>>::c_bInstantiated);
 
     R operator()(Args... args) noexcept {
         // These are limitations of emscripten::val, can be worked around.
