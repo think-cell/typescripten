@@ -18,38 +18,38 @@ using tc::js::globals::String;
 int main(int argc, char* argv[]) {
     _ASSERT(2 <= argc);
 
-    js_ref<ts::CompilerOptions> options(val::object());
-    options->noEmitOnError(true);
-    options->strict(true);
-    options->target(ts::ScriptTarget::ES5);
-    options->module(ts::ModuleKind::CommonJS);
+    js_ref<ts::CompilerOptions> jsCompilerOptions(val::object());
+    jsCompilerOptions->noEmitOnError(true);
+    jsCompilerOptions->strict(true);
+    jsCompilerOptions->target(ts::ScriptTarget::ES5);
+    jsCompilerOptions->module(ts::ModuleKind::CommonJS);
 
-    js_ref<Array<js_ref<String>>> fileNames(val::array());
+    js_ref<Array<js_ref<String>>> jsarrstrFileNames(val::array());
     for (int i = 1; i < argc; i++) {
-        fileNames->push(js_ref<String>(val(std::string(argv[i]))));
+        jsarrstrFileNames->push(js_ref<String>(val(std::string(argv[i]))));
     }
-    js_ref<ts::Program> program = ts()->createProgram(js_ref<ReadonlyArray<js_ref<String>>>(fileNames.get()), options);
-    js_ref<ts::EmitResult> emitResult = program->emit();
+    js_ref<ts::Program> jsProgram = ts()->createProgram(js_ref<ReadonlyArray<js_ref<String>>>(jsarrstrFileNames.get()), jsCompilerOptions);
+    js_ref<ts::EmitResult> jsEmitresult = jsProgram->emit();
 
     tc::for_each(
-        tc::concat(ts()->getPreEmitDiagnostics(program), emitResult->diagnostics()),
-        [](js_ref<ts::Diagnostic> diagnostic) {
-            if (diagnostic->file()) {
-                js_ref<ts::LineAndCharacter> lineAndCharacter = diagnostic->file().value()->getLineAndCharacterOfPosition(diagnostic->start().value());
-                js_ref<String> message = ts()->flattenDiagnosticMessageText(diagnostic->messageText(), js_ref<String>(val("\n")));
+        tc::concat(ts()->getPreEmitDiagnostics(jsProgram), jsEmitresult->diagnostics()),
+        [](js_ref<ts::Diagnostic> jsDiagnostic) {
+            if (jsDiagnostic->file()) {
+                js_ref<ts::LineAndCharacter> jsLineAndCharacter = jsDiagnostic->file().value()->getLineAndCharacterOfPosition(jsDiagnostic->start().value());
+                js_ref<String> jsMessage = ts()->flattenDiagnosticMessageText(jsDiagnostic->messageText(), js_ref<String>(val("\n")));
                 printf("%s (%d,%d): %s\n",
-                    std::string((*diagnostic->file())->fileName()).c_str(),
-                    lineAndCharacter->line() + 1,
-                    lineAndCharacter->character() + 1,
-                    std::string(message).c_str()
+                    std::string((*jsDiagnostic->file())->fileName()).c_str(),
+                    jsLineAndCharacter->line() + 1,
+                    jsLineAndCharacter->character() + 1,
+                    std::string(jsMessage).c_str()
                 );
             } else {
-                printf("%s\n", std::string(ts()->flattenDiagnosticMessageText(diagnostic->messageText(), js_ref<String>(val("\n")))).c_str());
+                printf("%s\n", std::string(ts()->flattenDiagnosticMessageText(jsDiagnostic->messageText(), js_ref<String>(val("\n")))).c_str());
             }
         }
     );
 
-    int exitCode = emitResult->emitSkipped() ? 1 : 0;
-    printf("Process exiting with code '%d'.\n", exitCode);
-    return exitCode;
+    int iExitCode = jsEmitresult->emitSkipped() ? 1 : 0;
+    printf("Process exiting with code '%d'.\n", iExitCode);
+    return iExitCode;
 }
