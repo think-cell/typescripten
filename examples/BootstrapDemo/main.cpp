@@ -1,6 +1,8 @@
 #include <emscripten/val.h>
 #include <optional>
 #include <vector>
+#include <initializer_list>
+#include "explicit_cast.h"
 #include "range.h"
 #include "range_defines.h"
 #include "js_bootstrap.h"
@@ -10,6 +12,7 @@
 using tc::js::js_ref;
 using tc::js::IAny;
 using tc::js::globals::Array;
+using tc::js::globals::ReadonlyArray;
 using tc::js::globals::String;
 using tc::js::globals::console;
 
@@ -38,16 +41,22 @@ void TestOptionalNumber() {
 
 int main() {
     {
-        js_ref<String> message(emscripten::val("Hello World"));
+        auto message = tc::explicit_cast<js_ref<String>>("Hello World");
         _ASSERTEQUAL(message->length(), 11);
-        _ASSERTEQUAL(std::string(message), "Hello World");
+        _ASSERTEQUAL(tc::explicit_cast<std::string>(message), "Hello World");
         console()->log(message);
     }
 
-    js_ref<Array<int>> arr(emscripten::val::array());
-    arr->push(1);
-    arr->push(2);
-    arr->push(3);
+    {
+        auto arr = tc::explicit_cast<js_ref<ReadonlyArray<int>>>(std::initializer_list<int>{1, 2, 3});
+        console()->log(arr);
+        _ASSERTEQUAL(arr->length(), 3);
+        _ASSERTEQUAL(arr[0], 1);
+        _ASSERTEQUAL(arr[1], 2);
+        _ASSERTEQUAL(arr[2], 3);
+    }
+
+    auto arr = tc::explicit_cast<js_ref<Array<int>>>(std::initializer_list<int>{1, 2, 3});
     console()->log(arr);
     _ASSERTEQUAL(arr->length(), 3);
     _ASSERTEQUAL(arr[1], 2);

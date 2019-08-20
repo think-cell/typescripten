@@ -2,6 +2,7 @@
 
 #include <emscripten/val.h>
 #include <string>
+#include "range.h"
 #include "js_types.h"
 #include "js_callback.h"
 
@@ -14,7 +15,7 @@ struct Array : virtual IJsBase {
 
     int length() { return m_emval["length"].template as<int>(); }
 
-    void push(T item) { m_emval.call<void>("push", item); }
+    void push(T const& item) { m_emval.call<void>("push", item); }
 
     auto operator[](int i) { return wrapper_detail::CPropertyProxy<T, int>(m_emval, i); }
 
@@ -47,7 +48,6 @@ struct ReadonlyArray : virtual IJsBase {
 struct String : virtual IJsBase {
     int length() { return m_emval["length"].template as<int>(); }
 
-    // TODO: make it explicit_cast?
     explicit operator std::string() { return m_emval.template as<std::string>(); }
 };
 
@@ -68,3 +68,40 @@ using no_adl::Console;
 inline auto console() { return js_ref<Console>(emscripten::val::global("console")); }
 
 } // namespace tc::js::globals
+
+namespace tc::no_adl {
+template<typename T>
+struct SConversions<tc::js::js_ref<tc::js::globals::Array<T>>> {
+    template<typename Rng>
+    static auto fn(Rng&& rng) { // TODO: MAYTHROW?
+        tc::js::js_ref<tc::js::globals::Array<T>> result(emscripten::val::array());
+        tc::for_each(rng, [&](auto&& value) {
+            result->push(tc::explicit_cast<T>(std::forward<decltype(value)>(value)));
+        });
+        return result;
+    }
+};
+
+template<typename T>
+struct SConversions<tc::js::js_ref<tc::js::globals::ReadonlyArray<T>>> {
+    template<typename Rng>
+    static auto fn(Rng&& rng) { // TODO: MAYTHROW?
+        return tc::js::js_ref<tc::js::globals::ReadonlyArray<T>>(
+            tc::explicit_cast<tc::js::js_ref<tc::js::globals::Array<T>>>(std::forward<Rng>(rng)).get()
+        );
+    }
+};
+
+template<>
+struct SConversions<tc::js::js_ref<tc::js::globals::String>> {
+    template<typename Rng>
+    static auto fn(Rng&& rng) { // TODO: MAYTHROW?
+        // TODO: avoid allocating std::string (we may have to duplicate parts of embind)
+        return tc::js::js_ref<tc::js::globals::String>(
+            emscripten::val(
+                tc::explicit_cast<std::string>(std::forward<Rng>(rng))
+            )
+        );
+    }
+};
+} // namespace tc::no_adl
