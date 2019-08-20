@@ -10,6 +10,8 @@ namespace tc::js::globals {
 namespace no_adl {
 template<typename T>
 struct Array : virtual IJsBase {
+    static_assert(IsJsInteropable<T>::value);
+
     int length() { return m_emval["length"].template as<int>(); }
 
     void push(T item) { m_emval.call<void>("push", item); }
@@ -27,6 +29,8 @@ struct Array : virtual IJsBase {
 
 template<typename T>
 struct ReadonlyArray : virtual IJsBase {
+    static_assert(IsJsInteropable<T>::value);
+
     int length() { return m_emval["length"].template as<int>(); }
 
     auto operator[](int i) { return m_emval[i].template as<T>(); }
