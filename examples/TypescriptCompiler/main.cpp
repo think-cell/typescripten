@@ -35,7 +35,7 @@ int main(int argc, char* argv[]) {
         tc::concat(ts()->getPreEmitDiagnostics(program), emitResult->diagnostics()),
         [](js_ref<ts::Diagnostic> diagnostic) {
             if (diagnostic->file()) {
-                js_ref<ts::LineAndCharacter> lineAndCharacter = (*diagnostic->file())->getLineAndCharacterOfPosition(diagnostic->start().value());
+                js_ref<ts::LineAndCharacter> lineAndCharacter = diagnostic->file().value()->getLineAndCharacterOfPosition(diagnostic->start().value());
                 js_ref<String> message = ts()->flattenDiagnosticMessageText(diagnostic->messageText(), js_ref<String>(val("\n")));
                 printf("%s (%d,%d): %s\n",
                     std::string((*diagnostic->file())->fileName()).c_str(),
