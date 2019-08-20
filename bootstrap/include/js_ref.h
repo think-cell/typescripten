@@ -84,17 +84,17 @@ struct js_ref {
     emscripten::val get() const& noexcept { return m_emval; }
     emscripten::val get() && noexcept { return tc_move(m_emval); }
 
-    template<typename... Args>
+    template<typename... Args, typename = decltype(std::declval<T>()(std::forward<Args>(std::declval<Args>())...))>
     auto operator()(Args&&... args) const& noexcept {
         return CArrowProxy(m_emval)(std::forward<Args>(args)...);
     }
 
-    template<typename Index>
+    template<typename Index, typename = decltype(std::declval<T>()[std::forward<Index>(std::declval<Index>())])>
     auto operator[](Index&& index) const& noexcept {
         return CArrowProxy(m_emval)[std::forward<Index>(index)];
     }
 
-    template<typename U>
+    template<typename U, typename = decltype(U(std::declval<T>()))>
     explicit operator U() const& noexcept {
         return U(CArrowProxy(m_emval));
     }
