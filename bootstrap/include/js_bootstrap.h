@@ -21,7 +21,7 @@ struct Array : virtual IJsBase {
     // Generator range. This adds operator() to array interface (which did not exist before), but it's ok.
     template<typename Fn>
     void operator()(Fn fn) noexcept {
-        m_emval.call<void>("forEach", CScopedCallback([&](T value, js_ref<IAny>, js_ref<IAny>) noexcept {
+        m_emval.call<void>("forEach", js_lambda_wrap([&](T value, js_ref<IAny>, js_ref<IAny>) noexcept {
             fn(tc_move(value));
         }));
     }
@@ -38,7 +38,7 @@ struct ReadonlyArray : virtual IJsBase {
     // Generator range. This adds operator() to array interface (which did not exist before), but it's ok.
     template<typename Fn>
     void operator()(Fn fn) noexcept {
-        m_emval.call<void>("forEach", CScopedCallback([&](T value, js_ref<IAny>, js_ref<IAny>) noexcept {
+        m_emval.call<void>("forEach", js_lambda_wrap([&](T value, js_ref<IAny>, js_ref<IAny>) noexcept {
             fn(tc_move(value));
         }));
     }

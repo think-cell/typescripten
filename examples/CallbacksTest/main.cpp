@@ -83,9 +83,9 @@ struct UnwrapType<void(T)> {
 
 int main() {
     {
-        printf("===== CScopedCallback =====\n");
+        printf("===== js_lambda_wrap =====\n");
         #define CALL_SCOPED_CALLBACK(Name, ExpectedType, ReturnType, Arguments, Body) \
-            RUN_TEST(Name, ExpectedType, tc::js::CScopedCallback([]Arguments noexcept -> ReturnType Body));
+            RUN_TEST(Name, ExpectedType, tc::js::js_lambda_wrap([]Arguments noexcept -> ReturnType Body));
         FOR_ALL_CALLBACKS(CALL_SCOPED_CALLBACK)
         #undef CALL_SCOPED_CALLBACK
     }
@@ -103,7 +103,7 @@ int main() {
     }
     {
         printf("Calling callbacks through js_ref\n");
-        tc::js::CScopedCallback cbStorage([](std::string str) noexcept {
+        tc::js::js_lambda_wrap cbStorage([](std::string str) noexcept {
             return std::string("hello " + str);
         });
         js_ref<IJsFunction<std::string(std::string)>> cb = cbStorage;

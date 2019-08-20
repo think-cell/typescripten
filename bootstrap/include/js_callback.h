@@ -196,40 +196,40 @@ struct IsJsRef<callback_detail::CUniqueDetachableJsFunction<T>> : std::true_type
     ::tc::js::callback_detail::CUniqueDetachableJsFunction<ReturnType Arguments> const FieldName{&FieldName##_tc_js_wrapper, this}; \
     ReturnType FieldName##_tc_js_impl Arguments noexcept
 
-// ---------------------------------------- Scoped callback ----------------------------------------
+// ---------------------------------------- Lambda wrapper callback ----------------------------------------
 // Heap-allocated "fire-and-forget" callbacks are explicitly out of scope for the library: there are typically
 // no guarantees on when they're called and we want the user to think about that carefully and make sure all
 // proper cancellations are in place (e.g. by using member callback tied to the object which initiates the request).
 namespace callback_detail {
 template<typename Fn>
-using CScopedCallbackBase_t = callback_detail::CUniqueDetachableJsFunction<boost::callable_traits::function_type_t<Fn>>;
+using js_lambda_wrap_base_t = callback_detail::CUniqueDetachableJsFunction<boost::callable_traits::function_type_t<Fn>>;
 } // namespace callback_detail
 
 namespace no_adl {
 // We do not care about slicing to emscripten::val, because this class is only stored by-value.
 template<typename Fn>
-struct CScopedCallback final : callback_detail::CScopedCallbackBase_t<Fn> {
+struct js_lambda_wrap final : callback_detail::js_lambda_wrap_base_t<Fn> {
     static_assert(!std::is_reference<Fn>::value);
     static_assert(boost::callable_traits::is_noexcept<Fn>::value, "Callbacks for JS should be noexcept");
 
     template<typename FnSrc>
-    CScopedCallback(FnSrc&& fn) noexcept : callback_detail::CScopedCallbackBase_t<Fn>(&FnWrapper, this), m_fn(std::forward<FnSrc>(fn)) {}
+    js_lambda_wrap(FnSrc&& fn) noexcept : callback_detail::js_lambda_wrap_base_t<Fn>(&FnWrapper, this), m_fn(std::forward<FnSrc>(fn)) {}
 
 private:
     Fn m_fn;
 
     static emscripten::val FnWrapper(void* pThis, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) noexcept {
         return callback_detail::CCallableWrapper<boost::callable_traits::args_t<Fn, tc::type::list>>()(
-            tc::void_cast<CScopedCallback>(pThis)->m_fn,
+            tc::void_cast<js_lambda_wrap>(pThis)->m_fn,
             emvalThis,
             emvalArgs
         );
     }
 };
-template<typename Fn> CScopedCallback(Fn) -> CScopedCallback<Fn>;
+template<typename Fn> js_lambda_wrap(Fn) -> js_lambda_wrap<Fn>;
 } // namespace no_adl
-using no_adl::CScopedCallback;
+using no_adl::js_lambda_wrap;
 
 template<typename Fn>
-struct IsJsRef<CScopedCallback<Fn>> : IsJsRef<callback_detail::CScopedCallbackBase_t<Fn>> {};
+struct IsJsRef<js_lambda_wrap<Fn>> : IsJsRef<callback_detail::js_lambda_wrap_base_t<Fn>> {};
 } // namespace tc::js
