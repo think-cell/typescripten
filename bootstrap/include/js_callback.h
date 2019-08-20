@@ -22,25 +22,6 @@ namespace tc::js {
 DEFINE_TAG_TYPE(pass_this)
 DEFINE_TAG_TYPE(pass_all_arguments)
 
-namespace no_adl {
-template<typename>
-struct IJsFunction {};
-
-template<typename R, typename... Args>
-struct IJsFunction<R(Args...)> : virtual IJsBase {
-    static_assert(tc::is_decayed<R>::value);
-    static_assert(std::conjunction<tc::is_decayed<Args>...>::value);
-
-    R operator()(Args... args) noexcept {
-        // These are limitations of emscripten::val, can be worked around.
-        static_assert(std::is_same<tc::type::find_unique_if_result::type_not_found, tc::type::find_unique<tc::type::list<Args...>, pass_this_t>>::value, "Cannot call a JS function which needs 'this'");
-        static_assert(std::is_same<tc::type::find_unique_if_result::type_not_found, tc::type::find_unique<tc::type::list<Args...>, pass_all_arguments_t>>::value, "Cannot call a JS function which takes an array of arguments");
-        return m_emval(tc_move(args)...).template as<R>();
-    }
-};
-} // namespace no_adl
-using no_adl::IJsFunction;
-
 namespace callback_detail {
 namespace no_adl {
 template<typename ListArgs, bool bPassedAllArguments = false>
@@ -143,7 +124,28 @@ emscripten::val MemberFunctionWrapper(T pmfMember, void* pvThis, emscripten::val
         }, emvalThis, emvalArgs
     );
 }
+} // namespace callback_detail
 
+namespace no_adl {
+template<typename>
+struct IJsFunction {};
+
+template<typename R, typename... Args>
+struct IJsFunction<R(Args...)> : virtual IJsBase {
+    static_assert(tc::is_decayed<R>::value);
+    static_assert(std::conjunction<tc::is_decayed<Args>...>::value);
+
+    R operator()(Args... args) noexcept {
+        // These are limitations of emscripten::val, can be worked around.
+        static_assert(std::is_same<tc::type::find_unique_if_result::type_not_found, tc::type::find_unique<tc::type::list<Args...>, pass_this_t>>::value, "Cannot call a JS function which needs 'this'");
+        static_assert(std::is_same<tc::type::find_unique_if_result::type_not_found, tc::type::find_unique<tc::type::list<Args...>, pass_all_arguments_t>>::value, "Cannot call a JS function which takes an array of arguments");
+        return m_emval(tc_move(args)...).template as<R>();
+    }
+};
+} // namespace no_adl
+using no_adl::IJsFunction;
+
+namespace callback_detail {
 using FirstArgument = void*;
 using FunctionPointer = emscripten::val(*)(FirstArgument, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) noexcept;
 using PointerNumber = std::uintptr_t;
