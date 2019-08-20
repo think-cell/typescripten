@@ -90,13 +90,6 @@ int main() {
         #undef CALL_SCOPED_CALLBACK
     }
     {
-        printf("===== NewFiresOnceCallback =====\n");
-        #define CALL_FIRES_ONCE_CALLBACK(Name, ExpectedType, ReturnType, Arguments, Body) \
-            RUN_TEST(Name, ExpectedType, tc::js::NewFiresOnceCallback([]Arguments noexcept -> ReturnType Body));
-        FOR_ALL_CALLBACKS(CALL_FIRES_ONCE_CALLBACK)
-        #undef CALL_FIRES_ONCE_CALLBACK
-    }
-    {
         printf("===== TC_JS_MEMBER_FUNCTION =====\n");
         #define DEFINE_MEMBER(Name, ExpectedType, ReturnType, Arguments, Body) TC_JS_MEMBER_FUNCTION(TestClass, m_emval##Name, ReturnType, Arguments) Body
         struct TestClass {
@@ -107,44 +100,6 @@ int main() {
             RUN_TEST(Name, ExpectedType, obj.m_emval##Name);
         FOR_ALL_CALLBACKS(CALL_MEMBER)
         #undef CALL_MEMBER
-    }
-    {
-        printf("===== CHeapCallback =====\n");
-        RUN_TEST(TestHeapCallback, (js_ref<IJsFunction<void(int)>>), tc::js::NewHeapCallback([expectedX = 2](int x) mutable noexcept {
-            _ASSERTEQUAL(x, expectedX);
-            expectedX--;
-            if (x == 0)
-                return tc::js::DeleteThisCallback();
-            else
-                return tc::js::KeepThisCallback();
-        }));
-        RUN_TEST(TestHeapCallbackWithReturn, (js_ref<IJsFunction<int(int)>>), tc::js::NewHeapCallback([expectedX = 2](int x) mutable noexcept {
-            _ASSERTEQUAL(x, expectedX);
-            expectedX--;
-            if (x == 0)
-                return tc::js::DeleteThisCallback(x + 10);
-            else
-                return tc::js::KeepThisCallback(x + 10);
-        }));
-        RUN_TEST(TestHeapCallbackPassAllArguments, (js_ref<IJsFunction<void(pass_all_arguments_t, val, int)>>), tc::js::NewHeapCallback([expectedX = 2](pass_all_arguments_t, val emvalArgs, int x) mutable noexcept {
-            _ASSERTEQUAL(x, emvalArgs[0].as<int>());
-            _ASSERTEQUAL(2, emvalArgs["length"].as<int>());
-            _ASSERTEQUAL(x, expectedX);
-            expectedX--;
-            if (x == 0)
-                return tc::js::DeleteThisCallback();
-            else
-                return tc::js::KeepThisCallback();
-        }));
-        RUN_TEST(TestHeapCallbackWithStringReturn, (js_ref<IJsFunction<std::string(int)>>), tc::js::NewHeapCallback([expectedX = 2](int x) mutable noexcept {
-            _ASSERTEQUAL(x, expectedX);
-            char buf[2] = { '1', static_cast<char>(x + '0') };
-            expectedX--;
-            if (x == 0)
-                return tc::js::DeleteThisCallback<std::string>(buf, buf + 2);
-            else
-                return tc::js::KeepThisCallback<std::string>(buf, buf + 2);
-        }));
     }
     {
         printf("Calling callbacks through js_ref\n");

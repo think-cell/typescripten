@@ -196,54 +196,11 @@ struct IsJsRef<callback_detail::CUniqueDetachableJsFunction<T>> : std::true_type
     ::tc::js::callback_detail::CUniqueDetachableJsFunction<ReturnType Arguments> const FieldName{&FieldName##_tc_js_wrapper, this}; \
     ReturnType FieldName##_tc_js_impl Arguments noexcept
 
-// ---------------------------------------- Scoped/heap callbacks ----------------------------------------
-template<typename T, typename... Args> constexpr auto KeepThisCallback(Args&&...) noexcept;
-template<typename T, typename... Args> constexpr auto DeleteThisCallback(Args&&...) noexcept;
-
+// ---------------------------------------- Scoped callback ----------------------------------------
+// Heap-allocated "fire-and-forget" callbacks are explicitly out of scope for the library: there are typically
+// no guarantees on when they're called and we want the user to think about that carefully and make sure all
+// proper cancellations are in place (e.g. by using member callback tied to the object which initiates the request).
 namespace callback_detail {
-namespace no_adl {
-template<typename T>
-struct SCallbackResult final {
-    constexpr bool ShouldKeepAlive() const& noexcept { return m_bKeepAlive; }
-    constexpr T Extract() noexcept { return tc_move(m_tResult); }
-
-    using value_type = T;
-
-    template<typename, typename... Args> friend constexpr auto tc::js::KeepThisCallback(Args&&...) noexcept;
-    template<typename, typename... Args> friend constexpr auto tc::js::DeleteThisCallback(Args&&...) noexcept;
-
-private:
-    template<typename... Args>
-    constexpr SCallbackResult(bool m_bKeepAlive, Args&&... m_tResult) noexcept
-        : m_tResult(std::forward<Args>(m_tResult)...)
-        , m_bKeepAlive(m_bKeepAlive) {}
-
-    T m_tResult;
-    bool m_bKeepAlive;
-};
-
-template<>
-struct SCallbackResult<void> final {
-    constexpr bool ShouldKeepAlive() const& noexcept { return m_bKeepAlive; }
-    constexpr void Extract() noexcept {};
-
-    using value_type = void;
-
-    template<typename, typename... Args> friend constexpr auto tc::js::KeepThisCallback(Args&&...) noexcept;
-    template<typename, typename... Args> friend constexpr auto tc::js::DeleteThisCallback(Args&&...) noexcept;
-
-private:
-    constexpr SCallbackResult(bool m_bKeepAlive) noexcept
-        : m_bKeepAlive(m_bKeepAlive) {}
-
-    bool m_bKeepAlive;
-};
-template<typename T> struct IsSCallbackResult final : std::false_type {};
-template<typename T> struct IsSCallbackResult<SCallbackResult<T>> final : std::true_type {};
-} // namespace no_adl
-using no_adl::SCallbackResult;
-using no_adl::IsSCallbackResult;
-
 template<typename Fn>
 using CScopedCallbackBase_t = callback_detail::CUniqueDetachableJsFunction<boost::callable_traits::function_type_t<Fn>>;
 } // namespace callback_detail
@@ -253,10 +210,6 @@ namespace no_adl {
 template<typename Fn>
 struct CScopedCallback final : callback_detail::CScopedCallbackBase_t<Fn> {
     static_assert(!std::is_reference<Fn>::value);
-    static_assert(
-        !callback_detail::IsSCallbackResult<boost::callable_traits::return_type_t<Fn>>::value,
-        "CScopedCallback cannot return SCallbackResult. If you want callback to self-manage lifetime, use NewHeapCallback"
-    );
     static_assert(boost::callable_traits::is_noexcept<Fn>::value, "Callbacks for JS should be noexcept");
 
     template<typename FnSrc>
@@ -287,122 +240,4 @@ template<typename Fn> struct IsCScopedCallback<CScopedCallback<Fn>> : std::true_
 } // namespace no_adl
 using no_adl::IsCScopedCallback;
 } // namespace callback_detail
-
-template<typename Fn> auto NewHeapCallback(Fn&& fn) noexcept;
-
-namespace callback_detail {
-template<typename Fn>
-using CHeapCallbackBase_t =
-     callback_detail::CUniqueDetachableJsFunction<
-         boost::callable_traits::apply_return_t<
-             boost::callable_traits::args_t<Fn>,
-             typename boost::callable_traits::return_type_t<Fn>::value_type
-         >
-     >;
-
-namespace no_adl {
-// We do not care about slicing to emscripten::val, because this class is only
-// created by NewHeapCallback and deleted by itself.
-template<typename Fn>
-struct CHeapCallback final : callback_detail::CHeapCallbackBase_t<Fn> {
-private:
-    static_assert(!std::is_reference<Fn>::value);
-    static_assert(
-        callback_detail::IsSCallbackResult<boost::callable_traits::return_type_t<Fn>>::value,
-        "CHeapCallback's functor should return SCallbackResult<> to signal destruction. Alternatively, use CScopedCallback"
-    );
-    static_assert(boost::callable_traits::is_noexcept<Fn>::value, "Callbacks for JS should be noexcept");
-
-    template<typename FnSrc>
-    explicit CHeapCallback(FnSrc&& fn) noexcept : CHeapCallbackBase_t<Fn>(&FnWrapper, this), m_fn(std::forward<FnSrc>(fn)) {}
-
-    friend auto tc::js::NewHeapCallback(Fn&& fn) noexcept;
-
-    Fn m_fn;
-    static emscripten::val FnWrapper(void* pvThis, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) noexcept {
-        return CCallableWrapper<boost::callable_traits::args_t<Fn, tc::type::list>>()([&](auto&&... args) noexcept {
-            auto pcbThis = tc::void_cast<CHeapCallback>(pvThis);
-            auto result = pcbThis->m_fn(std::forward<decltype(args)>(args)...);
-            if (!result.ShouldKeepAlive()) {
-                delete pcbThis;
-            }
-            return result.Extract();
-        }, emvalThis, emvalArgs);
-    }
-};
-template<typename Fn> CHeapCallback(Fn) -> CHeapCallback<Fn>;
-} // namespace no_adl
-using no_adl::CHeapCallback;
-} // namespace callback_detail
-
-template<typename Fn>
-struct IsJsRef<callback_detail::CHeapCallback<Fn>> : IsJsRef<callback_detail::CHeapCallbackBase_t<Fn>> {};
-
-template<typename T, typename... Args> constexpr auto KeepThisCallback(Args&&... args) noexcept {
-    return callback_detail::SCallbackResult<tc::decay_t<T>>(true, std::forward<Args>(args)...);
-}
-
-template<typename T, typename... Args> constexpr auto DeleteThisCallback(Args&&... args) noexcept {
-    return callback_detail::SCallbackResult<tc::decay_t<T>>(false, std::forward<Args>(args)...);
-}
-
-template<typename T> constexpr auto KeepThisCallback(T&& tResult) noexcept {
-    return KeepThisCallback<tc::decay_t<T>, T>(std::forward<T>(tResult));
-}
-
-template<typename T> constexpr auto DeleteThisCallback(T&& tResult) noexcept {
-    return DeleteThisCallback<tc::decay_t<T>, T>(std::forward<T>(tResult));
-}
-
-inline constexpr auto KeepThisCallback() noexcept {
-    return KeepThisCallback<void>();
-}
-
-inline constexpr auto DeleteThisCallback() noexcept {
-    return DeleteThisCallback<void>();
-}
-
-template<typename Fn>
-auto NewHeapCallback(Fn&& fn) noexcept { // TODO: even std::bad_alloc?
-    return js_ref(*(new callback_detail::CHeapCallback(std::forward<Fn>(fn))));
-}
-
-// ---------------------------------------- Fires-once callback ----------------------------------------
-namespace fires_once_callback_detail {
-namespace no_adl {
-template<typename, typename, typename>
-struct FiresOnceCallbackWrapper final {};
-
-template<typename R, typename Fn, typename... Args>
-struct FiresOnceCallbackWrapper<R, Fn, std::tuple<Args...>> final {
-    template<typename U>
-    constexpr FiresOnceCallbackWrapper(U&& m_fn) noexcept : m_fn(std::forward<U>(m_fn)) {}
-
-    // `Args` is the exact arguments of underlying lambda that we have to mimic.
-    // We do not want `int` to become `int&` or `int&&` here and change signature,
-    // but we still want perfect forwarding, hence `forward<>` without forwarding
-    // reference.
-    constexpr callback_detail::SCallbackResult<R> operator()(Args... args) noexcept {
-        if constexpr (std::is_same<void, R>::value) {
-            m_fn(std::forward<Args>(args)...);
-            return DeleteThisCallback();
-        } else {
-            return DeleteThisCallback(m_fn(std::forward<Args>(args)...));
-        }
-    }
-private:
-    Fn m_fn;
-};
-}
-using no_adl::FiresOnceCallbackWrapper;
-} // namespace new_fires_once_callback_details
-
-template<typename Fn>
-auto NewFiresOnceCallback(Fn&& fn) noexcept { // TODO: even std::bad_alloc?
-    return NewHeapCallback(fires_once_callback_detail::FiresOnceCallbackWrapper<
-        boost::callable_traits::return_type_t<Fn>,
-        Fn,
-        boost::callable_traits::args_t<Fn>
-        >(std::forward<Fn>(fn)));
-}
 } // namespace tc::js
