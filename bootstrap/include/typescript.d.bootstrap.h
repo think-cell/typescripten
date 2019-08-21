@@ -10,7 +10,7 @@
 namespace tc::js {
 namespace globals {
 namespace no_adl {
-struct ts : virtual IJsBase {
+struct ts : virtual IUnknown {
     struct TextRange;
     struct Node;
     struct Declaration;
@@ -25,7 +25,7 @@ struct ts : virtual IJsBase {
     struct LineAndCharacter;
     enum class ScriptTarget;
 
-    struct TextRange : virtual IJsBase {
+    struct TextRange : virtual IUnknown {
     };
 
     struct Node : virtual TextRange {
@@ -34,7 +34,7 @@ struct ts : virtual IJsBase {
     struct Declaration : virtual Node {
     };
 
-    struct SourceFileLike : virtual IJsBase {
+    struct SourceFileLike : virtual IUnknown {
         auto getLineAndCharacterOfPosition(int pos) {
             return _call<js_ref<LineAndCharacter>>("getLineAndCharacterOfPosition", pos);
         }
@@ -45,11 +45,11 @@ struct ts : virtual IJsBase {
         void fileName(js_ref<String> v) { _setProperty("fileName", v); }
     };
 
-    struct Program : virtual IJsBase {
+    struct Program : virtual IUnknown {
         auto emit() { return _call<js_ref<EmitResult>>("emit"); }
     };
 
-    struct EmitResult : virtual IJsBase {
+    struct EmitResult : virtual IUnknown {
         auto emitSkipped() { return _getProperty<bool>("emitSkipped"); }
         void emitSkipped(bool v) { _setProperty("emitSkipped", v); }
 
@@ -57,7 +57,7 @@ struct ts : virtual IJsBase {
         void diagnostics(js_ref<ReadonlyArray<js_ref<Diagnostic>>> v) { _setProperty("diagnostics", v); }
     };
 
-    struct DiagnosticRelatedInformation : virtual IJsBase {
+    struct DiagnosticRelatedInformation : virtual IUnknown {
         auto file() { return _getProperty<std::optional<js_ref<SourceFile>>>("file"); }
         void file(std::optional<js_ref<SourceFile>> v) { _setProperty("file", v); }
 
@@ -72,7 +72,7 @@ struct ts : virtual IJsBase {
     struct Diagnostic : virtual DiagnosticRelatedInformation {
     };
 
-    struct CompilerOptions : virtual IJsBase {
+    struct CompilerOptions : virtual IUnknown {
         auto noEmitOnError() { return _getProperty<std::optional<bool>>("noEmitOnError"); }
         void noEmitOnError(std::optional<bool> v) { _setProperty("noEmitOnError", v); }
 
@@ -98,7 +98,7 @@ struct ts : virtual IJsBase {
         ESNext = 6
     };
 
-    struct LineAndCharacter : virtual IJsBase {
+    struct LineAndCharacter : virtual IUnknown {
         auto line() { return _getProperty<int>("line"); }
         void line(int v) { _setProperty("line", v); }
 

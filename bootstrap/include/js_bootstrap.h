@@ -12,7 +12,7 @@ namespace tc::js::globals {
 
 namespace no_adl {
 template<typename T>
-struct Array : virtual IJsBase {
+struct Array : virtual IUnknown {
     static_assert(IsJsInteropable<T>::value);
 
     auto length() { return _getProperty<int>("length"); }
@@ -40,7 +40,7 @@ struct Array : virtual IJsBase {
 };
 
 template<typename T>
-struct ReadonlyArray : virtual IJsBase {
+struct ReadonlyArray : virtual IUnknown {
     static_assert(IsJsInteropable<T>::value);
 
     auto length() { return _getProperty<int>("length"); }
@@ -63,7 +63,7 @@ struct ReadonlyArray : virtual IJsBase {
     }
 };
 
-struct String : virtual IJsBase {
+struct String : virtual IUnknown {
     auto length() { return _getProperty<int>("length"); }
 
     explicit operator auto() { return _getEmval().template as<std::string>(); }
@@ -75,7 +75,7 @@ struct String : virtual IJsBase {
     }
 };
 
-struct Console : virtual IJsBase {
+struct Console : virtual IUnknown {
     // TODO: cannot return js_ref<js_function> because of overloads.
     // TODO: perfect forwarding?
     // TODO: allow passing options, ints, etc

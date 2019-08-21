@@ -47,14 +47,14 @@ using no_adl::CPropertyProxy;
 } // namespace property_proxy_detail
 
 namespace no_adl {
-struct IJsBase {
+struct IUnknown {
 private:
     emscripten::val m_emval;
 
 protected:
-    explicit IJsBase(emscripten::val const& m_emval) noexcept : m_emval(m_emval) {}
-    explicit IJsBase(emscripten::val&& m_emval) noexcept : m_emval(tc_move(m_emval)) {}
-    explicit IJsBase() : m_emval(emscripten::val::undefined()) {
+    explicit IUnknown(emscripten::val const& m_emval) noexcept : m_emval(m_emval) {}
+    explicit IUnknown(emscripten::val&& m_emval) noexcept : m_emval(tc_move(m_emval)) {}
+    explicit IUnknown() : m_emval(emscripten::val::undefined()) {
         // Should never be called.
         _ASSERTFALSE;
     }
@@ -96,7 +96,7 @@ protected:
     }
 
     // Make sure the class and its descendants are abstract.
-    virtual void __IJsBase_and_derived_are_abstract_Use_js_ref_instead() = 0;
+    virtual void __IUnknown_and_derived_are_abstract_Use_js_ref_instead() = 0;
 };
 
 // Non-final, but non-polymorphic as well. Derive with care and remember to add specialization for tc::js::IsJsRef.
@@ -105,7 +105,7 @@ struct js_ref {
     static_assert(std::is_class<T>::value);  // void is explicitly excluded as well, even though void* is base of all pointers.
     static_assert(!std::is_volatile<T>::value);
     static_assert(!std::is_const<T>::value, "We cannot guarantee constness of JS values");
-    static_assert(std::is_convertible<T*, IJsBase*>::value);
+    static_assert(std::is_convertible<T*, IUnknown*>::value);
 
     // js_ref is non-nullable.
     explicit js_ref(emscripten::val const& m_emval) noexcept : m_emval(m_emval) {
@@ -185,10 +185,10 @@ private:
     friend struct js_ref;
 
     struct CArrowProxy final : T, tc::nonmovable {
-        explicit CArrowProxy(emscripten::val const& m_emval) noexcept : IJsBase(m_emval) {}
+        explicit CArrowProxy(emscripten::val const& m_emval) noexcept : IUnknown(m_emval) {}
         T* operator->() && noexcept { return this; }
     private:
-        void __IJsBase_and_derived_are_abstract_Use_js_ref_instead() override {
+        void __IUnknown_and_derived_are_abstract_Use_js_ref_instead() override {
             // Should never be called.
             assert(false);
         }
@@ -226,7 +226,7 @@ struct IsJsInteropable<
 > : std::true_type {};
 } // namespace no_adl
 
-using no_adl::IJsBase;
+using no_adl::IUnknown;
 using no_adl::js_ref;
 using no_adl::IsJsRef;
 } // namespace tc::js

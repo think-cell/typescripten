@@ -11,9 +11,6 @@
 
 namespace tc::js {
 namespace no_adl {
-struct IUnknown : virtual IJsBase {
-};
-
 template<typename T>
 struct IsJsIntegralEnum : std::false_type {};
 } // namespace no_adl
