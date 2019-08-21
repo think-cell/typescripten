@@ -91,13 +91,13 @@ int main() {
     }
     {
         printf("===== TC_JS_MEMBER_FUNCTION =====\n");
-        #define DEFINE_MEMBER(Name, ExpectedType, ReturnType, Arguments, Body) TC_JS_MEMBER_FUNCTION(TestClass, m_emval##Name, ReturnType, Arguments) Body
+        #define DEFINE_MEMBER(Name, ExpectedType, ReturnType, Arguments, Body) TC_JS_MEMBER_FUNCTION(TestClass, m_jsfn##Name, ReturnType, Arguments) Body
         struct TestClass {
             FOR_ALL_CALLBACKS(DEFINE_MEMBER)
         } obj;
         #undef DEFINE_MEMBER
         #define CALL_MEMBER(Name, ExpectedType, ReturnType, Arguments, Body) \
-            RUN_TEST(Name, ExpectedType, obj.m_emval##Name);
+            RUN_TEST(Name, ExpectedType, obj.m_jsfn##Name);
         FOR_ALL_CALLBACKS(CALL_MEMBER)
         #undef CALL_MEMBER
     }
