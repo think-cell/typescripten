@@ -1,4 +1,3 @@
-#include <emscripten/val.h>
 #include <stdio.h>
 #include <string>
 #include "range_defines.h"
@@ -17,7 +16,7 @@ using tc::js::globals::String;
 int main(int argc, char* argv[]) {
     _ASSERT(2 <= argc);
 
-    js_ref<ts::CompilerOptions> jsCompilerOptions(emscripten::val::object());
+    js_ref<ts::CompilerOptions> jsCompilerOptions;
     jsCompilerOptions->noEmitOnError(true);
     jsCompilerOptions->strict(true);
     jsCompilerOptions->target(ts::ScriptTarget::ES5);

@@ -84,6 +84,8 @@ struct ts : virtual IJsBase {
 
         auto target() { return _getProperty<std::optional<ScriptTarget>>("target"); }
         void target(std::optional<ScriptTarget> v) { _setProperty("target", v); }
+
+        static auto _construct() noexcept { return emscripten::val::object(); }
     };
 
     enum class ModuleKind {
