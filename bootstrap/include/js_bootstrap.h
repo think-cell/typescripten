@@ -17,7 +17,7 @@ struct Array : virtual IJsBase {
 
     void push(T const& item) { m_emval.call<void>("push", item); }
 
-    auto operator[](int i) { return wrapper_detail::CPropertyProxy<T, int>(m_emval, i); }
+    auto operator[](int i) { return property_proxy_detail::CPropertyProxy<T, int>(m_emval, i); }
 
     // Generator range. This adds operator() to array interface (which did not exist before), but it's ok.
     template<typename Fn>

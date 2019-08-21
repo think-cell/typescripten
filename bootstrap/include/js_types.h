@@ -10,33 +10,6 @@
 #include "js_ref.h"
 
 namespace tc::js {
-namespace wrapper_detail {
-namespace no_adl {
-template<typename T, typename Name>
-struct CPropertyProxy : tc::nonmovable {
-    CPropertyProxy(emscripten::val m_emval, Name m_name)
-        : m_emval(tc_move(m_emval))
-        , m_name(tc_move(m_name)) {
-    }
-
-    // TODO: it's still possible to use incorrectly:
-    // auto x = foo["bar"]; // Presumably copy.
-    // foo["bar"] = undefined;
-    // baz(tc_move(x)); // 'Moving' value to baz.
-    operator T() && { return m_emval[m_name].template as<T>(); }
-    T const& operator=(T const& value) && {
-        m_emval.set(m_name, emscripten::val(value));
-        return value;
-    }
-
-private:
-    emscripten::val m_emval;
-    Name m_name;
-};
-} // namespace no_adl
-using no_adl::CPropertyProxy;
-} // namespace wrapper_detail
-
 namespace no_adl {
 struct IAny : virtual IJsBase {
 };
