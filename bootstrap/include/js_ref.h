@@ -222,7 +222,7 @@ struct js_ref {
 private:
     emscripten::val m_emval;
 
-    friend struct js_ref;
+    template<typename> friend struct js_ref;
 
     struct CArrowProxy final : T, tc::nonmovable {
         explicit CArrowProxy(emscripten::val const& m_emval) noexcept : IUnknown(m_emval) {}
