@@ -32,14 +32,14 @@ struct SomeJsClass : virtual tc::js::IUnknown {
         _ASSERTEQUAL(emvalArgs[1].as<std::string>(), "message"); \
         _ASSERTEQUAL(emvalArgs["length"].as<int>(), 3); \
     }) \
-    CreateCallback(TestPassThis, void, (pass_this_t, val emvalThis, int a, std::string b, val c), { \
-        _ASSERTEQUAL(emvalThis["secretField"].as<std::string>(), "secretValue"); \
+    CreateCallback(TestPassThis, void, (pass_this_t, js_ref<SomeJsClass> jssjcThis, int a, std::string b, val c), { \
+        _ASSERTEQUAL(jssjcThis->intValue(), 10); \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(b, "message"); \
         _ASSERT(c.isNull()); \
     }) \
-    CreateCallback(TestPassThisPassAllArguments, void, (pass_this_t, val emvalThis, pass_all_arguments_t, val emvalArgs, int a), { \
-        _ASSERTEQUAL(emvalThis["secretField"].as<std::string>(), "secretValue"); \
+    CreateCallback(TestPassThisPassAllArguments, void, (pass_this_t, js_ref<SomeJsClass> jssjcThis, pass_all_arguments_t, val emvalArgs, int a), { \
+        _ASSERTEQUAL(jssjcThis->intValue(), 10); \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(emvalArgs[1].as<std::string>(), "message"); \
         _ASSERTEQUAL(emvalArgs["length"].as<int>(), 3); \
@@ -50,15 +50,15 @@ struct SomeJsClass : virtual tc::js::IUnknown {
         _ASSERTEQUAL(emvalArgs["length"].as<int>(), 3); \
         return js_ref<SomeJsClass>(123); \
     }) \
-    CreateCallback(TestPassThisAndReturn, js_ref<SomeJsClass>, (pass_this_t, val emvalThis, int a, std::string b, val c), { \
-        _ASSERTEQUAL(emvalThis["secretField"].as<std::string>(), "secretValue"); \
+    CreateCallback(TestPassThisAndReturn, js_ref<SomeJsClass>, (pass_this_t, js_ref<SomeJsClass> jssjcThis, int a, std::string b, val c), { \
+        _ASSERTEQUAL(jssjcThis->intValue(), 10); \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(b, "message"); \
         _ASSERT(c.isNull()); \
         return js_ref<SomeJsClass>(123); \
     }) \
-    CreateCallback(TestPassThisPassAllArgumentsAndReturn, js_ref<SomeJsClass>, (pass_this_t, val emvalThis, pass_all_arguments_t, val emvalArgs, int a), { \
-        _ASSERTEQUAL(emvalThis["secretField"].as<std::string>(), "secretValue"); \
+    CreateCallback(TestPassThisPassAllArgumentsAndReturn, js_ref<SomeJsClass>, (pass_this_t, js_ref<SomeJsClass> jssjcThis, pass_all_arguments_t, val emvalArgs, int a), { \
+        _ASSERTEQUAL(jssjcThis->intValue(), 10); \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(emvalArgs[1].as<std::string>(), "message"); \
         _ASSERTEQUAL(emvalArgs["length"].as<int>(), 3); \

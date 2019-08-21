@@ -17,13 +17,15 @@ Module.TestPrint = function(print) {
 Module.TestPassThis = 
 Module.TestPassAllArguments =
 Module.TestPassThisPassAllArguments = function(callback) {
-    const obj = {method: callback, secretField: "secretValue"};
+    const obj = new Module.SomeJsClass(10);
+    obj.method = callback;
     Module.assertEquals(obj.method(1, "message", null), undefined);
 }
 
 Module.TestPassThisAndReturn = 
 Module.TestPassAllArgumentsAndReturn =
 Module.TestPassThisPassAllArgumentsAndReturn = function(callback) {
-    const obj = {method: callback, secretField: "secretValue"};
+    const obj = new Module.SomeJsClass(10);
+    obj.method = callback;
     Module.assertEquals(obj.method(1, "message", null).intValue, 123);
 }
