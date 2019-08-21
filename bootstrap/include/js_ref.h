@@ -122,11 +122,6 @@ template<typename> struct IsJsRef : std::false_type {};
 template<typename T> struct IsJsRef<js_ref<T>> : std::true_type {
     using element_type = T;
 };
-} // namespace no_adl
-
-using no_adl::IJsBase;
-using no_adl::js_ref;
-using no_adl::IsJsRef;
 
 template<typename, typename = void>
 struct IsJsInteropable : std::false_type {};
@@ -152,6 +147,12 @@ struct IsJsInteropable<
         T
     >::found>
 > : std::true_type {};
+} // namespace no_adl
+
+using no_adl::IJsBase;
+using no_adl::js_ref;
+using no_adl::IsJsRef;
+using no_adl::IsJsInteropable;
 } // namespace tc::js
 
 // Custom marshalling
