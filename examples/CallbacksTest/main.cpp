@@ -1,6 +1,7 @@
 #include <emscripten/val.h>
 #include <type_traits>
 #include "type_traits.h"
+#include "range.h"
 #include "range_defines.h"
 #include "js_callback.h"
 #include "js_bootstrap.h"
@@ -28,18 +29,18 @@ struct SomeJsClass : virtual tc::js::IUnknown {
         _ASSERTEQUAL(b, 20); \
         return a + b; \
     }) \
-    CreateCallback(TestPrint, void, (std::string sMessage), { \
-        _ASSERTEQUAL(sMessage, "hello"); \
+    CreateCallback(TestPrint, void, (js_ref<String> sMessage), { \
+        _ASSERTEQUAL(std::string(sMessage), "hello"); \
     })\
     CreateCallback(TestPassAllArguments, void, (pass_all_arguments_t, js_ref<Array<js_ref<IUnknown>>> jsarrunkArgs, int a), { \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(std::string(js_ref<String>(jsarrunkArgs[1])), "message"); \
         _ASSERTEQUAL(jsarrunkArgs->length(), 3); \
     }) \
-    CreateCallback(TestPassThis, void, (pass_this_t, js_ref<SomeJsClass> jssjcThis, int a, std::string b, val c), { \
+    CreateCallback(TestPassThis, void, (pass_this_t, js_ref<SomeJsClass> jssjcThis, int a, js_ref<String> b, val c), { \
         _ASSERTEQUAL(jssjcThis->intValue(), 10); \
         _ASSERTEQUAL(a, 1); \
-        _ASSERTEQUAL(b, "message"); \
+        _ASSERTEQUAL(std::string(b), "message"); \
         _ASSERT(c.isNull()); \
     }) \
     CreateCallback(TestPassThisPassAllArguments, void, (pass_this_t, js_ref<SomeJsClass> jssjcThis, pass_all_arguments_t, js_ref<Array<js_ref<IUnknown>>> jsarrunkArgs, int a), { \
@@ -54,10 +55,10 @@ struct SomeJsClass : virtual tc::js::IUnknown {
         _ASSERTEQUAL(jsarrunkArgs->length(), 3); \
         return js_ref<SomeJsClass>(123); \
     }) \
-    CreateCallback(TestPassThisAndReturn, js_ref<SomeJsClass>, (pass_this_t, js_ref<SomeJsClass> jssjcThis, int a, std::string b, val c), { \
+    CreateCallback(TestPassThisAndReturn, js_ref<SomeJsClass>, (pass_this_t, js_ref<SomeJsClass> jssjcThis, int a, js_ref<String> b, val c), { \
         _ASSERTEQUAL(jssjcThis->intValue(), 10); \
         _ASSERTEQUAL(a, 1); \
-        _ASSERTEQUAL(b, "message"); \
+        _ASSERTEQUAL(std::string(b), "message"); \
         _ASSERT(c.isNull()); \
         return js_ref<SomeJsClass>(123); \
     }) \
@@ -107,11 +108,11 @@ int main() {
     }
     {
         printf("Calling callbacks through js_ref\n");
-        tc::js::js_lambda_wrap cbStorage([](std::string str) noexcept {
-            return std::string("hello " + str);
+        tc::js::js_lambda_wrap cbStorage([](js_ref<String> str) noexcept {
+            return js_ref<String>(tc::concat("hello ", std::string(str)));
         });
-        js_ref<IJsFunction<std::string(std::string)>> cb = cbStorage;
-       _ASSERTEQUAL(cb("world"), "hello world");
+        js_ref<IJsFunction<js_ref<String>(js_ref<String>)>> cb = cbStorage;
+       _ASSERTEQUAL(std::string(cb(js_ref<String>("world"))), "hello world");
     }
     return 0;
 }
