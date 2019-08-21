@@ -2,6 +2,7 @@
 
 #include <emscripten/val.h>
 #include <string>
+#include "explicit_cast.h"
 #include "range.h"
 #include "js_types.h"
 #include "js_callback.h"
@@ -26,6 +27,15 @@ struct Array : virtual IJsBase {
             fn(tc_move(value));
         }));
     }
+
+    template<typename Rng>
+    static js_ref<Array> _construct(Rng&& rng) noexcept {
+        js_ref<Array> result(emscripten::val::array());
+        tc::for_each(rng, [&](auto&& value) {
+            result->push(tc::explicit_cast<T>(std::forward<decltype(value)>(value)));
+        });
+        return result;
+    }
 };
 
 template<typename T>
@@ -43,12 +53,25 @@ struct ReadonlyArray : virtual IJsBase {
             fn(tc_move(value));
         }));
     }
+
+    template<typename Rng>
+    static js_ref<ReadonlyArray> _construct(Rng&& rng) noexcept {
+        return js_ref<ReadonlyArray>(
+            tc::explicit_cast<js_ref<Array<T>>>(std::forward<Rng>(rng)).getEmval()
+        );
+    }
 };
 
 struct String : virtual IJsBase {
     auto length() { return _getProperty<int>("length"); }
 
     explicit operator auto() { return _getEmval().template as<std::string>(); }
+
+    template<typename Rng>
+    static auto _construct(Rng&& rng) noexcept {
+        // TODO: avoid allocating std::string (we may have to duplicate parts of embind)
+        return emscripten::val(tc::explicit_cast<std::string>(std::forward<Rng>(rng)));
+    }
 };
 
 struct Console : virtual IJsBase {
@@ -68,40 +91,3 @@ using no_adl::Console;
 inline auto console() { return js_ref<Console>(emscripten::val::global("console")); }
 
 } // namespace tc::js::globals
-
-namespace tc::no_adl {
-template<typename T>
-struct SConversions<tc::js::js_ref<tc::js::globals::Array<T>>> {
-    template<typename Rng>
-    static auto fn(Rng&& rng) { // TODO: MAYTHROW?
-        tc::js::js_ref<tc::js::globals::Array<T>> result(emscripten::val::array());
-        tc::for_each(rng, [&](auto&& value) {
-            result->push(tc::explicit_cast<T>(std::forward<decltype(value)>(value)));
-        });
-        return result;
-    }
-};
-
-template<typename T>
-struct SConversions<tc::js::js_ref<tc::js::globals::ReadonlyArray<T>>> {
-    template<typename Rng>
-    static auto fn(Rng&& rng) { // TODO: MAYTHROW?
-        return tc::js::js_ref<tc::js::globals::ReadonlyArray<T>>(
-            tc::explicit_cast<tc::js::js_ref<tc::js::globals::Array<T>>>(std::forward<Rng>(rng)).getEmval()
-        );
-    }
-};
-
-template<>
-struct SConversions<tc::js::js_ref<tc::js::globals::String>> {
-    template<typename Rng>
-    static auto fn(Rng&& rng) { // TODO: MAYTHROW?
-        // TODO: avoid allocating std::string (we may have to duplicate parts of embind)
-        return tc::js::js_ref<tc::js::globals::String>(
-            emscripten::val(
-                tc::explicit_cast<std::string>(std::forward<Rng>(rng))
-            )
-        );
-    }
-};
-} // namespace tc::no_adl

@@ -115,6 +115,15 @@ struct js_ref {
         _ASSERT(!m_emval.isUndefined() && !m_emval.isNull());
     }
 
+    template<typename Arg, typename = std::enable_if_t<
+        !tc::is_instance<js_ref, tc::remove_cvref_t<Arg>>::value &&
+        !std::is_same<emscripten::val, tc::remove_cvref_t<Arg>>::value
+    >>
+    explicit js_ref(Arg&& arg) noexcept : js_ref(T::_construct(std::forward<Arg>(arg))) {}
+
+    template<typename... Args, typename = std::enable_if_t<sizeof...(Args) != 1>>
+    explicit js_ref(Args&&... args) noexcept : js_ref(T::_construct(std::forward<Args>(args)...)) {}
+
     /**
      * Upcasting.
      * [util.smartptr.shared] says:
