@@ -45,6 +45,18 @@ int main() {
         _ASSERTEQUAL(message->length(), 11);
         _ASSERTEQUAL(tc::explicit_cast<std::string>(message), "Hello World");
         console()->log(message);
+
+        // Implicit upcast.
+        js_ref<IUnknown> anyMessage = message;
+        static_assert(std::is_convertible<js_ref<String>, js_ref<IUnknown>>::value);
+        _ASSERT(message.getEmval().strictlyEquals(anyMessage.getEmval()));
+        anyMessage = message;
+        _ASSERT(message.getEmval().strictlyEquals(anyMessage.getEmval()));
+
+        // Explicit downcast.
+        js_ref<String> message2(anyMessage);
+        static_assert(!std::is_convertible<js_ref<IUnknown>, js_ref<String>>::value);
+        _ASSERT(message.getEmval().strictlyEquals(message2.getEmval()));
     }
 
     {
