@@ -19,8 +19,11 @@ using no_adl::IsJsInteropable;
 
 namespace property_proxy_detail {
 namespace no_adl {
+template<typename, typename, typename = void>
+struct CPropertyProxy {};
+
 template<typename T, typename Name>
-struct CPropertyProxy : tc::nonmovable {
+struct CPropertyProxy<T, Name, std::enable_if_t<!std::is_class<T>::value>> : tc::nonmovable {
     static_assert(IsJsInteropable<T>::value);
 
     CPropertyProxy(emscripten::val&& m_emval, Name m_name)
@@ -28,11 +31,27 @@ struct CPropertyProxy : tc::nonmovable {
         , m_name(tc_move(m_name)) {
     }
 
-    // TODO: it's still possible to use incorrectly:
-    // auto x = foo["bar"]; // Presumably copy.
-    // foo["bar"] = undefined;
-    // baz(tc_move(x)); // 'Moving' value to baz.
     operator T() && { return m_emval[m_name].template as<T>(); }
+    T const& operator=(T const& value) && {
+        m_emval.set(m_name, emscripten::val(value));
+        return value;
+    }
+
+private:
+    emscripten::val m_emval;
+    Name m_name;
+};
+
+template<typename T, typename Name>
+struct CPropertyProxy<T, Name, std::enable_if_t<std::is_class<T>::value>> : tc::nonmovable, T {
+    static_assert(IsJsInteropable<T>::value);
+
+    CPropertyProxy(emscripten::val&& m_emval, Name m_name)
+        : T(m_emval[m_name].template as<T>())
+        , m_emval(tc_move(m_emval))
+        , m_name(tc_move(m_name)) {
+    }
+
     T const& operator=(T const& value) && {
         m_emval.set(m_name, emscripten::val(value));
         return value;

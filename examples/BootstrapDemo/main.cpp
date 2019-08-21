@@ -56,6 +56,13 @@ int main() {
         _ASSERTEQUAL(arr[2], 3);
     }
 
+    {
+        js_ref<Array<js_ref<String>>> arr(std::initializer_list<char const*>{"Hello", "Hi!"});
+        _ASSERTEQUAL(arr->length(), 2);
+        _ASSERTEQUAL(arr[0]->length(), 5);
+        _ASSERTEQUAL(arr[1]->length(), 3);
+    }
+
     auto arr = tc::explicit_cast<js_ref<Array<int>>>(std::initializer_list<int>{1, 2, 3});
     console()->log(arr);
     _ASSERTEQUAL(arr->length(), 3);
