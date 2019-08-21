@@ -13,16 +13,16 @@ template<typename T>
 struct Array : virtual IJsBase {
     static_assert(IsJsInteropable<T>::value);
 
-    int length() { return m_emval["length"].template as<int>(); }
+    auto length() { return _getProperty<int>("length"); }
 
-    void push(T const& item) { m_emval.call<void>("push", item); }
+    auto push(T const& item) { return _call<void>("push", item); }
 
-    auto operator[](int i) { return property_proxy_detail::CPropertyProxy<T, int>(m_emval, i); }
+    auto operator[](int i) { return _propertyProxy<T>(i); }
 
     // Generator range. This adds operator() to array interface (which did not exist before), but it's ok.
     template<typename Fn>
-    void operator()(Fn fn) noexcept {
-        m_emval.call<void>("forEach", js_lambda_wrap([&](T value, js_ref<IAny>, js_ref<IAny>) noexcept {
+    auto operator()(Fn fn) noexcept {
+        return _call<void>("forEach", js_lambda_wrap([&](T value, js_ref<IAny>, js_ref<IAny>) noexcept {
             fn(tc_move(value));
         }));
     }
@@ -32,23 +32,23 @@ template<typename T>
 struct ReadonlyArray : virtual IJsBase {
     static_assert(IsJsInteropable<T>::value);
 
-    int length() { return m_emval["length"].template as<int>(); }
+    auto length() { return _getProperty<int>("length"); }
 
-    auto operator[](int i) { return m_emval[i].template as<T>(); }
+    auto operator[](int i) { return _getProperty<T>(i); }
 
     // Generator range. This adds operator() to array interface (which did not exist before), but it's ok.
     template<typename Fn>
-    void operator()(Fn fn) noexcept {
-        m_emval.call<void>("forEach", js_lambda_wrap([&](T value, js_ref<IAny>, js_ref<IAny>) noexcept {
+    auto operator()(Fn fn) noexcept {
+        return _call<void>("forEach", js_lambda_wrap([&](T value, js_ref<IAny>, js_ref<IAny>) noexcept {
             fn(tc_move(value));
         }));
     }
 };
 
 struct String : virtual IJsBase {
-    int length() { return m_emval["length"].template as<int>(); }
+    auto length() { return _getProperty<int>("length"); }
 
-    explicit operator std::string() { return m_emval.template as<std::string>(); }
+    explicit operator auto() { return _getEmval().template as<std::string>(); }
 };
 
 struct Console : virtual IJsBase {
@@ -56,7 +56,7 @@ struct Console : virtual IJsBase {
     // TODO: perfect forwarding?
     // TODO: allow passing options, ints, etc
     template<typename... Args>
-    void log(js_ref<Args>... args) { m_emval.call<void>("log", args...); }
+    auto log(js_ref<Args>... args) { return _call<void>("log", args...); }
 };
 } // namespace no_adl
 

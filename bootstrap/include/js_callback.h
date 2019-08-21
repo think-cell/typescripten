@@ -146,7 +146,7 @@ struct IJsFunction<R(Args...)> : virtual IJsBase {
         // These are limitations of emscripten::val, can be worked around.
         static_assert(std::is_same<tc::type::find_unique_if_result::type_not_found, tc::type::find_unique<tc::type::list<Args...>, pass_this_t>>::value, "Cannot call a JS function which needs 'this'");
         static_assert(std::is_same<tc::type::find_unique_if_result::type_not_found, tc::type::find_unique<tc::type::list<Args...>, pass_all_arguments_t>>::value, "Cannot call a JS function which takes an array of arguments");
-        return m_emval(tc_move(args)...).template as<R>();
+        return _call_this<R>(tc_move(args)...);
     }
 };
 } // namespace no_adl

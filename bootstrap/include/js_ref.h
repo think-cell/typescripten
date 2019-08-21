@@ -11,10 +11,18 @@
 #include "noncopyable.h"
 
 namespace tc::js {
+namespace no_adl {
+template<typename, typename = void>
+struct IsJsInteropable : std::false_type {};
+} // namespace no_adl
+using no_adl::IsJsInteropable;
+
 namespace property_proxy_detail {
 namespace no_adl {
 template<typename T, typename Name>
 struct CPropertyProxy : tc::nonmovable {
+    static_assert(IsJsInteropable<T>::value);
+
     CPropertyProxy(emscripten::val m_emval, Name m_name)
         : m_emval(tc_move(m_emval))
         , m_name(tc_move(m_name)) {
@@ -40,14 +48,51 @@ using no_adl::CPropertyProxy;
 
 namespace no_adl {
 struct IJsBase {
-protected:
+private:
     emscripten::val m_emval;
 
+protected:
     explicit IJsBase(emscripten::val const& m_emval) noexcept : m_emval(m_emval) {}
     explicit IJsBase(emscripten::val&& m_emval) noexcept : m_emval(tc_move(m_emval)) {}
     explicit IJsBase() : m_emval(emscripten::val::undefined()) {
         // Should never be called.
         _ASSERTFALSE;
+    }
+
+    template<typename T, typename Name>
+    T _getProperty(Name&& name) {
+        static_assert(IsJsInteropable<T>::value);
+        return m_emval[std::forward<Name>(name)].template as<T>();
+    }
+
+    template<typename T, typename Name>
+    void _setProperty(Name&& name, T const& value) {
+        static_assert(IsJsInteropable<T>::value);
+        m_emval.set(std::forward<Name>(name), value);
+    }
+
+    template<typename R, typename... Args>
+    R _call(char const* name, Args&&... args) {
+        static_assert(IsJsInteropable<R>::value);
+        static_assert(std::conjunction<IsJsInteropable<tc::remove_cvref_t<Args>>...>::value);
+        return m_emval.call<R>(name, std::forward<Args>(args)...);
+    }
+
+    template<typename R, typename... Args>
+    R _call_this(Args&&... args) {
+        static_assert(IsJsInteropable<R>::value);
+        static_assert(std::conjunction<IsJsInteropable<tc::remove_cvref_t<Args>>...>::value);
+        return m_emval(std::forward<Args>(args)...).template as<R>();
+    }
+
+    template<typename Property, typename Name>
+    auto _propertyProxy(Name name) {
+        static_assert(IsJsInteropable<Property>::value);
+        return tc::js::property_proxy_detail::CPropertyProxy<Property, Name>(m_emval, tc_move(name));
+    }
+
+    emscripten::val& _getEmval() {
+        return m_emval;
     }
 
     // Make sure the class and its descendants are abstract.
@@ -149,9 +194,6 @@ template<typename T> struct IsJsRef<js_ref<T>> : std::true_type {
     using element_type = T;
 };
 
-template<typename, typename = void>
-struct IsJsInteropable : std::false_type {};
-
 template<typename T>
 struct IsJsInteropable<T, std::enable_if_t<IsJsRef<T>::value>> : std::true_type {};
 
@@ -178,7 +220,6 @@ struct IsJsInteropable<
 using no_adl::IJsBase;
 using no_adl::js_ref;
 using no_adl::IsJsRef;
-using no_adl::IsJsInteropable;
 } // namespace tc::js
 
 // Custom marshalling
