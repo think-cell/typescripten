@@ -10,7 +10,7 @@
 #include "js_types.h"
 
 using tc::js::js_ref;
-using tc::js::IAny;
+using tc::js::IUnknown;
 using tc::js::globals::Array;
 using tc::js::globals::ReadonlyArray;
 using tc::js::globals::String;
@@ -92,31 +92,31 @@ int main() {
 
     {
         // Test optional
-        using OptionalAny = std::optional<tc::js::js_ref<tc::js::IAny>>;
+        using OptionalUnknown = std::optional<tc::js::js_ref<tc::js::IUnknown>>;
         static_assert(
             std::is_same<
-                typename emscripten::internal::BindingType<OptionalAny>::WireType,
+                typename emscripten::internal::BindingType<OptionalUnknown>::WireType,
                 typename emscripten::internal::BindingType<emscripten::val>::WireType
             >::value);
 
         {
-            emscripten::val emval{OptionalAny()};
-            _ASSERT(!emval.template as<OptionalAny>());
+            emscripten::val emval{OptionalUnknown()};
+            _ASSERT(!emval.template as<OptionalUnknown>());
             _ASSERT(emval.isUndefined());
         }
         {
             emscripten::val emvalOrigin = emscripten::val::object();
-            emscripten::val emval{OptionalAny(emvalOrigin)};
-            auto oanyParsed = emval.template as<OptionalAny>();
-            _ASSERT(oanyParsed);
-            _ASSERT(oanyParsed->getEmval().strictlyEquals(emvalOrigin));
+            emscripten::val emval{OptionalUnknown(emvalOrigin)};
+            auto ounkParsed = emval.template as<OptionalUnknown>();
+            _ASSERT(ounkParsed);
+            _ASSERT(ounkParsed->getEmval().strictlyEquals(emvalOrigin));
             _ASSERT(!emval.isUndefined());
             _ASSERT(emval.strictlyEquals(emvalOrigin));
         }
         {
-            OptionalAny oany;
-            emscripten::val emval(oany);
-            _ASSERT(!emval.template as<OptionalAny>());
+            OptionalUnknown ounk;
+            emscripten::val emval(ounk);
+            _ASSERT(!emval.template as<OptionalUnknown>());
             _ASSERT(emval.isUndefined());
         }
     }

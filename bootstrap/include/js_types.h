@@ -11,13 +11,13 @@
 
 namespace tc::js {
 namespace no_adl {
-struct IAny : virtual IJsBase {
+struct IUnknown : virtual IJsBase {
 };
 
 template<typename T>
 struct IsJsIntegralEnum : std::false_type {};
 } // namespace no_adl
-using no_adl::IAny;
+using no_adl::IUnknown;
 using no_adl::IsJsIntegralEnum;
 
 template<typename T>
