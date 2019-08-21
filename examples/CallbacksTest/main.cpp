@@ -10,6 +10,14 @@ using tc::js::IJsFunction;
 using tc::js::pass_this_t;
 using tc::js::pass_all_arguments_t;
 
+struct SomeJsClass : virtual tc::js::IUnknown {
+    auto intValue() { return _getProperty<int>("intValue"); }
+
+    static auto _construct(int val) {
+        return val::module_property("SomeJsClass").new_(val);
+    }
+};
+
 #define FOR_ALL_CALLBACKS(CreateCallback) \
     CreateCallback(TestSum, int, (int a, int b), { \
         _ASSERTEQUAL(a, 10); \
@@ -36,25 +44,25 @@ using tc::js::pass_all_arguments_t;
         _ASSERTEQUAL(emvalArgs[1].as<std::string>(), "message"); \
         _ASSERTEQUAL(emvalArgs["length"].as<int>(), 3); \
     }) \
-    CreateCallback(TestPassAllArgumentsAndReturn, std::string, (pass_all_arguments_t, val emvalArgs, int a), { \
+    CreateCallback(TestPassAllArgumentsAndReturn, js_ref<SomeJsClass>, (pass_all_arguments_t, val emvalArgs, int a), { \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(emvalArgs[1].as<std::string>(), "message"); \
         _ASSERTEQUAL(emvalArgs["length"].as<int>(), 3); \
-        return "returnValue"; \
+        return js_ref<SomeJsClass>(123); \
     }) \
-    CreateCallback(TestPassThisAndReturn, std::string, (pass_this_t, val emvalThis, int a, std::string b, val c), { \
+    CreateCallback(TestPassThisAndReturn, js_ref<SomeJsClass>, (pass_this_t, val emvalThis, int a, std::string b, val c), { \
         _ASSERTEQUAL(emvalThis["secretField"].as<std::string>(), "secretValue"); \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(b, "message"); \
         _ASSERT(c.isNull()); \
-        return "returnValue"; \
+        return js_ref<SomeJsClass>(123); \
     }) \
-    CreateCallback(TestPassThisPassAllArgumentsAndReturn, std::string, (pass_this_t, val emvalThis, pass_all_arguments_t, val emvalArgs, int a), { \
+    CreateCallback(TestPassThisPassAllArgumentsAndReturn, js_ref<SomeJsClass>, (pass_this_t, val emvalThis, pass_all_arguments_t, val emvalArgs, int a), { \
         _ASSERTEQUAL(emvalThis["secretField"].as<std::string>(), "secretValue"); \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(emvalArgs[1].as<std::string>(), "message"); \
         _ASSERTEQUAL(emvalArgs["length"].as<int>(), 3); \
-        return "returnValue"; \
+        return js_ref<SomeJsClass>(123); \
     })
 
 // Macro so callback creation is performed between "start" and "end".
