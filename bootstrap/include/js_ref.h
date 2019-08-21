@@ -99,6 +99,30 @@ protected:
     virtual void __IUnknown_and_derived_are_abstract_Use_js_ref_instead() = 0;
 };
 
+template<typename> struct js_ref;
+} // namespace no_adl
+using no_adl::IUnknown;
+using no_adl::js_ref;
+
+namespace is_js_ref_detail {
+namespace no_adl {
+template<typename T>
+struct JsRefFound : std::true_type {
+    using element_type = T;
+};
+} // namespace no_adl
+using no_adl::JsRefFound;
+template<typename T> JsRefFound<T> is_js_ref_try_convert(js_ref<T>);
+std::false_type is_js_ref_try_convert(...);
+
+template<typename T>
+using IsJsRef = std::conjunction<
+    tc::is_decayed<T>,
+    decltype(is_js_ref_try_convert(std::declval<T>()))  // TODO: explicitly specify namespace to avoid ADL?
+>;
+} // namespace is_js_ref_detail
+
+namespace no_adl {
 // Non-final, but non-polymorphic as well. Derive with care.
 template<typename T>
 struct js_ref {
@@ -198,26 +222,6 @@ public:
     CArrowProxy operator->() const& noexcept { return CArrowProxy(m_emval); }
 };
 } // namespace no_adl
-using no_adl::IUnknown;
-using no_adl::js_ref;
-
-namespace is_js_ref_detail {
-namespace no_adl {
-template<typename T>
-struct JsRefFound : std::true_type {
-    using element_type = T;
-};
-} // namespace no_adl
-using no_adl::JsRefFound;
-template<typename T> JsRefFound<T> is_js_ref_try_convert(js_ref<T>);
-std::false_type is_js_ref_try_convert(...);
-
-template<typename T>
-using IsJsRef = std::conjunction<
-    tc::is_decayed<T>,
-    decltype(is_js_ref_try_convert(std::declval<T>()))  // TODO: explicitly specify namespace to avoid ADL?
->;
-} // namespace is_js_ref_detail
 
 namespace no_adl {
 template<typename T>
