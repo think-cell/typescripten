@@ -214,9 +214,9 @@ struct js_ref {
         return CArrowProxy(m_emval)[std::forward<Index>(index)];
     }
 
-    template<typename U, typename = decltype(U(std::declval<T>()))>
+    template<typename U, typename T2 = T, typename = decltype(std::declval<T2>().operator U())>
     explicit operator U() const& noexcept {
-        return U(CArrowProxy(m_emval));
+        return CArrowProxy(m_emval).operator U();
     }
 
 private:

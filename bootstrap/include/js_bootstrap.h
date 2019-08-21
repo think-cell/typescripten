@@ -66,7 +66,9 @@ struct ReadonlyArray : virtual IUnknown {
 struct String : virtual IUnknown {
     auto length() { return _getProperty<int>("length"); }
 
-    explicit operator auto() { return _getEmval().template as<std::string>(); }
+    // TODO: clang does not see String::operator std::string() when return type is deduced, report bug?
+    // See https://godbolt.org/z/y8_jBG
+    explicit operator std::string() { return _getEmval().template as<std::string>(); }
 
     template<typename Rng>
     static auto _construct(Rng&& rng) noexcept {
