@@ -87,7 +87,7 @@ struct SConversions<tc::js::js_ref<tc::js::globals::ReadonlyArray<T>>> {
     template<typename Rng>
     static auto fn(Rng&& rng) { // TODO: MAYTHROW?
         return tc::js::js_ref<tc::js::globals::ReadonlyArray<T>>(
-            tc::explicit_cast<tc::js::js_ref<tc::js::globals::Array<T>>>(std::forward<Rng>(rng)).get()
+            tc::explicit_cast<tc::js::js_ref<tc::js::globals::Array<T>>>(std::forward<Rng>(rng)).getEmval()
         );
     }
 };

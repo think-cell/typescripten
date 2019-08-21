@@ -109,7 +109,7 @@ int main() {
             emscripten::val emval{OptionalAny(emvalOrigin)};
             auto oanyParsed = emval.template as<OptionalAny>();
             _ASSERT(oanyParsed);
-            _ASSERT(oanyParsed->get().strictlyEquals(emvalOrigin));
+            _ASSERT(oanyParsed->getEmval().strictlyEquals(emvalOrigin));
             _ASSERT(!emval.isUndefined());
             _ASSERT(emval.strictlyEquals(emvalOrigin));
         }

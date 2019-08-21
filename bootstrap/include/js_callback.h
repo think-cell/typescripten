@@ -174,7 +174,7 @@ struct CUniqueDetachableJsFunction : tc::nonmovable, RequireRelaxedPointerSafety
     ) {}
 
     ~CUniqueDetachableJsFunction() {
-        this->get().template call<void>("detach");
+        this->getEmval().template call<void>("detach");
     }
 };
 } // namespace no_adl
