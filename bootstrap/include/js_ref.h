@@ -23,7 +23,7 @@ template<typename T, typename Name>
 struct CPropertyProxy : tc::nonmovable {
     static_assert(IsJsInteropable<T>::value);
 
-    CPropertyProxy(emscripten::val m_emval, Name m_name)
+    CPropertyProxy(emscripten::val&& m_emval, Name m_name)
         : m_emval(tc_move(m_emval))
         , m_name(tc_move(m_name)) {
     }
@@ -86,9 +86,9 @@ protected:
     }
 
     template<typename Property, typename Name>
-    auto _propertyProxy(Name name) {
+    auto _propertyProxy(Name name) && {
         static_assert(IsJsInteropable<Property>::value);
-        return tc::js::property_proxy_detail::CPropertyProxy<Property, Name>(m_emval, tc_move(name));
+        return tc::js::property_proxy_detail::CPropertyProxy<Property, Name>(tc_move(m_emval), tc_move(name));
     }
 
     emscripten::val& _getEmval() {

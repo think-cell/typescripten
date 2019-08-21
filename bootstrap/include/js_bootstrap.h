@@ -6,6 +6,7 @@
 #include "range.h"
 #include "js_types.h"
 #include "js_callback.h"
+#include "tc_move.h"
 
 namespace tc::js::globals {
 
@@ -18,7 +19,7 @@ struct Array : virtual IJsBase {
 
     auto push(T const& item) { return _call<void>("push", item); }
 
-    auto operator[](int i) { return _propertyProxy<T>(i); }
+    auto operator[](int i) && { return tc_move_always(*this).template _propertyProxy<T>(i); }
 
     // Generator range. This adds operator() to array interface (which did not exist before), but it's ok.
     template<typename Fn>
