@@ -181,11 +181,6 @@ struct CUniqueDetachableJsFunction : tc::nonmovable, RequireRelaxedPointerSafety
 using no_adl::CUniqueDetachableJsFunction;
 } // namespace callback_detail
 
-template<typename T>
-struct IsJsRef<callback_detail::CUniqueDetachableJsFunction<T>> : std::true_type {
-    using element_type = IJsFunction<T>;
-};
-
 #define TC_JS_MEMBER_FUNCTION(ClassName, FieldName, ReturnType, Arguments) \
     void FieldName##_tc_js_type_check() { \
         STATICASSERTSAME(ClassName&, decltype(*this), "ClassName specified in TC_JS_MEMBER_FUNCTION is incorrect"); \
@@ -233,7 +228,4 @@ private:
 template<typename Fn> js_lambda_wrap(Fn) -> js_lambda_wrap<Fn>;
 } // namespace no_adl
 using no_adl::js_lambda_wrap;
-
-template<typename Fn>
-struct IsJsRef<js_lambda_wrap<Fn>> : IsJsRef<callback_detail::js_lambda_wrap_base_t<Fn>> {};
 } // namespace tc::js
