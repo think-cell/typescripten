@@ -254,9 +254,7 @@ struct IsJsInteropable<
             signed int, unsigned int,
             signed long, unsigned long,
             float, double,
-            bool,
-            emscripten::val,
-            std::string
+            bool
         >,
         T
     >::found>
@@ -284,13 +282,5 @@ namespace emscripten::internal {
         static auto fromWireType(WireType v) {
             return tc::js::js_ref<typename tc::js::is_js_ref_detail::IsJsRef<T>::element_type>(BindingType<emscripten::val>::fromWireType(v));
         }
-    };
-
-    template<typename T>
-    struct TypeID<T, std::enable_if_t<!tc::js::IsJsInteropable<tc::remove_cvref_t<T>>::value>> {
-        static_assert(
-            tc::js::IsJsInteropable<tc::remove_cvref_t<T>>::value,
-            "js_ref.h is included, prohibiting passing generic non-IsJsInteropable types to emscripten for extra type safety, even if there is a corresponding EMSCRIPTEN_BINDINGS"
-        );
     };
 }
