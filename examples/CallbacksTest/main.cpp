@@ -6,20 +6,20 @@
 #include "js_callback.h"
 #include "js_bootstrap.h"
 
-using tc::js::js_ref;
 using tc::js::js_unknown;
 using tc::js::js_function;
 using tc::js::pass_this_t;
 using tc::js::pass_all_arguments_t;
 using tc::js::globals::Array;
 
-struct SomeJsClass : virtual tc::js::IUnknown {
+struct _js_SomeJsClass : virtual tc::js::IUnknown {
     auto intValue() { return _getProperty<int>("intValue"); }
 
     static auto _construct(int v) {
         return emscripten::val::module_property("SomeJsClass").new_(v);
     }
 };
+using SomeJsClass = tc::js::js_ref<_js_SomeJsClass>;
 
 #define FOR_ALL_CALLBACKS(CreateCallback) \
     CreateCallback(TestSum, int, (int a, int b), { \
@@ -35,37 +35,37 @@ struct SomeJsClass : virtual tc::js::IUnknown {
         _ASSERTEQUAL(std::string(tc::js::globals::String(jsarrunkArgs[1])), "message"); \
         _ASSERTEQUAL(jsarrunkArgs->length(), 3); \
     }) \
-    CreateCallback(TestPassThis, void, (pass_this_t, js_ref<SomeJsClass> jssjcThis, int a, tc::js::globals::String b, std::optional<js_unknown> c), { \
+    CreateCallback(TestPassThis, void, (pass_this_t, SomeJsClass jssjcThis, int a, tc::js::globals::String b, std::optional<js_unknown> c), { \
         _ASSERTEQUAL(jssjcThis->intValue(), 10); \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(std::string(b), "message"); \
         _ASSERT(!c.has_value()); \
     }) \
-    CreateCallback(TestPassThisPassAllArguments, void, (pass_this_t, js_ref<SomeJsClass> jssjcThis, pass_all_arguments_t, Array<js_unknown> jsarrunkArgs, int a), { \
+    CreateCallback(TestPassThisPassAllArguments, void, (pass_this_t, SomeJsClass jssjcThis, pass_all_arguments_t, Array<js_unknown> jsarrunkArgs, int a), { \
         _ASSERTEQUAL(jssjcThis->intValue(), 10); \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(std::string(tc::js::globals::String(jsarrunkArgs[1])), "message"); \
         _ASSERTEQUAL(jsarrunkArgs->length(), 3); \
     }) \
-    CreateCallback(TestPassAllArgumentsAndReturn, js_ref<SomeJsClass>, (pass_all_arguments_t, Array<js_unknown> jsarrunkArgs, int a), { \
+    CreateCallback(TestPassAllArgumentsAndReturn, SomeJsClass, (pass_all_arguments_t, Array<js_unknown> jsarrunkArgs, int a), { \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(std::string(tc::js::globals::String(jsarrunkArgs[1])), "message"); \
         _ASSERTEQUAL(jsarrunkArgs->length(), 3); \
-        return js_ref<SomeJsClass>(123); \
+        return SomeJsClass(123); \
     }) \
-    CreateCallback(TestPassThisAndReturn, js_ref<SomeJsClass>, (pass_this_t, js_ref<SomeJsClass> jssjcThis, int a, tc::js::globals::String b, std::optional<js_unknown> c), { \
+    CreateCallback(TestPassThisAndReturn, SomeJsClass, (pass_this_t, SomeJsClass jssjcThis, int a, tc::js::globals::String b, std::optional<js_unknown> c), { \
         _ASSERTEQUAL(jssjcThis->intValue(), 10); \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(std::string(b), "message"); \
         _ASSERT(!c.has_value()); \
-        return js_ref<SomeJsClass>(123); \
+        return SomeJsClass(123); \
     }) \
-    CreateCallback(TestPassThisPassAllArgumentsAndReturn, js_ref<SomeJsClass>, (pass_this_t, js_ref<SomeJsClass> jssjcThis, pass_all_arguments_t, Array<js_unknown> jsarrunkArgs, int a), { \
+    CreateCallback(TestPassThisPassAllArgumentsAndReturn, SomeJsClass, (pass_this_t, SomeJsClass jssjcThis, pass_all_arguments_t, Array<js_unknown> jsarrunkArgs, int a), { \
         _ASSERTEQUAL(jssjcThis->intValue(), 10); \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(std::string(tc::js::globals::String(jsarrunkArgs[1])), "message"); \
         _ASSERTEQUAL(jsarrunkArgs->length(), 3); \
-        return js_ref<SomeJsClass>(123); \
+        return SomeJsClass(123); \
     })
 
 // Macro so callback creation is performed between "start" and "end".
@@ -105,7 +105,7 @@ int main() {
         #undef CALL_MEMBER
     }
     {
-        printf("Calling callbacks through js_ref\n");
+        printf("Calling callbacks through js_function\n");
         tc::js::js_lambda_wrap cbStorage([](tc::js::globals::String str) noexcept {
             return tc::js::globals::String(tc::concat("hello ", std::string(str)));
         });
