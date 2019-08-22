@@ -159,8 +159,9 @@ struct js_ref {
     }
 
     template<typename... Args, typename = std::enable_if_t<
-        (!is_js_ref_detail::IsJsRef<tc::remove_cvref_t<Args>>::value && ...) &&
-        (!std::is_same<emscripten::val, tc::remove_cvref_t<Args>>::value && ...)
+        sizeof...(Args) != 1 ||
+        ((!is_js_ref_detail::IsJsRef<tc::remove_cvref_t<Args>>::value && ...) &&
+         (!std::is_same<emscripten::val, tc::remove_cvref_t<Args>>::value && ...))
     >>
     explicit js_ref(Args&&... args) noexcept : js_ref(T::_construct(std::forward<Args>(args)...)) {}
 
