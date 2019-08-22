@@ -19,7 +19,9 @@ struct Array : virtual IUnknown {
 
     auto push(T const& item) { return _call<void>("push", item); }
 
-    auto operator[](int i) && { return tc_move_always(*this).template _propertyProxy<T>(i); }
+    auto operator[](int i) && { return _getProperty<T>(i); }
+
+    void _setIndex(int i, T value) { _setProperty(i, tc_move(value)); }
 
     // Generator range. This adds operator() to array interface (which did not exist before), but it's ok.
     template<typename Fn>

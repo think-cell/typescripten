@@ -17,54 +17,6 @@ struct IsJsInteropable : std::false_type {};
 } // namespace no_adl
 using no_adl::IsJsInteropable;
 
-namespace property_proxy_detail {
-namespace no_adl {
-template<typename, typename, typename = void>
-struct CPropertyProxy {};
-
-template<typename T, typename Name>
-struct CPropertyProxy<T, Name, std::enable_if_t<!std::is_class<T>::value>> : tc::nonmovable {
-    static_assert(IsJsInteropable<T>::value);
-
-    CPropertyProxy(emscripten::val&& m_emval, Name m_name)
-        : m_emval(tc_move(m_emval))
-        , m_name(tc_move(m_name)) {
-    }
-
-    operator T() && { return m_emval[m_name].template as<T>(); }
-    T const& operator=(T const& value) && {
-        m_emval.set(m_name, emscripten::val(value));
-        return value;
-    }
-
-private:
-    emscripten::val m_emval;
-    Name m_name;
-};
-
-template<typename T, typename Name>
-struct CPropertyProxy<T, Name, std::enable_if_t<std::is_class<T>::value>> : tc::nonmovable, T {
-    static_assert(IsJsInteropable<T>::value);
-
-    CPropertyProxy(emscripten::val&& m_emval, Name m_name)
-        : T(m_emval[m_name].template as<T>())
-        , m_emval(tc_move(m_emval))
-        , m_name(tc_move(m_name)) {
-    }
-
-    T const& operator=(T const& value) && {
-        m_emval.set(m_name, emscripten::val(value));
-        return value;
-    }
-
-private:
-    emscripten::val m_emval;
-    Name m_name;
-};
-} // namespace no_adl
-using no_adl::CPropertyProxy;
-} // namespace property_proxy_detail
-
 namespace no_adl {
 struct IUnknown {
 private:
@@ -102,12 +54,6 @@ protected:
         static_assert(IsJsInteropable<R>::value);
         static_assert(std::conjunction<IsJsInteropable<tc::remove_cvref_t<Args>>...>::value);
         return m_emval(std::forward<Args>(args)...).template as<R>();
-    }
-
-    template<typename Property, typename Name>
-    auto _propertyProxy(Name name) && {
-        static_assert(IsJsInteropable<Property>::value);
-        return tc::js::property_proxy_detail::CPropertyProxy<Property, Name>(tc_move(m_emval), tc_move(name));
     }
 
     emscripten::val& _getEmval() {

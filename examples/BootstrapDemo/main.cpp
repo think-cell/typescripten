@@ -79,7 +79,7 @@ int main() {
     console()->log(arr);
     _ASSERTEQUAL(arr->length(), 3);
     _ASSERTEQUAL(arr[1], 2);
-    arr[1] = 15;
+    arr->_setIndex(1, 15);
     _ASSERTEQUAL(arr[1], 15);
 
     {
