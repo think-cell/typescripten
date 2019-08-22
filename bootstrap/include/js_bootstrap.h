@@ -26,7 +26,7 @@ struct Array : virtual IUnknown {
     // Generator range. This adds operator() to array interface (which did not exist before), but it's ok.
     template<typename Fn>
     auto operator()(Fn fn) noexcept {
-        return _call<void>("forEach", js_lambda_wrap([&](T value, js_ref<IUnknown>, js_ref<IUnknown>) noexcept {
+        return _call<void>("forEach", js_lambda_wrap([&](T value, js_unknown, js_unknown) noexcept {
             fn(tc_move(value));
         }));
     }
@@ -52,7 +52,7 @@ struct ReadonlyArray : virtual IUnknown {
     // Generator range. This adds operator() to array interface (which did not exist before), but it's ok.
     template<typename Fn>
     auto operator()(Fn fn) noexcept {
-        return _call<void>("forEach", js_lambda_wrap([&](T value, js_ref<IUnknown>, js_ref<IUnknown>) noexcept {
+        return _call<void>("forEach", js_lambda_wrap([&](T value, js_unknown, js_unknown) noexcept {
             fn(tc_move(value));
         }));
     }

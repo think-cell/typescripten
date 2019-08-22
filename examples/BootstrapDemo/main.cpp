@@ -10,7 +10,7 @@
 #include "js_types.h"
 
 using tc::js::js_ref;
-using tc::js::IUnknown;
+using tc::js::js_unknown;
 using tc::js::globals::Array;
 using tc::js::globals::ReadonlyArray;
 using tc::js::globals::String;
@@ -47,15 +47,15 @@ int main() {
         console()->log(message);
 
         // Implicit upcast.
-        js_ref<IUnknown> anyMessage = message;
-        static_assert(std::is_convertible<js_ref<String>, js_ref<IUnknown>>::value);
+        js_unknown anyMessage = message;
+        static_assert(std::is_convertible<js_ref<String>, js_unknown>::value);
         _ASSERT(message.getEmval().strictlyEquals(anyMessage.getEmval()));
         anyMessage = message;
         _ASSERT(message.getEmval().strictlyEquals(anyMessage.getEmval()));
 
         // Explicit downcast.
         js_ref<String> message2(anyMessage);
-        static_assert(!std::is_convertible<js_ref<IUnknown>, js_ref<String>>::value);
+        static_assert(!std::is_convertible<js_unknown, js_ref<String>>::value);
         _ASSERT(message.getEmval().strictlyEquals(message2.getEmval()));
     }
 
@@ -111,7 +111,7 @@ int main() {
 
     {
         // Test optional
-        using OptionalUnknown = std::optional<tc::js::js_ref<tc::js::IUnknown>>;
+        using OptionalUnknown = std::optional<tc::js::js_unknown>;
         static_assert(
             std::is_same<
                 typename emscripten::internal::BindingType<OptionalUnknown>::WireType,

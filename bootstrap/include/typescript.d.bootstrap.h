@@ -65,8 +65,8 @@ struct ts : virtual IUnknown {
         void start(std::optional<int> v) { _setProperty("start", v); }
 
         /* string | DiagnosticMessageChain; */
-        auto messageText() { return _getProperty<js_ref<IUnknown>>("messageText"); }
-        void messageText(js_ref<IUnknown> v) { _setProperty("messageText", v); }
+        auto messageText() { return _getProperty<js_unknown>("messageText"); }
+        void messageText(js_unknown v) { _setProperty("messageText", v); }
     };
 
     struct Diagnostic : virtual DiagnosticRelatedInformation {
@@ -131,7 +131,7 @@ struct ts : virtual IUnknown {
         return _call<js_ref<ReadonlyArray<js_ref<Diagnostic>>>>("getPreEmitDiagnostics", program);
     }
 
-    auto flattenDiagnosticMessageText(js_ref<IUnknown> messageText, js_ref<String> newLine) {
+    auto flattenDiagnosticMessageText(js_unknown messageText, js_ref<String> newLine) {
         return _call<js_ref<String>>("flattenDiagnosticMessageText", messageText, newLine);
     }
 };

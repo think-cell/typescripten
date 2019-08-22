@@ -7,7 +7,6 @@
 #include "js_callback.h"
 
 using tc::js::js_ref;
-using tc::js::IJsFunction;
 using tc::js::globals::ts;
 using tc::js::globals::Array;
 using tc::js::globals::ReadonlyArray;

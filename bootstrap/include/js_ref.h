@@ -68,6 +68,7 @@ template<typename> struct js_ref;
 } // namespace no_adl
 using no_adl::IUnknown;
 using no_adl::js_ref;
+using js_unknown = js_ref<IUnknown>;
 
 namespace is_js_ref_detail {
 namespace no_adl {

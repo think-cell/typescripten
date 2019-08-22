@@ -151,6 +151,7 @@ struct IJsFunction<R(Args...)> : virtual IUnknown {
 };
 } // namespace no_adl
 using no_adl::IJsFunction;
+template<typename T> using js_function = js_ref<IJsFunction<T>>;
 
 namespace callback_detail {
 using FirstArgument = void*;
@@ -168,8 +169,8 @@ struct RequireRelaxedPointerSafety {
 // We do not care about slicing to js_ref<>, because this class is
 // only stored as a by-value field.
 template<typename T>
-struct CUniqueDetachableJsFunction : tc::nonmovable, RequireRelaxedPointerSafety, js_ref<IJsFunction<T>> { // TODO: private inheritance?
-    CUniqueDetachableJsFunction(FunctionPointer pfunc, FirstArgument arg0) noexcept : js_ref<IJsFunction<T>>(
+struct CUniqueDetachableJsFunction : tc::nonmovable, RequireRelaxedPointerSafety, js_function<T> { // TODO: private inheritance?
+    CUniqueDetachableJsFunction(FunctionPointer pfunc, FirstArgument arg0) noexcept : js_function<T>(
         emscripten::val::module_property("tc_js_callback_detail_js_CreateJsFunction")(reinterpret_cast<PointerNumber>(pfunc), reinterpret_cast<PointerNumber>(arg0))
     ) {}
 
@@ -192,7 +193,7 @@ using no_adl::CUniqueDetachableJsFunction;
     ReturnType FieldName##_tc_js_impl Arguments noexcept
 
 // ---------------------------------------- Lambda wrapper callback ----------------------------------------
-// This callback wraps lambda (or any callable) so it can be immediately passed as js_ref<IJsFunction<...>>.
+// This callback wraps lambda (or any callable) so it can be immediately passed as js_function<...>.
 // It takes ownership of the lambda. Whenever the wrapper is destroyed, corresponding JS function is turned
 // into no-op.
 //

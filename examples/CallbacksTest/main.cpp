@@ -7,8 +7,8 @@
 #include "js_bootstrap.h"
 
 using tc::js::js_ref;
-using tc::js::IUnknown;
-using tc::js::IJsFunction;
+using tc::js::js_unknown;
+using tc::js::js_function;
 using tc::js::pass_this_t;
 using tc::js::pass_all_arguments_t;
 using tc::js::globals::Array;
@@ -31,37 +31,37 @@ struct SomeJsClass : virtual tc::js::IUnknown {
     CreateCallback(TestPrint, void, (js_ref<String> sMessage), { \
         _ASSERTEQUAL(std::string(sMessage), "hello"); \
     })\
-    CreateCallback(TestPassAllArguments, void, (pass_all_arguments_t, js_ref<Array<js_ref<IUnknown>>> jsarrunkArgs, int a), { \
+    CreateCallback(TestPassAllArguments, void, (pass_all_arguments_t, js_ref<Array<js_unknown>> jsarrunkArgs, int a), { \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(std::string(js_ref<String>(jsarrunkArgs[1])), "message"); \
         _ASSERTEQUAL(jsarrunkArgs->length(), 3); \
     }) \
-    CreateCallback(TestPassThis, void, (pass_this_t, js_ref<SomeJsClass> jssjcThis, int a, js_ref<String> b, std::optional<js_ref<IUnknown>> c), { \
+    CreateCallback(TestPassThis, void, (pass_this_t, js_ref<SomeJsClass> jssjcThis, int a, js_ref<String> b, std::optional<js_unknown> c), { \
         _ASSERTEQUAL(jssjcThis->intValue(), 10); \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(std::string(b), "message"); \
         _ASSERT(!c.has_value()); \
     }) \
-    CreateCallback(TestPassThisPassAllArguments, void, (pass_this_t, js_ref<SomeJsClass> jssjcThis, pass_all_arguments_t, js_ref<Array<js_ref<IUnknown>>> jsarrunkArgs, int a), { \
+    CreateCallback(TestPassThisPassAllArguments, void, (pass_this_t, js_ref<SomeJsClass> jssjcThis, pass_all_arguments_t, js_ref<Array<js_unknown>> jsarrunkArgs, int a), { \
         _ASSERTEQUAL(jssjcThis->intValue(), 10); \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(std::string(js_ref<String>(jsarrunkArgs[1])), "message"); \
         _ASSERTEQUAL(jsarrunkArgs->length(), 3); \
     }) \
-    CreateCallback(TestPassAllArgumentsAndReturn, js_ref<SomeJsClass>, (pass_all_arguments_t, js_ref<Array<js_ref<IUnknown>>> jsarrunkArgs, int a), { \
+    CreateCallback(TestPassAllArgumentsAndReturn, js_ref<SomeJsClass>, (pass_all_arguments_t, js_ref<Array<js_unknown>> jsarrunkArgs, int a), { \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(std::string(js_ref<String>(jsarrunkArgs[1])), "message"); \
         _ASSERTEQUAL(jsarrunkArgs->length(), 3); \
         return js_ref<SomeJsClass>(123); \
     }) \
-    CreateCallback(TestPassThisAndReturn, js_ref<SomeJsClass>, (pass_this_t, js_ref<SomeJsClass> jssjcThis, int a, js_ref<String> b, std::optional<js_ref<IUnknown>> c), { \
+    CreateCallback(TestPassThisAndReturn, js_ref<SomeJsClass>, (pass_this_t, js_ref<SomeJsClass> jssjcThis, int a, js_ref<String> b, std::optional<js_unknown> c), { \
         _ASSERTEQUAL(jssjcThis->intValue(), 10); \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(std::string(b), "message"); \
         _ASSERT(!c.has_value()); \
         return js_ref<SomeJsClass>(123); \
     }) \
-    CreateCallback(TestPassThisPassAllArgumentsAndReturn, js_ref<SomeJsClass>, (pass_this_t, js_ref<SomeJsClass> jssjcThis, pass_all_arguments_t, js_ref<Array<js_ref<IUnknown>>> jsarrunkArgs, int a), { \
+    CreateCallback(TestPassThisPassAllArgumentsAndReturn, js_ref<SomeJsClass>, (pass_this_t, js_ref<SomeJsClass> jssjcThis, pass_all_arguments_t, js_ref<Array<js_unknown>> jsarrunkArgs, int a), { \
         _ASSERTEQUAL(jssjcThis->intValue(), 10); \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(std::string(js_ref<String>(jsarrunkArgs[1])), "message"); \
@@ -89,7 +89,7 @@ int main() {
     {
         printf("===== js_lambda_wrap =====\n");
         #define CALL_SCOPED_CALLBACK(Name, ReturnType, Arguments, Body) \
-            RUN_TEST(Name, js_ref<IJsFunction<ReturnType Arguments>>, tc::js::js_lambda_wrap([]Arguments noexcept -> ReturnType Body));
+            RUN_TEST(Name, js_function<ReturnType Arguments>, tc::js::js_lambda_wrap([]Arguments noexcept -> ReturnType Body));
         FOR_ALL_CALLBACKS(CALL_SCOPED_CALLBACK)
         #undef CALL_SCOPED_CALLBACK
     }
@@ -101,7 +101,7 @@ int main() {
         } obj;
         #undef DEFINE_MEMBER
         #define CALL_MEMBER(Name, ReturnType, Arguments, Body) \
-            RUN_TEST(Name, js_ref<IJsFunction<ReturnType Arguments>>, obj.m_jsfn##Name);
+            RUN_TEST(Name, js_function<ReturnType Arguments>, obj.m_jsfn##Name);
         FOR_ALL_CALLBACKS(CALL_MEMBER)
         #undef CALL_MEMBER
     }
@@ -110,7 +110,7 @@ int main() {
         tc::js::js_lambda_wrap cbStorage([](js_ref<String> str) noexcept {
             return js_ref<String>(tc::concat("hello ", std::string(str)));
         });
-        js_ref<IJsFunction<js_ref<String>(js_ref<String>)>> cb = cbStorage;
+        js_function<js_ref<String>(js_ref<String>)> cb = cbStorage;
        _ASSERTEQUAL(std::string(cb(js_ref<String>("world"))), "hello world");
     }
     return 0;
