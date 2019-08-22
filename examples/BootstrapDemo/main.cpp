@@ -9,11 +9,9 @@
 #include "js_callback.h"
 #include "js_types.h"
 
-using tc::js::js_ref;
 using tc::js::js_unknown;
 using tc::js::globals::Array;
 using tc::js::globals::ReadonlyArray;
-using tc::js::globals::String;
 using tc::js::globals::console;
 
 enum class MyIntEnum { Foo = 10 };
@@ -41,26 +39,26 @@ void TestOptionalNumber() {
 
 int main() {
     {
-        auto message = tc::explicit_cast<js_ref<String>>("Hello World");
+        auto message = tc::explicit_cast<tc::js::globals::String>("Hello World");
         _ASSERTEQUAL(message->length(), 11);
         _ASSERTEQUAL(tc::explicit_cast<std::string>(message), "Hello World");
         console()->log(message);
 
         // Implicit upcast.
         js_unknown anyMessage = message;
-        static_assert(std::is_convertible<js_ref<String>, js_unknown>::value);
+        static_assert(std::is_convertible<tc::js::globals::String, js_unknown>::value);
         _ASSERT(message.getEmval().strictlyEquals(anyMessage.getEmval()));
         anyMessage = message;
         _ASSERT(message.getEmval().strictlyEquals(anyMessage.getEmval()));
 
         // Explicit downcast.
-        js_ref<String> message2(anyMessage);
-        static_assert(!std::is_convertible<js_unknown, js_ref<String>>::value);
+        tc::js::globals::String message2(anyMessage);
+        static_assert(!std::is_convertible<js_unknown, tc::js::globals::String>::value);
         _ASSERT(message.getEmval().strictlyEquals(message2.getEmval()));
     }
 
     {
-        auto arr = tc::explicit_cast<js_ref<ReadonlyArray<int>>>(std::initializer_list<int>{1, 2, 3});
+        auto arr = tc::explicit_cast<ReadonlyArray<int>>(std::initializer_list<int>{1, 2, 3});
         console()->log(arr);
         _ASSERTEQUAL(arr->length(), 3);
         _ASSERTEQUAL(arr[0], 1);
@@ -69,13 +67,13 @@ int main() {
     }
 
     {
-        js_ref<Array<js_ref<String>>> arr(std::initializer_list<char const*>{"Hello", "Hi!"});
+        Array<tc::js::globals::String> arr(std::initializer_list<char const*>{"Hello", "Hi!"});
         _ASSERTEQUAL(arr->length(), 2);
         _ASSERTEQUAL(arr[0]->length(), 5);
         _ASSERTEQUAL(arr[1]->length(), 3);
     }
 
-    auto arr = tc::explicit_cast<js_ref<Array<int>>>(std::initializer_list<int>{1, 2, 3});
+    auto arr = tc::explicit_cast<Array<int>>(std::initializer_list<int>{1, 2, 3});
     console()->log(arr);
     _ASSERTEQUAL(arr->length(), 3);
     _ASSERTEQUAL(arr[1], 2);

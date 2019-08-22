@@ -11,8 +11,18 @@
 namespace tc::js::globals {
 
 namespace no_adl {
+template<typename> struct _js_Array;
+template<typename> struct _js_ReadonlyArray;
+struct _js_String;
+struct _js_Console;
+
+template<typename T> using Array = js_ref<_js_Array<T>>;
+template<typename T> using ReadonlyArray = js_ref<_js_ReadonlyArray<T>>;
+using String = js_ref<_js_String>;
+using Console = js_ref<_js_Console>;
+
 template<typename T>
-struct Array : virtual IUnknown {
+struct _js_Array : virtual IUnknown {
     static_assert(IsJsInteropable<T>::value);
 
     auto length() { return _getProperty<int>("length"); }
@@ -32,8 +42,8 @@ struct Array : virtual IUnknown {
     }
 
     template<typename Rng>
-    static js_ref<Array> _construct(Rng&& rng) noexcept {
-        js_ref<Array> result(emscripten::val::array());
+    static Array<T> _construct(Rng&& rng) noexcept {
+        Array<T> result(emscripten::val::array());
         tc::for_each(rng, [&](auto&& value) {
             result->push(tc::explicit_cast<T>(std::forward<decltype(value)>(value)));
         });
@@ -42,7 +52,7 @@ struct Array : virtual IUnknown {
 };
 
 template<typename T>
-struct ReadonlyArray : virtual IUnknown {
+struct _js_ReadonlyArray : virtual IUnknown {
     static_assert(IsJsInteropable<T>::value);
 
     auto length() { return _getProperty<int>("length"); }
@@ -58,14 +68,14 @@ struct ReadonlyArray : virtual IUnknown {
     }
 
     template<typename Rng>
-    static js_ref<ReadonlyArray> _construct(Rng&& rng) noexcept {
-        return js_ref<ReadonlyArray>(
-            tc::explicit_cast<js_ref<Array<T>>>(std::forward<Rng>(rng)).getEmval()
+    static ReadonlyArray<T> _construct(Rng&& rng) noexcept {
+        return ReadonlyArray<T>(
+            tc::explicit_cast<Array<T>>(std::forward<Rng>(rng)).getEmval()
         );
     }
 };
 
-struct String : virtual IUnknown {
+struct _js_String : virtual IUnknown {
     auto length() { return _getProperty<int>("length"); }
 
     // TODO: clang does not see String::operator std::string() when return type is deduced, report bug?
@@ -79,7 +89,7 @@ struct String : virtual IUnknown {
     }
 };
 
-struct Console : virtual IUnknown {
+struct _js_Console : virtual IUnknown {
     // TODO: cannot return js_ref<js_function> because of overloads.
     // TODO: perfect forwarding?
     // TODO: allow passing options, ints, etc
@@ -93,6 +103,6 @@ using no_adl::ReadonlyArray;
 using no_adl::String;
 using no_adl::Console;
 
-inline auto console() { return js_ref<Console>(emscripten::val::global("console")); }
+inline auto console() { return Console(emscripten::val::global("console")); }
 
 } // namespace tc::js::globals

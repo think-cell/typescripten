@@ -10,7 +10,6 @@ using tc::js::js_ref;
 using tc::js::globals::ts;
 using tc::js::globals::Array;
 using tc::js::globals::ReadonlyArray;
-using tc::js::globals::String;
 
 int main(int argc, char* argv[]) {
     _ASSERT(2 <= argc);
@@ -22,7 +21,7 @@ int main(int argc, char* argv[]) {
     jsCompilerOptions->module(ts::ModuleKind::CommonJS);
 
     js_ref<ts::Program> jsProgram = ts()->createProgram(
-        tc::explicit_cast<js_ref<ReadonlyArray<js_ref<String>>>>(
+        tc::explicit_cast<ReadonlyArray<tc::js::globals::String>>(
             tc::make_iterator_range(argv + 1, argv + argc)
         ),
         jsCompilerOptions
@@ -34,7 +33,7 @@ int main(int argc, char* argv[]) {
         [](js_ref<ts::Diagnostic> jsDiagnostic) {
             if (jsDiagnostic->file()) {
                 js_ref<ts::LineAndCharacter> jsLineAndCharacter = jsDiagnostic->file().value()->getLineAndCharacterOfPosition(jsDiagnostic->start().value());
-                js_ref<String> jsMessage = ts()->flattenDiagnosticMessageText(jsDiagnostic->messageText(), tc::explicit_cast<js_ref<String>>("\n"));
+                tc::js::globals::String jsMessage = ts()->flattenDiagnosticMessageText(jsDiagnostic->messageText(), tc::explicit_cast<tc::js::globals::String>("\n"));
                 printf("%s (%d,%d): %s\n",
                     std::string((*jsDiagnostic->file())->fileName()).c_str(),
                     jsLineAndCharacter->line() + 1,
@@ -42,7 +41,7 @@ int main(int argc, char* argv[]) {
                     std::string(jsMessage).c_str()
                 );
             } else {
-                printf("%s\n", std::string(ts()->flattenDiagnosticMessageText(jsDiagnostic->messageText(), tc::explicit_cast<js_ref<String>>("\n"))).c_str());
+                printf("%s\n", std::string(ts()->flattenDiagnosticMessageText(jsDiagnostic->messageText(), tc::explicit_cast<tc::js::globals::String>("\n"))).c_str());
             }
         }
     );

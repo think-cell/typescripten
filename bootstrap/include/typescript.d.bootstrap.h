@@ -41,8 +41,8 @@ struct ts : virtual IUnknown {
     };
 
     struct SourceFile : virtual Declaration, /* deduced */ virtual SourceFileLike {
-        auto fileName() { return _getProperty<js_ref<String>>("fileName"); }
-        void fileName(js_ref<String> v) { _setProperty("fileName", v); }
+        auto fileName() { return _getProperty<String>("fileName"); }
+        void fileName(String v) { _setProperty("fileName", v); }
     };
 
     struct Program : virtual IUnknown {
@@ -53,8 +53,8 @@ struct ts : virtual IUnknown {
         auto emitSkipped() { return _getProperty<bool>("emitSkipped"); }
         void emitSkipped(bool v) { _setProperty("emitSkipped", v); }
 
-        auto diagnostics() { return _getProperty<js_ref<ReadonlyArray<js_ref<Diagnostic>>>>("diagnostics"); }
-        void diagnostics(js_ref<ReadonlyArray<js_ref<Diagnostic>>> v) { _setProperty("diagnostics", v); }
+        auto diagnostics() { return _getProperty<ReadonlyArray<js_ref<Diagnostic>>>("diagnostics"); }
+        void diagnostics(ReadonlyArray<js_ref<Diagnostic>> v) { _setProperty("diagnostics", v); }
     };
 
     struct DiagnosticRelatedInformation : virtual IUnknown {
@@ -123,16 +123,16 @@ struct ts : virtual IUnknown {
         return _call<js_ref<LineAndCharacter>>("getLineAndCharacterOfPosition", sourceFile, position);
     }
 
-    auto createProgram(js_ref<ReadonlyArray<js_ref<String>>> rootNames, js_ref<CompilerOptions> compilerOptions) {
+    auto createProgram(ReadonlyArray<String> rootNames, js_ref<CompilerOptions> compilerOptions) {
         return _call<js_ref<Program>>("createProgram", rootNames, compilerOptions);
     }
 
     auto getPreEmitDiagnostics(js_ref<Program> program) {
-        return _call<js_ref<ReadonlyArray<js_ref<Diagnostic>>>>("getPreEmitDiagnostics", program);
+        return _call<ReadonlyArray<js_ref<Diagnostic>>>("getPreEmitDiagnostics", program);
     }
 
-    auto flattenDiagnosticMessageText(js_unknown messageText, js_ref<String> newLine) {
-        return _call<js_ref<String>>("flattenDiagnosticMessageText", messageText, newLine);
+    auto flattenDiagnosticMessageText(js_unknown messageText, String newLine) {
+        return _call<String>("flattenDiagnosticMessageText", messageText, newLine);
     }
 };
 } // namespace no_adl
