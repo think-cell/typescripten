@@ -14,7 +14,6 @@ namespace no_adl {
 template<typename T>
 struct IsJsIntegralEnum : std::false_type {};
 } // namespace no_adl
-using no_adl::IUnknown;
 using no_adl::IsJsIntegralEnum;
 
 template<typename T>
