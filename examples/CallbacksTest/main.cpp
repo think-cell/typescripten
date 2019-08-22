@@ -6,7 +6,6 @@
 #include "js_callback.h"
 #include "js_bootstrap.h"
 
-using emscripten::val;
 using tc::js::js_ref;
 using tc::js::IUnknown;
 using tc::js::IJsFunction;
@@ -18,8 +17,8 @@ using tc::js::globals::String;
 struct SomeJsClass : virtual tc::js::IUnknown {
     auto intValue() { return _getProperty<int>("intValue"); }
 
-    static auto _construct(int val) {
-        return val::module_property("SomeJsClass").new_(val);
+    static auto _construct(int v) {
+        return emscripten::val::module_property("SomeJsClass").new_(v);
     }
 };
 
@@ -82,7 +81,7 @@ struct SomeJsClass : virtual tc::js::IUnknown {
             tc::remove_cvref_t<Fn>*, \
             ExpectedType* \
         >::value, #Name); \
-        val::module_property(#Name)(std::forward<Fn>(cb)); \
+        emscripten::val::module_property(#Name)(std::forward<Fn>(cb)); \
         printf(#Name " end\n"); \
     }
 
