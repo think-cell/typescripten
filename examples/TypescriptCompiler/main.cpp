@@ -6,7 +6,6 @@
 #include "typescript.d.bootstrap.h"
 #include "js_callback.h"
 
-using tc::js::js_ref;
 using tc::js::globals::ts;
 using tc::js::globals::Array;
 using tc::js::globals::ReadonlyArray;
@@ -14,25 +13,25 @@ using tc::js::globals::ReadonlyArray;
 int main(int argc, char* argv[]) {
     _ASSERT(2 <= argc);
 
-    js_ref<ts::CompilerOptions> jsCompilerOptions;
+    ts::CompilerOptions jsCompilerOptions;
     jsCompilerOptions->noEmitOnError(true);
     jsCompilerOptions->strict(true);
     jsCompilerOptions->target(ts::ScriptTarget::ES5);
     jsCompilerOptions->module(ts::ModuleKind::CommonJS);
 
-    js_ref<ts::Program> jsProgram = ts()->createProgram(
+    ts::Program jsProgram = ts()->createProgram(
         tc::explicit_cast<ReadonlyArray<tc::js::globals::String>>(
             tc::make_iterator_range(argv + 1, argv + argc)
         ),
         jsCompilerOptions
     );
-    js_ref<ts::EmitResult> jsEmitresult = jsProgram->emit();
+    ts::EmitResult jsEmitresult = jsProgram->emit();
 
     tc::for_each(
         tc::concat(ts()->getPreEmitDiagnostics(jsProgram), jsEmitresult->diagnostics()),
-        [](js_ref<ts::Diagnostic> jsDiagnostic) {
+        [](ts::Diagnostic jsDiagnostic) {
             if (jsDiagnostic->file()) {
-                js_ref<ts::LineAndCharacter> jsLineAndCharacter = jsDiagnostic->file().value()->getLineAndCharacterOfPosition(jsDiagnostic->start().value());
+                ts::LineAndCharacter jsLineAndCharacter = jsDiagnostic->file().value()->getLineAndCharacterOfPosition(jsDiagnostic->start().value());
                 tc::js::globals::String jsMessage = ts()->flattenDiagnosticMessageText(jsDiagnostic->messageText(), tc::explicit_cast<tc::js::globals::String>("\n"));
                 printf("%s (%d,%d): %s\n",
                     std::string((*jsDiagnostic->file())->fileName()).c_str(),
