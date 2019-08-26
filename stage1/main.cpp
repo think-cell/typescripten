@@ -2,6 +2,7 @@
 #include <string>
 #include "range_defines.h"
 #include "range.h"
+#include "js_bootstrap.h"
 #include "typescript.d.bootstrap.h"
 
 using tc::js::js_string;
@@ -31,13 +32,17 @@ int main(int argc, char* argv[]) {
                 return tc::find_unique<tc::return_bool>(rngFileNames, std::string(jsSourceFile->fileName()));
             }
         ),
-        [](ts::SourceFile const& jsSourceFile) {
+        [&](ts::SourceFile const& jsSourceFile) {
             auto jsChildren = jsSourceFile->getChildren();
+            tc::for_each(jsTypeChecker->getSymbolsInScope(jsChildren[0], ts::SymbolFlags::ModuleMember), [&](ts::Symbol symbol) {
+                printf("name is %s\n", std::string(symbol->name()).c_str());
+            });
+
             _ASSERTEQUAL(jsChildren->length(), 2);
             _ASSERTEQUAL(jsChildren[0]->kind(), ts::SyntaxKind::SyntaxList);
             _ASSERTEQUAL(jsChildren[1]->kind(), ts::SyntaxKind::EndOfFileToken);
             tc::for_each(jsChildren[0]->getChildren(),
-                [](ts::Node jnodeTopLevel) {
+                [&](ts::Node jnodeTopLevel) {
                     if (auto optjvarstmtTopLevel = ts()->isVariableStatement(jnodeTopLevel)) {
                         printf("variable statement\n");
                     } else if (auto optjifacedeclTopLevel = ts()->isInterfaceDeclaration(jnodeTopLevel)) {
@@ -46,8 +51,8 @@ int main(int argc, char* argv[]) {
                         printf("function declaration\n");
                     } else if (auto optjtypealiasTopLevel = ts()->isTypeAliasDeclaration(jnodeTopLevel)) {
                         printf("type alias declaration\n");
-                    } else if (auto optjmoddeclToplevel = ts()->isModuleDeclaration(jnodeTopLevel)) {
-                        printf("module declaration\n");
+                    } else if (auto optjmoddeclTopLevel = ts()->isModuleDeclaration(jnodeTopLevel)) {
+                        printf("module declaration '%s'\n", std::string((*optjmoddeclTopLevel)->name()->text()).c_str());
                     } else {
                         printf("!!! unknown top level node: %d\n", jnodeTopLevel->kind());
                     }

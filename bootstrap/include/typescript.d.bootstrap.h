@@ -3,6 +3,7 @@
 
 #include <emscripten/val.h>
 #include <optional>
+#include "range_defines.h"
 #include "js_types.h"
 #include "js_callback.h"
 #include "js_bootstrap.h"
@@ -15,6 +16,7 @@ struct _jsdefs_ts {
     enum class SyntaxKind;
     struct _js_Node;
     struct _js_Declaration;
+    struct _js_Identifier;
     struct _js_NamedDeclaration;
     struct _js_DeclarationStatement;
     struct _js_FunctionDeclaration;
@@ -27,6 +29,8 @@ struct _jsdefs_ts {
     struct _js_Program;
     struct _js_EmitResult;
     struct _js_TypeChecker;
+    enum class SymbolFlags;
+    struct _js_Symbol;
     struct _js_DiagnosticRelatedInformation;
     struct _js_Diagnostic;
     struct _js_CompilerOptions;
@@ -37,6 +41,7 @@ struct _jsdefs_ts {
     using TextRange = js_ref<_js_TextRange>;
     using Node = js_ref<_js_Node>;
     using Declaration = js_ref<_js_Declaration>;
+    using Identifier = js_ref<_js_Identifier>;
     using NamedDeclaration = js_ref<_js_NamedDeclaration>;
     using DeclarationStatement = js_ref<_js_DeclarationStatement>;
     using FunctionDeclaration = js_ref<_js_FunctionDeclaration>;
@@ -49,6 +54,7 @@ struct _jsdefs_ts {
     using Program = js_ref<_js_Program>;
     using EmitResult = js_ref<_js_EmitResult>;
     using TypeChecker = js_ref<_js_TypeChecker>;
+    using Symbol  = js_ref<_js_Symbol>;
     using DiagnosticRelatedInformation = js_ref<_js_DiagnosticRelatedInformation>;
     using Diagnostic = js_ref<_js_Diagnostic>;
     using CompilerOptions = js_ref<_js_CompilerOptions>;
@@ -419,6 +425,10 @@ struct _jsdefs_ts {
     struct _js_Declaration : virtual _js_Node {
     };
 
+    struct _js_Identifier : virtual _js_Declaration {
+        js_string text() { return _getProperty<js_string>("text"); }
+    };
+
     struct _js_NamedDeclaration : virtual _js_Declaration {
     };
 
@@ -438,6 +448,11 @@ struct _jsdefs_ts {
     };
 
     struct _js_ModuleDeclaration : virtual _js_DeclarationStatement {
+        auto name() {
+            auto result = _getProperty<Identifier>("name");
+            _ASSERT(!result.getEmval()["text"].isUndefined());
+            return result;
+        }
     };
 
     struct _js_SourceFileLike : virtual IObject {
@@ -468,6 +483,74 @@ struct _jsdefs_ts {
     };
 
     struct _js_TypeChecker : virtual IObject {
+        auto getSymbolsInScope(Node location, SymbolFlags meaning) { return _call<Array<Symbol>>("getSymbolsInScope", location, meaning); }
+        auto getSymbolAtLocation(Node node) { return _call<std::optional<Symbol>>("getSymbolAtLocation", node); }
+    };
+
+    enum class SymbolFlags {
+        None = 0,
+        FunctionScopedVariable = 1,
+        BlockScopedVariable = 2,
+        Property = 4,
+        EnumMember = 8,
+        Function = 16,
+        Class = 32,
+        Interface = 64,
+        ConstEnum = 128,
+        RegularEnum = 256,
+        ValueModule = 512,
+        NamespaceModule = 1024,
+        TypeLiteral = 2048,
+        ObjectLiteral = 4096,
+        Method = 8192,
+        Constructor = 16384,
+        GetAccessor = 32768,
+        SetAccessor = 65536,
+        Signature = 131072,
+        TypeParameter = 262144,
+        TypeAlias = 524288,
+        ExportValue = 1048576,
+        Alias = 2097152,
+        Prototype = 4194304,
+        ExportStar = 8388608,
+        Optional = 16777216,
+        Transient = 33554432,
+        Assignment = 67108864,
+        ModuleExports = 134217728,
+        Enum = 384,
+        Variable = 3,
+        Value = 67220415,
+        Type = 67897832,
+        Namespace = 1920,
+        Module = 1536,
+        Accessor = 98304,
+        FunctionScopedVariableExcludes = 67220414,
+        BlockScopedVariableExcludes = 67220415,
+        ParameterExcludes = 67220415,
+        PropertyExcludes = 0,
+        EnumMemberExcludes = 68008959,
+        FunctionExcludes = 67219887,
+        ClassExcludes = 68008383,
+        InterfaceExcludes = 67897736,
+        RegularEnumExcludes = 68008191,
+        ConstEnumExcludes = 68008831,
+        ValueModuleExcludes = 110735,
+        NamespaceModuleExcludes = 0,
+        MethodExcludes = 67212223,
+        GetAccessorExcludes = 67154879,
+        SetAccessorExcludes = 67187647,
+        TypeParameterExcludes = 67635688,
+        TypeAliasExcludes = 67897832,
+        AliasExcludes = 2097152,
+        ModuleMember = 2623475,
+        ExportHasLocal = 944,
+        BlockScoped = 418,
+        PropertyOrAccessor = 98308,
+        ClassMember = 106500,
+    };
+
+    struct _js_Symbol : virtual IObject {
+        auto name() { return _getProperty<js_string>("name"); }
     };
 
     struct _js_DiagnosticRelatedInformation : virtual IObject {
@@ -596,6 +679,7 @@ using no_adl::ts;
 } // namespace globals
 
 template<> struct IsJsIntegralEnum<globals::ts::SyntaxKind> : std::true_type {};
+template<> struct IsJsIntegralEnum<globals::ts::SymbolFlags> : std::true_type {};
 template<> struct IsJsIntegralEnum<globals::ts::ModuleKind> : std::true_type {};
 template<> struct IsJsIntegralEnum<globals::ts::ScriptTarget> : std::true_type {};
 } // namespace tc::js
