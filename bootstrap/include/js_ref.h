@@ -18,14 +18,14 @@ struct IsJsInteropable : std::false_type {};
 using no_adl::IsJsInteropable;
 
 namespace no_adl {
-struct IUnknown {
+struct IObject {
 private:
     emscripten::val m_emval;
 
 protected:
-    explicit IUnknown(emscripten::val const& m_emval) noexcept : m_emval(m_emval) {}
-    explicit IUnknown(emscripten::val&& m_emval) noexcept : m_emval(tc_move(m_emval)) {}
-    explicit IUnknown() : m_emval(emscripten::val::undefined()) {
+    explicit IObject(emscripten::val const& m_emval) noexcept : m_emval(m_emval) {}
+    explicit IObject(emscripten::val&& m_emval) noexcept : m_emval(tc_move(m_emval)) {}
+    explicit IObject() : m_emval(emscripten::val::undefined()) {
         // Should never be called.
         _ASSERTFALSE;
     }
@@ -61,14 +61,14 @@ protected:
     }
 
     // Make sure the class and its descendants are abstract.
-    virtual void __IUnknown_and_derived_are_abstract_Use_js_ref_instead() = 0;
+    virtual void __IObject_and_derived_are_abstract_Use_js_ref_instead() = 0;
 };
 
 template<typename> struct js_ref;
 } // namespace no_adl
-using no_adl::IUnknown;
+using no_adl::IObject;
 using no_adl::js_ref;
-using js_unknown = js_ref<IUnknown>;
+using js_unknown = js_ref<IObject>;
 
 namespace no_adl {
 // Non-final, but non-polymorphic as well. Derive with care.
@@ -77,7 +77,7 @@ struct js_ref {
     static_assert(std::is_class<T>::value);  // void is explicitly excluded as well, even though void* is base of all pointers.
     static_assert(!std::is_volatile<T>::value);
     static_assert(!std::is_const<T>::value, "We cannot guarantee constness of JS values");
-    static_assert(std::is_convertible<T*, IUnknown*>::value);
+    static_assert(std::is_convertible<T*, IObject*>::value);
 
     // js_ref is non-nullable.
     explicit js_ref(emscripten::val const& m_emval) noexcept : m_emval(m_emval) {
@@ -155,10 +155,10 @@ private:
     template<typename> friend struct js_ref;
 
     struct CArrowProxy final : T, tc::nonmovable {
-        explicit CArrowProxy(emscripten::val const& m_emval) noexcept : IUnknown(m_emval) {}
+        explicit CArrowProxy(emscripten::val const& m_emval) noexcept : IObject(m_emval) {}
         T* operator->() && noexcept { return this; }
     private:
-        void __IUnknown_and_derived_are_abstract_Use_js_ref_instead() override {
+        void __IObject_and_derived_are_abstract_Use_js_ref_instead() override {
             // Should never be called.
             assert(false);
         }

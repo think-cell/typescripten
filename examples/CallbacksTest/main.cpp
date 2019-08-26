@@ -12,7 +12,7 @@ using tc::js::pass_this_t;
 using tc::js::pass_all_arguments_t;
 using tc::js::globals::Array;
 
-struct _js_SomeJsClass : virtual tc::js::IUnknown {
+struct _js_SomeJsClass : virtual tc::js::IObject {
     auto intValue() { return _getProperty<int>("intValue"); }
 
     static auto _construct(int v) {

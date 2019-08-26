@@ -22,7 +22,7 @@ using String = js_ref<_js_String>;
 using Console = js_ref<_js_Console>;
 
 template<typename T>
-struct _js_Array : virtual IUnknown {
+struct _js_Array : virtual IObject {
     static_assert(IsJsInteropable<T>::value);
 
     auto length() { return _getProperty<int>("length"); }
@@ -52,7 +52,7 @@ struct _js_Array : virtual IUnknown {
 };
 
 template<typename T>
-struct _js_ReadonlyArray : virtual IUnknown {
+struct _js_ReadonlyArray : virtual IObject {
     static_assert(IsJsInteropable<T>::value);
 
     auto length() { return _getProperty<int>("length"); }
@@ -75,7 +75,7 @@ struct _js_ReadonlyArray : virtual IUnknown {
     }
 };
 
-struct _js_String : virtual IUnknown {
+struct _js_String : virtual IObject {
     auto length() { return _getProperty<int>("length"); }
 
     // TODO: clang does not see String::operator std::string() when return type is deduced, report bug?
@@ -89,7 +89,7 @@ struct _js_String : virtual IUnknown {
     }
 };
 
-struct _js_Console : virtual IUnknown {
+struct _js_Console : virtual IObject {
     // TODO: cannot return js_ref<js_function> because of overloads.
     // TODO: perfect forwarding?
     // TODO: allow passing options, ints, etc

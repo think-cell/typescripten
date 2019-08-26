@@ -37,7 +37,7 @@ struct _jsdefs_ts {
     using CompilerOptions = js_ref<_js_CompilerOptions>;
     using LineAndCharacter = js_ref<_js_LineAndCharacter>;
 
-    struct _js_TextRange : virtual IUnknown {
+    struct _js_TextRange : virtual IObject {
     };
 
     struct _js_Node : virtual _js_TextRange {
@@ -46,7 +46,7 @@ struct _jsdefs_ts {
     struct _js_Declaration : virtual _js_Node {
     };
 
-    struct _js_SourceFileLike : virtual IUnknown {
+    struct _js_SourceFileLike : virtual IObject {
         auto getLineAndCharacterOfPosition(int pos) {
             return _call<LineAndCharacter>("getLineAndCharacterOfPosition", pos);
         }
@@ -57,11 +57,11 @@ struct _jsdefs_ts {
         void fileName(String v) { _setProperty("fileName", v); }
     };
 
-    struct _js_Program : virtual IUnknown {
+    struct _js_Program : virtual IObject {
         auto emit() { return _call<EmitResult>("emit"); }
     };
 
-    struct _js_EmitResult : virtual IUnknown {
+    struct _js_EmitResult : virtual IObject {
         auto emitSkipped() { return _getProperty<bool>("emitSkipped"); }
         void emitSkipped(bool v) { _setProperty("emitSkipped", v); }
 
@@ -69,7 +69,7 @@ struct _jsdefs_ts {
         void diagnostics(ReadonlyArray<Diagnostic> v) { _setProperty("diagnostics", v); }
     };
 
-    struct _js_DiagnosticRelatedInformation : virtual IUnknown {
+    struct _js_DiagnosticRelatedInformation : virtual IObject {
         auto file() { return _getProperty<std::optional<SourceFile>>("file"); }
         void file(std::optional<SourceFile> v) { _setProperty("file", v); }
 
@@ -84,7 +84,7 @@ struct _jsdefs_ts {
     struct _js_Diagnostic : virtual _js_DiagnosticRelatedInformation {
     };
 
-    struct _js_CompilerOptions : virtual IUnknown {
+    struct _js_CompilerOptions : virtual IObject {
         auto noEmitOnError() { return _getProperty<std::optional<bool>>("noEmitOnError"); }
         void noEmitOnError(std::optional<bool> v) { _setProperty("noEmitOnError", v); }
 
@@ -110,7 +110,7 @@ struct _jsdefs_ts {
         ESNext = 6
     };
 
-    struct _js_LineAndCharacter : virtual IUnknown {
+    struct _js_LineAndCharacter : virtual IObject {
         auto line() { return _getProperty<int>("line"); }
         void line(int v) { _setProperty("line", v); }
 
@@ -132,7 +132,7 @@ struct _jsdefs_ts {
     };
 };
 
-struct _js_ts : virtual IUnknown, _jsdefs_ts {
+struct _js_ts : virtual IObject, _jsdefs_ts {
     auto getLineAndCharacterOfPosition(SourceFileLike sourceFile, int position) {
         return _call<LineAndCharacter>("getLineAndCharacterOfPosition", sourceFile, position);
     }

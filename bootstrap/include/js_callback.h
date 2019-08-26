@@ -137,7 +137,7 @@ template<typename>
 struct IJsFunction {};
 
 template<typename R, typename... Args>
-struct IJsFunction<R(Args...)> : virtual IUnknown {
+struct IJsFunction<R(Args...)> : virtual IObject {
     static_assert(IsJsInteropable<R>::value);
     // Implicit instantiation of CCallableWrapper to ensure Args are correct.
     static_assert(callback_detail::CCallableWrapper<tc::type::list<Args...>>::c_bInstantiated);
