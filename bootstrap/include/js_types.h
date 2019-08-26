@@ -7,13 +7,16 @@
 #include "type_list.h"
 #include "type_traits.h"
 #include "tc_move.h"
-#include "js_ref.h"
 
 namespace tc::js {
 namespace no_adl {
+template<typename, typename = void>
+struct IsJsInteropable : std::false_type {};
+
 template<typename T>
 struct IsJsIntegralEnum : std::false_type {};
 } // namespace no_adl
+using no_adl::IsJsInteropable;
 using no_adl::IsJsIntegralEnum;
 
 template<typename T>

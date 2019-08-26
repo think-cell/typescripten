@@ -9,14 +9,9 @@
 #include "tc_move.h"
 #include "range_defines.h"
 #include "noncopyable.h"
+#include "js_types.h"
 
 namespace tc::js {
-namespace no_adl {
-template<typename, typename = void>
-struct IsJsInteropable : std::false_type {};
-} // namespace no_adl
-using no_adl::IsJsInteropable;
-
 namespace no_adl {
 struct IObject {
 private:
