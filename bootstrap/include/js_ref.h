@@ -81,7 +81,7 @@ struct js_ref {
         _ASSERT(!m_emval.isUndefined() && !m_emval.isNull());
     }
 
-    explicit js_ref(js_unknown& js) noexcept : js_ref(js.getEmval()) {
+    explicit js_ref(js_unknown const& js) noexcept : js_ref(js.getEmval()) {
     }
     explicit js_ref(js_unknown&& js) noexcept : js_ref(tc_move(js).getEmval()) {
     }
