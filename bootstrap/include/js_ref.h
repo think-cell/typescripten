@@ -70,24 +70,6 @@ using no_adl::IUnknown;
 using no_adl::js_ref;
 using js_unknown = js_ref<IUnknown>;
 
-namespace is_js_ref_detail {
-namespace no_adl {
-template<typename T>
-struct JsRefFound : std::true_type {
-    using element_type = T;
-};
-} // namespace no_adl
-using no_adl::JsRefFound;
-template<typename T> JsRefFound<T> is_js_ref_try_convert(js_ref<T>);
-std::false_type is_js_ref_try_convert(...);
-
-template<typename T>
-using IsJsRef = std::conjunction<
-    tc::is_decayed<T>,
-    decltype(is_js_ref_try_convert(std::declval<T>()))  // TODO: explicitly specify namespace to avoid ADL?
->;
-} // namespace is_js_ref_detail
-
 namespace no_adl {
 // Non-final, but non-polymorphic as well. Derive with care.
 template<typename T>
@@ -107,7 +89,7 @@ struct js_ref {
 
     template<typename... Args, typename = std::enable_if_t<
         sizeof...(Args) != 1 ||
-        ((!is_js_ref_detail::IsJsRef<tc::remove_cvref_t<Args>>::value && ...) &&
+        ((!tc::is_instance_or_derived<js_ref, Args>::value && ...) &&
          (!std::is_same<emscripten::val, tc::remove_cvref_t<Args>>::value && ...))
     >>
     explicit js_ref(Args&&... args) noexcept : js_ref(T::_construct(std::forward<Args>(args)...)) {}
@@ -189,7 +171,10 @@ public:
 
 namespace no_adl {
 template<typename T>
-struct IsJsInteropable<T, std::enable_if_t<is_js_ref_detail::IsJsRef<T>::value>> : std::true_type {};
+struct IsJsInteropable<T, std::enable_if_t<
+    tc::is_decayed<T>::value &&
+    tc::is_instance_or_derived<js_ref, T>::value
+>> : std::true_type {};
 
 template<typename T>
 struct IsJsInteropable<
@@ -213,14 +198,14 @@ struct IsJsInteropable<
 // Custom marshalling
 namespace emscripten::internal {
     template<typename T>
-    struct TypeID<T, std::enable_if_t<tc::js::is_js_ref_detail::IsJsRef<tc::remove_cvref_t<T>>::value>> {
+    struct TypeID<T, std::enable_if_t<tc::is_decayed<tc::remove_cvref_t<T>>::value && tc::is_instance_or_derived<tc::js::js_ref, T>::value>> {
         static constexpr TYPEID get() {
             return TypeID<val>::get();
         }
     };
 
     template<typename T>
-    struct BindingType<T, std::enable_if_t<tc::js::is_js_ref_detail::IsJsRef<T>::value>> {
+    struct BindingType<T, std::enable_if_t<tc::is_decayed<T>::value && tc::is_instance_or_derived<tc::js::js_ref, T>::value>> {
         typedef typename BindingType<emscripten::val>::WireType WireType;
 
         static WireType toWireType(T const& js) {
@@ -228,7 +213,7 @@ namespace emscripten::internal {
         }
 
         static auto fromWireType(WireType v) {
-            return tc::js::js_ref<typename tc::js::is_js_ref_detail::IsJsRef<T>::element_type>(BindingType<emscripten::val>::fromWireType(v));
+            return typename tc::is_instance_or_derived<tc::js::js_ref, T>::base_instance(BindingType<emscripten::val>::fromWireType(v));
         }
     };
 }
