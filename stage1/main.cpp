@@ -38,7 +38,19 @@ int main(int argc, char* argv[]) {
             _ASSERTEQUAL(jsChildren[1]->kind(), ts::SyntaxKind::EndOfFileToken);
             tc::for_each(jsChildren[0]->getChildren(),
                 [](ts::Node jnodeTopLevel) {
-                    printf("New top level node: %d\n", jnodeTopLevel->kind());
+                    if (auto optjvarstmtTopLevel = ts()->isVariableStatement(jnodeTopLevel)) {
+                        printf("variable statement\n");
+                    } else if (auto optjifacedeclTopLevel = ts()->isInterfaceDeclaration(jnodeTopLevel)) {
+                        printf("interface declaration\n");
+                    } else if (auto optjfuncdeclTopLevel = ts()->isFunctionDeclaration(jnodeTopLevel)) {
+                        printf("function declaration\n");
+                    } else if (auto optjtypealiasTopLevel = ts()->isTypeAliasDeclaration(jnodeTopLevel)) {
+                        printf("type alias declaration\n");
+                    } else if (auto optjmoddeclToplevel = ts()->isModuleDeclaration(jnodeTopLevel)) {
+                        printf("module declaration\n");
+                    } else {
+                        printf("!!! unknown top level node: %d\n", jnodeTopLevel->kind());
+                    }
                 }
             );
         }

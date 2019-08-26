@@ -15,6 +15,13 @@ struct _jsdefs_ts {
     enum class SyntaxKind;
     struct _js_Node;
     struct _js_Declaration;
+    struct _js_NamedDeclaration;
+    struct _js_DeclarationStatement;
+    struct _js_FunctionDeclaration;
+    struct _js_VariableStatement;
+    struct _js_InterfaceDeclaration;
+    struct _js_TypeAliasDeclaration;
+    struct _js_ModuleDeclaration;
     struct _js_SourceFileLike;
     struct _js_SourceFile;
     struct _js_Program;
@@ -30,6 +37,13 @@ struct _jsdefs_ts {
     using TextRange = js_ref<_js_TextRange>;
     using Node = js_ref<_js_Node>;
     using Declaration = js_ref<_js_Declaration>;
+    using NamedDeclaration = js_ref<_js_NamedDeclaration>;
+    using DeclarationStatement = js_ref<_js_DeclarationStatement>;
+    using FunctionDeclaration = js_ref<_js_FunctionDeclaration>;
+    using VariableStatement = js_ref<_js_VariableStatement>;
+    using InterfaceDeclaration = js_ref<_js_InterfaceDeclaration>;
+    using TypeAliasDeclaration = js_ref<_js_TypeAliasDeclaration>;
+    using ModuleDeclaration = js_ref<_js_ModuleDeclaration>;
     using SourceFileLike = js_ref<_js_SourceFileLike>;
     using SourceFile = js_ref<_js_SourceFile>;
     using Program = js_ref<_js_Program>;
@@ -405,6 +419,27 @@ struct _jsdefs_ts {
     struct _js_Declaration : virtual _js_Node {
     };
 
+    struct _js_NamedDeclaration : virtual _js_Declaration {
+    };
+
+    struct _js_DeclarationStatement : virtual _js_NamedDeclaration {
+    };
+
+    struct _js_FunctionDeclaration : virtual _js_DeclarationStatement {
+    };
+
+    struct _js_VariableStatement : virtual _js_Node {
+    };
+
+    struct _js_InterfaceDeclaration : virtual _js_DeclarationStatement {
+    };
+
+    struct _js_TypeAliasDeclaration : virtual _js_DeclarationStatement {
+    };
+
+    struct _js_ModuleDeclaration : virtual _js_DeclarationStatement {
+    };
+
     struct _js_SourceFileLike : virtual IObject {
         auto getLineAndCharacterOfPosition(int pos) {
             return _call<LineAndCharacter>("getLineAndCharacterOfPosition", pos);
@@ -500,6 +535,41 @@ struct _jsdefs_ts {
 };
 
 struct _js_ts : virtual IObject, _jsdefs_ts {
+    auto isVariableStatement(Node node) {
+        std::optional<VariableStatement> result;
+        if (_call<bool>("isVariableStatement", node))
+            result.emplace(node);
+        return result;
+    }
+
+    auto isInterfaceDeclaration(Node node) {
+        std::optional<InterfaceDeclaration> result;
+        if (_call<bool>("isInterfaceDeclaration", node))
+            result.emplace(node);
+        return result;
+    }
+
+    auto isFunctionDeclaration(Node node) {
+        std::optional<FunctionDeclaration> result;
+        if (_call<bool>("isFunctionDeclaration", node))
+            result.emplace(node);
+        return result;
+    }
+
+    auto isTypeAliasDeclaration(Node node) {
+        std::optional<TypeAliasDeclaration> result;
+        if (_call<bool>("isTypeAliasDeclaration", node))
+            result.emplace(node);
+        return result;
+    }
+
+    auto isModuleDeclaration(Node node) {
+        std::optional<ModuleDeclaration> result;
+        if (_call<bool>("isModuleDeclaration", node))
+            result.emplace(node);
+        return result;
+    }
+
     auto getLineAndCharacterOfPosition(SourceFileLike sourceFile, int position) {
         return _call<LineAndCharacter>("getLineAndCharacterOfPosition", sourceFile, position);
     }
