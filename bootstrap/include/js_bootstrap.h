@@ -3,6 +3,7 @@
 #include <emscripten/val.h>
 #include <string>
 #include "explicit_cast.h"
+#include "type_traits.h"
 #include "range.h"
 #include "js_types.h"
 #include "js_callback.h"
@@ -90,11 +91,11 @@ struct _js_String : virtual IObject {
 };
 
 struct _js_Console : virtual IObject {
-    // TODO: cannot return js_ref<js_function> because of overloads.
-    // TODO: perfect forwarding?
-    // TODO: allow passing options, ints, etc
     template<typename... Args>
-    auto log(js_ref<Args>... args) { return _call<void>("log", args...); }
+    auto log(Args&&... args) {
+        static_assert((IsJsInteropable<tc::remove_cvref_t<Args>>::value && ...));
+        return _call<void>("log", std::forward<Args>(args)...);
+    }
 };
 } // namespace no_adl
 
