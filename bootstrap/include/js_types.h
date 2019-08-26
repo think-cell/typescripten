@@ -51,6 +51,11 @@ struct IsJsInteropable<js_unknown> : std::true_type {};
 template<typename T>
 struct IsJsInteropable<T, std::enable_if_t<IsJsIntegralEnum<T>::value>> : std::true_type {};
 
+namespace emscripten_interop_detail {
+template<typename T>
+using IsEmvalWrapper = tc::type::find_unique<tc::type::list<js_unknown>, T>;
+} // namespace emscripten_interop_detail
+
 namespace optional_detail {
 template<typename T>
 using IsOptionalOfJsInteropable = std::bool_constant<
@@ -67,22 +72,22 @@ struct IsJsInteropable<T, std::enable_if_t<tc::js::optional_detail::IsOptionalOf
 // Custom marshalling
 namespace emscripten::internal {
     template<typename T>
-    struct TypeID<T, std::enable_if_t<std::is_same<tc::js::js_unknown, tc::remove_cvref_t<T>>::value>> {
+    struct TypeID<T, std::enable_if_t<tc::js::emscripten_interop_detail::IsEmvalWrapper<tc::remove_cvref_t<T>>::found>> {
         static constexpr TYPEID get() {
             return TypeID<val>::get();
         }
     };
 
-    template<>
-    struct BindingType<tc::js::js_unknown> {
+    template<typename T>
+    struct BindingType<T, std::enable_if_t<tc::js::emscripten_interop_detail::IsEmvalWrapper<T>::found>> {
         typedef typename BindingType<emscripten::val>::WireType WireType;
 
-        static WireType toWireType(tc::js::js_unknown const& js) {
+        static WireType toWireType(T const& js) {
             return BindingType<emscripten::val>::toWireType(js.getEmval());
         }
 
         static auto fromWireType(WireType v) {
-            return tc::js::js_unknown(BindingType<emscripten::val>::fromWireType(v));
+            return T(BindingType<emscripten::val>::fromWireType(v));
         }
     };
 
