@@ -1,10 +1,8 @@
 #include <stdio.h>
 #include <string>
 #include "range_defines.h"
-#include "explicit_cast.h"
 #include "range.h"
 #include "typescript.d.bootstrap.h"
-#include "js_callback.h"
 
 using tc::js::globals::ts;
 using tc::js::globals::Array;
@@ -20,7 +18,7 @@ int main(int argc, char* argv[]) {
     jsCompilerOptions->module(ts::ModuleKind::CommonJS);
 
     ts::Program jsProgram = ts()->createProgram(
-        tc::explicit_cast<ReadonlyArray<tc::js::globals::String>>(
+        ReadonlyArray<tc::js::globals::String>(
             tc::make_iterator_range(argv + 1, argv + argc)
         ),
         jsCompilerOptions
@@ -32,7 +30,7 @@ int main(int argc, char* argv[]) {
         [](ts::Diagnostic jsDiagnostic) {
             if (jsDiagnostic->file()) {
                 ts::LineAndCharacter jsLineAndCharacter = jsDiagnostic->file().value()->getLineAndCharacterOfPosition(jsDiagnostic->start().value());
-                tc::js::globals::String jsMessage = ts()->flattenDiagnosticMessageText(jsDiagnostic->messageText(), tc::explicit_cast<tc::js::globals::String>("\n"));
+                tc::js::globals::String jsMessage = ts()->flattenDiagnosticMessageText(jsDiagnostic->messageText(), tc::js::globals::String("\n"));
                 printf("%s (%d,%d): %s\n",
                     std::string((*jsDiagnostic->file())->fileName()).c_str(),
                     jsLineAndCharacter->line() + 1,
@@ -40,7 +38,7 @@ int main(int argc, char* argv[]) {
                     std::string(jsMessage).c_str()
                 );
             } else {
-                printf("%s\n", std::string(ts()->flattenDiagnosticMessageText(jsDiagnostic->messageText(), tc::explicit_cast<tc::js::globals::String>("\n"))).c_str());
+                printf("%s\n", std::string(ts()->flattenDiagnosticMessageText(jsDiagnostic->messageText(), tc::js::globals::String("\n"))).c_str());
             }
         }
     );
