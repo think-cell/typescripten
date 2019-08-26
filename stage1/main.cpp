@@ -13,8 +13,7 @@ int main(int argc, char* argv[]) {
     _ASSERT(2 <= argc);
 
     ts::CompilerOptions jsCompilerOptions;
-//    jsCompilerOptions->noEmitOnError(true);
-//    jsCompilerOptions->strict(true);
+    jsCompilerOptions->strict(true);
     jsCompilerOptions->target(ts::ScriptTarget::ES5);
     jsCompilerOptions->module(ts::ModuleKind::CommonJS);
 
