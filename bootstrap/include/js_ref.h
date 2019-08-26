@@ -18,8 +18,8 @@ private:
     emscripten::val m_emval;
 
 protected:
-    explicit IObject(emscripten::val const& m_emval) noexcept : m_emval(m_emval) {}
-    explicit IObject(emscripten::val&& m_emval) noexcept : m_emval(tc_move(m_emval)) {}
+    explicit IObject(emscripten::val const& _emval) noexcept : m_emval(_emval) {}
+    explicit IObject(emscripten::val&& _emval) noexcept : m_emval(tc_move(_emval)) {}
     explicit IObject() : m_emval(emscripten::val::undefined()) {
         // Should never be called.
         _ASSERTFALSE;
@@ -74,10 +74,10 @@ struct js_ref {
     static_assert(std::is_convertible<T*, IObject*>::value);
 
     // js_ref is non-nullable.
-    explicit js_ref(emscripten::val const& m_emval) noexcept : m_emval(m_emval) {
+    explicit js_ref(emscripten::val const& _emval) noexcept : m_emval(_emval) {
         _ASSERT(!m_emval.isUndefined() && !m_emval.isNull());
     }
-    explicit js_ref(emscripten::val&& m_emval) noexcept : m_emval(tc_move(m_emval)) {
+    explicit js_ref(emscripten::val&& _emval) noexcept : m_emval(tc_move(_emval)) {
         _ASSERT(!m_emval.isUndefined() && !m_emval.isNull());
     }
 

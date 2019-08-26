@@ -17,8 +17,8 @@ template<typename T>
 struct IsJsIntegralEnum : std::false_type {};
 
 struct js_unknown {
-    js_unknown(emscripten::val const& m_emval) : m_emval(m_emval) {}
-    js_unknown(emscripten::val&& m_emval) : m_emval(tc_move(m_emval)) {}
+    js_unknown(emscripten::val const& _emval) : m_emval(_emval) {}
+    js_unknown(emscripten::val&& _emval) : m_emval(tc_move(_emval)) {}
 
     emscripten::val getEmval() const& { return m_emval; }
     emscripten::val&& getEmval() && { return tc_move(m_emval); }
