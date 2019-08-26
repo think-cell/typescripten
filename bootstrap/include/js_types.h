@@ -15,9 +15,38 @@ struct IsJsInteropable : std::false_type {};
 
 template<typename T>
 struct IsJsIntegralEnum : std::false_type {};
+
+struct js_unknown {
+    js_unknown(emscripten::val const& m_emval) : m_emval(m_emval) {}
+    js_unknown(emscripten::val&& m_emval) : m_emval(tc_move(m_emval)) {}
+
+    emscripten::val getEmval() const& { return m_emval; }
+    emscripten::val&& getEmval() && { return tc_move(m_emval); }
+
+    template<typename T, typename = std::enable_if_t<IsJsInteropable<tc::remove_cvref_t<T>>::value>>
+    js_unknown(T&& value) : m_emval(value) {
+    }
+
+    template<typename U, typename = std::enable_if_t<IsJsInteropable<tc::remove_cvref_t<U>>::value>>
+    explicit operator U() const& { return m_emval; }
+
+    template<typename U, typename = std::enable_if_t<IsJsInteropable<tc::remove_cvref_t<U>>::value>>
+    explicit operator U&&() && { return tc_move(m_emval); }
+
+    explicit operator bool() const {
+        return !!m_emval;
+    }
+
+private:
+	emscripten::val m_emval;
+};
 } // namespace no_adl
 using no_adl::IsJsInteropable;
 using no_adl::IsJsIntegralEnum;
+using no_adl::js_unknown;
+
+template<>
+struct IsJsInteropable<js_unknown> : std::true_type {};
 
 template<typename T>
 struct IsJsInteropable<T, std::enable_if_t<IsJsIntegralEnum<T>::value>> : std::true_type {};
@@ -37,6 +66,26 @@ struct IsJsInteropable<T, std::enable_if_t<tc::js::optional_detail::IsOptionalOf
 
 // Custom marshalling
 namespace emscripten::internal {
+    template<typename T>
+    struct TypeID<T, std::enable_if_t<std::is_same<tc::js::js_unknown, tc::remove_cvref_t<T>>::value>> {
+        static constexpr TYPEID get() {
+            return TypeID<val>::get();
+        }
+    };
+
+    template<>
+    struct BindingType<tc::js::js_unknown> {
+        typedef typename BindingType<emscripten::val>::WireType WireType;
+
+        static WireType toWireType(tc::js::js_unknown const& js) {
+            return BindingType<emscripten::val>::toWireType(js.getEmval());
+        }
+
+        static auto fromWireType(WireType v) {
+            return tc::js::js_unknown(BindingType<emscripten::val>::fromWireType(v));
+        }
+    };
+
     // TODO: optimize by providing JS-side toWireType/fromWireType for integrals/bools and getting rid of emscripten::val
     template<typename T>
     struct TypeID<T, std::enable_if_t<tc::js::optional_detail::IsOptionalOfJsInteropable<tc::remove_cvref_t<T>>::value>> {

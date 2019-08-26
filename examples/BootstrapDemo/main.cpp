@@ -109,7 +109,7 @@ int main() {
 
     {
         // Test optional
-        using OptionalUnknown = std::optional<tc::js::js_unknown>;
+        using OptionalUnknown = std::optional<tc::js::js_ref<tc::js::IObject>>;
         static_assert(
             std::is_same<
                 typename emscripten::internal::BindingType<OptionalUnknown>::WireType,

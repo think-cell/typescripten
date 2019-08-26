@@ -63,7 +63,6 @@ template<typename> struct js_ref;
 } // namespace no_adl
 using no_adl::IObject;
 using no_adl::js_ref;
-using js_unknown = js_ref<IObject>;
 
 namespace no_adl {
 // Non-final, but non-polymorphic as well. Derive with care.
@@ -82,9 +81,15 @@ struct js_ref {
         _ASSERT(!m_emval.isUndefined() && !m_emval.isNull());
     }
 
+    explicit js_ref(js_unknown& js) noexcept : js_ref(js.getEmval()) {
+    }
+    explicit js_ref(js_unknown&& js) noexcept : js_ref(tc_move(js).getEmval()) {
+    }
+
     template<typename... Args, typename = std::enable_if_t<
         sizeof...(Args) != 1 ||
         ((!tc::is_instance_or_derived<js_ref, Args>::value && ...) &&
+         (!std::is_same<js_unknown, tc::remove_cvref_t<Args>>::value && ...) &&
          (!std::is_same<emscripten::val, tc::remove_cvref_t<Args>>::value && ...))
     >>
     explicit js_ref(Args&&... args) noexcept : js_ref(T::_construct(std::forward<Args>(args)...)) {}

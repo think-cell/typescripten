@@ -35,11 +35,11 @@ using SomeJsClass = tc::js::js_ref<_js_SomeJsClass>;
         _ASSERTEQUAL(std::string(tc::js::globals::String(jsarrunkArgs[1])), "message"); \
         _ASSERTEQUAL(jsarrunkArgs->length(), 3); \
     }) \
-    CreateCallback(TestPassThis, void, (pass_this_t, SomeJsClass jssjcThis, int a, tc::js::globals::String b, std::optional<js_unknown> c), { \
+    CreateCallback(TestPassThis, void, (pass_this_t, SomeJsClass jssjcThis, int a, tc::js::globals::String b, js_unknown c), { \
         _ASSERTEQUAL(jssjcThis->intValue(), 10); \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(std::string(b), "message"); \
-        _ASSERT(!c.has_value()); \
+        _ASSERT(!c); \
     }) \
     CreateCallback(TestPassThisPassAllArguments, void, (pass_this_t, SomeJsClass jssjcThis, pass_all_arguments_t, Array<js_unknown> jsarrunkArgs, int a), { \
         _ASSERTEQUAL(jssjcThis->intValue(), 10); \
@@ -53,11 +53,11 @@ using SomeJsClass = tc::js::js_ref<_js_SomeJsClass>;
         _ASSERTEQUAL(jsarrunkArgs->length(), 3); \
         return SomeJsClass(123); \
     }) \
-    CreateCallback(TestPassThisAndReturn, SomeJsClass, (pass_this_t, SomeJsClass jssjcThis, int a, tc::js::globals::String b, std::optional<js_unknown> c), { \
+    CreateCallback(TestPassThisAndReturn, SomeJsClass, (pass_this_t, SomeJsClass jssjcThis, int a, tc::js::globals::String b, js_unknown c), { \
         _ASSERTEQUAL(jssjcThis->intValue(), 10); \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(std::string(b), "message"); \
-        _ASSERT(!c.has_value()); \
+        _ASSERT(!c); \
         return SomeJsClass(123); \
     }) \
     CreateCallback(TestPassThisPassAllArgumentsAndReturn, SomeJsClass, (pass_this_t, SomeJsClass jssjcThis, pass_all_arguments_t, Array<js_unknown> jsarrunkArgs, int a), { \
