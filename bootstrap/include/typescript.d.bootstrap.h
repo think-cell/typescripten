@@ -1,4 +1,5 @@
 #pragma once
+// TODO: add notices according to Apache License at https://github.com/microsoft/TypeScript/blob/master/LICENSE.txt as this may be a derivative work.
 
 #include <emscripten/val.h>
 #include <optional>
