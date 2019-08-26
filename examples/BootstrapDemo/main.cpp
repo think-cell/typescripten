@@ -9,6 +9,7 @@
 #include "js_callback.h"
 #include "js_types.h"
 
+using tc::js::js_string;
 using tc::js::js_unknown;
 using tc::js::globals::Array;
 using tc::js::globals::ReadonlyArray;
@@ -39,21 +40,23 @@ void TestOptionalNumber() {
 
 int main() {
     {
-        auto message = tc::explicit_cast<tc::js::globals::String>("Hello World");
-        _ASSERTEQUAL(message->length(), 11);
+        auto message = tc::explicit_cast<js_string>("Hello World");
+        _ASSERTEQUAL(message.length(), 11);
         _ASSERTEQUAL(tc::explicit_cast<std::string>(message), "Hello World");
         console()->log(message);
 
         // Implicit upcast.
         js_unknown anyMessage = message;
-        static_assert(std::is_convertible<tc::js::globals::String, js_unknown>::value);
+        static_assert(std::is_convertible<js_string, js_unknown>::value);
+        _ASSERTEQUAL(message.length(), 11);
         _ASSERT(message.getEmval().strictlyEquals(anyMessage.getEmval()));
         anyMessage = message;
+        _ASSERTEQUAL(message.length(), 11);
         _ASSERT(message.getEmval().strictlyEquals(anyMessage.getEmval()));
 
         // Explicit downcast.
-        tc::js::globals::String message2(anyMessage);
-        static_assert(!std::is_convertible<js_unknown, tc::js::globals::String>::value);
+        js_string message2(anyMessage);
+        static_assert(!std::is_convertible<js_unknown, js_string>::value);
         _ASSERT(message.getEmval().strictlyEquals(message2.getEmval()));
     }
 
@@ -67,10 +70,10 @@ int main() {
     }
 
     {
-        Array<tc::js::globals::String> arr(std::initializer_list<char const*>{"Hello", "Hi!"});
+        Array<js_string> arr(std::initializer_list<char const*>{"Hello", "Hi!"});
         _ASSERTEQUAL(arr->length(), 2);
-        _ASSERTEQUAL(arr[0]->length(), 5);
-        _ASSERTEQUAL(arr[1]->length(), 3);
+        _ASSERTEQUAL(arr[0].length(), 5);
+        _ASSERTEQUAL(arr[1].length(), 3);
     }
 
     auto arr = tc::explicit_cast<Array<int>>(std::initializer_list<int>{1, 2, 3});

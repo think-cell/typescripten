@@ -3,6 +3,7 @@
 #include <optional>
 #include <emscripten/val.h>
 #include <emscripten/wire.h>
+#include "explicit_cast.h"
 #include "noncopyable.h"
 #include "type_list.h"
 #include "type_traits.h"
@@ -40,20 +41,58 @@ struct js_unknown {
 private:
 	emscripten::val m_emval;
 };
+
+struct js_string final {
+    explicit js_string(emscripten::val const& _emval) noexcept : m_emval(_emval) {
+        _ASSERT(m_emval.isString());
+    }
+    explicit js_string(emscripten::val&& _emval) noexcept : m_emval(tc_move(_emval)) {
+        _ASSERT(m_emval.isString());
+    }
+
+    explicit js_string(js_unknown const& js) noexcept : js_string(js.getEmval()) {
+    }
+    explicit js_string(js_unknown&& js) noexcept : js_string(tc_move(js).getEmval()) {
+    }
+
+    emscripten::val getEmval() const& noexcept { return m_emval; }
+    emscripten::val getEmval() && noexcept { return tc_move(m_emval); }
+
+    template<typename Rng, typename = std::enable_if_t<
+        !std::is_same<emscripten::val, tc::remove_cvref_t<Rng>>::value &&
+        !std::is_same<js_unknown, tc::remove_cvref_t<Rng>>::value
+    >>
+    explicit js_string(Rng&& rng) noexcept : m_emval(
+        // TODO: avoid allocating std::string (we may have to duplicate parts of embind)
+        tc::explicit_cast<std::string>(std::forward<Rng>(rng))
+    ) {
+    }
+
+    int length() { return m_emval["length"].as<int>(); }
+
+    explicit operator std::string() { return m_emval.template as<std::string>(); }
+
+private:
+    emscripten::val m_emval;
+};
 } // namespace no_adl
 using no_adl::IsJsInteropable;
 using no_adl::IsJsIntegralEnum;
 using no_adl::js_unknown;
+using no_adl::js_string;
 
 template<>
 struct IsJsInteropable<js_unknown> : std::true_type {};
+
+template<>
+struct IsJsInteropable<js_string> : std::true_type {};
 
 template<typename T>
 struct IsJsInteropable<T, std::enable_if_t<IsJsIntegralEnum<T>::value>> : std::true_type {};
 
 namespace emscripten_interop_detail {
 template<typename T>
-using IsEmvalWrapper = tc::type::find_unique<tc::type::list<js_unknown>, T>;
+using IsEmvalWrapper = tc::type::find_unique<tc::type::list<js_unknown, js_string>, T>;
 } // namespace emscripten_interop_detail
 
 namespace optional_detail {

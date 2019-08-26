@@ -2,7 +2,6 @@
 
 #include <emscripten/val.h>
 #include <optional>
-#include <string>
 #include "js_types.h"
 #include "js_callback.h"
 #include "js_bootstrap.h"
@@ -53,8 +52,8 @@ struct _jsdefs_ts {
     };
 
     struct _js_SourceFile : virtual _js_Declaration, /* deduced */ virtual _js_SourceFileLike {
-        auto fileName() { return _getProperty<String>("fileName"); }
-        void fileName(String v) { _setProperty("fileName", v); }
+        auto fileName() { return _getProperty<js_string>("fileName"); }
+        void fileName(js_string v) { _setProperty("fileName", v); }
     };
 
     struct _js_Program : virtual IObject {
@@ -137,7 +136,7 @@ struct _js_ts : virtual IObject, _jsdefs_ts {
         return _call<LineAndCharacter>("getLineAndCharacterOfPosition", sourceFile, position);
     }
 
-    auto createProgram(ReadonlyArray<String> rootNames, CompilerOptions compilerOptions) {
+    auto createProgram(ReadonlyArray<js_string> rootNames, CompilerOptions compilerOptions) {
         return _call<Program>("createProgram", rootNames, compilerOptions);
     }
 
@@ -145,8 +144,8 @@ struct _js_ts : virtual IObject, _jsdefs_ts {
         return _call<ReadonlyArray<Diagnostic>>("getPreEmitDiagnostics", program);
     }
 
-    auto flattenDiagnosticMessageText(js_unknown messageText, String newLine) {
-        return _call<String>("flattenDiagnosticMessageText", messageText, newLine);
+    auto flattenDiagnosticMessageText(js_unknown messageText, js_string newLine) {
+        return _call<js_string>("flattenDiagnosticMessageText", messageText, newLine);
     }
 
    static emscripten::val _construct() { return emscripten::val::global("ts"); }

@@ -6,6 +6,7 @@
 #include "js_callback.h"
 #include "js_bootstrap.h"
 
+using tc::js::js_string;
 using tc::js::js_unknown;
 using tc::js::js_function;
 using tc::js::pass_this_t;
@@ -27,15 +28,15 @@ using SomeJsClass = tc::js::js_ref<_js_SomeJsClass>;
         _ASSERTEQUAL(b, 20); \
         return a + b; \
     }) \
-    CreateCallback(TestPrint, void, (tc::js::globals::String sMessage), { \
+    CreateCallback(TestPrint, void, (js_string sMessage), { \
         _ASSERTEQUAL(std::string(sMessage), "hello"); \
     })\
     CreateCallback(TestPassAllArguments, void, (pass_all_arguments_t, Array<js_unknown> jsarrunkArgs, int a), { \
         _ASSERTEQUAL(a, 1); \
-        _ASSERTEQUAL(std::string(tc::js::globals::String(jsarrunkArgs[1])), "message"); \
+        _ASSERTEQUAL(std::string(js_string(jsarrunkArgs[1])), "message"); \
         _ASSERTEQUAL(jsarrunkArgs->length(), 3); \
     }) \
-    CreateCallback(TestPassThis, void, (pass_this_t, SomeJsClass jssjcThis, int a, tc::js::globals::String b, js_unknown c), { \
+    CreateCallback(TestPassThis, void, (pass_this_t, SomeJsClass jssjcThis, int a, js_string b, js_unknown c), { \
         _ASSERTEQUAL(jssjcThis->intValue(), 10); \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(std::string(b), "message"); \
@@ -44,16 +45,16 @@ using SomeJsClass = tc::js::js_ref<_js_SomeJsClass>;
     CreateCallback(TestPassThisPassAllArguments, void, (pass_this_t, SomeJsClass jssjcThis, pass_all_arguments_t, Array<js_unknown> jsarrunkArgs, int a), { \
         _ASSERTEQUAL(jssjcThis->intValue(), 10); \
         _ASSERTEQUAL(a, 1); \
-        _ASSERTEQUAL(std::string(tc::js::globals::String(jsarrunkArgs[1])), "message"); \
+        _ASSERTEQUAL(std::string(js_string(jsarrunkArgs[1])), "message"); \
         _ASSERTEQUAL(jsarrunkArgs->length(), 3); \
     }) \
     CreateCallback(TestPassAllArgumentsAndReturn, SomeJsClass, (pass_all_arguments_t, Array<js_unknown> jsarrunkArgs, int a), { \
         _ASSERTEQUAL(a, 1); \
-        _ASSERTEQUAL(std::string(tc::js::globals::String(jsarrunkArgs[1])), "message"); \
+        _ASSERTEQUAL(std::string(js_string(jsarrunkArgs[1])), "message"); \
         _ASSERTEQUAL(jsarrunkArgs->length(), 3); \
         return SomeJsClass(123); \
     }) \
-    CreateCallback(TestPassThisAndReturn, SomeJsClass, (pass_this_t, SomeJsClass jssjcThis, int a, tc::js::globals::String b, js_unknown c), { \
+    CreateCallback(TestPassThisAndReturn, SomeJsClass, (pass_this_t, SomeJsClass jssjcThis, int a, js_string b, js_unknown c), { \
         _ASSERTEQUAL(jssjcThis->intValue(), 10); \
         _ASSERTEQUAL(a, 1); \
         _ASSERTEQUAL(std::string(b), "message"); \
@@ -63,7 +64,7 @@ using SomeJsClass = tc::js::js_ref<_js_SomeJsClass>;
     CreateCallback(TestPassThisPassAllArgumentsAndReturn, SomeJsClass, (pass_this_t, SomeJsClass jssjcThis, pass_all_arguments_t, Array<js_unknown> jsarrunkArgs, int a), { \
         _ASSERTEQUAL(jssjcThis->intValue(), 10); \
         _ASSERTEQUAL(a, 1); \
-        _ASSERTEQUAL(std::string(tc::js::globals::String(jsarrunkArgs[1])), "message"); \
+        _ASSERTEQUAL(std::string(js_string(jsarrunkArgs[1])), "message"); \
         _ASSERTEQUAL(jsarrunkArgs->length(), 3); \
         return SomeJsClass(123); \
     })
@@ -106,11 +107,11 @@ int main() {
     }
     {
         printf("Calling callbacks through js_function\n");
-        tc::js::js_lambda_wrap cbStorage([](tc::js::globals::String str) noexcept {
-            return tc::js::globals::String(tc::concat("hello ", std::string(str)));
+        tc::js::js_lambda_wrap cbStorage([](js_string str) noexcept {
+            return js_string(tc::concat("hello ", std::string(str)));
         });
-        js_function<tc::js::globals::String(tc::js::globals::String)> cb = cbStorage;
-       _ASSERTEQUAL(std::string(cb(tc::js::globals::String("world"))), "hello world");
+        js_function<js_string(js_string)> cb = cbStorage;
+       _ASSERTEQUAL(std::string(cb(js_string("world"))), "hello world");
     }
     return 0;
 }

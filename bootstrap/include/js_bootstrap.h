@@ -1,7 +1,6 @@
 #pragma once
 
 #include <emscripten/val.h>
-#include <string>
 #include "explicit_cast.h"
 #include "type_traits.h"
 #include "range.h"
@@ -14,12 +13,10 @@ namespace tc::js::globals {
 namespace no_adl {
 template<typename> struct _js_Array;
 template<typename> struct _js_ReadonlyArray;
-struct _js_String;
 struct _js_Console;
 
 template<typename T> using Array = js_ref<_js_Array<T>>;
 template<typename T> using ReadonlyArray = js_ref<_js_ReadonlyArray<T>>;
-using String = js_ref<_js_String>;
 using Console = js_ref<_js_Console>;
 
 template<typename T>
@@ -76,20 +73,6 @@ struct _js_ReadonlyArray : virtual IObject {
     }
 };
 
-struct _js_String : virtual IObject {
-    auto length() { return _getProperty<int>("length"); }
-
-    // TODO: clang does not see String::operator std::string() when return type is deduced, report bug?
-    // See https://godbolt.org/z/y8_jBG
-    explicit operator std::string() { return _getEmval().template as<std::string>(); }
-
-    template<typename Rng>
-    static auto _construct(Rng&& rng) noexcept {
-        // TODO: avoid allocating std::string (we may have to duplicate parts of embind)
-        return emscripten::val(tc::explicit_cast<std::string>(std::forward<Rng>(rng)));
-    }
-};
-
 struct _js_Console : virtual IObject {
     template<typename... Args>
     auto log(Args&&... args) {
@@ -101,7 +84,6 @@ struct _js_Console : virtual IObject {
 
 using no_adl::Array;
 using no_adl::ReadonlyArray;
-using no_adl::String;
 using no_adl::Console;
 
 inline auto console() { return Console(emscripten::val::global("console")); }
