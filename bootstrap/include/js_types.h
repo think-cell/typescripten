@@ -152,8 +152,8 @@ struct js_union : js_union_detail::CFindValueType<Args...> {
 
     using js_union_detail::CFindValueType<Args...>::has_value_type;
 
-    explicit js_union(emscripten::val const& _emval) : m_emval(_emval) { validateAny(); }
-    explicit js_union(emscripten::val&& _emval) : m_emval(tc_move(_emval)) { validateAny(); }
+    explicit js_union(emscripten::val const& _emval) : m_emval(_emval) { assertEmvalInRange(); }
+    explicit js_union(emscripten::val&& _emval) : m_emval(tc_move(_emval)) { assertEmvalInRange(); }
 
     emscripten::val getEmval() const& { return m_emval; }
     emscripten::val&& getEmval() && { return tc_move(m_emval); }
@@ -214,7 +214,7 @@ public:
 private:
     emscripten::val m_emval;
 
-    void validateAny() const {
+    void assertEmvalInRange() const {
         if constexpr (!has_undefined) {
             _ASSERT(!m_emval.isUndefined());
         }
