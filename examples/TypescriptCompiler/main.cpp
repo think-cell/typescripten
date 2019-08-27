@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
         tc::concat(ts()->getPreEmitDiagnostics(jsProgram), jsEmitresult->diagnostics()),
         [](ts::Diagnostic jsDiagnostic) {
             if (jsDiagnostic->file()) {
-                ts::LineAndCharacter jsLineAndCharacter = jsDiagnostic->file().value()->getLineAndCharacterOfPosition(jsDiagnostic->start().value());
+                ts::LineAndCharacter jsLineAndCharacter = (*jsDiagnostic->file())->getLineAndCharacterOfPosition(*jsDiagnostic->start());
                 js_string jsMessage = ts()->flattenDiagnosticMessageText(jsDiagnostic->messageText(), js_string("\n"));
                 printf("%s (%d,%d): %s\n",
                     std::string((*jsDiagnostic->file())->fileName()).c_str(),
