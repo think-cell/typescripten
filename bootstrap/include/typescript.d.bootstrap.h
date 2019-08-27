@@ -3,6 +3,7 @@
 
 #include <emscripten/val.h>
 #include <optional>
+#include "explicit_cast.h"
 #include "range_defines.h"
 #include "js_types.h"
 #include "js_callback.h"
@@ -550,7 +551,7 @@ struct _jsdefs_ts : _jsenums_ts {
 
     struct _js_SourceFileLike : virtual IObject {
         auto getLineAndCharacterOfPosition(int pos) {
-            return _call<LineAndCharacter>("getLineAndCharacterOfPosition", pos);
+            return _call<LineAndCharacter>("getLineAndCharacterOfPosition", tc::explicit_cast<double>(pos));
         }
     };
 
@@ -588,8 +589,8 @@ struct _jsdefs_ts : _jsenums_ts {
         auto file() { return _getProperty<js_optional<SourceFile>>("file"); }
         void file(js_optional<SourceFile> v) { _setProperty("file", v); }
 
-        auto start() { return _getProperty<js_optional<int>>("start"); }
-        void start(js_optional<int> v) { _setProperty("start", v); }
+        auto start() { return _getProperty<js_optional<double>>("start"); }
+        void start(js_optional<double> v) { _setProperty("start", v); }
 
         /* string | DiagnosticMessageChain; */
         auto messageText() { return _getProperty<js_unknown>("messageText"); }
@@ -616,11 +617,11 @@ struct _jsdefs_ts : _jsenums_ts {
     };
 
     struct _js_LineAndCharacter : virtual IObject {
-        auto line() { return _getProperty<int>("line"); }
-        void line(int v) { _setProperty("line", v); }
+        auto line() { return tc::explicit_cast<int>(_getProperty<double>("line")); }
+        void line(int v) { _setProperty("line", tc::explicit_cast<double>(v)); }
 
-        auto character() { return _getProperty<int>("character"); }
-        void character(int v) { _setProperty("character", v); }
+        auto character() { return tc::explicit_cast<int>(_getProperty<double>("character")); }
+        void character(int v) { _setProperty("character", tc::explicit_cast<double>(v)); }
     };
 };
 
@@ -661,7 +662,7 @@ struct _js_ts : virtual IObject, _jsdefs_ts {
     }
 
     auto getLineAndCharacterOfPosition(SourceFileLike sourceFile, int position) {
-        return _call<LineAndCharacter>("getLineAndCharacterOfPosition", sourceFile, position);
+        return _call<LineAndCharacter>("getLineAndCharacterOfPosition", sourceFile, tc::explicit_cast<double>(position));
     }
 
     auto createProgram(ReadonlyArray<js_string> rootNames, CompilerOptions compilerOptions) {

@@ -21,23 +21,6 @@ namespace tc::js {
 template<> struct IsJsIntegralEnum<MyIntEnum> : std::true_type {};
 } // namespace tc::js
 
-template<typename T>
-void TestOptionalNumber() {
-    {
-        js_optional<T> iValue;
-        emscripten::val emval(iValue);
-        _ASSERT(emval.isUndefined());
-        _ASSERT(!emval.isNumber());
-    }
-    {
-        js_optional<T> iValue(123);
-        emscripten::val emval(iValue);
-        _ASSERT(!emval.isUndefined());
-        _ASSERT(emval.isNumber());
-        _ASSERT(emval.as<int>() == 123);
-    }
-}
-
 int main() {
     {
         auto message = tc::explicit_cast<js_string>("Hello World");
@@ -61,7 +44,7 @@ int main() {
     }
 
     {
-        auto arr = tc::explicit_cast<ReadonlyArray<int>>(std::initializer_list<int>{1, 2, 3});
+        auto arr = tc::explicit_cast<ReadonlyArray<double>>(std::initializer_list<double>{1, 2, 3});
         console()->log(arr);
         _ASSERTEQUAL(arr->length(), 3);
         _ASSERTEQUAL(arr[0], 1);
@@ -76,7 +59,7 @@ int main() {
         _ASSERTEQUAL(arr[1].length(), 3);
     }
 
-    auto arr = tc::explicit_cast<Array<int>>(std::initializer_list<int>{1, 2, 3});
+    auto arr = tc::explicit_cast<Array<double>>(std::initializer_list<double>{1, 2, 3});
     console()->log(arr);
     _ASSERTEQUAL(arr->length(), 3);
     _ASSERTEQUAL(arr[1], 2);
@@ -84,29 +67,29 @@ int main() {
     _ASSERTEQUAL(arr[1], 15);
 
     {
-        std::vector<int> result;
-        tc::for_each(arr, [&](int item) { result.push_back(item); });
-        _ASSERTEQUAL(result, (std::vector{1, 15, 3}));
+        std::vector<double> result;
+        tc::for_each(arr, [&](double item) { result.push_back(item); });
+        _ASSERTEQUAL(result, (std::vector{1.0, 15.0, 3.0}));
     }
 
     {
-        std::vector<int> result;
+        std::vector<double> result;
         tc::for_each(
             tc::filter(
                 tc::transform(arr,
-                    [](int x) { return x * x; }
+                    [](double x) { return x * x; }
                 ),
-                [](int x) { return x >= 2; }
+                [](double x) { return x >= 2; }
             ),
-            [&](int item) { result.push_back(item); }
+            [&](double item) { result.push_back(item); }
         );
-        _ASSERTEQUAL(result, (std::vector{225, 9}));
+        _ASSERTEQUAL(result, (std::vector{225.0, 9.0}));
     }
 
     {
         emscripten::val emval(MyIntEnum::Foo);
         _ASSERT(emval.isNumber());
-        _ASSERTEQUAL(emval.template as<int>(), 10);
+        _ASSERTEQUAL(emval.template as<double>(), 10.0);
         _ASSERTEQUAL(emval.template as<MyIntEnum>(), MyIntEnum::Foo);
     }
 
@@ -154,15 +137,17 @@ int main() {
     }
 
     {
-        TestOptionalNumber<char>();
-        TestOptionalNumber<signed char>();
-        TestOptionalNumber<unsigned char>();
-        TestOptionalNumber<signed short>();
-        TestOptionalNumber<unsigned short>();
-        TestOptionalNumber<signed int>();
-        TestOptionalNumber<unsigned int>();
-        TestOptionalNumber<signed long>();
-        TestOptionalNumber<unsigned long>();
+        js_optional<double> iValue;
+        emscripten::val emval(iValue);
+        _ASSERT(emval.isUndefined());
+        _ASSERT(!emval.isNumber());
+    }
+    {
+        js_optional<double> iValue(123.5);
+        emscripten::val emval(iValue);
+        _ASSERT(!emval.isUndefined());
+        _ASSERT(emval.isNumber());
+        _ASSERT(emval.as<double>() == 123.5);
     }
     return 0;
 }

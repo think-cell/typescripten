@@ -14,7 +14,7 @@ using tc::js::pass_all_arguments_t;
 using tc::js::globals::Array;
 
 struct _js_SomeJsClass : virtual tc::js::IObject {
-    auto intValue() { return _getProperty<int>("intValue"); }
+    auto intValue() { return tc::explicit_cast<int>(_getProperty<double>("intValue")); }
 
     static auto _construct(int v) {
         return emscripten::val::module_property("SomeJsClass").new_(v);
@@ -23,47 +23,47 @@ struct _js_SomeJsClass : virtual tc::js::IObject {
 using SomeJsClass = tc::js::js_ref<_js_SomeJsClass>;
 
 #define FOR_ALL_CALLBACKS(CreateCallback) \
-    CreateCallback(TestSum, int, (int a, int b), { \
-        _ASSERTEQUAL(a, 10); \
-        _ASSERTEQUAL(b, 20); \
+    CreateCallback(TestSum, double, (double a, double b), { \
+        _ASSERTEQUAL(a, 10.0); \
+        _ASSERTEQUAL(b, 20.0); \
         return a + b; \
     }) \
     CreateCallback(TestPrint, void, (js_string sMessage), { \
         _ASSERTEQUAL(std::string(sMessage), "hello"); \
     })\
-    CreateCallback(TestPassAllArguments, void, (pass_all_arguments_t, Array<js_unknown> jsarrunkArgs, int a), { \
-        _ASSERTEQUAL(a, 1); \
+    CreateCallback(TestPassAllArguments, void, (pass_all_arguments_t, Array<js_unknown> jsarrunkArgs, double a), { \
+        _ASSERTEQUAL(a, 1.0); \
         _ASSERTEQUAL(std::string(js_string(jsarrunkArgs[1])), "message"); \
         _ASSERTEQUAL(jsarrunkArgs->length(), 3); \
     }) \
-    CreateCallback(TestPassThis, void, (pass_this_t, SomeJsClass jssjcThis, int a, js_string b, js_unknown c), { \
+    CreateCallback(TestPassThis, void, (pass_this_t, SomeJsClass jssjcThis, double a, js_string b, js_unknown c), { \
         _ASSERTEQUAL(jssjcThis->intValue(), 10); \
-        _ASSERTEQUAL(a, 1); \
+        _ASSERTEQUAL(a, 1.0); \
         _ASSERTEQUAL(std::string(b), "message"); \
         _ASSERT(!c); \
     }) \
-    CreateCallback(TestPassThisPassAllArguments, void, (pass_this_t, SomeJsClass jssjcThis, pass_all_arguments_t, Array<js_unknown> jsarrunkArgs, int a), { \
+    CreateCallback(TestPassThisPassAllArguments, void, (pass_this_t, SomeJsClass jssjcThis, pass_all_arguments_t, Array<js_unknown> jsarrunkArgs, double a), { \
         _ASSERTEQUAL(jssjcThis->intValue(), 10); \
-        _ASSERTEQUAL(a, 1); \
+        _ASSERTEQUAL(a, 1.0); \
         _ASSERTEQUAL(std::string(js_string(jsarrunkArgs[1])), "message"); \
         _ASSERTEQUAL(jsarrunkArgs->length(), 3); \
     }) \
-    CreateCallback(TestPassAllArgumentsAndReturn, SomeJsClass, (pass_all_arguments_t, Array<js_unknown> jsarrunkArgs, int a), { \
-        _ASSERTEQUAL(a, 1); \
+    CreateCallback(TestPassAllArgumentsAndReturn, SomeJsClass, (pass_all_arguments_t, Array<js_unknown> jsarrunkArgs, double a), { \
+        _ASSERTEQUAL(a, 1.0); \
         _ASSERTEQUAL(std::string(js_string(jsarrunkArgs[1])), "message"); \
         _ASSERTEQUAL(jsarrunkArgs->length(), 3); \
         return SomeJsClass(123); \
     }) \
-    CreateCallback(TestPassThisAndReturn, SomeJsClass, (pass_this_t, SomeJsClass jssjcThis, int a, js_string b, js_unknown c), { \
+    CreateCallback(TestPassThisAndReturn, SomeJsClass, (pass_this_t, SomeJsClass jssjcThis, double a, js_string b, js_unknown c), { \
         _ASSERTEQUAL(jssjcThis->intValue(), 10); \
-        _ASSERTEQUAL(a, 1); \
+        _ASSERTEQUAL(a, 1.0); \
         _ASSERTEQUAL(std::string(b), "message"); \
         _ASSERT(!c); \
         return SomeJsClass(123); \
     }) \
-    CreateCallback(TestPassThisPassAllArgumentsAndReturn, SomeJsClass, (pass_this_t, SomeJsClass jssjcThis, pass_all_arguments_t, Array<js_unknown> jsarrunkArgs, int a), { \
+    CreateCallback(TestPassThisPassAllArgumentsAndReturn, SomeJsClass, (pass_this_t, SomeJsClass jssjcThis, pass_all_arguments_t, Array<js_unknown> jsarrunkArgs, double a), { \
         _ASSERTEQUAL(jssjcThis->intValue(), 10); \
-        _ASSERTEQUAL(a, 1); \
+        _ASSERTEQUAL(a, 1.0); \
         _ASSERTEQUAL(std::string(js_string(jsarrunkArgs[1])), "message"); \
         _ASSERTEQUAL(jsarrunkArgs->length(), 3); \
         return SomeJsClass(123); \

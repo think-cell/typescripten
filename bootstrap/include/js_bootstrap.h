@@ -23,7 +23,7 @@ template<typename T>
 struct _js_Array : virtual IObject {
     static_assert(IsJsInteropable<T>::value);
 
-    auto length() { return _getProperty<int>("length"); }
+    auto length() { return tc::explicit_cast<int>(_getProperty<double>("length")); }
 
     auto push(T const& item) { return _call<void>("push", item); }
 
@@ -53,7 +53,7 @@ template<typename T>
 struct _js_ReadonlyArray : virtual IObject {
     static_assert(IsJsInteropable<T>::value);
 
-    auto length() { return _getProperty<int>("length"); }
+    auto length() { return tc::explicit_cast<int>(_getProperty<double>("length")); }
 
     auto operator[](int i) { return _getProperty<T>(i); }
 

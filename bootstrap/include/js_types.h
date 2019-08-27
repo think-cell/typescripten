@@ -19,11 +19,7 @@ struct IsJsInteropable<
     std::enable_if_t<tc::type::find_unique<
         tc::type::list<
             void,
-            char, signed char, unsigned char,
-            signed short, unsigned short,
-            signed int, unsigned int,
-            signed long, unsigned long,
-            float, double,
+            double,
             bool
         >,
         T
@@ -121,7 +117,7 @@ struct js_union : js_union_detail::CFindValueType<Args...> {
     static inline constexpr auto has_null = tc::type::find_unique<ListArgs, js_null>::found;
     static inline constexpr auto has_string = tc::type::find_unique<ListArgs, js_string>::found;
     static inline constexpr auto has_bool = tc::type::find_unique<ListArgs, bool>::found;
-    static inline constexpr auto has_number = tc::type::find_unique_if<ListArgs, std::is_arithmetic>::found;
+    static inline constexpr auto has_number = tc::type::find_unique<ListArgs, double>::found;
 
     using js_union_detail::CFindValueType<Args...>::has_value_type;
 
@@ -187,7 +183,7 @@ private:
         if constexpr (std::is_same<T, bool>::value) {
             _ASSERT(m_emval.isTrue() || m_emval.isFalse());
         }
-        if constexpr (std::is_arithmetic<T>::value) {
+        if constexpr (std::is_same<T, double>::value) {
             _ASSERT(m_emval.isNumber());
         }
     }
