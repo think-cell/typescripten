@@ -30,20 +30,20 @@ template<typename T>
 struct IsJsIntegralEnum : std::false_type {};
 
 struct js_unknown {
-    explicit js_unknown(emscripten::val const& _emval) : m_emval(_emval) {}
-    explicit js_unknown(emscripten::val&& _emval) : m_emval(tc_move(_emval)) {}
+    explicit js_unknown(emscripten::val const& _emval) noexcept : m_emval(_emval) {}
+    explicit js_unknown(emscripten::val&& _emval) noexcept : m_emval(tc_move(_emval)) {}
 
-    emscripten::val getEmval() const& { return m_emval; }
-    emscripten::val&& getEmval() && { return tc_move(m_emval); }
+    emscripten::val getEmval() const& noexcept { return m_emval; }
+    emscripten::val&& getEmval() && noexcept { return tc_move(m_emval); }
 
     template<typename T, typename = std::enable_if_t<IsJsInteropable<tc::remove_cvref_t<T>>::value>>
-    js_unknown(T&& value) : m_emval(std::forward<T>(value)) {
+    js_unknown(T&& value) noexcept : m_emval(std::forward<T>(value)) {
     }
 
     template<typename U, typename = std::enable_if_t<IsJsInteropable<tc::remove_cvref_t<U>>::value>>
-    explicit operator U() const& { return m_emval.template as<U>(); }
+    explicit operator U() const& noexcept { return m_emval.template as<U>(); }
 
-    explicit operator bool() const {
+    explicit operator bool() const noexcept {
         return !!m_emval;
     }
 
@@ -52,19 +52,19 @@ private:
 };
 
 struct js_undefined {
-    js_undefined() {}
-    explicit js_undefined(emscripten::val const& emval) {
+    js_undefined() noexcept {}
+    explicit js_undefined(emscripten::val const& emval) noexcept {
         _ASSERT(emval.isUndefined());
     }
-    emscripten::val getEmval() const& { return emscripten::val::undefined(); }
+    emscripten::val getEmval() const& noexcept { return emscripten::val::undefined(); }
 };
 
 struct js_null {
-    js_null() {}
-    explicit js_null(emscripten::val const& emval) {
+    js_null() noexcept {}
+    explicit js_null(emscripten::val const& emval) noexcept {
         _ASSERT(emval.isNull());
     }
-    emscripten::val getEmval() const& { return emscripten::val::null(); }
+    emscripten::val getEmval() const& noexcept { return emscripten::val::null(); }
 };
 
 struct js_string;
@@ -152,17 +152,17 @@ struct js_union : js_union_detail::CFindValueType<Args...> {
 
     using js_union_detail::CFindValueType<Args...>::has_value_type;
 
-    explicit js_union(emscripten::val const& _emval) : m_emval(_emval) { assertEmvalInRange(); }
-    explicit js_union(emscripten::val&& _emval) : m_emval(tc_move(_emval)) { assertEmvalInRange(); }
+    explicit js_union(emscripten::val const& _emval) noexcept : m_emval(_emval) { assertEmvalInRange(); }
+    explicit js_union(emscripten::val&& _emval) noexcept : m_emval(tc_move(_emval)) { assertEmvalInRange(); }
 
-    emscripten::val getEmval() const& { return m_emval; }
-    emscripten::val&& getEmval() && { return tc_move(m_emval); }
+    emscripten::val getEmval() const& noexcept { return m_emval; }
+    emscripten::val&& getEmval() && noexcept { return tc_move(m_emval); }
 
     template<typename T, std::enable_if_t<
         IsJsInteropable<tc::remove_cvref_t<T>>::value &&
         js_union_detail::FindUniqueConvertibleFrom<T&&, ListArgs>::found
     >* = nullptr>
-    js_union(T&& value) : m_emval(
+    js_union(T&& value) noexcept : m_emval(
         typename js_union_detail::FindUniqueConvertibleFrom<T&&, ListArgs>::type(
             std::forward<T>(value)
         )
@@ -172,20 +172,20 @@ struct js_union : js_union_detail::CFindValueType<Args...> {
         std::negation<std::is_same<emscripten::val, tc::remove_cvref_t<T>>>,
         js_union_detail::HasUniqueExplicitlyConstructibleFrom<T&&, ListArgs>
     >::value>* = nullptr>
-    explicit js_union(T&& value) : m_emval(
+    explicit js_union(T&& value) noexcept : m_emval(
         typename js_union_detail::FindUniqueExplicitlyConstructibleFrom<T&&, ListArgs>::type(
             std::forward<T>(value)
         )
     ) {}
 
     template<typename T = js_union, std::enable_if_t<T::has_undefined && !T::has_null>* = nullptr>
-    js_union() : js_union(emscripten::val::undefined()) {}
+    js_union() noexcept : js_union(emscripten::val::undefined()) {}
 
     template<typename T = js_union, std::enable_if_t<!T::has_undefined && T::has_null>* = nullptr>
-    js_union() : js_union(emscripten::val::null()) {}
+    js_union() noexcept : js_union(emscripten::val::null()) {}
 
     template<typename T, typename = std::enable_if_t<js_union_detail::FindUniqueConstructibleTo<T&&, ListArgs>::found>>
-    explicit operator T() const& {
+    explicit operator T() const& noexcept {
         return T(m_emval.template as<typename js_union_detail::FindUniqueConstructibleTo<T&&, ListArgs>::type>());
     }
 
@@ -193,28 +193,28 @@ private:
     template<typename T>
     struct CArrowProxy {
         T m_value;
-        CArrowProxy(T&& value) : m_value(tc_move(value)) {}
-        T* operator->() { return &m_value; }
-        T const* operator->() const { return &m_value; }
+        CArrowProxy(T&& value) noexcept : m_value(tc_move(value)) {}
+        T* operator->() noexcept { return &m_value; }
+        T const* operator->() const noexcept { return &m_value; }
     };
 
 public:
-    std::enable_if_t<has_value_type, typename js_union::value_type> operator*() const {
+    std::enable_if_t<has_value_type, typename js_union::value_type> operator*() const noexcept {
         return operator typename js_union::value_type();
     }
 
-    std::enable_if_t<has_value_type, CArrowProxy<typename js_union::value_type>> operator->() const {
+    std::enable_if_t<has_value_type, CArrowProxy<typename js_union::value_type>> operator->() const noexcept {
         return operator typename js_union::value_type();
     }
 
-    explicit operator bool() const {
+    explicit operator bool() const noexcept {
         return !!m_emval;
     }
 
 private:
     emscripten::val m_emval;
 
-    void assertEmvalInRange() const {
+    void assertEmvalInRange() const noexcept {
         if constexpr (!has_undefined) {
             _ASSERT(!m_emval.isUndefined());
         }
@@ -256,13 +256,13 @@ struct js_string final {
     ) {
     }
 
-    int length() { return m_emval["length"].as<int>(); }
+    int length() noexcept { return m_emval["length"].as<int>(); }
 
-    explicit operator bool() const {
+    explicit operator bool() const noexcept {
         return !!m_emval;
     }
 
-    explicit operator std::string() { return m_emval.template as<std::string>(); }
+    explicit operator std::string() noexcept { return m_emval.template as<std::string>(); }
 
 private:
     emscripten::val m_emval;
