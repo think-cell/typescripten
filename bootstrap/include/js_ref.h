@@ -81,11 +81,6 @@ struct js_ref {
         _ASSERT(!!m_emval);
     }
 
-    explicit js_ref(js_unknown const& js) noexcept : js_ref(js.getEmval()) {
-    }
-    explicit js_ref(js_unknown&& js) noexcept : js_ref(tc_move(js).getEmval()) {
-    }
-
     template<typename... Args, typename = std::enable_if_t<
         sizeof...(Args) != 1 ||
         ((!tc::is_instance_or_derived<js_ref, Args>::value && ...) &&

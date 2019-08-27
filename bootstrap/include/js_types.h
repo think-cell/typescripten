@@ -29,10 +29,10 @@ struct js_unknown {
     }
 
     template<typename U, typename = std::enable_if_t<IsJsInteropable<tc::remove_cvref_t<U>>::value>>
-    explicit operator U() const& { return m_emval; }
+    explicit operator U() const& { return m_emval.template as<U>(); }
 
     template<typename U, typename = std::enable_if_t<IsJsInteropable<tc::remove_cvref_t<U>>::value>>
-    explicit operator U&&() && { return tc_move(m_emval); }
+    explicit operator U&&() && { return tc_move(m_emval).template as<U>(); }
 
     explicit operator bool() const {
         return !!m_emval;
@@ -48,11 +48,6 @@ struct js_string final {
     }
     explicit js_string(emscripten::val&& _emval) noexcept : m_emval(tc_move(_emval)) {
         _ASSERT(m_emval.isString());
-    }
-
-    explicit js_string(js_unknown const& js) noexcept : js_string(js.getEmval()) {
-    }
-    explicit js_string(js_unknown&& js) noexcept : js_string(tc_move(js).getEmval()) {
     }
 
     emscripten::val getEmval() const& noexcept { return m_emval; }
