@@ -94,8 +94,42 @@ struct CFindValueType<js_null, T> {
     static inline constexpr auto has_value_type = true;
     using value_type = T;
 };
+
+template<typename From>
+struct ExplicitlyConstructibleFrom {
+    template<typename To>
+    using type = std::conjunction<
+        std::is_constructible<To, From>,
+        std::negation<std::is_convertible<From, To>>
+    >;
+};
+
+template<typename From>
+struct ConvertibleFrom {
+    template<typename To>
+    using type = std::is_convertible<From, To>;
+};
+
+template<typename To>
+struct ConstructibleTo {
+    template<typename From>
+    using type = std::is_constructible<To, From>;
+};
 } // namespace no_adl
 using no_adl::CFindValueType;
+
+template<typename From, typename ListArgs>
+using FindUniqueExplicitlyConstructibleFrom = tc::type::find_unique_if<ListArgs, no_adl::ExplicitlyConstructibleFrom<From>::template type>;
+
+template<typename From, typename ListArgs>
+struct HasUniqueExplicitlyConstructibleFrom : std::bool_constant<FindUniqueExplicitlyConstructibleFrom<From, ListArgs>::found> {
+};
+
+template<typename From, typename ListArgs>
+using FindUniqueConvertibleFrom = tc::type::find_unique_if<ListArgs, no_adl::ConvertibleFrom<From>::template type>;
+
+template<typename To, typename ListArgs>
+using FindUniqueConstructibleTo = tc::type::find_unique_if<ListArgs, no_adl::ConstructibleTo<To>::template type>;
 } // namespace js_union_detail
 
 namespace no_adl {
@@ -124,20 +158,36 @@ struct js_union : js_union_detail::CFindValueType<Args...> {
     emscripten::val getEmval() const& { return m_emval; }
     emscripten::val&& getEmval() && { return tc_move(m_emval); }
 
-    template<typename T, typename = std::enable_if_t<!has_value_type && IsJsInteropable<tc::remove_cvref_t<T>>::value && (std::is_convertible<T, Args>::value || ...)>>
-    explicit js_union(T&& value) : m_emval(value) {}
+    template<typename T, std::enable_if_t<
+        IsJsInteropable<tc::remove_cvref_t<T>>::value &&
+        js_union_detail::FindUniqueConvertibleFrom<T&&, ListArgs>::found
+    >* = nullptr>
+    js_union(T&& value) : m_emval(
+        typename js_union_detail::FindUniqueConvertibleFrom<T&&, ListArgs>::type(
+            std::forward<T>(value)
+        )
+    ) {}
 
-    template<typename T = js_union, std::enable_if_t<T::has_undefined && !T::has_null && T::has_value_type>* = nullptr>
+    template<typename T, std::enable_if_t<std::conjunction<
+        std::negation<std::is_same<emscripten::val, tc::remove_cvref_t<T>>>,
+        js_union_detail::HasUniqueExplicitlyConstructibleFrom<T&&, ListArgs>
+    >::value>* = nullptr>
+    explicit js_union(T&& value) : m_emval(
+        typename js_union_detail::FindUniqueExplicitlyConstructibleFrom<T&&, ListArgs>::type(
+            std::forward<T>(value)
+        )
+    ) {}
+
+    template<typename T = js_union, std::enable_if_t<T::has_undefined && !T::has_null>* = nullptr>
     js_union() : js_union(emscripten::val::undefined()) {}
 
-    template<typename T = js_union, std::enable_if_t<!T::has_undefined && T::has_null && T::has_value_type>* = nullptr>
+    template<typename T = js_union, std::enable_if_t<!T::has_undefined && T::has_null>* = nullptr>
     js_union() : js_union(emscripten::val::null()) {}
 
-    template<typename T, typename U = js_union, typename = std::enable_if_t<IsJsInteropable<tc::remove_cvref_t<T>>::value && std::is_convertible<T, typename U::value_type>::value>>
-    js_union(T&& value) : m_emval(value) {}
-
-    template<typename T, typename = std::enable_if_t<IsJsInteropable<tc::remove_cvref_t<T>>::value && (std::is_convertible<Args, T>::value || ...)>>
-    explicit operator T() const& { return m_emval.template as<T>(); }
+    template<typename T, typename = std::enable_if_t<js_union_detail::FindUniqueConstructibleTo<T&&, ListArgs>::found>>
+    explicit operator T() const& {
+        return T(m_emval.template as<typename js_union_detail::FindUniqueConstructibleTo<T&&, ListArgs>::type>());
+    }
 
 private:
     template<typename T>
@@ -150,12 +200,10 @@ private:
 
 public:
     std::enable_if_t<has_value_type, typename js_union::value_type> operator*() const {
-        static_assert(IsJsInteropable<tc::remove_cvref_t<typename js_union::value_type>>::value && (std::is_convertible<Args, typename js_union::value_type>::value || ...));
         return operator typename js_union::value_type();
     }
 
     std::enable_if_t<has_value_type, CArrowProxy<typename js_union::value_type>> operator->() const {
-        static_assert(IsJsInteropable<tc::remove_cvref_t<typename js_union::value_type>>::value && (std::is_convertible<Args, typename js_union::value_type>::value || ...));
         return operator typename js_union::value_type();
     }
 
