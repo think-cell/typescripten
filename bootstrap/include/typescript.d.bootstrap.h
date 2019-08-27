@@ -577,7 +577,7 @@ struct _jsdefs_ts : _jsenums_ts {
 
     struct _js_TypeChecker : virtual IObject {
         auto getSymbolsInScope(Node location, SymbolFlags meaning) { return _call<Array<Symbol>>("getSymbolsInScope", location, meaning); }
-        auto getSymbolAtLocation(Node node) { return _call<std::optional<Symbol>>("getSymbolAtLocation", node); }
+        auto getSymbolAtLocation(Node node) { return _call<js_optional<Symbol>>("getSymbolAtLocation", node); }
     };
 
     struct _js_Symbol : virtual IObject {
@@ -585,11 +585,11 @@ struct _jsdefs_ts : _jsenums_ts {
     };
 
     struct _js_DiagnosticRelatedInformation : virtual IObject {
-        auto file() { return _getProperty<std::optional<SourceFile>>("file"); }
-        void file(std::optional<SourceFile> v) { _setProperty("file", v); }
+        auto file() { return _getProperty<js_optional<SourceFile>>("file"); }
+        void file(js_optional<SourceFile> v) { _setProperty("file", v); }
 
-        auto start() { return _getProperty<std::optional<int>>("start"); }
-        void start(std::optional<int> v) { _setProperty("start", v); }
+        auto start() { return _getProperty<js_optional<int>>("start"); }
+        void start(js_optional<int> v) { _setProperty("start", v); }
 
         /* string | DiagnosticMessageChain; */
         auto messageText() { return _getProperty<js_unknown>("messageText"); }
@@ -600,17 +600,17 @@ struct _jsdefs_ts : _jsenums_ts {
     };
 
     struct _js_CompilerOptions : virtual IObject {
-        auto noEmitOnError() { return _getProperty<std::optional<bool>>("noEmitOnError"); }
-        void noEmitOnError(std::optional<bool> v) { _setProperty("noEmitOnError", v); }
+        auto noEmitOnError() { return _getProperty<js_optional<bool>>("noEmitOnError"); }
+        void noEmitOnError(js_optional<bool> v) { _setProperty("noEmitOnError", v); }
 
-        auto module() { return _getProperty<std::optional<bool>>("module"); }
-        void module(std::optional<ModuleKind> v) { _setProperty("module", v); }
+        auto module() { return _getProperty<js_optional<bool>>("module"); }
+        void module(js_optional<ModuleKind> v) { _setProperty("module", v); }
 
-        auto strict() { return _getProperty<std::optional<bool>>("strict"); }
-        void strict(std::optional<bool> v) { _setProperty("strict", v); }
+        auto strict() { return _getProperty<js_optional<bool>>("strict"); }
+        void strict(js_optional<bool> v) { _setProperty("strict", v); }
 
-        auto target() { return _getProperty<std::optional<ScriptTarget>>("target"); }
-        void target(std::optional<ScriptTarget> v) { _setProperty("target", v); }
+        auto target() { return _getProperty<js_optional<ScriptTarget>>("target"); }
+        void target(js_optional<ScriptTarget> v) { _setProperty("target", v); }
 
         static auto _construct() noexcept { return emscripten::val::object(); }
     };

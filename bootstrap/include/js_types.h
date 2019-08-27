@@ -1,6 +1,5 @@
 #pragma once
 #include <type_traits>
-#include <optional>
 #include <emscripten/val.h>
 #include <emscripten/wire.h>
 #include "explicit_cast.h"
@@ -248,6 +247,8 @@ private:
 };
 } // namespace no_adl
 using no_adl::js_union;
+template<typename T>
+using js_optional = js_union<js_undefined, T>;
 
 template<>
 struct IsJsInteropable<js_unknown> : std::true_type {};
@@ -282,18 +283,6 @@ struct IsEmvalWrapper<js_union<Args...>, std::enable_if_t<IsJsInteropable<js_uni
 }
 using no_adl::IsEmvalWrapper;
 } // namespace emscripten_interop_detail
-
-namespace optional_detail {
-template<typename T>
-using IsOptionalOfJsInteropable = std::bool_constant<
-    tc::is_instance<std::optional, T>::value &&
-    IsJsInteropable<typename T::value_type>::value &&
-    !tc::is_instance<std::optional, typename T::value_type>::value
->;
-} // namespace optional_detail
-
-template<typename T>
-struct IsJsInteropable<T, std::enable_if_t<tc::js::optional_detail::IsOptionalOfJsInteropable<T>::value>> : std::true_type {};
 } // namespace tc::js
 
 // Custom marshalling
@@ -315,40 +304,6 @@ namespace emscripten::internal {
 
         static auto fromWireType(WireType v) {
             return T(BindingType<emscripten::val>::fromWireType(v));
-        }
-    };
-
-    // TODO: optimize by providing JS-side toWireType/fromWireType for integrals/bools and getting rid of emscripten::val
-    template<typename T>
-    struct TypeID<T, std::enable_if_t<tc::js::optional_detail::IsOptionalOfJsInteropable<tc::remove_cvref_t<T>>::value>> {
-        static constexpr TYPEID get() {
-            // Ensure that the underlying type can be marshalled.
-            TypeID<typename tc::remove_cvref_t<T>::value_type>::get();
-            return TypeID<val>::get();
-        }
-    };
-
-    template<typename T>
-    struct BindingType<T, std::enable_if_t<tc::js::optional_detail::IsOptionalOfJsInteropable<T>::value>> {
-        typedef typename BindingType<emscripten::val>::WireType WireType;
-
-        static WireType toWireType(T const& optv) {
-            if (optv) {
-                emscripten::val emval(optv.value());
-                _ASSERT(!emval.isUndefined());
-                return BindingType<emscripten::val>::toWireType(emval);
-            } else {
-                return BindingType<emscripten::val>::toWireType(emscripten::val::undefined());
-            }
-        }
-
-        static auto fromWireType(WireType wire) {
-            auto emval = BindingType<emscripten::val>::fromWireType(wire);
-            T result;
-            if (!emval.isUndefined()) {
-                result.emplace(tc_move(emval).as<typename T::value_type>());
-            }
-            return result;
         }
     };
 

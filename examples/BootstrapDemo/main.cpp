@@ -1,5 +1,4 @@
 #include <emscripten/val.h>
-#include <optional>
 #include <vector>
 #include <initializer_list>
 #include "explicit_cast.h"
@@ -11,6 +10,7 @@
 
 using tc::js::js_string;
 using tc::js::js_unknown;
+using tc::js::js_optional;
 using tc::js::globals::Array;
 using tc::js::globals::ReadonlyArray;
 using tc::js::globals::console;
@@ -24,13 +24,13 @@ template<> struct IsJsIntegralEnum<MyIntEnum> : std::true_type {};
 template<typename T>
 void TestOptionalNumber() {
     {
-        std::optional<T> iValue;
+        js_optional<T> iValue;
         emscripten::val emval(iValue);
         _ASSERT(emval.isUndefined());
         _ASSERT(!emval.isNumber());
     }
     {
-        std::optional<T> iValue(123);
+        js_optional<T> iValue(123);
         emscripten::val emval(iValue);
         _ASSERT(!emval.isUndefined());
         _ASSERT(emval.isNumber());
@@ -124,7 +124,7 @@ int main() {
 
     {
         // Test optional
-        using OptionalUnknown = std::optional<tc::js::js_ref<tc::js::IObject>>;
+        using OptionalUnknown = js_optional<tc::js::js_ref<tc::js::IObject>>;
         static_assert(
             std::is_same<
                 typename emscripten::internal::BindingType<OptionalUnknown>::WireType,
