@@ -15,6 +15,23 @@ template<typename, typename = void>
 struct IsJsInteropable : std::false_type {};
 
 template<typename T>
+struct IsJsInteropable<
+    T,
+    std::enable_if_t<tc::type::find_unique<
+        tc::type::list<
+            void,
+            char, signed char, unsigned char,
+            signed short, unsigned short,
+            signed int, unsigned int,
+            signed long, unsigned long,
+            float, double,
+            bool
+        >,
+        T
+    >::found>
+> : std::true_type {};
+
+template<typename T>
 struct IsJsIntegralEnum : std::false_type {};
 
 struct js_unknown {
