@@ -85,6 +85,7 @@ struct js_ref {
         sizeof...(Args) != 1 ||
         ((!tc::is_instance_or_derived<js_ref, Args>::value && ...) &&
          (!std::is_same<js_unknown, tc::remove_cvref_t<Args>>::value && ...) &&
+         (!tc::is_instance_or_derived<js_union, Args>::value && ...) &&
          (!std::is_same<emscripten::val, tc::remove_cvref_t<Args>>::value && ...))
     >>
     explicit js_ref(Args&&... args) noexcept : js_ref(T::_construct(std::forward<Args>(args)...)) {}

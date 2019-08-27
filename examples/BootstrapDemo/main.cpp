@@ -111,6 +111,18 @@ int main() {
     }
 
     {
+        emscripten::val emval{tc::js::js_undefined{}};
+        _ASSERTE(emval.isUndefined());
+        tc::js::js_undefined{emval};
+    }
+
+    {
+        emscripten::val emval{tc::js::js_null{}};
+        _ASSERTE(emval.isNull());
+        tc::js::js_null{emval};
+    }
+
+    {
         // Test optional
         using OptionalUnknown = std::optional<tc::js::js_ref<tc::js::IObject>>;
         static_assert(
