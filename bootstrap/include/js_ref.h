@@ -75,10 +75,10 @@ struct js_ref {
 
     // js_ref is non-nullable.
     explicit js_ref(emscripten::val const& _emval) noexcept : m_emval(_emval) {
-        _ASSERT(!m_emval.isUndefined() && !m_emval.isNull());
+        _ASSERT(!!m_emval);
     }
     explicit js_ref(emscripten::val&& _emval) noexcept : m_emval(tc_move(_emval)) {
-        _ASSERT(!m_emval.isUndefined() && !m_emval.isNull());
+        _ASSERT(!!m_emval);
     }
 
     explicit js_ref(js_unknown const& js) noexcept : js_ref(js.getEmval()) {
