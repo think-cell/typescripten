@@ -137,7 +137,7 @@ struct js_union : js_union_detail::CFindValueType<Args...> {
     js_union(T&& value) : m_emval(value) {}
 
     template<typename T, typename = std::enable_if_t<IsJsInteropable<tc::remove_cvref_t<T>>::value && (std::is_convertible<Args, T>::value || ...)>>
-    explicit operator T() const& { validate<tc::remove_cvref_t<T>>(); return m_emval.template as<T>(); }
+    explicit operator T() const& { return m_emval.template as<T>(); }
 
 private:
     template<typename T>
@@ -165,25 +165,6 @@ public:
 
 private:
     emscripten::val m_emval;
-
-    template<typename T>
-    void validate() const {
-        if constexpr (std::is_same<T, js_undefined>::value) {
-            _ASSERT(m_emval.isUndefined());
-        }
-        if constexpr (std::is_same<T, js_null>::value) {
-            _ASSERT(m_emval.isNull());
-        }
-        if constexpr (std::is_same<T, js_string>::value) {
-            _ASSERT(m_emval.isString());
-        }
-        if constexpr (std::is_same<T, bool>::value) {
-            _ASSERT(m_emval.isTrue() || m_emval.isFalse());
-        }
-        if constexpr (std::is_same<T, double>::value) {
-            _ASSERT(m_emval.isNumber());
-        }
-    }
 
     void validateAny() const {
         if constexpr (!has_undefined) {
