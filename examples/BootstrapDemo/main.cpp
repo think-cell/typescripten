@@ -125,13 +125,13 @@ int main() {
             _ASSERT(emval.isUndefined());
         }
         {
-            emscripten::val emvalOrigin = emscripten::val::object();
-            emscripten::val emval{OptionalUnknown(emvalOrigin)};
+            tc::js::js_ref<tc::js::IObject> jsOrigin(emscripten::val::object());
+            emscripten::val emval{OptionalUnknown(jsOrigin)};
             auto ounkParsed = emval.template as<OptionalUnknown>();
             _ASSERT(ounkParsed);
-            _ASSERT(ounkParsed->getEmval().strictlyEquals(emvalOrigin));
+            _ASSERT(ounkParsed->getEmval().strictlyEquals(jsOrigin.getEmval()));
             _ASSERT(!emval.isUndefined());
-            _ASSERT(emval.strictlyEquals(emvalOrigin));
+            _ASSERT(emval.strictlyEquals(jsOrigin.getEmval()));
         }
         {
             OptionalUnknown ounk;
