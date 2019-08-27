@@ -25,7 +25,7 @@ struct js_unknown {
     emscripten::val&& getEmval() && { return tc_move(m_emval); }
 
     template<typename T, typename = std::enable_if_t<IsJsInteropable<tc::remove_cvref_t<T>>::value>>
-    js_unknown(T&& value) : m_emval(value) {
+    js_unknown(T&& value) : m_emval(std::forward<T>(value)) {
     }
 
     template<typename U, typename = std::enable_if_t<IsJsInteropable<tc::remove_cvref_t<U>>::value>>
