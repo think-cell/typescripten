@@ -107,12 +107,6 @@ struct js_ref {
     template<typename U, std::enable_if_t<std::is_convertible<U*, T*>::value>* = nullptr>
     js_ref(js_ref<U>&& jsOther) noexcept : js_ref(tc_move(jsOther.m_emval)) {}
 
-    template<typename U, typename = std::enable_if_t<std::is_convertible<U*, T*>::value>>
-    js_ref& operator=(js_ref<U> const& jsOther) noexcept { m_emval = jsOther.m_emval; return *this; }
-
-    template<typename U, typename = std::enable_if_t<std::is_convertible<U*, T*>::value>>
-    js_ref& operator=(js_ref<U>&& jsOther) noexcept { m_emval = tc_move(jsOther.m_emval); return *this; }
-
     /**
      * Downcasting.
      * Although shared_ptr has dedicated static_pointer_cast, we decided to create

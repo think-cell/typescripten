@@ -30,8 +30,8 @@ template<typename T>
 struct IsJsIntegralEnum : std::false_type {};
 
 struct js_unknown {
-    js_unknown(emscripten::val const& _emval) : m_emval(_emval) {}
-    js_unknown(emscripten::val&& _emval) : m_emval(tc_move(_emval)) {}
+    explicit js_unknown(emscripten::val const& _emval) : m_emval(_emval) {}
+    explicit js_unknown(emscripten::val&& _emval) : m_emval(tc_move(_emval)) {}
 
     emscripten::val getEmval() const& { return m_emval; }
     emscripten::val&& getEmval() && { return tc_move(m_emval); }
@@ -43,9 +43,6 @@ struct js_unknown {
     template<typename U, typename = std::enable_if_t<IsJsInteropable<tc::remove_cvref_t<U>>::value>>
     explicit operator U() const& { return m_emval.template as<U>(); }
 
-    template<typename U, typename = std::enable_if_t<IsJsInteropable<tc::remove_cvref_t<U>>::value>>
-    explicit operator U&&() && { return tc_move(m_emval).template as<U>(); }
-
     explicit operator bool() const {
         return !!m_emval;
     }
@@ -56,7 +53,7 @@ private:
 
 struct js_undefined {
     js_undefined() {}
-    js_undefined(emscripten::val const& emval) {
+    explicit js_undefined(emscripten::val const& emval) {
         _ASSERT(emval.isUndefined());
     }
     emscripten::val getEmval() const& { return emscripten::val::undefined(); }
@@ -64,7 +61,7 @@ struct js_undefined {
 
 struct js_null {
     js_null() {}
-    js_null(emscripten::val const& emval) {
+    explicit js_null(emscripten::val const& emval) {
         _ASSERT(emval.isNull());
     }
     emscripten::val getEmval() const& { return emscripten::val::null(); }
@@ -121,8 +118,8 @@ struct js_union : js_union_detail::CFindValueType<Args...> {
 
     using js_union_detail::CFindValueType<Args...>::has_value_type;
 
-    js_union(emscripten::val const& _emval) : m_emval(_emval) { validateAny(); }
-    js_union(emscripten::val&& _emval) : m_emval(tc_move(_emval)) { validateAny(); }
+    explicit js_union(emscripten::val const& _emval) : m_emval(_emval) { validateAny(); }
+    explicit js_union(emscripten::val&& _emval) : m_emval(tc_move(_emval)) { validateAny(); }
 
     emscripten::val getEmval() const& { return m_emval; }
     emscripten::val&& getEmval() && { return tc_move(m_emval); }
