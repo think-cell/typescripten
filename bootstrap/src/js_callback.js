@@ -1,5 +1,5 @@
 Module.tc_js_callback_detail_js_CreateJsFunction = function(iFunctionPtr, iArgumentPtr) {
-    console.log('create callback', iFunctionPtr, iArgumentPtr);
+    // console.log('create callback', iFunctionPtr, iArgumentPtr);
     const fnWrapper = function() {
         if (iFunctionPtr === null) {
             console.error('A detached C++ callback is called, it is now no-op.');
@@ -9,7 +9,7 @@ Module.tc_js_callback_detail_js_CreateJsFunction = function(iFunctionPtr, iArgum
         return Module.tc_js_callback_detail_js_Call(iFunctionPtr, iArgumentPtr, this, arguments);
     };
     fnWrapper.detach = function() {
-        console.log('detach callback', iFunctionPtr, iArgumentPtr);
+        // console.log('detach callback', iFunctionPtr, iArgumentPtr);
         iFunctionPtr = null;
         iArgumentPtr = null;
     }
