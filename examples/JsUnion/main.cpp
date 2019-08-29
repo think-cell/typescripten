@@ -42,20 +42,23 @@ int main() {
             _ASSERTEQUAL(std::string(js_string(u)), "foo");
         }
         {
-            BigUnion u(0.0);
+            static_cast<void>(BigUnion(0.0));
+            BigUnion u = 0.0;
             _ASSERT(u.getEmval().strictlyEquals(emscripten::val(0)));
             _ASSERT(!u);
             _ASSERTEQUAL(double{u}, 0);
         }
         {
-            BigUnion u(123.5);
+            static_cast<void>(BigUnion(123.5));
+            BigUnion u = 123.5;
             _ASSERT(u.getEmval().strictlyEquals(emscripten::val(123.5)));
             _ASSERT(u);
             _ASSERTEQUAL(double{u}, 123.5);
         }
         {
             MyJsBase base(js_string("foo"), js_string("bar"));
-            BigUnion u(base);
+            static_cast<void>(BigUnion(base));
+            BigUnion u = base;
             _ASSERT(u.getEmval().strictlyEquals(base.getEmval()));
             _ASSERT(u);
             _ASSERT(MyJsBase{u}.getEmval().strictlyEquals(base.getEmval()));
@@ -63,7 +66,8 @@ int main() {
         }
         {
             MyJsDerived derived(js_string("foo"), js_string("bar"));
-            BigUnion u(derived);
+            static_cast<void>(BigUnion(derived));
+            BigUnion u = derived;
             _ASSERT(u.getEmval().strictlyEquals(derived.getEmval()));
             _ASSERT(u);
             _ASSERT(MyJsBase{u}.getEmval().strictlyEquals(derived.getEmval()));
