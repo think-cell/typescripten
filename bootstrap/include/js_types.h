@@ -79,7 +79,7 @@ using no_adl::js_string;
 
 namespace js_union_detail {
 namespace no_adl {
-template<typename... Args>
+template<typename... Ts>
 struct CFindValueType {
 };
 
@@ -105,12 +105,12 @@ struct IsOnlyExplicitCastableFrom {
 using no_adl::CFindValueType;
 using no_adl::IsOnlyExplicitCastableFrom;
 
-template<typename From, typename ListArgs>
-using FindUniqueOnlyExplicitCastableFrom = tc::type::find_unique_if<ListArgs, no_adl::IsOnlyExplicitCastableFrom<From>::template type>;
+template<typename From, typename ListTs>
+using FindUniqueOnlyExplicitCastableFrom = tc::type::find_unique_if<ListTs, no_adl::IsOnlyExplicitCastableFrom<From>::template type>;
 
 namespace no_adl {
-template<typename From, typename ListArgs>
-struct HasUniqueOnlyExplicitCastableFrom : std::bool_constant<FindUniqueOnlyExplicitCastableFrom<From, ListArgs>::found> {
+template<typename From, typename ListTs>
+struct HasUniqueOnlyExplicitCastableFrom : std::bool_constant<FindUniqueOnlyExplicitCastableFrom<From, ListTs>::found> {
 };
 }
 using no_adl::HasUniqueOnlyExplicitCastableFrom;
@@ -118,21 +118,21 @@ using no_adl::HasUniqueOnlyExplicitCastableFrom;
 
 namespace no_adl {
 // TODO: optimize by providing JS-side toWireType/fromWireType for integrals/bools and getting rid of emscripten::val
-template<typename... Args>
-struct js_union : js_union_detail::CFindValueType<Args...> {
+template<typename... Ts>
+struct js_union : js_union_detail::CFindValueType<Ts...> {
     static inline constexpr auto instantiated = true;
 
-    static_assert(1 < sizeof...(Args));
-    static_assert((IsJsInteropable<Args>::value && ...));
-    static_assert((!std::is_same<Args, js_unknown>::value && ...));
+    static_assert(1 < sizeof...(Ts));
+    static_assert((IsJsInteropable<Ts>::value && ...));
+    static_assert((!std::is_same<Ts, js_unknown>::value && ...));
 
-    using ListArgs = tc::type::list<Args...>;
+    using ListTs = tc::type::list<Ts...>;
 
-    static inline constexpr auto has_undefined = tc::type::find_unique<ListArgs, js_undefined>::found;
-    static inline constexpr auto has_null = tc::type::find_unique<ListArgs, js_null>::found;
-    static inline constexpr auto has_string = tc::type::find_unique<ListArgs, js_string>::found;
-    static inline constexpr auto has_bool = tc::type::find_unique<ListArgs, bool>::found;
-    static inline constexpr auto has_number = tc::type::find_unique<ListArgs, double>::found;
+    static inline constexpr auto has_undefined = tc::type::find_unique<ListTs, js_undefined>::found;
+    static inline constexpr auto has_null = tc::type::find_unique<ListTs, js_null>::found;
+    static inline constexpr auto has_string = tc::type::find_unique<ListTs, js_string>::found;
+    static inline constexpr auto has_bool = tc::type::find_unique<ListTs, bool>::found;
+    static inline constexpr auto has_number = tc::type::find_unique<ListTs, double>::found;
 
     explicit js_union(emscripten::val const& _emval) noexcept : m_emval(_emval) { assertEmvalInRange(); }
     explicit js_union(emscripten::val&& _emval) noexcept : m_emval(tc_move(_emval)) { assertEmvalInRange(); }
@@ -142,16 +142,16 @@ struct js_union : js_union_detail::CFindValueType<Args...> {
 
     template<typename T, std::enable_if_t<
         IsJsInteropable<tc::remove_cvref_t<T>>::value &&
-        tc::type::any_of<ListArgs, tc::type::curry<std::is_convertible, T&&>::template type>::value
+        tc::type::any_of<ListTs, tc::type::curry<std::is_convertible, T&&>::template type>::value
     >* = nullptr>
     js_union(T&& value) noexcept : m_emval(std::forward<T>(value)) {}
 
     template<typename T, std::enable_if_t<std::conjunction<
         std::negation<std::is_same<emscripten::val, tc::remove_cvref_t<T>>>,
-        js_union_detail::HasUniqueOnlyExplicitCastableFrom<T&&, ListArgs>
+        js_union_detail::HasUniqueOnlyExplicitCastableFrom<T&&, ListTs>
     >::value>* = nullptr>
     explicit js_union(T&& value) noexcept : m_emval(
-        tc::explicit_cast<typename js_union_detail::FindUniqueOnlyExplicitCastableFrom<T&&, ListArgs>::type>(
+        tc::explicit_cast<typename js_union_detail::FindUniqueOnlyExplicitCastableFrom<T&&, ListTs>::type>(
             std::forward<T>(value)
         )
     ) {}
@@ -164,7 +164,7 @@ struct js_union : js_union_detail::CFindValueType<Args...> {
 
     template<typename T, std::enable_if_t<
         !std::is_same<bool, tc::remove_cvref_t<T>>::value &&
-        (std::is_convertible<Args, tc::remove_cvref_t<T>>::value && ...)
+        (std::is_convertible<Ts, tc::remove_cvref_t<T>>::value && ...)
     >* = nullptr>
     operator T() const noexcept {
         return m_emval.template as<T>();
@@ -172,8 +172,8 @@ struct js_union : js_union_detail::CFindValueType<Args...> {
 
     template<typename T, std::enable_if_t<
         !std::is_same<bool, tc::remove_cvref_t<T>>::value &&
-        !(std::is_convertible<Args, tc::remove_cvref_t<T>>::value && ...) &&
-        (std::is_same<Args, tc::remove_cvref_t<T>>::value || ...)
+        !(std::is_convertible<Ts, tc::remove_cvref_t<T>>::value && ...) &&
+        (std::is_same<Ts, tc::remove_cvref_t<T>>::value || ...)
     >* = nullptr>
     explicit operator T() const noexcept {
         return m_emval.template as<T>();
@@ -269,9 +269,9 @@ struct IsJsInteropable<js_undefined> : std::true_type {};
 template<>
 struct IsJsInteropable<js_null> : std::true_type {};
 
-template<typename... Args>
-struct IsJsInteropable<js_union<Args...>> : std::true_type {
-    static_assert(js_union<Args...>::instantiated);
+template<typename... Ts>
+struct IsJsInteropable<js_union<Ts...>> : std::true_type {
+    static_assert(js_union<Ts...>::instantiated);
 };
 
 template<>
@@ -288,8 +288,8 @@ struct IsEmvalWrapper : std::false_type {};
 template<typename T>
 struct IsEmvalWrapper<T, std::enable_if_t<tc::type::find_unique<tc::type::list<js_unknown, js_undefined, js_null, js_string>, T>::found>> : std::true_type {};
 
-template<typename... Args>
-struct IsEmvalWrapper<js_union<Args...>, std::enable_if_t<IsJsInteropable<js_union<Args...>>::value>> : std::true_type {};
+template<typename... Ts>
+struct IsEmvalWrapper<js_union<Ts...>, std::enable_if_t<IsJsInteropable<js_union<Ts...>>::value>> : std::true_type {};
 }
 using no_adl::IsEmvalWrapper;
 } // namespace emscripten_interop_detail
