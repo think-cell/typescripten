@@ -609,11 +609,7 @@ struct _jsdefs_ts : _jsenums_ts {
     };
 
     struct _js_ModuleDeclaration : virtual _js_DeclarationStatement {
-        auto name() noexcept {
-            auto result = _getProperty<Identifier>("name");
-            _ASSERT(!result.getEmval()["text"].isUndefined());
-            return result;
-        }
+        auto name() noexcept { return _getProperty<Identifier>("name"); }
     };
 
     struct _js_SourceFileLike : virtual IObject {
