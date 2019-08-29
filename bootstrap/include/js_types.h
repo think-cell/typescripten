@@ -81,17 +81,17 @@ using no_adl::js_string;
 namespace js_union_detail {
 namespace no_adl {
 template<typename... Ts>
-struct CFindValueType {
+struct CDetectOptionLike {
 };
 
 template<typename T>
-struct CFindValueType<js_undefined, T> {
-    using value_type = T;
+struct CDetectOptionLike<js_undefined, T> {
+    using option_like_type = T;
 };
 
 template<typename T>
-struct CFindValueType<js_null, T> {
-    using value_type = T;
+struct CDetectOptionLike<js_null, T> {
+    using option_like_type = T;
 };
 
 template<typename> struct IsExplicitCastableFrom {};
@@ -102,7 +102,7 @@ struct IsExplicitCastableFrom<tc::type::list<From...>> {
     using type = tc::is_explicit_castable<To, From...>;
 };
 } // namespace no_adl
-using no_adl::CFindValueType;
+using no_adl::CDetectOptionLike;
 using no_adl::IsExplicitCastableFrom;
 
 template<typename ListFrom, typename ListTs>
@@ -112,7 +112,7 @@ using FindUniqueExplicitCastableFrom = tc::type::find_unique_if<ListTs, no_adl::
 namespace no_adl {
 // TODO: optimize by providing JS-side toWireType/fromWireType for integrals/bools and getting rid of emscripten::val
 template<typename... Ts>
-struct js_union : js_union_detail::CFindValueType<Ts...> {
+struct js_union : js_union_detail::CDetectOptionLike<Ts...> {
     static inline constexpr auto instantiated = true;
 
     static_assert(1 < sizeof...(Ts));
@@ -195,13 +195,13 @@ private:
 
 public:
     template<typename T = js_union>
-    typename T::value_type operator*() const noexcept {
-        return operator typename js_union::value_type();
+    typename T::option_like_type operator*() const noexcept {
+        return operator typename js_union::option_like_type();
     }
 
     template<typename T = js_union>
-    CArrowProxy<typename T::value_type> operator->() const noexcept {
-        return operator typename js_union::value_type();
+    CArrowProxy<typename T::option_like_type> operator->() const noexcept {
+        return operator typename js_union::option_like_type();
     }
 
     explicit operator bool() const noexcept {
