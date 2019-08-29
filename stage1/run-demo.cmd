@@ -1,1 +1,1 @@
-node main.js node_modules/typescript/lib/typescript.d.ts
+node main.js demo-module.ts

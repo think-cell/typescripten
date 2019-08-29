@@ -426,6 +426,56 @@ struct _jsenums_ts {
         ClassMember = 106500,
     };
 
+    enum class TypeFlags {
+        Any = 1,
+        Unknown = 2,
+        String = 4,
+        Number = 8,
+        Boolean = 16,
+        Enum = 32,
+        BigInt = 64,
+        StringLiteral = 128,
+        NumberLiteral = 256,
+        BooleanLiteral = 512,
+        EnumLiteral = 1024,
+        BigIntLiteral = 2048,
+        ESSymbol = 4096,
+        UniqueESSymbol = 8192,
+        Void = 16384,
+        Undefined = 32768,
+        Null = 65536,
+        Never = 131072,
+        TypeParameter = 262144,
+        Object = 524288,
+        Union = 1048576,
+        Intersection = 2097152,
+        Index = 4194304,
+        IndexedAccess = 8388608,
+        Conditional = 16777216,
+        Substitution = 33554432,
+        NonPrimitive = 67108864,
+        Literal = 2944,
+        Unit = 109440,
+        StringOrNumberLiteral = 384,
+        PossiblyFalsy = 117724,
+        StringLike = 132,
+        NumberLike = 296,
+        BigIntLike = 2112,
+        BooleanLike = 528,
+        EnumLike = 1056,
+        ESSymbolLike = 12288,
+        VoidLike = 49152,
+        UnionOrIntersection = 3145728,
+        StructuredType = 3670016,
+        TypeVariable = 8650752,
+        InstantiableNonPrimitive = 58982400,
+        InstantiablePrimitive = 4194304,
+        Instantiable = 63176704,
+        StructuredOrInstantiable = 66846720,
+        Narrowable = 133970943,
+        NotUnionOrUnit = 67637251,
+    };
+
     enum class ModuleKind {
         None = 0,
         CommonJS = 1,
@@ -449,15 +499,19 @@ struct _jsenums_ts {
         JSON = 100,
         Latest = 8
     };
+
+    enum class SignatureKind {
+        Call = 0,
+        Construct = 1
+    };
 };
 } // namespace globals::no_adl
 
 // We have to specialize IsJsIntegralEnum before these types are used below.
 template<> struct IsJsIntegralEnum<globals::no_adl::_jsenums_ts::SyntaxKind> : std::true_type {};
-template<> struct IsJsIntegralEnum<globals::no_adl::_jsenums_ts::SymbolFlags> : std::true_type {};
 template<> struct IsJsIntegralEnum<globals::no_adl::_jsenums_ts::ModuleKind> : std::true_type {};
 template<> struct IsJsIntegralEnum<globals::no_adl::_jsenums_ts::ScriptTarget> : std::true_type {};
-static_assert(IsJsInteropable<globals::no_adl::_jsenums_ts::SyntaxKind>::value);
+template<> struct IsJsIntegralEnum<globals::no_adl::_jsenums_ts::SignatureKind> : std::true_type {};
 
 namespace globals {
 namespace no_adl {
@@ -467,6 +521,7 @@ struct _jsdefs_ts : _jsenums_ts {
     struct _js_Declaration;
     struct _js_Identifier;
     struct _js_NamedDeclaration;
+    struct _js_Signature;
     struct _js_DeclarationStatement;
     struct _js_FunctionDeclaration;
     struct _js_VariableStatement;
@@ -479,16 +534,21 @@ struct _jsdefs_ts : _jsenums_ts {
     struct _js_EmitResult;
     struct _js_TypeChecker;
     struct _js_Symbol;
+    struct _js_Type;
     struct _js_DiagnosticRelatedInformation;
     struct _js_Diagnostic;
+    struct _js_SymbolTable;
     struct _js_CompilerOptions;
     struct _js_LineAndCharacter;
+    struct _js_CompilerHost;
+    struct _js_FormatDiagnosticsHost;
 
     using TextRange = js_ref<_js_TextRange>;
     using Node = js_ref<_js_Node>;
     using Declaration = js_ref<_js_Declaration>;
     using Identifier = js_ref<_js_Identifier>;
     using NamedDeclaration = js_ref<_js_NamedDeclaration>;
+    using Signature = js_ref<_js_Signature>;
     using DeclarationStatement = js_ref<_js_DeclarationStatement>;
     using FunctionDeclaration = js_ref<_js_FunctionDeclaration>;
     using VariableStatement = js_ref<_js_VariableStatement>;
@@ -501,10 +561,14 @@ struct _jsdefs_ts : _jsenums_ts {
     using EmitResult = js_ref<_js_EmitResult>;
     using TypeChecker = js_ref<_js_TypeChecker>;
     using Symbol  = js_ref<_js_Symbol>;
+    using Type = js_ref<_js_Type>;
     using DiagnosticRelatedInformation = js_ref<_js_DiagnosticRelatedInformation>;
     using Diagnostic = js_ref<_js_Diagnostic>;
+    using SymbolTable = js_ref<_js_SymbolTable>;
     using CompilerOptions = js_ref<_js_CompilerOptions>;
     using LineAndCharacter = js_ref<_js_LineAndCharacter>;
+    using CompilerHost = js_ref<_js_CompilerHost>;
+    using FormatDiagnosticsHost = js_ref<_js_FormatDiagnosticsHost>;
 
     struct _js_TextRange : virtual IObject {
     };
@@ -524,6 +588,9 @@ struct _jsdefs_ts : _jsenums_ts {
     };
 
     struct _js_NamedDeclaration : virtual _js_Declaration {
+    };
+
+    struct _js_Signature : virtual IObject {
     };
 
     struct _js_DeclarationStatement : virtual _js_NamedDeclaration {
@@ -577,12 +644,40 @@ struct _jsdefs_ts : _jsenums_ts {
     };
 
     struct _js_TypeChecker : virtual IObject {
-        auto getSymbolsInScope(Node location, SymbolFlags meaning) { return _call<Array<Symbol>>("getSymbolsInScope", location, meaning); }
+        auto getDeclaredTypeOfSymbol(Symbol symbol) { return _call<Type>("getDeclaredTypeOfSymbol", symbol); }
+        auto getPropertiesOfType(Type type) { return _call<Array<Symbol>>("getPropertiesOfType", type); }
+        auto getRootSymbols(Symbol type) { return _call<ReadonlyArray<Symbol>>("getRootSymbols", type); }
+        auto getAugmentedPropertiesOfType(Type type) { return _call<Array<Symbol>>("getAugmentedPropertiesOfType", type); }
+        auto getSymbolsInScope(Node location, int /*SymbolFlags*/ meaning) { return _call<Array<Symbol>>("getSymbolsInScope", location, tc::explicit_cast<double>(meaning)); }
         auto getSymbolAtLocation(Node node) { return _call<js_optional<Symbol>>("getSymbolAtLocation", node); }
+        auto getExportsOfModule(Symbol moduleSymbol) { return _call<Array<Symbol>>("getExportsOfModule", moduleSymbol); }
+        auto getExportSymbolOfSymbol(Symbol symbol) { return _call<Symbol>("getExportSymbolOfSymbol", symbol); }
+        auto getSignaturesOfType(Type type, SignatureKind kind) { return _call<ReadonlyArray<Signature>>("getSignaturesOfType", type, kind); }
+        auto signatureToString(Signature signature) { return _call<js_string>("signatureToString", signature); }
+        auto getFullyQualifiedName(Symbol symbol) { return _call<js_string>("getFullyQualifiedName", symbol); }
     };
 
     struct _js_Symbol : virtual IObject {
-        auto name() { return _getProperty<js_string>("name"); }
+        auto getName() { return _call<js_string>("getName"); }
+
+        auto getFlags() { return tc::explicit_cast<int>(_call<double /*SymbolFlags*/>("getFlags")); }
+
+        auto members() { return _getProperty<js_optional<SymbolTable>>("members"); }
+
+        auto exports() { return _getProperty<js_optional<SymbolTable>>("exports"); }
+
+        auto globalExports() { return _getProperty<js_optional<SymbolTable>>("globalExports"); }
+
+        auto valueDeclaration() { return _getProperty<js_optional<Declaration>>("valueDeclaration"); }
+    };
+
+
+    struct _js_Type : virtual IObject {
+        auto flags() { return tc::explicit_cast<int>(_getProperty<double /*TypeFlags*/>("flags")); }
+
+        auto symbol() { return _getProperty<Symbol>("symbol"); }
+
+        auto getProperties() { return _call<Array<Symbol>>("getProperties"); }
     };
 
     struct _js_DiagnosticRelatedInformation : virtual IObject {
@@ -595,6 +690,15 @@ struct _jsdefs_ts : _jsenums_ts {
         /* string | DiagnosticMessageChain; */
         auto messageText() { return _getProperty<js_unknown>("messageText"); }
         void messageText(js_unknown v) { _setProperty("messageText", v); }
+    };
+
+    struct _js_SymbolTable : virtual IObject {
+        template<typename Fn>
+        auto operator()(Fn fn) noexcept {
+            return _call<void>("forEach", js_lambda_wrap([&](Symbol value, js_unknown, js_unknown) noexcept {
+                fn(tc_move(value));
+            }));
+        }
     };
 
     struct _js_Diagnostic : virtual _js_DiagnosticRelatedInformation {
@@ -622,6 +726,12 @@ struct _jsdefs_ts : _jsenums_ts {
 
         auto character() { return tc::explicit_cast<int>(_getProperty<double>("character")); }
         void character(int v) { _setProperty("character", tc::explicit_cast<double>(v)); }
+    };
+
+    struct _js_FormatDiagnosticsHost : virtual IObject {
+    };
+
+    struct _js_CompilerHost : virtual /*derived*/ _js_FormatDiagnosticsHost {
     };
 };
 
@@ -671,6 +781,14 @@ struct _js_ts : virtual IObject, _jsdefs_ts {
 
     auto getPreEmitDiagnostics(Program program) {
         return _call<ReadonlyArray<Diagnostic>>("getPreEmitDiagnostics", program);
+    }
+
+    auto createCompilerHost(CompilerOptions options) {
+        return _call<CompilerHost>("createCompilerHost", options);
+    }
+
+    auto formatDiagnosticsWithColorAndContext(ReadonlyArray<Diagnostic> diagnostics, FormatDiagnosticsHost host) {
+        return _call<js_string>("formatDiagnosticsWithColorAndContext", diagnostics, host);
     }
 
     auto flattenDiagnosticMessageText(js_unknown messageText, js_string newLine) {
