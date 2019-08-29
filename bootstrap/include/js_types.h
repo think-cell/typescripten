@@ -136,7 +136,7 @@ struct js_union : js_union_detail::CFindValueType<Ts...> {
     // Constructing from a subtype. Assumption: the underlying representation does not depend on what element of ListTs is chosen.
     template<typename T, std::enable_if_t<
         IsJsInteropable<tc::remove_cvref_t<T>>::value &&
-        tc::type::any_of<ListTs, tc::type::curry<std::is_convertible, T&&>::template type>::value
+        (std::is_convertible<T&&, Ts>::value || ...)
     >* = nullptr>
     js_union(T&& value) noexcept : m_emval(std::forward<T>(value)) {}
 
