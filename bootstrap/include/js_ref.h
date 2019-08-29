@@ -118,8 +118,8 @@ struct js_ref {
     template<typename U, std::enable_if_t<std::is_convertible<T*, U*>::value>* = nullptr>
     explicit js_ref(js_ref<U>&& jsOther) noexcept : js_ref(tc_move(jsOther.m_emval)) {}
 
-    emscripten::val getEmval() const& noexcept { return m_emval; }
-    emscripten::val getEmval() && noexcept { return tc_move(m_emval); }
+    emscripten::val const& getEmval() const& noexcept { return m_emval; }
+    emscripten::val&& getEmval() && noexcept { return tc_move(m_emval); }
 
     template<typename... Args, typename = decltype(std::declval<T>()(std::forward<Args>(std::declval<Args>())...))>
     auto operator()(Args&&... args) const& noexcept {

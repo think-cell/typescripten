@@ -34,7 +34,7 @@ struct js_unknown {
     explicit js_unknown(emscripten::val const& _emval) noexcept : m_emval(_emval) {}
     explicit js_unknown(emscripten::val&& _emval) noexcept : m_emval(tc_move(_emval)) {}
 
-    emscripten::val getEmval() const& noexcept { return m_emval; }
+    emscripten::val const& getEmval() const& noexcept { return m_emval; }
     emscripten::val&& getEmval() && noexcept { return tc_move(m_emval); }
 
     template<typename T, typename = std::enable_if_t<IsJsInteropable<tc::remove_cvref_t<T>>::value>>
@@ -57,7 +57,7 @@ struct js_undefined {
     explicit js_undefined(emscripten::val const& emval) noexcept {
         _ASSERT(emval.isUndefined());
     }
-    emscripten::val getEmval() const& noexcept { return emscripten::val::undefined(); }
+    emscripten::val getEmval() const noexcept { return emscripten::val::undefined(); }
 };
 
 struct js_null {
@@ -65,7 +65,7 @@ struct js_null {
     explicit js_null(emscripten::val const& emval) noexcept {
         _ASSERT(emval.isNull());
     }
-    emscripten::val getEmval() const& noexcept { return emscripten::val::null(); }
+    emscripten::val getEmval() const noexcept { return emscripten::val::null(); }
 };
 
 struct js_string;
@@ -159,7 +159,7 @@ struct js_union : js_union_detail::CFindValueType<Args...> {
     explicit js_union(emscripten::val const& _emval) noexcept : m_emval(_emval) { assertEmvalInRange(); }
     explicit js_union(emscripten::val&& _emval) noexcept : m_emval(tc_move(_emval)) { assertEmvalInRange(); }
 
-    emscripten::val getEmval() const& noexcept { return m_emval; }
+    emscripten::val const& getEmval() const& noexcept { return m_emval; }
     emscripten::val&& getEmval() && noexcept { return tc_move(m_emval); }
 
     template<typename T, std::enable_if_t<
@@ -251,8 +251,8 @@ struct js_string final {
         _ASSERT(m_emval.isString());
     }
 
-    emscripten::val getEmval() const& noexcept { return m_emval; }
-    emscripten::val getEmval() && noexcept { return tc_move(m_emval); }
+    emscripten::val const& getEmval() const& noexcept { return m_emval; }
+    emscripten::val&& getEmval() && noexcept { return tc_move(m_emval); }
 
     template<typename Rng, typename = std::enable_if_t<tc::is_explicit_castable<std::string, Rng&&>::value>>
     explicit js_string(Rng&& rng) noexcept : m_emval(
