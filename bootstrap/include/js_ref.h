@@ -50,10 +50,6 @@ protected:
         return m_emval(std::forward<Args>(args)...).template as<R>();
     }
 
-    emscripten::val& _getEmval() noexcept {
-        return m_emval;
-    }
-
     // Make sure the class and its descendants are abstract.
     virtual void __IObject_and_derived_are_abstract_Use_js_ref_instead() noexcept = 0;
 };
