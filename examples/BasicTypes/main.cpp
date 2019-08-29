@@ -1,11 +1,9 @@
 #include <emscripten/val.h>
-#include <vector>
-#include <initializer_list>
 #include "explicit_cast.h"
 #include "range.h"
 #include "range_defines.h"
-#include "js_callback.h"
 #include "js_types.h"
+#include "js_ref.h"
 
 using tc::js::js_string;
 using tc::js::js_unknown;
@@ -45,7 +43,7 @@ int main() {
     }
 
     {
-        // Test optional
+        // Test optional of object.
         using OptionalUnknown = js_optional<tc::js::js_ref<tc::js::IObject>>;
         static_assert(
             std::is_same<
@@ -76,17 +74,20 @@ int main() {
     }
 
     {
-        js_optional<double> iValue;
-        emscripten::val emval(iValue);
-        _ASSERT(emval.isUndefined());
-        _ASSERT(!emval.isNumber());
-    }
-    {
-        js_optional<double> iValue(123.5);
-        emscripten::val emval(iValue);
-        _ASSERT(!emval.isUndefined());
-        _ASSERT(emval.isNumber());
-        _ASSERT(emval.as<double>() == 123.5);
+        // Test optional of double.
+        {
+            js_optional<double> iValue;
+            emscripten::val emval(iValue);
+            _ASSERT(emval.isUndefined());
+            _ASSERT(!emval.isNumber());
+        }
+        {
+            js_optional<double> iValue(123.5);
+            emscripten::val emval(iValue);
+            _ASSERT(!emval.isUndefined());
+            _ASSERT(emval.isNumber());
+            _ASSERT(emval.as<double>() == 123.5);
+        }
     }
     return 0;
 }

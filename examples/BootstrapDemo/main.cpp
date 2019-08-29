@@ -5,8 +5,6 @@
 #include "range.h"
 #include "range_defines.h"
 #include "js_bootstrap.h"
-#include "js_callback.h"
-#include "js_types.h"
 
 using tc::js::js_string;
 using tc::js::globals::Array;
