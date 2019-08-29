@@ -574,17 +574,17 @@ struct _jsdefs_ts : _jsenums_ts {
     };
 
     struct _js_Node : virtual _js_TextRange {
-        auto kind() { return _getProperty<SyntaxKind>("kind"); }
-        void kind(SyntaxKind v) { _setProperty<SyntaxKind>("kind", v); }
+        auto kind() noexcept { return _getProperty<SyntaxKind>("kind"); }
+        void kind(SyntaxKind v) noexcept { _setProperty<SyntaxKind>("kind", v); }
 
-        auto getChildren() { return _call<Array<SourceFile>>("getChildren"); }
+        auto getChildren() noexcept { return _call<Array<SourceFile>>("getChildren"); }
     };
 
     struct _js_Declaration : virtual _js_Node {
     };
 
     struct _js_Identifier : virtual _js_Declaration {
-        js_string text() { return _getProperty<js_string>("text"); }
+        js_string text() noexcept { return _getProperty<js_string>("text"); }
     };
 
     struct _js_NamedDeclaration : virtual _js_Declaration {
@@ -609,7 +609,7 @@ struct _jsdefs_ts : _jsenums_ts {
     };
 
     struct _js_ModuleDeclaration : virtual _js_DeclarationStatement {
-        auto name() {
+        auto name() noexcept {
             auto result = _getProperty<Identifier>("name");
             _ASSERT(!result.getEmval()["text"].isUndefined());
             return result;
@@ -617,79 +617,79 @@ struct _jsdefs_ts : _jsenums_ts {
     };
 
     struct _js_SourceFileLike : virtual IObject {
-        auto getLineAndCharacterOfPosition(int pos) {
+        auto getLineAndCharacterOfPosition(int pos) noexcept {
             return _call<LineAndCharacter>("getLineAndCharacterOfPosition", tc::explicit_cast<double>(pos));
         }
     };
 
     struct _js_SourceFile : virtual _js_Declaration, /* deduced */ virtual _js_SourceFileLike {
-        auto fileName() { return _getProperty<js_string>("fileName"); }
-        void fileName(js_string v) { _setProperty("fileName", v); }
+        auto fileName() noexcept { return _getProperty<js_string>("fileName"); }
+        void fileName(js_string v) noexcept { _setProperty("fileName", v); }
     };
 
     struct _js_Program : virtual IObject {
-        auto getSourceFiles() { return _call<ReadonlyArray<SourceFile>>("getSourceFiles"); }
+        auto getSourceFiles() noexcept { return _call<ReadonlyArray<SourceFile>>("getSourceFiles"); }
 
-        auto emit() { return _call<EmitResult>("emit"); }
+        auto emit() noexcept { return _call<EmitResult>("emit"); }
 
-        auto getTypeChecker() { return _call<TypeChecker>("getTypeChecker"); }
+        auto getTypeChecker() noexcept { return _call<TypeChecker>("getTypeChecker"); }
     };
 
     struct _js_EmitResult : virtual IObject {
-        auto emitSkipped() { return _getProperty<bool>("emitSkipped"); }
-        void emitSkipped(bool v) { _setProperty("emitSkipped", v); }
+        auto emitSkipped() noexcept { return _getProperty<bool>("emitSkipped"); }
+        void emitSkipped(bool v) noexcept { _setProperty("emitSkipped", v); }
 
-        auto diagnostics() { return _getProperty<ReadonlyArray<Diagnostic>>("diagnostics"); }
-        void diagnostics(ReadonlyArray<Diagnostic> v) { _setProperty("diagnostics", v); }
+        auto diagnostics() noexcept { return _getProperty<ReadonlyArray<Diagnostic>>("diagnostics"); }
+        void diagnostics(ReadonlyArray<Diagnostic> v) noexcept { _setProperty("diagnostics", v); }
     };
 
     struct _js_TypeChecker : virtual IObject {
-        auto getDeclaredTypeOfSymbol(Symbol symbol) { return _call<Type>("getDeclaredTypeOfSymbol", symbol); }
-        auto getPropertiesOfType(Type type) { return _call<Array<Symbol>>("getPropertiesOfType", type); }
-        auto getRootSymbols(Symbol type) { return _call<ReadonlyArray<Symbol>>("getRootSymbols", type); }
-        auto getAugmentedPropertiesOfType(Type type) { return _call<Array<Symbol>>("getAugmentedPropertiesOfType", type); }
-        auto getSymbolsInScope(Node location, int /*SymbolFlags*/ meaning) { return _call<Array<Symbol>>("getSymbolsInScope", location, tc::explicit_cast<double>(meaning)); }
-        auto getSymbolAtLocation(Node node) { return _call<js_optional<Symbol>>("getSymbolAtLocation", node); }
-        auto getExportsOfModule(Symbol moduleSymbol) { return _call<Array<Symbol>>("getExportsOfModule", moduleSymbol); }
-        auto getExportSymbolOfSymbol(Symbol symbol) { return _call<Symbol>("getExportSymbolOfSymbol", symbol); }
-        auto getSignaturesOfType(Type type, SignatureKind kind) { return _call<ReadonlyArray<Signature>>("getSignaturesOfType", type, kind); }
-        auto signatureToString(Signature signature) { return _call<js_string>("signatureToString", signature); }
-        auto getFullyQualifiedName(Symbol symbol) { return _call<js_string>("getFullyQualifiedName", symbol); }
+        auto getDeclaredTypeOfSymbol(Symbol symbol) noexcept { return _call<Type>("getDeclaredTypeOfSymbol", symbol); }
+        auto getPropertiesOfType(Type type) noexcept { return _call<Array<Symbol>>("getPropertiesOfType", type); }
+        auto getRootSymbols(Symbol type) noexcept { return _call<ReadonlyArray<Symbol>>("getRootSymbols", type); }
+        auto getAugmentedPropertiesOfType(Type type) noexcept { return _call<Array<Symbol>>("getAugmentedPropertiesOfType", type); }
+        auto getSymbolsInScope(Node location, int /*SymbolFlags*/ meaning) noexcept { return _call<Array<Symbol>>("getSymbolsInScope", location, tc::explicit_cast<double>(meaning)); }
+        auto getSymbolAtLocation(Node node) noexcept { return _call<js_optional<Symbol>>("getSymbolAtLocation", node); }
+        auto getExportsOfModule(Symbol moduleSymbol) noexcept { return _call<Array<Symbol>>("getExportsOfModule", moduleSymbol); }
+        auto getExportSymbolOfSymbol(Symbol symbol) noexcept { return _call<Symbol>("getExportSymbolOfSymbol", symbol); }
+        auto getSignaturesOfType(Type type, SignatureKind kind) noexcept { return _call<ReadonlyArray<Signature>>("getSignaturesOfType", type, kind); }
+        auto signatureToString(Signature signature) noexcept { return _call<js_string>("signatureToString", signature); }
+        auto getFullyQualifiedName(Symbol symbol) noexcept { return _call<js_string>("getFullyQualifiedName", symbol); }
     };
 
     struct _js_Symbol : virtual IObject {
-        auto getName() { return _call<js_string>("getName"); }
+        auto getName() noexcept { return _call<js_string>("getName"); }
 
-        auto getFlags() { return tc::explicit_cast<int>(_call<double /*SymbolFlags*/>("getFlags")); }
+        auto getFlags() noexcept { return tc::explicit_cast<int>(_call<double /*SymbolFlags*/>("getFlags")); }
 
-        auto members() { return _getProperty<js_optional<SymbolTable>>("members"); }
+        auto members() noexcept { return _getProperty<js_optional<SymbolTable>>("members"); }
 
-        auto exports() { return _getProperty<js_optional<SymbolTable>>("exports"); }
+        auto exports() noexcept { return _getProperty<js_optional<SymbolTable>>("exports"); }
 
-        auto globalExports() { return _getProperty<js_optional<SymbolTable>>("globalExports"); }
+        auto globalExports() noexcept { return _getProperty<js_optional<SymbolTable>>("globalExports"); }
 
-        auto valueDeclaration() { return _getProperty<js_optional<Declaration>>("valueDeclaration"); }
+        auto valueDeclaration() noexcept { return _getProperty<js_optional<Declaration>>("valueDeclaration"); }
     };
 
 
     struct _js_Type : virtual IObject {
-        auto flags() { return tc::explicit_cast<int>(_getProperty<double /*TypeFlags*/>("flags")); }
+        auto flags() noexcept { return tc::explicit_cast<int>(_getProperty<double /*TypeFlags*/>("flags")); }
 
-        auto symbol() { return _getProperty<Symbol>("symbol"); }
+        auto symbol() noexcept { return _getProperty<Symbol>("symbol"); }
 
-        auto getProperties() { return _call<Array<Symbol>>("getProperties"); }
+        auto getProperties() noexcept { return _call<Array<Symbol>>("getProperties"); }
     };
 
     struct _js_DiagnosticRelatedInformation : virtual IObject {
-        auto file() { return _getProperty<js_optional<SourceFile>>("file"); }
-        void file(js_optional<SourceFile> v) { _setProperty("file", v); }
+        auto file() noexcept { return _getProperty<js_optional<SourceFile>>("file"); }
+        void file(js_optional<SourceFile> v) noexcept { _setProperty("file", v); }
 
-        auto start() { return _getProperty<js_optional<double>>("start"); }
-        void start(js_optional<double> v) { _setProperty("start", v); }
+        auto start() noexcept { return _getProperty<js_optional<double>>("start"); }
+        void start(js_optional<double> v) noexcept { _setProperty("start", v); }
 
         /* string | DiagnosticMessageChain; */
-        auto messageText() { return _getProperty<js_unknown>("messageText"); }
-        void messageText(js_unknown v) { _setProperty("messageText", v); }
+        auto messageText() noexcept { return _getProperty<js_unknown>("messageText"); }
+        void messageText(js_unknown v) noexcept { _setProperty("messageText", v); }
     };
 
     struct _js_SymbolTable : virtual IObject {
@@ -705,27 +705,27 @@ struct _jsdefs_ts : _jsenums_ts {
     };
 
     struct _js_CompilerOptions : virtual IObject {
-        auto noEmitOnError() { return _getProperty<js_optional<bool>>("noEmitOnError"); }
-        void noEmitOnError(js_optional<bool> v) { _setProperty("noEmitOnError", v); }
+        auto noEmitOnError() noexcept { return _getProperty<js_optional<bool>>("noEmitOnError"); }
+        void noEmitOnError(js_optional<bool> v) noexcept { _setProperty("noEmitOnError", v); }
 
-        auto module() { return _getProperty<js_optional<bool>>("module"); }
-        void module(js_optional<ModuleKind> v) { _setProperty("module", v); }
+        auto module() noexcept { return _getProperty<js_optional<bool>>("module"); }
+        void module(js_optional<ModuleKind> v) noexcept { _setProperty("module", v); }
 
-        auto strict() { return _getProperty<js_optional<bool>>("strict"); }
-        void strict(js_optional<bool> v) { _setProperty("strict", v); }
+        auto strict() noexcept { return _getProperty<js_optional<bool>>("strict"); }
+        void strict(js_optional<bool> v) noexcept { _setProperty("strict", v); }
 
-        auto target() { return _getProperty<js_optional<ScriptTarget>>("target"); }
-        void target(js_optional<ScriptTarget> v) { _setProperty("target", v); }
+        auto target() noexcept { return _getProperty<js_optional<ScriptTarget>>("target"); }
+        void target(js_optional<ScriptTarget> v) noexcept { _setProperty("target", v); }
 
         static auto _construct() noexcept { return emscripten::val::object(); }
     };
 
     struct _js_LineAndCharacter : virtual IObject {
-        auto line() { return tc::explicit_cast<int>(_getProperty<double>("line")); }
-        void line(int v) { _setProperty("line", tc::explicit_cast<double>(v)); }
+        auto line() noexcept { return tc::explicit_cast<int>(_getProperty<double>("line")); }
+        void line(int v) noexcept { _setProperty("line", tc::explicit_cast<double>(v)); }
 
-        auto character() { return tc::explicit_cast<int>(_getProperty<double>("character")); }
-        void character(int v) { _setProperty("character", tc::explicit_cast<double>(v)); }
+        auto character() noexcept { return tc::explicit_cast<int>(_getProperty<double>("character")); }
+        void character(int v) noexcept { _setProperty("character", tc::explicit_cast<double>(v)); }
     };
 
     struct _js_FormatDiagnosticsHost : virtual IObject {
@@ -736,66 +736,66 @@ struct _jsdefs_ts : _jsenums_ts {
 };
 
 struct _js_ts : virtual IObject, _jsdefs_ts {
-    auto isVariableStatement(Node node) {
+    auto isVariableStatement(Node node) noexcept {
         std::optional<VariableStatement> result;
         if (_call<bool>("isVariableStatement", node))
             result.emplace(node);
         return result;
     }
 
-    auto isInterfaceDeclaration(Node node) {
+    auto isInterfaceDeclaration(Node node) noexcept {
         std::optional<InterfaceDeclaration> result;
         if (_call<bool>("isInterfaceDeclaration", node))
             result.emplace(node);
         return result;
     }
 
-    auto isFunctionDeclaration(Node node) {
+    auto isFunctionDeclaration(Node node) noexcept {
         std::optional<FunctionDeclaration> result;
         if (_call<bool>("isFunctionDeclaration", node))
             result.emplace(node);
         return result;
     }
 
-    auto isTypeAliasDeclaration(Node node) {
+    auto isTypeAliasDeclaration(Node node) noexcept {
         std::optional<TypeAliasDeclaration> result;
         if (_call<bool>("isTypeAliasDeclaration", node))
             result.emplace(node);
         return result;
     }
 
-    auto isModuleDeclaration(Node node) {
+    auto isModuleDeclaration(Node node) noexcept {
         std::optional<ModuleDeclaration> result;
         if (_call<bool>("isModuleDeclaration", node))
             result.emplace(node);
         return result;
     }
 
-    auto getLineAndCharacterOfPosition(SourceFileLike sourceFile, int position) {
+    auto getLineAndCharacterOfPosition(SourceFileLike sourceFile, int position) noexcept {
         return _call<LineAndCharacter>("getLineAndCharacterOfPosition", sourceFile, tc::explicit_cast<double>(position));
     }
 
-    auto createProgram(ReadonlyArray<js_string> rootNames, CompilerOptions compilerOptions) {
+    auto createProgram(ReadonlyArray<js_string> rootNames, CompilerOptions compilerOptions) noexcept {
         return _call<Program>("createProgram", rootNames, compilerOptions);
     }
 
-    auto getPreEmitDiagnostics(Program program) {
+    auto getPreEmitDiagnostics(Program program) noexcept {
         return _call<ReadonlyArray<Diagnostic>>("getPreEmitDiagnostics", program);
     }
 
-    auto createCompilerHost(CompilerOptions options) {
+    auto createCompilerHost(CompilerOptions options) noexcept {
         return _call<CompilerHost>("createCompilerHost", options);
     }
 
-    auto formatDiagnosticsWithColorAndContext(ReadonlyArray<Diagnostic> diagnostics, FormatDiagnosticsHost host) {
+    auto formatDiagnosticsWithColorAndContext(ReadonlyArray<Diagnostic> diagnostics, FormatDiagnosticsHost host) noexcept {
         return _call<js_string>("formatDiagnosticsWithColorAndContext", diagnostics, host);
     }
 
-    auto flattenDiagnosticMessageText(js_unknown messageText, js_string newLine) {
+    auto flattenDiagnosticMessageText(js_unknown messageText, js_string newLine) noexcept {
         return _call<js_string>("flattenDiagnosticMessageText", messageText, newLine);
     }
 
-   static emscripten::val _construct() { return emscripten::val::global("ts"); }
+   static emscripten::val _construct() noexcept { return emscripten::val::global("ts"); }
 };
 
 struct ts : js_ref<_js_ts>, _jsdefs_ts {

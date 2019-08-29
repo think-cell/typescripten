@@ -25,13 +25,13 @@ template<typename T>
 struct _js_Array : virtual IObject {
     static_assert(IsJsInteropable<T>::value);
 
-    auto length() { return tc::explicit_cast<int>(_getProperty<double>("length")); }
+    auto length() noexcept { return tc::explicit_cast<int>(_getProperty<double>("length")); }
 
-    auto push(T const& item) { return _call<void>("push", item); }
+    auto push(T const& item) noexcept { return _call<void>("push", item); }
 
-    auto operator[](int i) && { return _getProperty<T>(i); }
+    auto operator[](int i) && noexcept { return _getProperty<T>(i); }
 
-    void _setIndex(int i, T value) { _setProperty(i, tc_move(value)); }
+    void _setIndex(int i, T value) noexcept { _setProperty(i, tc_move(value)); }
 
     // Generator range. This adds operator() to array interface (which did not exist before), but it's ok.
     template<typename Fn>
@@ -55,9 +55,9 @@ template<typename T>
 struct _js_ReadonlyArray : virtual IObject {
     static_assert(IsJsInteropable<T>::value);
 
-    auto length() { return tc::explicit_cast<int>(_getProperty<double>("length")); }
+    auto length() noexcept { return tc::explicit_cast<int>(_getProperty<double>("length")); }
 
-    auto operator[](int i) { return _getProperty<T>(i); }
+    auto operator[](int i) noexcept { return _getProperty<T>(i); }
 
     // Generator range. This adds operator() to array interface (which did not exist before), but it's ok.
     template<typename Fn>
@@ -77,7 +77,7 @@ struct _js_ReadonlyArray : virtual IObject {
 
 struct _js_Console : virtual IObject {
     template<typename... Args>
-    auto log(Args&&... args) {
+    auto log(Args&&... args) noexcept {
         static_assert((IsJsInteropable<tc::remove_cvref_t<Args>>::value && ...));
         return _call<void>("log", std::forward<Args>(args)...);
     }
@@ -88,6 +88,6 @@ using no_adl::Array;
 using no_adl::ReadonlyArray;
 using no_adl::Console;
 
-inline auto console() { return Console(emscripten::val::global("console")); }
+inline auto console() noexcept { return Console(emscripten::val::global("console")); }
 
 } // namespace tc::js::globals
