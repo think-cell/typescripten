@@ -152,5 +152,23 @@ int main() {
         static_assert(!std::is_convertible<BaseOrDerived, MyJsDerived>::value);
         static_cast<void>(MyJsDerived(bod));
     }
+    {
+        // Union upcast.
+        {
+            static_cast<void>(js_union<MyJsBase, js_string, js_undefined, js_null>(js_union<MyJsDerived, js_undefined>()));
+            js_union<MyJsBase, js_string, js_undefined, js_null> x = js_union<MyJsDerived, js_undefined>();
+            static_cast<void>(x);
+        }
+
+        // Union crosscasts are prohibited.
+        static_assert(!std::is_constructible<
+            js_union<MyJsDerived, js_undefined, js_null>,  // js_null is removed, but MyJsDerived is generalized.
+            js_union<MyJsBase, js_undefined>
+        >::value);
+        static_assert(!std::is_constructible<
+            js_union<MyJsBase, js_undefined>,
+            js_union<MyJsDerived, js_undefined, js_null>  // js_null is removed, but MyJsDerived is generalized.
+        >::value);
+    }
     return 0;
 }
