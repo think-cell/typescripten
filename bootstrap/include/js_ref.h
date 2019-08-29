@@ -87,7 +87,9 @@ struct js_ref {
          (!std::is_same<js_unknown, tc::remove_cvref_t<Args>>::value && ...) &&
          (!tc::is_instance_or_derived<js_union, Args>::value && ...) &&
          (!std::is_same<emscripten::val, tc::remove_cvref_t<Args>>::value && ...))
-    >>
+    >, typename T2 = T, typename = std::void_t<decltype(
+        T2::_construct(std::forward<Args>(std::declval<Args>())...)
+    )>>
     explicit js_ref(Args&&... args) noexcept : js_ref(T::_construct(std::forward<Args>(args)...)) {}
 
     /**
