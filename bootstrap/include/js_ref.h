@@ -1,7 +1,6 @@
 #pragma once
 
 #include <emscripten/val.h>
-#include <emscripten/wire.h>
 #include <string>
 #include <utility>
 #include <type_traits>
@@ -168,27 +167,10 @@ struct IsJsInteropable<T, std::enable_if_t<
     tc::is_instance_or_derived<js_ref, T>::value
 >> : std::true_type {};
 } // namespace no_adl
+
+namespace emscripten_interop_detail::no_adl {
+template<typename T>
+struct IsEmvalWrapper<T, std::enable_if_t<tc::is_decayed<T>::value && tc::is_instance_or_derived<tc::js::js_ref, T>::value>> : std::true_type {
+};
+} // namespace emscripten_interop_detail::no_adl
 } // namespace tc::js
-
-// Custom marshalling
-namespace emscripten::internal {
-    template<typename T>
-    struct TypeID<T, std::enable_if_t<tc::is_decayed<tc::remove_cvref_t<T>>::value && tc::is_instance_or_derived<tc::js::js_ref, T>::value>> {
-        static constexpr TYPEID get() {
-            return TypeID<val>::get();
-        }
-    };
-
-    template<typename T>
-    struct BindingType<T, std::enable_if_t<tc::is_decayed<T>::value && tc::is_instance_or_derived<tc::js::js_ref, T>::value>> {
-        typedef typename BindingType<emscripten::val>::WireType WireType;
-
-        static WireType toWireType(T const& js) {
-            return BindingType<emscripten::val>::toWireType(js.getEmval());
-        }
-
-        static auto fromWireType(WireType v) {
-            return typename tc::is_instance_or_derived<tc::js::js_ref, T>::base_instance(BindingType<emscripten::val>::fromWireType(v));
-        }
-    };
-}
