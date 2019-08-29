@@ -91,5 +91,11 @@ int main() {
             _ASSERT(emval.as<double>() == 123.5);
         }
     }
+
+    {
+        // It works, that's why we prohibit int.
+        emscripten::val x(1.23);
+        _ASSERTEQUAL(x.as<int>(), 1);
+    }
     return 0;
 }
