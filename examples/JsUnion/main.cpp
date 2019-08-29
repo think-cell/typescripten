@@ -7,6 +7,7 @@
 
 using tc::js::js_string;
 using tc::js::js_undefined;
+using tc::js::js_unknown;
 using tc::js::js_null;
 using tc::js::js_union;
 using tc::js::js_ref;
@@ -20,12 +21,6 @@ struct _js_MyJsDerived : virtual _js_MyJsBase {
 using MyJsBase = tc::js::js_ref<_js_MyJsBase>;
 using MyJsDerived = tc::js::js_ref<_js_MyJsDerived>;
 
-static_assert(!std::is_constructible<MyJsBase, double>::value);
-static_assert(std::is_constructible<double, double>::value);
-static_assert(std::is_convertible<double, double>::value);
-static_assert(!tc::js::js_union_detail::no_adl::ExplicitlyConstructibleFrom<double&&>::template type<js_string>::value);
-static_assert(!tc::js::js_union_detail::HasUniqueExplicitlyConstructibleFrom<double&&, tc::type::list<js_undefined, js_string, double, MyJsBase>>::value);
-
 int main() {
     {
         using BigUnion = js_union<js_undefined, js_string, double, MyJsBase>;
@@ -36,6 +31,7 @@ int main() {
             static_cast<void>(js_undefined{u});
         }
         {
+            // Test explicit construction.
             BigUnion u("foo");
             _ASSERT(u.getEmval().strictlyEquals(emscripten::val("foo")));
             _ASSERT(u);
@@ -62,7 +58,6 @@ int main() {
             _ASSERT(u.getEmval().strictlyEquals(base.getEmval()));
             _ASSERT(u);
             _ASSERT(MyJsBase{u}.getEmval().strictlyEquals(base.getEmval()));
-            _ASSERT(js_ref<tc::js::IObject>{u}.getEmval().strictlyEquals(base.getEmval()));
         }
         {
             MyJsDerived derived(js_string("foo"), js_string("bar"));
@@ -71,7 +66,6 @@ int main() {
             _ASSERT(u.getEmval().strictlyEquals(derived.getEmval()));
             _ASSERT(u);
             _ASSERT(MyJsBase{u}.getEmval().strictlyEquals(derived.getEmval()));
-            _ASSERT(js_ref<tc::js::IObject>{u}.getEmval().strictlyEquals(derived.getEmval()));
         }
     }
     {
@@ -88,6 +82,75 @@ int main() {
             _ASSERT(u);
             _ASSERTEQUAL(std::string(js_string(u)), "foo");
         }
+    }
+    {
+        using ObjectOrBaseOrString = js_union<js_ref<tc::js::IObject>, MyJsBase, js_string>;
+        MyJsBase base(js_string(""), js_string(""));
+        MyJsDerived derived(js_string(""), js_string(""));
+        js_string str("");
+
+        // Test implicit construction.
+        {
+            static_cast<void>(ObjectOrBaseOrString(base));
+            ObjectOrBaseOrString v = base;
+            static_cast<void>(v);
+        }
+        {
+            static_cast<void>(ObjectOrBaseOrString(derived));
+            ObjectOrBaseOrString v = derived;
+            static_cast<void>(v);
+        }
+        {
+            static_cast<void>(ObjectOrBaseOrString(str));
+            ObjectOrBaseOrString v = str;
+            static_cast<void>(v);
+        }
+
+        // No downcasts in construction unless there is an explicit_cast to exactly one option.
+        {
+            static_assert(!std::is_constructible<ObjectOrBaseOrString, bool>::value);
+            // static_assert(!std::is_constructible<ObjectOrBaseOrString, js_unknown>::value); // Does not compile because of ambiguity.
+            static_assert(!std::is_convertible<js_unknown, ObjectOrBaseOrString>::value); // Does not compile.
+        }
+
+        // Upcast.
+        {
+            ObjectOrBaseOrString bod(base);
+            static_cast<void>(js_unknown(bod));
+            js_unknown unk = bod;
+            static_cast<void>(unk);
+        }
+
+        // Element extraction.
+        static_cast<void>(js_ref<tc::js::IObject>(ObjectOrBaseOrString(base)));
+        static_assert(!std::is_convertible<ObjectOrBaseOrString, js_ref<tc::js::IObject>>::value);
+
+        static_cast<void>(MyJsBase(ObjectOrBaseOrString(derived)));
+        static_assert(!std::is_convertible<ObjectOrBaseOrString, MyJsBase>::value);
+
+        static_cast<void>(js_string(ObjectOrBaseOrString(str)));
+        static_assert(!std::is_convertible<ObjectOrBaseOrString, js_string>::value);
+
+        // No downcasts and crosscasts.
+        static_assert(!std::is_constructible<MyJsDerived, ObjectOrBaseOrString>::value);
+        static_assert(!std::is_constructible<js_undefined, ObjectOrBaseOrString>::value);
+    }
+    {
+        // Corner case: all options are subtypes of an option.
+        using BaseOrDerived = js_union<MyJsBase, MyJsDerived>;
+        static_assert(std::is_convertible<MyJsDerived, MyJsBase>::value);
+        BaseOrDerived bod(MyJsDerived(js_string(""), js_string("")));
+
+        // Upcast.
+        {
+            static_cast<void>(MyJsBase(bod));
+            MyJsBase base = bod;
+            static_cast<void>(base);
+        }
+
+        // Element extraction.
+        static_assert(!std::is_convertible<BaseOrDerived, MyJsDerived>::value);
+        static_cast<void>(MyJsDerived(bod));
     }
     return 0;
 }

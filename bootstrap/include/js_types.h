@@ -94,48 +94,26 @@ struct CFindValueType<js_null, T> {
 };
 
 template<typename From>
-struct ExplicitlyConstructibleFrom {
+struct IsOnlyExplicitCastableFrom {
     template<typename To>
     using type = std::conjunction<
-        std::is_constructible<To, From>,
+        tc::is_explicit_castable<To, From>,
         std::negation<std::is_convertible<From, To>>
     >;
 };
-
-template<typename From>
-struct ConvertibleFrom {
-    template<typename To>
-    using type = std::is_convertible<From, To>;
-};
-
-template<typename To>
-struct ConstructibleTo {
-    template<typename From>
-    using type = std::is_constructible<To, From>;
-};
 } // namespace no_adl
 using no_adl::CFindValueType;
+using no_adl::IsOnlyExplicitCastableFrom;
 
 template<typename From, typename ListArgs>
-using FindUniqueExplicitlyConstructibleFrom = tc::type::find_unique_if<ListArgs, no_adl::ExplicitlyConstructibleFrom<From>::template type>;
-
-template<typename From, typename ListArgs>
-using FindUniqueConvertibleFrom = tc::type::find_unique_if<ListArgs, no_adl::ConvertibleFrom<From>::template type>;
-
-template<typename To, typename ListArgs>
-using FindUniqueConstructibleTo = tc::type::find_unique_if<ListArgs, no_adl::ConstructibleTo<To>::template type>;
+using FindUniqueOnlyExplicitCastableFrom = tc::type::find_unique_if<ListArgs, no_adl::IsOnlyExplicitCastableFrom<From>::template type>;
 
 namespace no_adl {
 template<typename From, typename ListArgs>
-struct HasUniqueExplicitlyConstructibleFrom : std::bool_constant<FindUniqueExplicitlyConstructibleFrom<From, ListArgs>::found> {
-};
-
-template<typename To, typename ListArgs>
-struct HasUniqueConstructibleTo : std::bool_constant<FindUniqueConstructibleTo<To, ListArgs>::found> {
+struct HasUniqueOnlyExplicitCastableFrom : std::bool_constant<FindUniqueOnlyExplicitCastableFrom<From, ListArgs>::found> {
 };
 }
-using no_adl::HasUniqueExplicitlyConstructibleFrom;
-using no_adl::HasUniqueConstructibleTo;
+using no_adl::HasUniqueOnlyExplicitCastableFrom;
 } // namespace js_union_detail
 
 namespace no_adl {
@@ -164,20 +142,16 @@ struct js_union : js_union_detail::CFindValueType<Args...> {
 
     template<typename T, std::enable_if_t<
         IsJsInteropable<tc::remove_cvref_t<T>>::value &&
-        js_union_detail::FindUniqueConvertibleFrom<T&&, ListArgs>::found
+        tc::type::any_of<ListArgs, tc::type::curry<std::is_convertible, T&&>::template type>::value
     >* = nullptr>
-    js_union(T&& value) noexcept : m_emval(
-        typename js_union_detail::FindUniqueConvertibleFrom<T&&, ListArgs>::type(
-            std::forward<T>(value)
-        )
-    ) {}
+    js_union(T&& value) noexcept : m_emval(std::forward<T>(value)) {}
 
     template<typename T, std::enable_if_t<std::conjunction<
         std::negation<std::is_same<emscripten::val, tc::remove_cvref_t<T>>>,
-        js_union_detail::HasUniqueExplicitlyConstructibleFrom<T&&, ListArgs>
+        js_union_detail::HasUniqueOnlyExplicitCastableFrom<T&&, ListArgs>
     >::value>* = nullptr>
     explicit js_union(T&& value) noexcept : m_emval(
-        typename js_union_detail::FindUniqueExplicitlyConstructibleFrom<T&&, ListArgs>::type(
+        tc::explicit_cast<typename js_union_detail::FindUniqueOnlyExplicitCastableFrom<T&&, ListArgs>::type>(
             std::forward<T>(value)
         )
     ) {}
@@ -188,12 +162,21 @@ struct js_union : js_union_detail::CFindValueType<Args...> {
     template<typename T = js_union, std::enable_if_t<!T::has_undefined && T::has_null>* = nullptr>
     js_union() noexcept : js_union(emscripten::val::null()) {}
 
-    template<typename T, typename = std::enable_if_t<std::conjunction<
-        std::negation<std::is_same<T, tc::remove_cvref_t<bool>>>,
-        js_union_detail::HasUniqueConstructibleTo<T&&, ListArgs>
-    >::value>>
+    template<typename T, std::enable_if_t<
+        !std::is_same<bool, tc::remove_cvref_t<T>>::value &&
+        (std::is_convertible<Args, tc::remove_cvref_t<T>>::value && ...)
+    >* = nullptr>
+    operator T() const noexcept {
+        return m_emval.template as<T>();
+    }
+
+    template<typename T, std::enable_if_t<
+        !std::is_same<bool, tc::remove_cvref_t<T>>::value &&
+        !(std::is_convertible<Args, tc::remove_cvref_t<T>>::value && ...) &&
+        (std::is_same<Args, tc::remove_cvref_t<T>>::value || ...)
+    >* = nullptr>
     explicit operator T() const noexcept {
-        return T(m_emval.template as<typename js_union_detail::FindUniqueConstructibleTo<T&&, ListArgs>::type>());
+        return m_emval.template as<T>();
     }
 
 private:
