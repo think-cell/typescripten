@@ -20,6 +20,7 @@ template<> struct IsJsIntegralEnum<MyIntEnum> : std::true_type {};
 int main() {
    {
         auto arr = tc::explicit_cast<ReadonlyArray<double>>(std::initializer_list<double>{1, 2, 3});
+        static_assert(!tc::is_explicit_castable<ReadonlyArray<double>, double>::value);
         console()->log(arr);
         _ASSERTEQUAL(arr->length(), 3);
         _ASSERTEQUAL(arr[0], 1);
@@ -35,6 +36,7 @@ int main() {
     }
 
     auto arr = tc::explicit_cast<Array<double>>(std::initializer_list<double>{1, 2, 3});
+    static_assert(!tc::is_explicit_castable<Array<double>, double>::value);
     console()->log(arr);
     _ASSERTEQUAL(arr->length(), 3);
     _ASSERTEQUAL(arr[1], 2);

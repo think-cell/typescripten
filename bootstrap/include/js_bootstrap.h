@@ -1,6 +1,7 @@
 #pragma once
 
 #include <emscripten/val.h>
+#include <type_traits>
 #include "explicit_cast.h"
 #include "type_traits.h"
 #include "range.h"
@@ -39,7 +40,7 @@ struct _js_Array : virtual IObject {
         }));
     }
 
-    template<typename Rng>
+    template<typename Rng, typename = std::enable_if_t<tc::is_explicit_castable<T, tc::range_value_t<Rng>&&>::value>>
     static Array<T> _construct(Rng&& rng) noexcept {
         Array<T> result(emscripten::val::array());
         tc::for_each(rng, [&](auto&& value) {
@@ -65,7 +66,7 @@ struct _js_ReadonlyArray : virtual IObject {
         }));
     }
 
-    template<typename Rng>
+    template<typename Rng, typename = std::enable_if_t<tc::is_explicit_castable<T, tc::range_value_t<Rng>&&>::value>>
     static ReadonlyArray<T> _construct(Rng&& rng) noexcept {
         return ReadonlyArray<T>(
             tc::explicit_cast<Array<T>>(std::forward<Rng>(rng)).getEmval()

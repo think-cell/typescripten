@@ -253,11 +253,7 @@ struct js_string final {
     emscripten::val getEmval() const& noexcept { return m_emval; }
     emscripten::val getEmval() && noexcept { return tc_move(m_emval); }
 
-    template<typename Rng, typename = std::enable_if_t<
-        !std::is_same<emscripten::val, tc::remove_cvref_t<Rng>>::value &&
-        !std::is_same<js_unknown, tc::remove_cvref_t<Rng>>::value &&
-        !tc::is_instance_or_derived<js_union, Rng>::value
-    >>
+    template<typename Rng, typename = std::enable_if_t<tc::is_explicit_castable<std::string, Rng&&>::value>>
     explicit js_string(Rng&& rng) noexcept : m_emval(
         // TODO: avoid allocating std::string (we may have to duplicate parts of embind)
         tc::explicit_cast<std::string>(std::forward<Rng>(rng))

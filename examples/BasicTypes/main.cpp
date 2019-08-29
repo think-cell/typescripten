@@ -1,4 +1,5 @@
 #include <emscripten/val.h>
+#include <type_traits>
 #include "explicit_cast.h"
 #include "range.h"
 #include "range_defines.h"
@@ -12,6 +13,7 @@ using tc::js::js_optional;
 int main() {
     {
         auto message = tc::explicit_cast<js_string>("Hello World");
+        static_assert(!std::is_constructible<js_string, double>::value);
         _ASSERTEQUAL(message.length(), 11);
         _ASSERTEQUAL(tc::explicit_cast<std::string>(message), "Hello World");
 
