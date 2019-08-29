@@ -3,9 +3,9 @@
 #include <emscripten/val.h>
 #include <emscripten/wire.h>
 #include <string>
+#include <utility>
 #include <type_traits>
 #include "type_traits.h"
-#include "type_list.h"
 #include "tc_move.h"
 #include "range_defines.h"
 #include "noncopyable.h"
@@ -20,43 +20,43 @@ private:
 protected:
     explicit IObject(emscripten::val const& _emval) noexcept : m_emval(_emval) {}
     explicit IObject(emscripten::val&& _emval) noexcept : m_emval(tc_move(_emval)) {}
-    explicit IObject() : m_emval(emscripten::val::undefined()) {
+    explicit IObject() noexcept : m_emval(emscripten::val::undefined()) {
         // Should never be called.
         _ASSERTFALSE;
     }
 
     template<typename T, typename Name>
-    T _getProperty(Name&& name) {
+    T _getProperty(Name&& name) noexcept {
         static_assert(IsJsInteropable<T>::value);
         return m_emval[std::forward<Name>(name)].template as<T>();
     }
 
     template<typename T, typename Name>
-    void _setProperty(Name&& name, T const& value) {
+    void _setProperty(Name&& name, T const& value) noexcept {
         static_assert(IsJsInteropable<T>::value);
         m_emval.set(std::forward<Name>(name), value);
     }
 
     template<typename R, typename... Args>
-    R _call(char const* name, Args&&... args) {
+    R _call(char const* name, Args&&... args) noexcept {
         static_assert(IsJsInteropable<R>::value);
         static_assert(std::conjunction<IsJsInteropable<tc::remove_cvref_t<Args>>...>::value);
         return m_emval.call<R>(name, std::forward<Args>(args)...);
     }
 
     template<typename R, typename... Args>
-    R _call_this(Args&&... args) {
+    R _call_this(Args&&... args) noexcept {
         static_assert(IsJsInteropable<R>::value);
         static_assert(std::conjunction<IsJsInteropable<tc::remove_cvref_t<Args>>...>::value);
         return m_emval(std::forward<Args>(args)...).template as<R>();
     }
 
-    emscripten::val& _getEmval() {
+    emscripten::val& _getEmval() noexcept {
         return m_emval;
     }
 
     // Make sure the class and its descendants are abstract.
-    virtual void __IObject_and_derived_are_abstract_Use_js_ref_instead() = 0;
+    virtual void __IObject_and_derived_are_abstract_Use_js_ref_instead() noexcept = 0;
 };
 
 template<typename> struct js_ref;
@@ -87,7 +87,7 @@ struct js_ref {
          (!std::is_same<js_unknown, tc::remove_cvref_t<Args>>::value && ...) &&
          (!tc::is_instance_or_derived<js_union, Args>::value && ...) &&
          (!std::is_same<emscripten::val, tc::remove_cvref_t<Args>>::value && ...))
-    >, typename T2 = T, typename = std::void_t<decltype(
+    >, typename T2 = T, typename = tc::void_t<decltype(
         T2::_construct(std::forward<Args>(std::declval<Args>())...)
     )>>
     explicit js_ref(Args&&... args) noexcept : js_ref(T::_construct(std::forward<Args>(args)...)) {}
@@ -150,7 +150,7 @@ private:
         explicit CArrowProxy(emscripten::val const& m_emval) noexcept : IObject(m_emval) {}
         T* operator->() && noexcept { return this; }
     private:
-        void __IObject_and_derived_are_abstract_Use_js_ref_instead() override {
+        void __IObject_and_derived_are_abstract_Use_js_ref_instead() noexcept override {
             // Should never be called.
             assert(false);
         }

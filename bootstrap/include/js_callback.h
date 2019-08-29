@@ -4,7 +4,6 @@
 #include <cstdint>
 #include <memory>
 #include <utility>
-#include <tuple>
 #include <type_traits>
 
 #include "casts.h"
@@ -174,7 +173,7 @@ struct CUniqueDetachableJsFunction : tc::nonmovable, RequireRelaxedPointerSafety
         emscripten::val::module_property("tc_js_callback_detail_js_CreateJsFunction")(reinterpret_cast<PointerNumber>(pfunc), reinterpret_cast<PointerNumber>(arg0))
     ) {}
 
-    ~CUniqueDetachableJsFunction() {
+    ~CUniqueDetachableJsFunction() noexcept {
         this->getEmval().template call<void>("detach");
     }
 };
@@ -183,7 +182,7 @@ using no_adl::CUniqueDetachableJsFunction;
 } // namespace callback_detail
 
 #define TC_JS_MEMBER_FUNCTION(ClassName, FieldName, ReturnType, Arguments) \
-    void FieldName##_tc_js_type_check() { \
+    void FieldName##_tc_js_type_check() noexcept { \
         STATICASSERTSAME(ClassName&, decltype(*this), "ClassName specified in TC_JS_MEMBER_FUNCTION is incorrect"); \
     } \
     static emscripten::val FieldName##_tc_js_wrapper(void* pvThis, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) noexcept { \

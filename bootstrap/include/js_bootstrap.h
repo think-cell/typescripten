@@ -1,6 +1,7 @@
 #pragma once
 
 #include <emscripten/val.h>
+#include <utility>
 #include <type_traits>
 #include "explicit_cast.h"
 #include "type_traits.h"
