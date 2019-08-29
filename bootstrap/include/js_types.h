@@ -5,6 +5,7 @@
 #include <type_traits>
 #include <utility>
 #include "explicit_cast.h"
+#include "tag_type.h"
 #include "type_list.h"
 #include "type_traits.h"
 #include "tc_move.h"
@@ -93,27 +94,19 @@ struct CFindValueType<js_null, T> {
     using value_type = T;
 };
 
-template<typename From>
-struct IsOnlyExplicitCastableFrom {
+template<typename> struct IsExplicitCastableFrom {};
+
+template<typename... From>
+struct IsExplicitCastableFrom<tc::type::list<From...>> {
     template<typename To>
-    using type = std::conjunction<
-        tc::is_explicit_castable<To, From>,
-        std::negation<std::is_convertible<From, To>>
-    >;
+    using type = tc::is_explicit_castable<To, From...>;
 };
 } // namespace no_adl
 using no_adl::CFindValueType;
-using no_adl::IsOnlyExplicitCastableFrom;
+using no_adl::IsExplicitCastableFrom;
 
-template<typename From, typename ListTs>
-using FindUniqueOnlyExplicitCastableFrom = tc::type::find_unique_if<ListTs, no_adl::IsOnlyExplicitCastableFrom<From>::template type>;
-
-namespace no_adl {
-template<typename From, typename ListTs>
-struct HasUniqueOnlyExplicitCastableFrom : std::bool_constant<FindUniqueOnlyExplicitCastableFrom<From, ListTs>::found> {
-};
-}
-using no_adl::HasUniqueOnlyExplicitCastableFrom;
+template<typename ListFrom, typename ListTs>
+using FindUniqueExplicitCastableFrom = tc::type::find_unique_if<ListTs, no_adl::IsExplicitCastableFrom<ListFrom>::template type>;
 } // namespace js_union_detail
 
 namespace no_adl {
@@ -146,13 +139,10 @@ struct js_union : js_union_detail::CFindValueType<Ts...> {
     >* = nullptr>
     js_union(T&& value) noexcept : m_emval(std::forward<T>(value)) {}
 
-    template<typename T, std::enable_if_t<std::conjunction<
-        std::negation<std::is_same<emscripten::val, tc::remove_cvref_t<T>>>,
-        js_union_detail::HasUniqueOnlyExplicitCastableFrom<T&&, ListTs>
-    >::value>* = nullptr>
-    explicit js_union(T&& value) noexcept : m_emval(
-        tc::explicit_cast<typename js_union_detail::FindUniqueOnlyExplicitCastableFrom<T&&, ListTs>::type>(
-            std::forward<T>(value)
+    template<typename... Args>
+    explicit js_union(tc::aggregate_tag_t, Args&&... args) noexcept : m_emval(
+        tc::explicit_cast<typename js_union_detail::FindUniqueExplicitCastableFrom<tc::type::list<Args&&...>, ListTs>::type>(
+            std::forward<Args>(args)...
         )
     ) {}
 

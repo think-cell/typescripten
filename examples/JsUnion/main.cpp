@@ -32,7 +32,7 @@ int main() {
         }
         {
             // Test explicit construction.
-            BigUnion u("foo");
+            BigUnion u(tc::aggregate_tag, "foo");
             _ASSERT(u.getEmval().strictlyEquals(emscripten::val("foo")));
             _ASSERT(u);
             _ASSERTEQUAL(std::string(js_string(u)), "foo");
@@ -77,7 +77,7 @@ int main() {
             static_cast<void>(js_null{u});
         }
         {
-            BigUnion u("foo");
+            BigUnion u(tc::aggregate_tag, "foo");
             _ASSERT(u.getEmval().strictlyEquals(emscripten::val("foo")));
             _ASSERT(u);
             _ASSERTEQUAL(std::string(js_string(u)), "foo");
