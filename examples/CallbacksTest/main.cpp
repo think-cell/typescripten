@@ -28,8 +28,9 @@ using SomeJsClass = tc::js::js_ref<_js_SomeJsClass>;
         _ASSERTEQUAL(b, 20.0); \
         return a + b; \
     }) \
-    CreateCallback(TestPrint, void, (js_string sMessage), { \
+    CreateCallback(TestStringPass, js_string, (js_string sMessage), { \
         _ASSERTEQUAL(std::string(sMessage), "hello"); \
+        return js_string(std::string(sMessage) + " world"); \
     })\
     CreateCallback(TestPassAllArguments, void, (pass_all_arguments_t, Array<js_unknown> jsarrunkArgs, double a), { \
         _ASSERTEQUAL(a, 1.0); \

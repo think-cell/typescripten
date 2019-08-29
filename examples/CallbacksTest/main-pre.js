@@ -10,8 +10,8 @@ Module.TestSum = function(sum) {
     Module.assertEquals(sum(10, 20), 30);
 }
 
-Module.TestPrint = function(print) {
-    Module.assertEquals(print("hello"), undefined);
+Module.TestStringPass = function(callback) {
+    Module.assertEquals(callback("hello"), "hello world");
 }
 
 Module.TestPassThis = 
