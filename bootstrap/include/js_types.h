@@ -337,21 +337,24 @@ namespace emscripten::internal {
     template<typename T>
     struct TypeID<T, std::enable_if_t<tc::js::IsJsIntegralEnum<tc::remove_cvref_t<T>>::value>> {
         static constexpr TYPEID get() {
-            return TypeID<std::underlying_type_t<tc::remove_cvref_t<T>>>::get();
+            return TypeID<double>::get();
         }
     };
 
     template<typename T>
     struct BindingType<T, std::enable_if_t<tc::js::IsJsIntegralEnum<T>::value>> {
         using UnderlyingType = std::underlying_type_t<T>;
-        typedef typename BindingType<UnderlyingType>::WireType WireType;
+        static_assert(std::is_integral<UnderlyingType>::value);
+
+        // We want rounding checks, so underlying type is 'double' directly, not 'int' (which will silently round).
+        typedef typename BindingType<double>::WireType WireType;
 
         static WireType toWireType(T const& en) {
-            return BindingType<UnderlyingType>::toWireType(static_cast<UnderlyingType>(en));
+            return BindingType<double>::toWireType(tc::explicit_cast<double>(static_cast<UnderlyingType>(en)));
         }
 
         static auto fromWireType(WireType wire) {
-            return static_cast<T>(BindingType<UnderlyingType>::fromWireType(wire));
+            return static_cast<T>(tc::explicit_cast<UnderlyingType>(BindingType<double>::fromWireType(wire)));
         }
     };
 }
