@@ -133,11 +133,22 @@ struct js_union : js_union_detail::CFindValueType<Ts...> {
     emscripten::val const& getEmval() const& noexcept { return m_emval; }
     emscripten::val&& getEmval() && noexcept { return tc_move(m_emval); }
 
+    // Constructing from a subtype. Assumption: the underlying representation does not depend on what element of ListTs is chosen.
     template<typename T, std::enable_if_t<
         IsJsInteropable<tc::remove_cvref_t<T>>::value &&
         tc::type::any_of<ListTs, tc::type::curry<std::is_convertible, T&&>::template type>::value
     >* = nullptr>
     js_union(T&& value) noexcept : m_emval(std::forward<T>(value)) {}
+
+    // Constructing from a wider js_union (downcast).
+    template<typename T, std::enable_if_t<std::conjunction<
+        std::negation<std::is_same<tc::remove_cvref_t<T>, js_union>>,
+        tc::is_instance_or_derived<js_union, T>,
+        std::is_convertible<js_union, tc::remove_cvref_t<T>>
+    >::value>* = nullptr>
+    explicit js_union(T&& other) noexcept : m_emval(std::forward<T>(other).m_emval) {
+        assertEmvalInRange();
+    }
 
     template<typename... Args>
     explicit js_union(tc::aggregate_tag_t, Args&&... args) noexcept : m_emval(
@@ -152,6 +163,7 @@ struct js_union : js_union_detail::CFindValueType<Ts...> {
     template<typename T = js_union, std::enable_if_t<!T::has_undefined && T::has_null>* = nullptr>
     js_union() noexcept : js_union(emscripten::val::null()) {}
 
+    // Upcast to a common type. Assumption: the underlying representation does not depend on what element of ListTs is chosen.
     template<typename T, std::enable_if_t<
         !std::is_same<bool, tc::remove_cvref_t<T>>::value &&
         (std::is_convertible<Ts, T>::value && ...)
@@ -160,6 +172,7 @@ struct js_union : js_union_detail::CFindValueType<Ts...> {
         return m_emval.template as<T>();
     }
 
+    // Extracting a specific type.
     template<typename T, std::enable_if_t<
         !std::is_same<bool, tc::remove_cvref_t<T>>::value &&
         !(std::is_convertible<Ts, T>::value && ...) &&
@@ -170,6 +183,8 @@ struct js_union : js_union_detail::CFindValueType<Ts...> {
     }
 
 private:
+    template<typename... Us> friend struct js_union;
+
     template<typename T>
     struct CArrowProxy {
         T m_value;

@@ -31,6 +31,13 @@ int main() {
             static_cast<void>(js_undefined{u});
         }
         {
+            BigUnion u;
+            BigUnion v1 = u;
+            BigUnion v2(u);
+            BigUnion w1 = tc_move(v1);
+            BigUnion w2(tc_move(v2));
+        }
+        {
             // Test explicit construction.
             BigUnion u(tc::aggregate_tag, "foo");
             _ASSERT(u.getEmval().strictlyEquals(emscripten::val("foo")));
@@ -159,6 +166,13 @@ int main() {
             js_union<MyJsBase, js_string, js_undefined, js_null> x = js_union<MyJsDerived, js_undefined>();
             static_cast<void>(x);
         }
+
+        // Union downcast.
+        static_assert(!std::is_convertible<
+            js_union<MyJsBase, js_string, js_undefined>,
+            js_union<MyJsDerived, js_string>
+        >::value);
+        static_cast<void>(js_union<MyJsDerived, js_undefined>(js_union<MyJsBase, js_string, js_undefined>()));
 
         // Union crosscasts are prohibited.
         static_assert(!std::is_constructible<
