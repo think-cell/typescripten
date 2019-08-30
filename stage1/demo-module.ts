@@ -2,7 +2,8 @@ declare namespace Foo {
     function func1(x: number, y?: number): string;
     function func1(x: string): number;
 
-    enum MyEnum { A = 10, B, C }
+    enum MyEnum { A = 10, B = 15, C = 20 }
+    const enum NonAmbientEnum { A = 10, B, C }
 
     namespace NsInterface1 {
         let foo: number;

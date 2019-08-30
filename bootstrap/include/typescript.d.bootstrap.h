@@ -548,6 +548,7 @@ struct _jsdefs_ts : _jsenums_ts {
     struct _js_InterfaceDeclaration;
     struct _js_TypeAliasDeclaration;
     struct _js_ModuleDeclaration;
+    struct _js_EnumMember;
     struct _js_SourceFileLike;
     struct _js_SourceFile;
     struct _js_Program;
@@ -575,6 +576,7 @@ struct _jsdefs_ts : _jsenums_ts {
     using InterfaceDeclaration = js_ref<_js_InterfaceDeclaration>;
     using TypeAliasDeclaration = js_ref<_js_TypeAliasDeclaration>;
     using ModuleDeclaration = js_ref<_js_ModuleDeclaration>;
+    using EnumMember = js_ref<_js_EnumMember>;
     using SourceFileLike = js_ref<_js_SourceFileLike>;
     using SourceFile = js_ref<_js_SourceFile>;
     using Program = js_ref<_js_Program>;
@@ -632,6 +634,9 @@ struct _jsdefs_ts : _jsenums_ts {
         auto name() noexcept { return _getProperty<Identifier>("name"); }
     };
 
+    struct _js_EnumMember : virtual _js_Declaration {
+    };
+
     struct _js_SourceFileLike : virtual IObject {
         auto getLineAndCharacterOfPosition(int pos) noexcept {
             return _call<LineAndCharacter>("getLineAndCharacterOfPosition", tc::explicit_cast<double>(pos));
@@ -671,6 +676,7 @@ struct _jsdefs_ts : _jsenums_ts {
         auto getSignaturesOfType(Type type, SignatureKind kind) noexcept { return _call<ReadonlyArray<Signature>>("getSignaturesOfType", type, kind); }
         auto signatureToString(Signature signature) noexcept { return _call<js_string>("signatureToString", signature); }
         auto getFullyQualifiedName(Symbol symbol) noexcept { return _call<js_string>("getFullyQualifiedName", symbol); }
+        auto getConstantValue(EnumMember node) { return _call<js_union<js_string, double, js_undefined>>("getConstantValue", node); }
     };
 
     struct _js_Symbol : virtual IObject {
@@ -685,6 +691,8 @@ struct _jsdefs_ts : _jsenums_ts {
         auto globalExports() noexcept { return _getProperty<js_optional<SymbolTable>>("globalExports"); }
 
         auto valueDeclaration() noexcept { return _getProperty<js_optional<Declaration>>("valueDeclaration"); }
+
+        auto declarations() noexcept { return _getProperty<Array<Declaration>>("declarations"); }
     };
 
 
@@ -783,6 +791,13 @@ struct _js_ts : virtual IObject, _jsdefs_ts {
     auto isModuleDeclaration(Node node) noexcept {
         std::optional<ModuleDeclaration> result;
         if (_call<bool>("isModuleDeclaration", node))
+            result.emplace(node);
+        return result;
+    }
+
+    auto isEnumMember(Node node) noexcept {
+        std::optional<EnumMember> result;
+        if (_call<bool>("isEnumMember", node))
             result.emplace(node);
         return result;
     }

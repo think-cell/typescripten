@@ -4,6 +4,7 @@
 #include "explicit_cast.h"
 #include "range_defines.h"
 #include "range.h"
+#include "join_adaptor.h"
 #include "js_bootstrap.h"
 #include "typescript.d.bootstrap.h"
 
@@ -30,6 +31,8 @@ private:
 };
 }; // namespace tc
 
+std::vector<ts::Symbol> g_vjsymEnums;
+
 void printTree(ts::TypeChecker& jsTypeChecker, int offset, ts::Symbol jSymbol) {
     std::string s;
     tc::append(std::cout,
@@ -43,6 +46,12 @@ void printTree(ts::TypeChecker& jsTypeChecker, int offset, ts::Symbol jSymbol) {
     // jsSymbol()->globalExports: unknown.
     // jsSymbol()->exports: nested static types/methods/properties
     // jsTypeChecker->getExportsOfModule(jSymbol): same as 'exports', but when called on a module with `export = Foo`, returns members of `Foo`, not `Foo` itself.
+
+    if (jSymbol->getFlags() == static_cast<int>(ts::SymbolFlags::RegularEnum) ||
+        jSymbol->getFlags() == static_cast<int>(ts::SymbolFlags::ConstEnum)
+        ) {
+        g_vjsymEnums.push_back(jSymbol);
+    }
 
     tc::append(std::cout, tc::repeat_n(' ', offset + 2), "members\n");
     if (jSymbol->members()) {
@@ -77,6 +86,19 @@ void printTree(ts::TypeChecker& jsTypeChecker, int offset, ts::Symbol jSymbol) {
             );
         }
     );
+}
+
+auto mangleSymbolName(ts::Symbol jSymbol) {
+    std::string sMangled = "j";
+    tc::for_each(std::string(jSymbol->getName()), [&](char c) {
+        switch (c) {
+        case '_': sMangled += "_u"; break;
+        case ',': sMangled += "_c"; break;
+        case '.': sMangled += "_d"; break;
+        default: sMangled += c; break;
+        }
+    });
+    return sMangled;
 }
 
 int main(int argc, char* argv[]) {
@@ -141,5 +163,36 @@ int main(int argc, char* argv[]) {
             );
         }
     );
+
+    tc::append(std::cout, "\n========== GENERATED CODE ==========\n");
+
+    {
+        // Generating enum definitions.
+        tc::append(std::cout,
+            tc::join(tc::transform(g_vjsymEnums, [&](ts::Symbol jsymEnum) {
+                _ASSERT(jsymEnum->exports());
+                return tc::concat(
+                    "enum class _jsenum_", mangleSymbolName(jsymEnum), " {\n",
+                    tc::join(
+                        tc::transform(*jsymEnum->exports(), [&](ts::Symbol jsymOption) {
+                            _ASSERTEQUAL(jsymOption->getFlags(), static_cast<int>(ts::SymbolFlags::EnumMember));
+                            auto jaDeclarations = jsymOption->declarations();
+                            _ASSERTEQUAL(jaDeclarations->length(), 1);
+                            auto jDeclaration = ts()->isEnumMember(jaDeclarations[0]);
+                            _ASSERT(jDeclaration);
+                            auto juOptionValue = jsTypeChecker->getConstantValue(*jDeclaration);
+                            _ASSERT(juOptionValue.getEmval().isNumber()); // Computed values of enums are unsupported.
+                            return tc::concat(
+                                "    ", std::string(jsymOption->getName()), " = ",
+                                tc::as_dec(tc::explicit_cast<int>(double(juOptionValue))),
+                                ",\n"
+                            );
+                        })
+                    ),
+                    "};\n"
+                );
+            }))
+        );
+    }
     return 0;
 }
