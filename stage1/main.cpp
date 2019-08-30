@@ -49,7 +49,7 @@ void printTree(ts::TypeChecker& jsTypeChecker, int offset, ts::Symbol jSymbol) {
         tc::for_each(*jSymbol->members(), [&](ts::Symbol jChildSymbol) { printTree(jsTypeChecker, offset + 4, jChildSymbol); });
     }
 
-    tc::append(std::cout, tc::repeat_n(' ', offset + 2), "exportsOfModule\n");
+    tc::append(std::cout, tc::repeat_n(' ', offset + 2), "exports\n");
     if (jSymbol->exports()) {
         tc::for_each(jsTypeChecker->getExportsOfModule(jSymbol),
             [&](ts::Symbol jChildSymbol) { printTree(jsTypeChecker, offset + 4, jChildSymbol); }
