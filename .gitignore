@@ -4,3 +4,4 @@
 *.wasm
 *.wasm.map
 node_modules/
+/build-config.cmd
