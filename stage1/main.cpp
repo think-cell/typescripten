@@ -88,19 +88,6 @@ void printTree(ts::TypeChecker& jsTypeChecker, int offset, ts::Symbol jSymbol) {
     );
 }
 
-auto mangleSymbolName(ts::Symbol jSymbol) {
-    std::string sMangled = "j";
-    tc::for_each(std::string(jSymbol->getName()), [&](char c) {
-        switch (c) {
-        case '_': sMangled += "_u"; break;
-        case ',': sMangled += "_c"; break;
-        case '.': sMangled += "_d"; break;
-        default: sMangled += c; break;
-        }
-    });
-    return sMangled;
-}
-
 int main(int argc, char* argv[]) {
     _ASSERT(2 <= argc);
 
@@ -121,6 +108,19 @@ int main(int argc, char* argv[]) {
             return 1;
         }
     }
+
+    auto mangleSymbolName = [&](ts::Symbol jSymbol) {
+        std::string sMangled = "j";
+        tc::for_each(std::string(jsTypeChecker->getFullyQualifiedName(jSymbol)), [&](char c) {
+            switch (c) {
+            case '_': sMangled += "_u"; break;
+            case ',': sMangled += "_c"; break;
+            case '.': sMangled += "_d"; break;
+            default: sMangled += c; break;
+            }
+        });
+        return sMangled;
+    };
 
     tc::for_each(
         tc::filter(
