@@ -318,7 +318,7 @@ namespace emscripten::internal {
         }
 
         static auto fromWireType(WireType v) {
-            return T(BindingType<emscripten::val>::fromWireType(v));
+            return static_cast<T>(BindingType<emscripten::val>::fromWireType(v));
         }
     };
 
