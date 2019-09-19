@@ -88,7 +88,7 @@ struct js_ref {
     explicit js_ref(Args&&... args) noexcept : js_ref(T::_construct(std::forward<Args>(args)...)) {}
 
     /**
-     * Upcasting.
+     * Basecasting.
      * [util.smartptr.shared] says:
      * 23.11.3 For the purposes of subclause 23.11, a pointer type Y* is said to be compatible with a pointer type T* when either Y* is convertible to T* or Y is U[N] and T is cv U[].
      * 23.11.3.1
@@ -105,7 +105,7 @@ struct js_ref {
     js_ref(js_ref<U>&& jsOther) noexcept : js_ref(tc_move(jsOther.m_emval)) {}
 
     /**
-     * Downcasting.
+     * Derivedcasting.
      * Although shared_ptr has dedicated static_pointer_cast, we decided to create
      * explicit constructors instead, as it allows deep explicit creation (e.g.
      * container.emplace() will work with explicit constructor, but not static_pointer_cast).

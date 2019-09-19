@@ -140,7 +140,7 @@ struct js_union : js_union_detail::CDetectOptionLike<Ts...> {
     >* = nullptr>
     js_union(T&& value) noexcept : m_emval(std::forward<T>(value)) {}
 
-    // Constructing from a wider js_union (downcast).
+    // Constructing from a wider js_union (derivedcast).
     template<typename T, std::enable_if_t<std::conjunction<
         std::negation<std::is_same<tc::remove_cvref_t<T>, js_union>>,
         tc::is_instance_or_derived<js_union, T>,
@@ -163,7 +163,7 @@ struct js_union : js_union_detail::CDetectOptionLike<Ts...> {
     template<typename T = js_union, std::enable_if_t<!T::has_undefined && T::has_null>* = nullptr>
     js_union() noexcept : js_union(emscripten::val::null()) {}
 
-    // Upcast to a common type. Assumption: the underlying representation does not depend on what element of ListTs is chosen.
+    // Basecast to a common type. Assumption: the underlying representation does not depend on what element of ListTs is chosen.
     template<typename T, std::enable_if_t<
         !std::is_same<bool, tc::remove_cvref_t<T>>::value &&
         (std::is_convertible<Ts, T>::value && ...)

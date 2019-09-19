@@ -113,14 +113,14 @@ int main() {
             static_cast<void>(v);
         }
 
-        // No downcasts in construction unless there is an explicit_cast to exactly one option.
+        // No derivedcasts in construction unless there is an explicit_cast to exactly one option.
         {
             static_assert(!std::is_constructible<ObjectOrBaseOrString, bool>::value);
             // static_assert(!std::is_constructible<ObjectOrBaseOrString, js_unknown>::value); // Does not compile because of ambiguity.
             static_assert(!std::is_convertible<js_unknown, ObjectOrBaseOrString>::value); // Does not compile.
         }
 
-        // Upcast.
+        // Basecast.
         {
             ObjectOrBaseOrString bod(base);
             static_cast<void>(js_unknown(bod));
@@ -138,7 +138,7 @@ int main() {
         static_cast<void>(js_string(ObjectOrBaseOrString(str)));
         static_assert(!std::is_convertible<ObjectOrBaseOrString, js_string>::value);
 
-        // No downcasts and crosscasts.
+        // No derivedcasts and crosscasts.
         static_assert(!std::is_constructible<MyJsDerived, ObjectOrBaseOrString>::value);
         static_assert(!std::is_constructible<js_undefined, ObjectOrBaseOrString>::value);
     }
@@ -148,7 +148,7 @@ int main() {
         static_assert(std::is_convertible<MyJsDerived, MyJsBase>::value);
         BaseOrDerived bod(MyJsDerived(js_string(""), js_string("")));
 
-        // Upcast.
+        // Basecast.
         {
             static_cast<void>(MyJsBase(bod));
             MyJsBase base = bod;
@@ -160,14 +160,14 @@ int main() {
         static_cast<void>(MyJsDerived(bod));
     }
     {
-        // Union upcast.
+        // Union basecast.
         {
             static_cast<void>(js_union<MyJsBase, js_string, js_undefined, js_null>(js_union<MyJsDerived, js_undefined>()));
             js_union<MyJsBase, js_string, js_undefined, js_null> x = js_union<MyJsDerived, js_undefined>();
             static_cast<void>(x);
         }
 
-        // Union downcast.
+        // Union derivedcast.
         static_assert(!std::is_convertible<
             js_union<MyJsBase, js_string, js_undefined>,
             js_union<MyJsDerived, js_string>
