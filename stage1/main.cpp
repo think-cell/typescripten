@@ -166,7 +166,6 @@ int main(int argc, char* argv[]) {
     tc::append(std::cout, "\n========== GENERATED CODE ==========\n");
 
     {
-        // Generating enum definitions.
         tc::append(std::cout,
             tc::join(tc::transform(g_vjsymEnums, [&](ts::Symbol jsymEnum) {
                 _ASSERT(jsymEnum->exports());
@@ -199,6 +198,10 @@ int main(int argc, char* argv[]) {
                if (jsymClass->exports()) {
                    jasymExports = jsTypeChecker->getExportsOfModule(jsymClass);
                }
+               std::vector<ts::Symbol> vsymMembers;
+               if (jsymClass->members()) {
+                   vsymMembers = tc::explicit_cast<std::vector<ts::Symbol>>(*jsymClass->members());
+               }
                // TODO: force eager evaluation to keep jasymExports in scope.
                return tc::explicit_cast<std::string>(tc::concat(
                    "struct ", mangleSymbolName(jsymClass), " {\n",
@@ -214,6 +217,20 @@ int main(int argc, char* argv[]) {
                                    " = js_ref<",
                                    mangleSymbolName(jExportSymbol),
                                    ">;\n"
+                               );
+                           }
+                       )
+                   ),
+                   tc::join(
+                       tc::transform(
+                           tc::filter(vsymMembers, [&](ts::Symbol jMemberSymbol) {
+                               return jMemberSymbol->getFlags() == static_cast<int>(ts::SymbolFlags::Method);
+                           }),
+                           [&](ts::Symbol jsymMethod) {
+                               return tc::concat(
+                                   "    void ",
+                                   std::string(jsymMethod->getName()),
+                                   "();\n"
                                );
                            }
                        )
