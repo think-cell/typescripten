@@ -1,6 +1,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <utility>
 #include "explicit_cast.h"
 #include "range_defines.h"
 #include "range.h"
@@ -31,9 +32,24 @@ private:
 };
 }; // namespace tc
 
-std::vector<ts::Symbol> g_vjsymEnums;
+std::vector<ts::Symbol> g_vjsymEnums, g_vjsymClasses;
 
-void printTree(ts::TypeChecker& jsTypeChecker, int offset, ts::Symbol jSymbol) {
+bool isEnumInCpp(ts::Symbol jSymbol) {
+    return
+        jSymbol->getFlags() == static_cast<int>(ts::SymbolFlags::RegularEnum) ||
+        jSymbol->getFlags() == static_cast<int>(ts::SymbolFlags::ConstEnum);
+}
+
+bool isClassInCpp(ts::Symbol jSymbol) {
+    return jSymbol->getFlags() & (
+        static_cast<int>(ts::SymbolFlags::Class) |
+        static_cast<int>(ts::SymbolFlags::Interface) |
+        static_cast<int>(ts::SymbolFlags::ValueModule) |
+        static_cast<int>(ts::SymbolFlags::NamespaceModule)
+        );
+}
+
+void walkType(ts::TypeChecker& jsTypeChecker, int offset, ts::Symbol jSymbol) {
     std::string s;
     tc::append(std::cout,
         tc::repeat_n(' ', offset),
@@ -47,21 +63,21 @@ void printTree(ts::TypeChecker& jsTypeChecker, int offset, ts::Symbol jSymbol) {
     // jsSymbol()->exports: nested static types/methods/properties
     // jsTypeChecker->getExportsOfModule(jSymbol): same as 'exports', but when called on a module with `export = Foo`, returns members of `Foo`, not `Foo` itself.
 
-    if (jSymbol->getFlags() == static_cast<int>(ts::SymbolFlags::RegularEnum) ||
-        jSymbol->getFlags() == static_cast<int>(ts::SymbolFlags::ConstEnum)
-        ) {
+    if (isEnumInCpp(jSymbol)) {
         g_vjsymEnums.push_back(jSymbol);
+    } else if (isClassInCpp(jSymbol)) {
+       g_vjsymClasses.push_back(jSymbol);
     }
 
     tc::append(std::cout, tc::repeat_n(' ', offset + 2), "members\n");
     if (jSymbol->members()) {
-        tc::for_each(*jSymbol->members(), [&](ts::Symbol jChildSymbol) { printTree(jsTypeChecker, offset + 4, jChildSymbol); });
+        tc::for_each(*jSymbol->members(), [&](ts::Symbol jChildSymbol) { walkType(jsTypeChecker, offset + 4, jChildSymbol); });
     }
 
-    tc::append(std::cout, tc::repeat_n(' ', offset + 2), "exports\n");
+    tc::append(std::cout, tc::repeat_n(' ', offset + 2), "exportsOfModule\n");
     if (jSymbol->exports()) {
         tc::for_each(jsTypeChecker->getExportsOfModule(jSymbol),
-            [&](ts::Symbol jChildSymbol) { printTree(jsTypeChecker, offset + 4, jChildSymbol); }
+            [&](ts::Symbol jChildSymbol) { walkType(jsTypeChecker, offset + 4, jChildSymbol); }
         );
     }
 
@@ -110,57 +126,40 @@ int main(int argc, char* argv[]) {
     }
 
     auto mangleSymbolName = [&](ts::Symbol jSymbol) {
-        std::string sMangled = "j";
+        std::string sMangled = "_js_j";
         tc::for_each(std::string(jsTypeChecker->getFullyQualifiedName(jSymbol)), [&](char c) {
             switch (c) {
             case '_': sMangled += "_u"; break;
             case ',': sMangled += "_c"; break;
             case '.': sMangled += "_d"; break;
+            case '-': sMangled += "_m"; break;
+            case '"': sMangled += "_q"; break;
             default: sMangled += c; break;
             }
         });
         return sMangled;
     };
 
-    tc::for_each(
-        tc::filter(
-            jsProgram->getSourceFiles(),
-            [&](ts::SourceFile const& jsSourceFile) {
-                return tc::find_unique<tc::return_bool>(rngFileNames, std::string(jsSourceFile->fileName()));
-            }
-        ),
+    std::vector<ts::Symbol> vjsym_exportedModules;
+    tc::for_each(jsProgram->getSourceFiles(),
         [&](ts::SourceFile const& jsSourceFile) {
+            if (!tc::find_unique<tc::return_bool>(rngFileNames, std::string(jsSourceFile->fileName()))) {
+                return;
+            }
             auto jsymSourceFileSymbol = jsTypeChecker->getSymbolAtLocation(jsSourceFile);
             if (!jsymSourceFileSymbol) {
                 tc::append(std::cout, "Module not found for ", std::string(jsSourceFile->fileName()), "\n");
                 return;
             }
-            tc::append(std::cout, "Module name is ", std::string((*jsymSourceFileSymbol)->getName()), "\n");
-            printTree(jsTypeChecker, 0, *jsymSourceFileSymbol);
-            tc::append(std::cout, "syntax children:\n");
+            vjsym_exportedModules.push_back(*jsymSourceFileSymbol);
+        }
+    );
 
-            auto jsChildren = jsSourceFile->getChildren();
-
-            _ASSERTEQUAL(jsChildren->length(), 2);
-            _ASSERTEQUAL(jsChildren[0]->kind(), ts::SyntaxKind::SyntaxList);
-            _ASSERTEQUAL(jsChildren[1]->kind(), ts::SyntaxKind::EndOfFileToken);
-            tc::for_each(jsChildren[0]->getChildren(),
-                [&](ts::Node jnodeTopLevel) {
-                    if (auto optjvarstmtTopLevel = ts()->isVariableStatement(jnodeTopLevel)) {
-                        tc::append(std::cout, "variable statement\n");
-                    } else if (auto optjifacedeclTopLevel = ts()->isInterfaceDeclaration(jnodeTopLevel)) {
-                        tc::append(std::cout, "interface declaration\n");
-                    } else if (auto optjfuncdeclTopLevel = ts()->isFunctionDeclaration(jnodeTopLevel)) {
-                        tc::append(std::cout, "function declaration\n");
-                    } else if (auto optjtypealiasTopLevel = ts()->isTypeAliasDeclaration(jnodeTopLevel)) {
-                        tc::append(std::cout, "type alias declaration\n");
-                    } else if (auto optjmoddeclTopLevel = ts()->isModuleDeclaration(jnodeTopLevel)) {
-                        tc::append(std::cout, "module declaration '", std::string((*optjmoddeclTopLevel)->name()->text()), "'\n");
-                    } else {
-//                        tc::append(std::cout, "!!! unknown top level node: ", tc::as_dec(static_cast<int>(jnodeTopLevel->kind())), "\n");
-                    }
-                }
-            );
+    tc::for_each(
+        vjsym_exportedModules,
+        [&](ts::Symbol const& jsymSourceFileSymbol) {
+            tc::append(std::cout, "Module name is ", std::string(jsymSourceFileSymbol->getName()), "\n");
+            walkType(jsTypeChecker, 0, jsymSourceFileSymbol);
         }
     );
 
@@ -172,7 +171,7 @@ int main(int argc, char* argv[]) {
             tc::join(tc::transform(g_vjsymEnums, [&](ts::Symbol jsymEnum) {
                 _ASSERT(jsymEnum->exports());
                 return tc::concat(
-                    "enum class _jsenum_", mangleSymbolName(jsymEnum), " {\n",
+                    "enum class ", mangleSymbolName(jsymEnum), " {\n",
                     tc::join(
                         tc::transform(*jsymEnum->exports(), [&](ts::Symbol jsymOption) {
                             _ASSERTEQUAL(jsymOption->getFlags(), static_cast<int>(ts::SymbolFlags::EnumMember));
@@ -191,6 +190,36 @@ int main(int argc, char* argv[]) {
                     ),
                     "};\n"
                 );
+            })),
+            tc::join(tc::transform(g_vjsymClasses, [&](ts::Symbol jsymClass) {
+               return tc::concat("struct ", mangleSymbolName(jsymClass), ";\n");
+            })),
+            tc::join(tc::transform(g_vjsymClasses, [&](ts::Symbol jsymClass) {
+               Array<ts::Symbol> jasymExports(std::initializer_list<ts::Symbol>{});
+               if (jsymClass->exports()) {
+                   jasymExports = jsTypeChecker->getExportsOfModule(jsymClass);
+               }
+               // TODO: force eager evaluation to keep jasymExports in scope.
+               return tc::explicit_cast<std::string>(tc::concat(
+                   "struct ", mangleSymbolName(jsymClass), " {\n",
+                   tc::join(
+                       tc::transform(
+                           tc::filter(jasymExports, [&](ts::Symbol jExportSymbol) {
+                               return isEnumInCpp(jExportSymbol) || isClassInCpp(jExportSymbol);
+                           }),
+                           [&](ts::Symbol jExportSymbol) {
+                               return tc::concat(
+                                   "    using ",
+                                   std::string(jExportSymbol->getName()),
+                                   " = js_ref<",
+                                   mangleSymbolName(jExportSymbol),
+                                   ">;\n"
+                               );
+                           }
+                       )
+                   ),
+                   "};\n"
+               ));
             }))
         );
     }
