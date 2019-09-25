@@ -43,6 +43,7 @@ declare namespace Foo {
     }
     interface Interface2 extends BaseInterface {
         baz(): string;
+        overloadedFunc(a: number | string | undefined): number | null | undefined;
     }
     type Interface1Or2 = Interface1 | Interface2;
 
@@ -50,6 +51,9 @@ declare namespace Foo {
         constructor(a: number);
         foo(): number; // More specific return type than in base
         baz(): string;
+
+        overloadedFunc(a: number): number;
+        overloadedFunc(a: string): null;
     }
 
     var someProperty: number;
