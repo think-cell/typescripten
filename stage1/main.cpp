@@ -205,36 +205,32 @@ int main(int argc, char* argv[]) {
                // TODO: force eager evaluation to keep jasymExports in scope.
                return tc::explicit_cast<std::string>(tc::concat(
                    "struct ", mangleSymbolName(jsymClass), " {\n",
-                   tc::join(
-                       tc::transform(
-                           tc::filter(jasymExports, [&](ts::Symbol jExportSymbol) {
-                               return isEnumInCpp(jExportSymbol) || isClassInCpp(jExportSymbol);
-                           }),
-                           [&](ts::Symbol jExportSymbol) {
-                               return tc::concat(
-                                   "    using ",
-                                   std::string(jExportSymbol->getName()),
-                                   " = js_ref<",
-                                   mangleSymbolName(jExportSymbol),
-                                   ">;\n"
-                               );
-                           }
-                       )
-                   ),
-                   tc::join(
-                       tc::transform(
-                           tc::filter(vsymMembers, [&](ts::Symbol jMemberSymbol) {
-                               return jMemberSymbol->getFlags() == static_cast<int>(ts::SymbolFlags::Method);
-                           }),
-                           [&](ts::Symbol jsymMethod) {
-                               return tc::concat(
-                                   "    void ",
-                                   std::string(jsymMethod->getName()),
-                                   "();\n"
-                               );
-                           }
-                       )
-                   ),
+                   tc::join(tc::transform(
+                       tc::filter(jasymExports, [&](ts::Symbol jExportSymbol) {
+                           return isEnumInCpp(jExportSymbol) || isClassInCpp(jExportSymbol);
+                       }),
+                       [&](ts::Symbol jExportSymbol) {
+                           return tc::concat(
+                               "    using ",
+                               std::string(jExportSymbol->getName()),
+                               " = js_ref<",
+                               mangleSymbolName(jExportSymbol),
+                               ">;\n"
+                           );
+                       }
+                   )),
+                   tc::join(tc::transform(
+                       tc::filter(vsymMembers, [&](ts::Symbol jMemberSymbol) {
+                           return jMemberSymbol->getFlags() == static_cast<int>(ts::SymbolFlags::Method);
+                       }),
+                       [&](ts::Symbol jsymMethod) {
+                           return tc::concat(
+                               "    void ",
+                               std::string(jsymMethod->getName()),
+                               "();\n"
+                           );
+                       }
+                   )),
                    "};\n"
                ));
             }))
