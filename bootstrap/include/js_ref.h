@@ -24,6 +24,12 @@ protected:
         _ASSERTFALSE;
     }
 
+    template<typename T>
+    T _this() noexcept {
+        static_assert(IsJsInteropable<T>::value);
+        return m_emval.template as<T>();
+    }
+
     template<typename T, typename Name>
     T _getProperty(Name&& name) noexcept {
         static_assert(IsJsInteropable<T>::value);
