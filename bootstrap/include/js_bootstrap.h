@@ -3,6 +3,7 @@
 #include <emscripten/val.h>
 #include <utility>
 #include <type_traits>
+#include "break_or_continue.h"
 #include "explicit_cast.h"
 #include "type_traits.h"
 #include "range.h"
@@ -36,9 +37,21 @@ struct _js_Array : virtual IObject {
     // Generator range. This adds operator() to array interface (which did not exist before), but it's ok.
     template<typename Fn>
     auto operator()(Fn fn) noexcept {
-        return _call<void>("forEach", js_lambda_wrap([&](T value, js_unknown, js_unknown) noexcept {
-            fn(tc_move(value));
+        bool broke = _call<bool>("some", js_lambda_wrap([&](T value, js_unknown, js_unknown) noexcept {
+            auto breakorcontinue = tc::continue_if_not_break(fn, tc_move(value));
+            if constexpr (std::is_same<decltype(breakorcontinue), INTEGRAL_CONSTANT(tc::break_)>::value) {
+                return true;
+            } else if constexpr (!std::is_same<decltype(breakorcontinue), INTEGRAL_CONSTANT(tc::continue_)>::value) {
+                if (tc::break_ == breakorcontinue) {
+                    return true;
+                }
+            }
+            return false;
         }));
+        if (broke)
+            return tc::break_;
+        else
+            return tc::continue_;
     }
 
     template<typename Rng, typename = std::enable_if_t<tc::is_explicit_castable<T, tc::range_value_t<Rng>&&>::value>>
@@ -62,9 +75,21 @@ struct _js_ReadonlyArray : virtual IObject {
     // Generator range. This adds operator() to array interface (which did not exist before), but it's ok.
     template<typename Fn>
     auto operator()(Fn fn) noexcept {
-        return _call<void>("forEach", js_lambda_wrap([&](T value, js_unknown, js_unknown) noexcept {
-            fn(tc_move(value));
+        bool broke = _call<bool>("some", js_lambda_wrap([&](T value, js_unknown, js_unknown) noexcept {
+            auto breakorcontinue = tc::continue_if_not_break(fn, tc_move(value));
+            if constexpr (std::is_same<decltype(breakorcontinue), INTEGRAL_CONSTANT(tc::break_)>::value) {
+                return true;
+            } else if constexpr (!std::is_same<decltype(breakorcontinue), INTEGRAL_CONSTANT(tc::continue_)>::value) {
+                if (tc::break_ == breakorcontinue) {
+                    return true;
+                }
+            }
+            return false;
         }));
+        if (broke)
+            return tc::break_;
+        else
+            return tc::continue_;
     }
 
     template<typename Rng, typename = std::enable_if_t<tc::is_explicit_castable<T, tc::range_value_t<Rng>&&>::value>>

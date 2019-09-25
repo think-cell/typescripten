@@ -29,10 +29,21 @@ int main() {
     }
 
     {
+        Array<double> arr(std::initializer_list<double>{});
+        _ASSERT(tc::empty(arr));
+        _ASSERTEQUAL(arr->length(), 0);
+        arr->push(10);
+        _ASSERT(!tc::empty(arr));
+        _ASSERTEQUAL(arr->length(), 1);
+        _ASSERTEQUAL(arr[0], 10);
+    }
+
+    {
         Array<js_string> arr(std::initializer_list<char const*>{"Hello", "Hi!"});
         _ASSERTEQUAL(arr->length(), 2);
         _ASSERTEQUAL(arr[0].length(), 5);
         _ASSERTEQUAL(arr[1].length(), 3);
+        _ASSERT(!tc::empty(arr));
     }
 
     auto arr = tc::explicit_cast<Array<double>>(std::initializer_list<double>{1, 2, 3});
