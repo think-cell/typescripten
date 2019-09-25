@@ -539,6 +539,9 @@ struct _jsdefs_ts : _jsenums_ts {
     struct _js_TextRange;
     struct _js_Node;
     struct _js_Declaration;
+    struct _js_CallSignatureDeclaration;
+    struct _js_MethodSignature;
+    struct _js_MethodDeclaration;
     struct _js_Identifier;
     struct _js_NamedDeclaration;
     struct _js_Signature;
@@ -556,6 +559,7 @@ struct _jsdefs_ts : _jsenums_ts {
     struct _js_TypeChecker;
     struct _js_Symbol;
     struct _js_Type;
+    struct _js_UnionType;
     struct _js_DiagnosticRelatedInformation;
     struct _js_Diagnostic;
     struct _js_SymbolTable;
@@ -567,6 +571,9 @@ struct _jsdefs_ts : _jsenums_ts {
     using TextRange = js_ref<_js_TextRange>;
     using Node = js_ref<_js_Node>;
     using Declaration = js_ref<_js_Declaration>;
+    using CallSignatureDeclaration = js_ref<_js_CallSignatureDeclaration>;
+    using MethodSignature = js_ref<_js_MethodSignature>;
+    using MethodDeclaration = js_ref<_js_MethodDeclaration>;
     using Identifier = js_ref<_js_Identifier>;
     using NamedDeclaration = js_ref<_js_NamedDeclaration>;
     using Signature = js_ref<_js_Signature>;
@@ -584,6 +591,7 @@ struct _jsdefs_ts : _jsenums_ts {
     using TypeChecker = js_ref<_js_TypeChecker>;
     using Symbol  = js_ref<_js_Symbol>;
     using Type = js_ref<_js_Type>;
+    using UnionType = js_ref<_js_UnionType>;
     using DiagnosticRelatedInformation = js_ref<_js_DiagnosticRelatedInformation>;
     using Diagnostic = js_ref<_js_Diagnostic>;
     using SymbolTable = js_ref<_js_SymbolTable>;
@@ -591,6 +599,8 @@ struct _jsdefs_ts : _jsenums_ts {
     using LineAndCharacter = js_ref<_js_LineAndCharacter>;
     using CompilerHost = js_ref<_js_CompilerHost>;
     using FormatDiagnosticsHost = js_ref<_js_FormatDiagnosticsHost>;
+
+    using SignatureDeclaration = js_union<MethodSignature, MethodDeclaration, CallSignatureDeclaration>;
 
     struct _js_TextRange : virtual IObject {
     };
@@ -612,7 +622,19 @@ struct _jsdefs_ts : _jsenums_ts {
     struct _js_NamedDeclaration : virtual _js_Declaration {
     };
 
+    struct _js_CallSignatureDeclaration : virtual _js_NamedDeclaration {
+    };
+
+    struct _js_MethodSignature : virtual _js_NamedDeclaration {
+    };
+
+    struct _js_MethodDeclaration : virtual _js_NamedDeclaration {
+    };
+
     struct _js_Signature : virtual IObject {
+        auto getTypeParameters() { return _call<js_optional<ReadonlyArray<js_unknown>>>("getTypeParameters"); }
+        auto getParameters() { return _call<ReadonlyArray<Symbol>>("getParameters"); }
+        auto getReturnType() { return _call<Type>("getReturnType"); }
     };
 
     struct _js_DeclarationStatement : virtual _js_NamedDeclaration {
@@ -674,9 +696,11 @@ struct _jsdefs_ts : _jsenums_ts {
         auto getExportsOfModule(Symbol moduleSymbol) noexcept { return _call<Array<Symbol>>("getExportsOfModule", moduleSymbol); }
         auto getExportSymbolOfSymbol(Symbol symbol) noexcept { return _call<Symbol>("getExportSymbolOfSymbol", symbol); }
         auto getSignaturesOfType(Type type, SignatureKind kind) noexcept { return _call<ReadonlyArray<Signature>>("getSignaturesOfType", type, kind); }
+        auto getSignatureFromDeclaration(SignatureDeclaration declaration) noexcept { return _call<js_optional<Signature>>("getSignatureFromDeclaration", declaration); }
         auto signatureToString(Signature signature) noexcept { return _call<js_string>("signatureToString", signature); }
         auto getFullyQualifiedName(Symbol symbol) noexcept { return _call<js_string>("getFullyQualifiedName", symbol); }
         auto getConstantValue(EnumMember node) { return _call<js_union<js_string, double, js_undefined>>("getConstantValue", node); }
+        auto typeToString(Type type) { return _call<js_string>("typeToString", type); }
     };
 
     struct _js_Symbol : virtual IObject {
@@ -702,6 +726,17 @@ struct _jsdefs_ts : _jsenums_ts {
         auto symbol() noexcept { return _getProperty<Symbol>("symbol"); }
 
         auto getProperties() noexcept { return _call<Array<Symbol>>("getProperties"); }
+
+        auto isUnion() noexcept {
+            std::optional<UnionType> result;
+            if (_call<bool>("isUnion"))
+                result.emplace(_this<UnionType>());
+            return result;
+        }
+    };
+
+    struct _js_UnionType : virtual _js_Type {
+        auto types() noexcept { return _getProperty<Array<Type>>("types"); }
     };
 
     struct _js_DiagnosticRelatedInformation : virtual IObject {
@@ -791,6 +826,20 @@ struct _js_ts : virtual IObject, _jsdefs_ts {
     auto isModuleDeclaration(Node node) noexcept {
         std::optional<ModuleDeclaration> result;
         if (_call<bool>("isModuleDeclaration", node))
+            result.emplace(node);
+        return result;
+    }
+
+    auto isMethodSignature(Node node) noexcept {
+        std::optional<MethodSignature> result;
+        if (_call<bool>("isMethodSignature", node))
+            result.emplace(node);
+        return result;
+    }
+
+    auto isMethodDeclaration(Node node) noexcept {
+        std::optional<MethodDeclaration> result;
+        if (_call<bool>("isMethodDeclaration", node))
             result.emplace(node);
         return result;
     }

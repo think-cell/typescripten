@@ -104,6 +104,51 @@ void walkType(ts::TypeChecker& jsTypeChecker, int offset, ts::Symbol jSymbol) {
     );
 }
 
+std::string mangleType(ts::TypeChecker jsTypeChecker, ts::Type jType) {
+    if (jType->flags() == static_cast<int>(ts::TypeFlags::Any) ||
+        jType->flags() == static_cast<int>(ts::TypeFlags::Unknown)
+        ) {
+        return "js_unknown";
+    }
+    if (jType->flags() == static_cast<int>(ts::TypeFlags::String)) {
+        return "js_string";
+    }
+    if (jType->flags() == static_cast<int>(ts::TypeFlags::Number)) {
+        return "double";
+    }
+    if (jType->flags() == static_cast<int>(ts::TypeFlags::Boolean)) {
+        return "bool";
+    }
+    if (jType->flags() == static_cast<int>(ts::TypeFlags::Void)) {
+        return "void";
+    }
+    if (jType->flags() == static_cast<int>(ts::TypeFlags::Undefined)) {
+        return "js_undefined";
+    }
+    if (jType->flags() == static_cast<int>(ts::TypeFlags::Null)) {
+        return "js_null";
+    }
+    if (auto joptUnionType = jType->isUnion()) {
+        return tc::explicit_cast<std::string>(tc::concat(
+            "js_union<",
+            tc::join_separated(
+                tc::transform((*joptUnionType)->types(), [&](ts::Type jtypeUnionOption) {
+                    return mangleType(jsTypeChecker, jtypeUnionOption);
+                }),
+                ", "
+            ),
+            ">"
+        ));
+    }
+    return tc::explicit_cast<std::string>(tc::concat(
+        "js_unknown /*flags=",
+        tc::as_dec(jType->flags()),
+        ": ",
+        std::string(jsTypeChecker->typeToString(jType)),
+        "*/")
+    );
+};
+
 int main(int argc, char* argv[]) {
     _ASSERT(2 <= argc);
 
@@ -224,11 +269,46 @@ int main(int argc, char* argv[]) {
                            return jMemberSymbol->getFlags() == static_cast<int>(ts::SymbolFlags::Method);
                        }),
                        [&](ts::Symbol jsymMethod) {
-                           return tc::concat(
-                               "    void ",
-                               std::string(jsymMethod->getName()),
-                               "();\n"
-                           );
+                           return tc::join(tc::transform(
+                               jsymMethod->declarations(),
+                               [&](ts::Declaration jDeclaration) {
+                                   tc::js::js_optional<ts::SignatureDeclaration> joptSignatureDeclaration;
+                                   if (auto joptMethodSignature = ts()->isMethodSignature(jDeclaration)) {
+                                       joptSignatureDeclaration = *joptMethodSignature;
+                                   }
+                                   if (auto joptMethodDeclaration = ts()->isMethodDeclaration(jDeclaration)) {
+                                       joptSignatureDeclaration = *joptMethodDeclaration;
+                                   }
+                                   _ASSERT(joptSignatureDeclaration);
+
+                                   auto joptSignature = jsTypeChecker->getSignatureFromDeclaration(*joptSignatureDeclaration);
+                                   _ASSERT(joptSignature);
+
+                                   auto jSignature = *joptSignature;
+                                   if (auto jrarrunkTypeParameters = jSignature->getTypeParameters()) {
+                                       _ASSERT(tc::empty(*jrarrunkTypeParameters));
+                                   }
+                                   return tc::concat(
+                                       "    ", mangleType(jsTypeChecker, jSignature->getReturnType()), " ",
+                                       std::string(jsymMethod->getName()),
+                                       "(",
+                                       tc::join_separated(
+                                           tc::transform(
+                                               jSignature->getParameters(),
+                                               [&](ts::Symbol jsymParameter) {
+                                                   return tc::concat(
+                                                       mangleType(jsTypeChecker, jsTypeChecker->getDeclaredTypeOfSymbol(jsymParameter)),
+                                                       " ",
+                                                       std::string(jsymParameter->getName())
+                                                   );
+                                               }
+                                           ),
+                                           ", "
+                                       ),
+                                       ");\n"
+                                   );
+                               }
+                           ));
                        }
                    )),
                    "};\n"
