@@ -104,6 +104,21 @@ void walkType(ts::TypeChecker& jsTypeChecker, int offset, ts::Symbol jSymbol) {
 	);
 }
 
+std::string mangleSymbolName(ts::TypeChecker jsTypeChecker, ts::Symbol jSymbol) {
+	std::string sMangled = "_js_j";
+	tc::for_each(std::string(jsTypeChecker->getFullyQualifiedName(jSymbol)), [&](char c) {
+		switch (c) {
+		case '_': sMangled += "_u"; break;
+		case ',': sMangled += "_c"; break;
+		case '.': sMangled += "_d"; break;
+		case '-': sMangled += "_m"; break;
+		case '"': sMangled += "_q"; break;
+		default: sMangled += c; break;
+		}
+	});
+	return sMangled;
+}
+
 std::string mangleType(ts::TypeChecker jsTypeChecker, ts::Type jType) {
 	if (static_cast<int>(ts::TypeFlags::Any) == jType->flags() ||
 		static_cast<int>(ts::TypeFlags::Unknown) == jType->flags()
@@ -170,21 +185,6 @@ int main(int argc, char* argv[]) {
 		}
 	}
 
-	auto mangleSymbolName = [&](ts::Symbol jSymbol) {
-		std::string sMangled = "_js_j";
-		tc::for_each(std::string(jsTypeChecker->getFullyQualifiedName(jSymbol)), [&](char c) {
-			switch (c) {
-			case '_': sMangled += "_u"; break;
-			case ',': sMangled += "_c"; break;
-			case '.': sMangled += "_d"; break;
-			case '-': sMangled += "_m"; break;
-			case '"': sMangled += "_q"; break;
-			default: sMangled += c; break;
-			}
-		});
-		return sMangled;
-	};
-
 	std::vector<ts::Symbol> vjsym_exportedModules;
 	tc::for_each(jsProgram->getSourceFiles(),
 		[&](ts::SourceFile const& jsSourceFile) {
@@ -215,7 +215,7 @@ int main(int argc, char* argv[]) {
 			tc::join(tc::transform(g_vjsymEnums, [&](ts::Symbol jsymEnum) {
 				_ASSERT(jsymEnum->exports());
 				return tc::concat(
-					"enum class ", mangleSymbolName(jsymEnum), " {\n",
+					"enum class ", mangleSymbolName(jsTypeChecker, jsymEnum), " {\n",
 					tc::join(
 						tc::transform(*jsymEnum->exports(), [&](ts::Symbol jsymOption) {
 							_ASSERTEQUAL(jsymOption->getFlags(), static_cast<int>(ts::SymbolFlags::EnumMember));
@@ -236,7 +236,7 @@ int main(int argc, char* argv[]) {
 				);
 			})),
 			tc::join(tc::transform(g_vjsymClasses, [&](ts::Symbol jsymClass) {
-				return tc::concat("struct ", mangleSymbolName(jsymClass), ";\n");
+				return tc::concat("struct ", mangleSymbolName(jsTypeChecker, jsymClass), ";\n");
 			})),
 			tc::join(tc::transform(g_vjsymClasses, [&](ts::Symbol jsymClass) {
 				Array<ts::Symbol> jasymExports(std::initializer_list<ts::Symbol>{});
@@ -249,7 +249,7 @@ int main(int argc, char* argv[]) {
 				}
 				// TODO: force eager evaluation to keep jasymExports in scope.
 				return tc::explicit_cast<std::string>(tc::concat(
-					"struct ", mangleSymbolName(jsymClass), " {\n",
+					"struct ", mangleSymbolName(jsTypeChecker, jsymClass), " {\n",
 					tc::join(tc::transform(
 						tc::filter(jasymExports, [&](ts::Symbol jExportSymbol) {
 							return isEnumInCpp(jExportSymbol) || isClassInCpp(jExportSymbol);
@@ -259,7 +259,7 @@ int main(int argc, char* argv[]) {
 								"	using ",
 								std::string(jExportSymbol->getName()),
 								" = js_ref<",
-								mangleSymbolName(jExportSymbol),
+								mangleSymbolName(jsTypeChecker, jExportSymbol),
 								">;\n"
 							);
 						}
