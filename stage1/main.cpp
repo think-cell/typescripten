@@ -144,6 +144,7 @@ std::string mangleType(ts::TypeChecker jsTypeChecker, ts::Type jType) {
 		return "js_null";
 	}
 	if (auto joptUnionType = jType->isUnion()) {
+		_ASSERT(static_cast<int>(ts::TypeFlags::Union) == (*joptUnionType)->flags());
 		return tc::explicit_cast<std::string>(tc::concat(
 			"js_union<",
 			tc::join_separated(
@@ -153,6 +154,16 @@ std::string mangleType(ts::TypeChecker jsTypeChecker, ts::Type jType) {
 				", "
 			),
 			">"
+		));
+	}
+	if (auto joptInterfaceType = jType->isClassOrInterface()) {
+		_ASSERT(static_cast<int>(ts::TypeFlags::Object) == (*joptInterfaceType)->flags());
+		_ASSERT(!(*joptInterfaceType)->typeParameters());
+		_ASSERT(!(*joptInterfaceType)->outerTypeParameters());
+		_ASSERT(!(*joptInterfaceType)->localTypeParameters());
+		_ASSERT(!(*joptInterfaceType)->thisType());
+		return tc::explicit_cast<std::string>(tc::concat(
+		    "js_ref<", mangleSymbolName(jsTypeChecker, (*joptInterfaceType)->symbol()), ">"
 		));
 	}
 	return tc::explicit_cast<std::string>(tc::concat(

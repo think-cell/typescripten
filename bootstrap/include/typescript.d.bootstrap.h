@@ -496,6 +496,27 @@ struct _jsenums_ts {
 		NotUnionOrUnit = 67637251,
 	};
 
+	enum class ObjectFlags {
+		Class = 1,
+		Interface = 2,
+		Reference = 4,
+		Tuple = 8,
+		Anonymous = 16,
+		Mapped = 32,
+		Instantiated = 64,
+		ObjectLiteral = 128,
+		EvolvingArray = 256,
+		ObjectLiteralPatternWithComputedProperties = 512,
+		ContainsSpread = 1024,
+		ReverseMapped = 2048,
+		JsxAttributes = 4096,
+		MarkerType = 8192,
+		JSLiteral = 16384,
+		FreshLiteral = 32768,
+		ArrayLiteral = 65536,
+		ClassOrInterface = 3,
+	};
+
 	enum class ModuleKind {
 		None = 0,
 		CommonJS = 1,
@@ -559,7 +580,10 @@ struct _jsdefs_ts : _jsenums_ts {
 	struct _js_TypeChecker;
 	struct _js_Symbol;
 	struct _js_Type;
+	struct _js_TypeParameter;
 	struct _js_UnionType;
+	struct _js_ObjectType;
+	struct _js_InterfaceType;
 	struct _js_DiagnosticRelatedInformation;
 	struct _js_Diagnostic;
 	struct _js_SymbolTable;
@@ -591,7 +615,10 @@ struct _jsdefs_ts : _jsenums_ts {
 	using TypeChecker = js_ref<_js_TypeChecker>;
 	using Symbol = js_ref<_js_Symbol>;
 	using Type = js_ref<_js_Type>;
+	using TypeParameter = js_ref<_js_TypeParameter>;
 	using UnionType = js_ref<_js_UnionType>;
+	using ObjectType = js_ref<_js_ObjectType>;
+	using InterfaceType = js_ref<_js_InterfaceType>;
 	using DiagnosticRelatedInformation = js_ref<_js_DiagnosticRelatedInformation>;
 	using Diagnostic = js_ref<_js_Diagnostic>;
 	using SymbolTable = js_ref<_js_SymbolTable>;
@@ -734,10 +761,31 @@ struct _jsdefs_ts : _jsenums_ts {
 				result.emplace(_this<UnionType>());
 			return result;
 		}
+
+		auto isClassOrInterface() noexcept {
+			std::optional<InterfaceType> result;
+			if (_call<bool>("isClassOrInterface"))
+				result.emplace(_this<InterfaceType>());
+			return result;
+		}
+	};
+
+	struct _js_TypeParameter : virtual _js_Type {
 	};
 
 	struct _js_UnionType : virtual _js_Type {
 		auto types() noexcept { return _getProperty<Array<Type>>("types"); }
+	};
+
+	struct _js_ObjectType : virtual _js_Type {
+		auto objectFlags() noexcept { return tc::explicit_cast<int>(_getProperty<double>("objectFlags")); }
+	};
+
+	struct _js_InterfaceType : virtual _js_ObjectType {
+		auto typeParameters() noexcept { return _getProperty<js_union<js_undefined, Array<TypeParameter>>>("typeParameters"); }
+		auto outerTypeParameters() noexcept { return _getProperty<js_union<js_undefined, Array<TypeParameter>>>("outerTypeParameters"); }
+		auto localTypeParameters() noexcept { return _getProperty<js_union<js_undefined, Array<TypeParameter>>>("localTypeParameters"); }
+		auto thisType() noexcept { return _getProperty<js_union<js_undefined, TypeParameter>>("typeParameter"); }
 	};
 
 	struct _js_DiagnosticRelatedInformation : virtual IObject {
