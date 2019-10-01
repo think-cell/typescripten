@@ -30,15 +30,15 @@ static_assert(sizeof(FunctionPointer) <= sizeof(PointerNumber), "PointerNumber i
 static_assert(sizeof(FirstArgument) <= sizeof(PointerNumber), "PointerNumber is not large enough to hold FirstArgument, cannot pass it to JavaScript");
 
 emscripten::val Call(PointerNumber iFunctionPtr, PointerNumber iArg0, emscripten::val emvalThis, emscripten::val emvalArgs) noexcept {
-    return reinterpret_cast<FunctionPointer>(iFunctionPtr)(
-        reinterpret_cast<FirstArgument>(iArg0),
-        emvalThis,
-        emvalArgs
-    );
+	return reinterpret_cast<FunctionPointer>(iFunctionPtr)(
+		reinterpret_cast<FirstArgument>(iArg0),
+		emvalThis,
+		emvalArgs
+	);
 }
 
 EMSCRIPTEN_BINDINGS(tc_js_callback_detail_bind) {
-    function("tc_js_callback_detail_js_Call", &Call);
+	function("tc_js_callback_detail_js_Call", &Call);
 }
 
 } // namespace callback_detail
