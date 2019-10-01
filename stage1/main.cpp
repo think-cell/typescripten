@@ -297,7 +297,7 @@ int main(int argc, char* argv[]) {
 												jSignature->getParameters(),
 												[&](ts::Symbol jsymParameter) {
 													return tc::concat(
-														mangleType(jsTypeChecker, jsTypeChecker->getDeclaredTypeOfSymbol(jsymParameter)),
+														mangleType(jsTypeChecker, jsTypeChecker->getTypeOfSymbolAtLocation(jsymParameter, jDeclaration)),
 														" ",
 														std::string(jsymParameter->getName())
 													);

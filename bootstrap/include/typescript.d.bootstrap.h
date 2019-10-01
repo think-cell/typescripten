@@ -688,6 +688,7 @@ struct _jsdefs_ts : _jsenums_ts {
 
 	struct _js_TypeChecker : virtual IObject {
 		auto getDeclaredTypeOfSymbol(Symbol symbol) noexcept { return _call<Type>("getDeclaredTypeOfSymbol", symbol); }
+		auto getTypeOfSymbolAtLocation(Symbol symbol, Node node) noexcept { return _call<Type>("getTypeOfSymbolAtLocation", symbol, node); }
 		auto getPropertiesOfType(Type type) noexcept { return _call<Array<Symbol>>("getPropertiesOfType", type); }
 		auto getRootSymbols(Symbol type) noexcept { return _call<ReadonlyArray<Symbol>>("getRootSymbols", type); }
 		auto getAugmentedPropertiesOfType(Type type) noexcept { return _call<Array<Symbol>>("getAugmentedPropertiesOfType", type); }
