@@ -36,8 +36,8 @@ std::vector<ts::Symbol> g_vjsymEnums, g_vjsymClasses;
 
 bool isEnumInCpp(ts::Symbol jSymbol) {
 	return
-		jSymbol->getFlags() == static_cast<int>(ts::SymbolFlags::RegularEnum) ||
-		jSymbol->getFlags() == static_cast<int>(ts::SymbolFlags::ConstEnum);
+		static_cast<int>(ts::SymbolFlags::RegularEnum) == jSymbol->getFlags() ||
+		static_cast<int>(ts::SymbolFlags::ConstEnum) == jSymbol->getFlags();
 }
 
 bool isClassInCpp(ts::Symbol jSymbol) {
@@ -105,27 +105,27 @@ void walkType(ts::TypeChecker& jsTypeChecker, int offset, ts::Symbol jSymbol) {
 }
 
 std::string mangleType(ts::TypeChecker jsTypeChecker, ts::Type jType) {
-	if (jType->flags() == static_cast<int>(ts::TypeFlags::Any) ||
-		jType->flags() == static_cast<int>(ts::TypeFlags::Unknown)
+	if (static_cast<int>(ts::TypeFlags::Any) == jType->flags() ||
+		static_cast<int>(ts::TypeFlags::Unknown) == jType->flags()
 		) {
 		return "js_unknown";
 	}
-	if (jType->flags() == static_cast<int>(ts::TypeFlags::String)) {
+	if (static_cast<int>(ts::TypeFlags::String) == jType->flags()) {
 		return "js_string";
 	}
-	if (jType->flags() == static_cast<int>(ts::TypeFlags::Number)) {
+	if (static_cast<int>(ts::TypeFlags::Number) == jType->flags()) {
 		return "double";
 	}
-	if (jType->flags() == static_cast<int>(ts::TypeFlags::Boolean)) {
+	if (static_cast<int>(ts::TypeFlags::Boolean) == jType->flags()) {
 		return "bool";
 	}
-	if (jType->flags() == static_cast<int>(ts::TypeFlags::Void)) {
+	if (static_cast<int>(ts::TypeFlags::Void) == jType->flags()) {
 		return "void";
 	}
-	if (jType->flags() == static_cast<int>(ts::TypeFlags::Undefined)) {
+	if (static_cast<int>(ts::TypeFlags::Undefined) == jType->flags()) {
 		return "js_undefined";
 	}
-	if (jType->flags() == static_cast<int>(ts::TypeFlags::Null)) {
+	if (static_cast<int>(ts::TypeFlags::Null) == jType->flags()) {
 		return "js_null";
 	}
 	if (auto joptUnionType = jType->isUnion()) {
@@ -266,7 +266,7 @@ int main(int argc, char* argv[]) {
 					)),
 					tc::join(tc::transform(
 						tc::filter(vsymMembers, [&](ts::Symbol jMemberSymbol) {
-							return jMemberSymbol->getFlags() == static_cast<int>(ts::SymbolFlags::Method);
+							return static_cast<int>(ts::SymbolFlags::Method) == jMemberSymbol->getFlags();
 						}),
 						[&](ts::Symbol jsymMethod) {
 							return tc::join(tc::transform(

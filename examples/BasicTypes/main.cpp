@@ -88,7 +88,7 @@ int main() {
 			emscripten::val emval(iValue);
 			_ASSERT(!emval.isUndefined());
 			_ASSERT(emval.isNumber());
-			_ASSERT(emval.as<double>() == 123.5);
+			_ASSERT(123.5 == emval.as<double>());
 		}
 	}
 

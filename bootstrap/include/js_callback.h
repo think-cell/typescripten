@@ -161,7 +161,7 @@ namespace no_adl {
 // See comments about memory correctness in js_callback.cpp.
 struct RequireRelaxedPointerSafety {
 	RequireRelaxedPointerSafety() noexcept {
-		_ASSERT(std::get_pointer_safety() == std::pointer_safety::preferred || std::get_pointer_safety() == std::pointer_safety::relaxed);
+		_ASSERT(std::pointer_safety::preferred == std::get_pointer_safety() || std::pointer_safety::relaxed == std::get_pointer_safety());
 	}
 };
 
