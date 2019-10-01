@@ -289,7 +289,7 @@ int main(int argc, char* argv[]) {
 										_ASSERT(tc::empty(*jrarrunkTypeParameters));
 									}
 									return tc::concat(
-										"	", mangleType(jsTypeChecker, jSignature->getReturnType()), " ",
+										"	auto ",
 										std::string(jsymMethod->getName()),
 										"(",
 										tc::join_separated(
@@ -305,7 +305,17 @@ int main(int argc, char* argv[]) {
 											),
 											", "
 										),
-										");\n"
+										") noexcept {\n",
+										"		return _call<", mangleType(jsTypeChecker, jSignature->getReturnType()), ">",
+										"(\"", std::string(jsymMethod->getName()), "\"",
+										tc::join(tc::transform(
+											jSignature->getParameters(),
+											[&](ts::Symbol jsymParameter) {
+												return tc::concat(", ", std::string(jsymParameter->getName()));
+											}
+										)),
+										");\n",
+										"	}\n"
 									);
 								}
 							));
