@@ -163,7 +163,7 @@ std::string mangleType(ts::TypeChecker jsTypeChecker, ts::Type jType) {
 		_ASSERT(!(*joptInterfaceType)->localTypeParameters());
 		_ASSERT(!(*joptInterfaceType)->thisType());
 		return tc::explicit_cast<std::string>(tc::concat(
-		    "js_ref<", mangleSymbolName(jsTypeChecker, (*joptInterfaceType)->symbol()), ">"
+			"js_ref<", mangleSymbolName(jsTypeChecker, (*joptInterfaceType)->symbol()), ">"
 		));
 	}
 	return tc::explicit_cast<std::string>(tc::concat(
