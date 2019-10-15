@@ -133,31 +133,28 @@ std::string mangleSymbolName(ts::TypeChecker jsTypeChecker, ts::Symbol jSymbol) 
 }
 
 std::string mangleType(ts::TypeChecker jsTypeChecker, ts::Type jType) {
-	if (static_cast<int>(ts::TypeFlags::Any) == jType->flags() ||
-		static_cast<int>(ts::TypeFlags::Unknown) == jType->flags()
+	// See checker.ts:typeToTypeNodeHelper
+	if (jType->flags() & static_cast<int>(ts::TypeFlags::Any) ||
+		jType->flags() & static_cast<int>(ts::TypeFlags::Unknown)
 		) {
 		return "js_unknown";
 	}
-	if (static_cast<int>(ts::TypeFlags::String) == jType->flags()) {
+	if (jType->flags() & static_cast<int>(ts::TypeFlags::String)) {
 		return "js_string";
 	}
-	if (static_cast<int>(ts::TypeFlags::Number) == jType->flags()) {
+	if (jType->flags() & static_cast<int>(ts::TypeFlags::Number)) {
 		return "double";
 	}
 	if (jType->flags() & static_cast<int>(ts::TypeFlags::Boolean)) {
-		_ASSERT(
-			jType->flags() == static_cast<int>(ts::TypeFlags::Boolean) ||
-			jType->flags() == (static_cast<int>(ts::TypeFlags::Boolean) | static_cast<int>(ts::TypeFlags::Union))
-		);
 		return "bool";
 	}
-	if (static_cast<int>(ts::TypeFlags::Void) == jType->flags()) {
+	if (jType->flags() & static_cast<int>(ts::TypeFlags::Void)) {
 		return "void";
 	}
-	if (static_cast<int>(ts::TypeFlags::Undefined) == jType->flags()) {
+	if (jType->flags() & static_cast<int>(ts::TypeFlags::Undefined)) {
 		return "js_undefined";
 	}
-	if (static_cast<int>(ts::TypeFlags::Null) == jType->flags()) {
+	if (jType->flags() & static_cast<int>(ts::TypeFlags::Null)) {
 		return "js_null";
 	}
 	if (auto joptUnionType = jType->isUnion()) {
