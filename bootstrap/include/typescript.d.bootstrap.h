@@ -785,7 +785,7 @@ struct _jsdefs_ts : _jsenums_ts {
 	struct _js_Type : virtual IObject {
 		auto flags() noexcept { return tc::explicit_cast<int>(_getProperty<double /*TypeFlags*/>("flags")); }
 
-		auto symbol() noexcept { return _getProperty<Symbol>("symbol"); }
+		auto getSymbol() noexcept { return _call<js_union<js_undefined, Symbol>>("getSymbol"); }
 
 		auto getProperties() noexcept { return _call<Array<Symbol>>("getProperties"); }
 

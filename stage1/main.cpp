@@ -176,8 +176,10 @@ std::string mangleType(ts::TypeChecker jsTypeChecker, ts::Type jType) {
 		_ASSERT(!(*joptInterfaceType)->outerTypeParameters());
 		_ASSERT(!(*joptInterfaceType)->localTypeParameters());
 		_ASSERT(!(*joptInterfaceType)->thisType());
+		auto joptInterfaceSymbol = (*joptInterfaceType)->getSymbol();
+		_ASSERT(joptInterfaceSymbol);
 		return tc::explicit_cast<std::string>(tc::concat(
-			"js_ref<", mangleSymbolName(jsTypeChecker, (*joptInterfaceType)->symbol()), ">"
+			"js_ref<", mangleSymbolName(jsTypeChecker, *joptInterfaceSymbol), ">"
 		));
 	}
 	return tc::explicit_cast<std::string>(tc::concat(
@@ -285,7 +287,9 @@ int main(int argc, char* argv[]) {
 					tc::for_each(jsTypeChecker->getBaseTypes(*joptInterfaceType),
 						[&](ts::BaseType jBaseType) {
 							if (auto joptBaseInterfaceType = ts::Type(jBaseType)->isClassOrInterface()) {
-								vsymBaseClasses.push_back((*joptBaseInterfaceType)->symbol());
+								auto joptInterfaceSymbol = (*joptBaseInterfaceType)->getSymbol();
+								_ASSERT(joptInterfaceSymbol);
+								vsymBaseClasses.push_back(*joptInterfaceSymbol);
 							}
 						}
 					);
