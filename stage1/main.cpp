@@ -144,7 +144,7 @@ std::string mangleType(ts::TypeChecker jsTypeChecker, ts::Type jType) {
 		return "js_null";
 	}
 	if (auto joptUnionType = jType->isUnion()) {
-		_ASSERT(static_cast<int>(ts::TypeFlags::Union) == (*joptUnionType)->flags());
+		_ASSERTEQUAL(static_cast<int>(ts::TypeFlags::Union), (*joptUnionType)->flags());
 		return tc::explicit_cast<std::string>(tc::concat(
 			"js_union<",
 			tc::join_separated(
@@ -157,7 +157,7 @@ std::string mangleType(ts::TypeChecker jsTypeChecker, ts::Type jType) {
 		));
 	}
 	if (auto joptInterfaceType = jType->isClassOrInterface()) {
-		_ASSERT(static_cast<int>(ts::TypeFlags::Object) == (*joptInterfaceType)->flags());
+		_ASSERTEQUAL(static_cast<int>(ts::TypeFlags::Object), (*joptInterfaceType)->flags());
 		_ASSERT(!(*joptInterfaceType)->typeParameters());
 		_ASSERT(!(*joptInterfaceType)->outerTypeParameters());
 		_ASSERT(!(*joptInterfaceType)->localTypeParameters());
@@ -234,6 +234,7 @@ int main(int argc, char* argv[]) {
 							_ASSERTEQUAL(jaDeclarations->length(), 1);
 							auto jDeclaration = ts()->isEnumMember(jaDeclarations[0]);
 							_ASSERT(jDeclaration);
+							_ASSERTEQUAL(ts()->getCombinedModifierFlags(*jDeclaration), 0);
 							auto juOptionValue = jsTypeChecker->getConstantValue(*jDeclaration);
 							_ASSERT(juOptionValue.getEmval().isNumber()); // Computed values of enums are unsupported.
 							return tc::concat(
@@ -314,6 +315,7 @@ int main(int argc, char* argv[]) {
 							return tc::join(tc::transform(
 								jsymMethod->declarations(),
 								[&](ts::Declaration jDeclaration) {
+									_ASSERTEQUAL(ts()->getCombinedModifierFlags(jDeclaration), 0);
 									tc::js::js_optional<ts::SignatureDeclaration> joptSignatureDeclaration;
 									if (auto joptMethodSignature = ts()->isMethodSignature(jDeclaration)) {
 										joptSignatureDeclaration = *joptMethodSignature;
