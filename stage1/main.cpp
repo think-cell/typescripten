@@ -144,7 +144,11 @@ std::string mangleType(ts::TypeChecker jsTypeChecker, ts::Type jType) {
 	if (static_cast<int>(ts::TypeFlags::Number) == jType->flags()) {
 		return "double";
 	}
-	if (static_cast<int>(ts::TypeFlags::Boolean) == jType->flags()) {
+	if (jType->flags() & static_cast<int>(ts::TypeFlags::Boolean)) {
+		_ASSERT(
+			jType->flags() == static_cast<int>(ts::TypeFlags::Boolean) ||
+			jType->flags() == (static_cast<int>(ts::TypeFlags::Boolean) | static_cast<int>(ts::TypeFlags::Union))
+		);
 		return "bool";
 	}
 	if (static_cast<int>(ts::TypeFlags::Void) == jType->flags()) {

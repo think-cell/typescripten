@@ -9,6 +9,9 @@ declare namespace Foo {
         let foo: number;
         interface Interface1 {
             do1(): void;
+            someFlag() : boolean;
+            trueFlag() : true;
+            falseFlag() : false;
         }
     }
     namespace NsInterface2 {
