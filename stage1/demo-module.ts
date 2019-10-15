@@ -20,6 +20,8 @@ declare namespace Foo {
         interface Interface1 {
             getInstance2(): NsInterface2.Interface2;
             (a: string): undefined | string;
+            prop: number;
+            readonly readonlyProp: number;
         }
         namespace Interface1 {
             var staticInterface1: string;
@@ -52,8 +54,8 @@ declare namespace Foo {
         foo(): number; // More specific return type than in base
         baz(): string;
 
-        overloadedFunc(a: number): number;
-        overloadedFunc(a: string): null;
+        overloadedFunc(param1: number): number;
+        overloadedFunc(param1: string): null;
     }
 
     var someProperty: number;

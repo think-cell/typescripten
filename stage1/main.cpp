@@ -277,6 +277,40 @@ int main(int argc, char* argv[]) {
 					)),
 					tc::join(tc::transform(
 						tc::filter(vsymMembers, [&](ts::Symbol jMemberSymbol) {
+							return static_cast<int>(ts::SymbolFlags::Property) == jMemberSymbol->getFlags();
+						}),
+						[&](ts::Symbol jsymProperty) {
+							return tc::join(tc::transform(
+								jsymProperty->declarations(),
+								[&](ts::Declaration jDeclaration) {
+									int iModifierFlags = ts()->getCombinedModifierFlags(jDeclaration);
+									_ASSERT(iModifierFlags == 0 || iModifierFlags == static_cast<int>(ts::ModifierFlags::Readonly));
+									return tc::concat(
+										"	auto ",
+										std::string(jsymProperty->getName()),
+										"() noexcept { return _getProperty<",
+										mangleType(jsTypeChecker,  jsTypeChecker->getTypeOfSymbolAtLocation(jsymProperty, jDeclaration)),
+										">(\"",
+										std::string(jsymProperty->getName()),
+										"\"); }\n",
+										(ts()->getCombinedModifierFlags(jDeclaration) & static_cast<int>(ts::ModifierFlags::Readonly)) ?
+										    "" :
+											tc::explicit_cast<std::string>(tc::concat(
+												"	void ",
+												std::string(jsymProperty->getName()),
+												"(",
+												mangleType(jsTypeChecker,  jsTypeChecker->getTypeOfSymbolAtLocation(jsymProperty, jDeclaration)),
+												" v) noexcept { _setProperty(\"",
+												std::string(jsymProperty->getName()),
+												"\", v); }\n"
+											))
+									);
+								}
+							));
+						}
+					)),
+					tc::join(tc::transform(
+						tc::filter(vsymMembers, [&](ts::Symbol jMemberSymbol) {
 							return static_cast<int>(ts::SymbolFlags::Method) == jMemberSymbol->getFlags();
 						}),
 						[&](ts::Symbol jsymMethod) {

@@ -545,6 +545,28 @@ struct _jsenums_ts {
 		Call = 0,
 		Construct = 1
 	};
+
+	enum class ModifierFlags {
+        None = 0,
+        Export = 1,
+        Ambient = 2,
+        Public = 4,
+        Private = 8,
+        Protected = 16,
+        Static = 32,
+        Readonly = 64,
+        Abstract = 128,
+        Async = 256,
+        Default = 512,
+        Const = 2048,
+        HasComputedFlags = 536870912,
+        AccessibilityModifier = 28,
+        ParameterPropertyModifier = 92,
+        NonPublicAccessibilityModifier = 24,
+        TypeScriptModifier = 2270,
+        ExportDefault = 513,
+        All = 3071
+	};
 };
 } // namespace globals::no_adl
 
@@ -572,6 +594,7 @@ struct _jsdefs_ts : _jsenums_ts {
 	struct _js_InterfaceDeclaration;
 	struct _js_TypeAliasDeclaration;
 	struct _js_ModuleDeclaration;
+	struct _js_PropertyDeclaration;
 	struct _js_EnumMember;
 	struct _js_SourceFileLike;
 	struct _js_SourceFile;
@@ -607,6 +630,7 @@ struct _jsdefs_ts : _jsenums_ts {
 	using InterfaceDeclaration = js_ref<_js_InterfaceDeclaration>;
 	using TypeAliasDeclaration = js_ref<_js_TypeAliasDeclaration>;
 	using ModuleDeclaration = js_ref<_js_ModuleDeclaration>;
+	using PropertyDeclaration = js_ref<_js_PropertyDeclaration>;
 	using EnumMember = js_ref<_js_EnumMember>;
 	using SourceFileLike = js_ref<_js_SourceFileLike>;
 	using SourceFile = js_ref<_js_SourceFile>;
@@ -681,6 +705,10 @@ struct _jsdefs_ts : _jsenums_ts {
 
 	struct _js_ModuleDeclaration : virtual _js_DeclarationStatement {
 		auto name() noexcept { return _getProperty<Identifier>("name"); }
+	};
+
+	struct _js_PropertyDeclaration : virtual _js_NamedDeclaration {
+		auto name() noexcept { return _getProperty<Identifier /* | StringLiteral | NumericLiteral | ComputedPropertyName */>("name"); }
 	};
 
 	struct _js_EnumMember : virtual _js_Declaration {
@@ -879,6 +907,13 @@ struct _js_ts : virtual IObject, _jsdefs_ts {
 		return result;
 	}
 
+	auto isPropertyDeclaration(Node node) noexcept {
+		std::optional<PropertyDeclaration> result;
+		if (_call<bool>("isPropertyDeclaration", node))
+			result.emplace(node);
+		return result;
+	}
+
 	auto isMethodSignature(Node node) noexcept {
 		std::optional<MethodSignature> result;
 		if (_call<bool>("isMethodSignature", node))
@@ -922,6 +957,10 @@ struct _js_ts : virtual IObject, _jsdefs_ts {
 
 	auto flattenDiagnosticMessageText(js_unknown messageText, js_string newLine) noexcept {
 		return _call<js_string>("flattenDiagnosticMessageText", messageText, newLine);
+	}
+
+	auto getCombinedModifierFlags(js_ref<_js_Declaration> node) noexcept {
+	    return tc::explicit_cast<int>(_call<double>("getCombinedModifierFlags", node));
 	}
 
 	static emscripten::val _construct() noexcept { return emscripten::val::global("ts"); }
