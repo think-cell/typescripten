@@ -604,7 +604,9 @@ struct _jsdefs_ts : _jsenums_ts {
 	struct _js_Symbol;
 	struct _js_Type;
 	struct _js_TypeParameter;
+	struct _js_UnionOrIntersectionType;
 	struct _js_UnionType;
+	struct _js_IntersectionType;
 	struct _js_ObjectType;
 	struct _js_InterfaceType;
 	struct _js_DiagnosticRelatedInformation;
@@ -640,7 +642,9 @@ struct _jsdefs_ts : _jsenums_ts {
 	using Symbol = js_ref<_js_Symbol>;
 	using Type = js_ref<_js_Type>;
 	using TypeParameter = js_ref<_js_TypeParameter>;
+	using UnionOrIntersectionType = js_ref<_js_UnionOrIntersectionType>;
 	using UnionType = js_ref<_js_UnionType>;
+	using IntersectionType = js_ref<_js_IntersectionType>;
 	using ObjectType = js_ref<_js_ObjectType>;
 	using InterfaceType = js_ref<_js_InterfaceType>;
 	using DiagnosticRelatedInformation = js_ref<_js_DiagnosticRelatedInformation>;
@@ -652,6 +656,7 @@ struct _jsdefs_ts : _jsenums_ts {
 	using FormatDiagnosticsHost = js_ref<_js_FormatDiagnosticsHost>;
 
 	using SignatureDeclaration = js_union<MethodSignature, MethodDeclaration, CallSignatureDeclaration>;
+	using BaseType = js_union<ObjectType, IntersectionType>;
 
 	struct _js_TextRange : virtual IObject {
 	};
@@ -757,6 +762,7 @@ struct _jsdefs_ts : _jsenums_ts {
 		auto getFullyQualifiedName(Symbol symbol) noexcept { return _call<js_string>("getFullyQualifiedName", symbol); }
 		auto getConstantValue(EnumMember node) { return _call<js_union<js_string, double, js_undefined>>("getConstantValue", node); }
 		auto typeToString(Type type) { return _call<js_string>("typeToString", type); }
+		auto getBaseTypes(InterfaceType type) { return _call<Array<BaseType>>("getBaseTypes", type); }
 	};
 
 	struct _js_Symbol : virtual IObject {
@@ -801,8 +807,15 @@ struct _jsdefs_ts : _jsenums_ts {
 	struct _js_TypeParameter : virtual _js_Type {
 	};
 
-	struct _js_UnionType : virtual _js_Type {
+	struct _js_UnionOrIntersectionType : virtual _js_Type {
 		auto types() noexcept { return _getProperty<Array<Type>>("types"); }
+	};
+
+	struct _js_UnionType : virtual _js_UnionOrIntersectionType {
+		auto types() noexcept { return _getProperty<Array<Type>>("types"); }
+	};
+
+	struct _js_IntersectionType : virtual _js_UnionOrIntersectionType {
 	};
 
 	struct _js_ObjectType : virtual _js_Type {
