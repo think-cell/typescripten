@@ -272,9 +272,37 @@ int main(int argc, char* argv[]) {
 				if (jsymClass->members()) {
 					vsymMembers = tc::explicit_cast<std::vector<ts::Symbol>>(*jsymClass->members());
 				}
+
+				std::vector<ts::Symbol> vsymBaseClasses;
+				if (auto joptInterfaceType = jsTypeChecker->getDeclaredTypeOfSymbol(jsymClass)->isClassOrInterface()) {
+					tc::for_each(jsTypeChecker->getBaseTypes(*joptInterfaceType),
+						[&](ts::BaseType jBaseType) {
+							if (auto joptBaseInterfaceType = ts::Type(jBaseType)->isClassOrInterface()) {
+								vsymBaseClasses.push_back((*joptBaseInterfaceType)->symbol());
+							}
+						}
+					);
+				} else {
+					// Do nothing: e.g. namespaces.
+				}
+
 				// TODO: force eager evaluation to keep jasymExports in scope.
 				return tc::explicit_cast<std::string>(tc::concat(
-					"struct ", mangleSymbolName(jsTypeChecker, jsymClass), " {\n",
+					"struct ", mangleSymbolName(jsTypeChecker, jsymClass),
+					(vsymBaseClasses.empty() ? "" :
+						tc::explicit_cast<std::string>(tc::concat(
+							" : ",
+							tc::join_separated(
+								tc::transform(vsymBaseClasses,
+									[&](ts::Symbol jBaseClass) {
+										return tc::concat("virtual ", mangleSymbolName(jsTypeChecker, jBaseClass));
+									}
+								),
+								", "
+							)
+						))
+					),
+					" {\n",
 					tc::join(tc::transform(
 						tc::filter(jasymExports, [&](ts::Symbol jExportSymbol) {
 							return isEnumInCpp(jExportSymbol) || isClassInCpp(jExportSymbol);
