@@ -280,33 +280,30 @@ int main(int argc, char* argv[]) {
 							return static_cast<int>(ts::SymbolFlags::Property) == jMemberSymbol->getFlags();
 						}),
 						[&](ts::Symbol jsymProperty) {
-							return tc::join(tc::transform(
-								jsymProperty->declarations(),
-								[&](ts::Declaration jDeclaration) {
-									int iModifierFlags = ts()->getCombinedModifierFlags(jDeclaration);
-									_ASSERT(iModifierFlags == 0 || iModifierFlags == static_cast<int>(ts::ModifierFlags::Readonly));
-									return tc::concat(
-										"	auto ",
+							_ASSERTEQUAL(jsymProperty->declarations()->length(), 1);
+							ts::Declaration jDeclaration = jsymProperty->declarations()[0];
+							int iModifierFlags = ts()->getCombinedModifierFlags(jDeclaration);
+							_ASSERT(iModifierFlags == 0 || iModifierFlags == static_cast<int>(ts::ModifierFlags::Readonly));
+							return tc::concat(
+								"	auto ",
+								std::string(jsymProperty->getName()),
+								"() noexcept { return _getProperty<",
+								mangleType(jsTypeChecker, jsTypeChecker->getTypeOfSymbolAtLocation(jsymProperty, jDeclaration)),
+								">(\"",
+								std::string(jsymProperty->getName()),
+								"\"); }\n",
+								(ts()->getCombinedModifierFlags(jDeclaration) & static_cast<int>(ts::ModifierFlags::Readonly)) ?
+									"" :
+									tc::explicit_cast<std::string>(tc::concat(
+										"	void ",
 										std::string(jsymProperty->getName()),
-										"() noexcept { return _getProperty<",
-										mangleType(jsTypeChecker,  jsTypeChecker->getTypeOfSymbolAtLocation(jsymProperty, jDeclaration)),
-										">(\"",
+										"(",
+										mangleType(jsTypeChecker, jsTypeChecker->getTypeOfSymbolAtLocation(jsymProperty, jDeclaration)),
+										" v) noexcept { _setProperty(\"",
 										std::string(jsymProperty->getName()),
-										"\"); }\n",
-										(ts()->getCombinedModifierFlags(jDeclaration) & static_cast<int>(ts::ModifierFlags::Readonly)) ?
-										    "" :
-											tc::explicit_cast<std::string>(tc::concat(
-												"	void ",
-												std::string(jsymProperty->getName()),
-												"(",
-												mangleType(jsTypeChecker,  jsTypeChecker->getTypeOfSymbolAtLocation(jsymProperty, jDeclaration)),
-												" v) noexcept { _setProperty(\"",
-												std::string(jsymProperty->getName()),
-												"\", v); }\n"
-											))
-									);
-								}
-							));
+										"\", v); }\n"
+									))
+							);
 						}
 					)),
 					tc::join(tc::transform(
