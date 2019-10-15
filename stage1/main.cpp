@@ -158,7 +158,7 @@ std::string mangleType(ts::TypeChecker jsTypeChecker, ts::Type jType) {
 		return "js_null";
 	}
 	if (auto joptUnionType = jType->isUnion()) {
-		_ASSERTEQUAL(static_cast<int>(ts::TypeFlags::Union), (*joptUnionType)->flags());
+		_ASSERT(1 < (*joptUnionType)->types()->length());
 		return tc::explicit_cast<std::string>(tc::concat(
 			"js_union<",
 			tc::join_separated(
