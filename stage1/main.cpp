@@ -253,12 +253,18 @@ int main(int argc, char* argv[]) {
 							_ASSERT(jDeclaration);
 							_ASSERTEQUAL(ts()->getCombinedModifierFlags(*jDeclaration), 0);
 							auto juOptionValue = jsTypeChecker->getConstantValue(*jDeclaration);
-							_ASSERT(juOptionValue.getEmval().isNumber()); // Computed values of enums are unsupported.
-							return tc::concat(
-								"	", std::string(jsymOption->getName()), " = ",
-								tc::as_dec(tc::explicit_cast<int>(double(juOptionValue))),
-								",\n"
-							);
+							if (!juOptionValue.getEmval().isNumber()) {
+								// Uncomputed value.
+								return tc::explicit_cast<std::string>(tc::concat(
+									"	/*", std::string(jsymOption->getName()), " = ??? */\n"
+								));
+							} else {
+								return tc::explicit_cast<std::string>(tc::concat(
+									"	", std::string(jsymOption->getName()), " = ",
+									tc::as_dec(tc::explicit_cast<int>(double(juOptionValue))),
+									",\n"
+								));
+							}
 						})
 					),
 					"};\n"
