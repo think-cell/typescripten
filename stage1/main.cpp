@@ -102,6 +102,19 @@ void walkType(ts::TypeChecker& jsTypeChecker, int offset, ts::Symbol jSymbol) {
 			);
 		}
 	);
+
+	if (auto joptInterfaceType = jsTypeChecker->getDeclaredTypeOfSymbol(jSymbol)->isClassOrInterface()) {
+		tc::append(std::cout, tc::repeat_n(' ', offset + 2), "base types\n");
+		tc::for_each(jsTypeChecker->getBaseTypes(*joptInterfaceType),
+			[&](ts::BaseType jBaseType) {
+				tc::append(std::cout,
+					tc::repeat_n(' ', offset + 4),
+					std::string(jsTypeChecker->typeToString(jBaseType)),
+					"\n"
+				);
+			}
+		);
+	}
 }
 
 std::string mangleSymbolName(ts::TypeChecker jsTypeChecker, ts::Symbol jSymbol) {
