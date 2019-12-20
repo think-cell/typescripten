@@ -63,9 +63,9 @@ void WalkType(ts::TypeChecker& jtsTypeChecker, int nOffset, ts::Symbol jsymType)
 	// jtsTypeChecker->getExportsOfModule(jsymType): same as 'exports', but when called on a module with `export = Foo`, returns members of `Foo`, not `Foo` itself.
 
 	if (IsEnumInCpp(jsymType)) {
-		g_vecjsymEnum.push_back(jsymType);
+		tc::cont_emplace_back(g_vecjsymEnum, jsymType);
 	} else if (IsClassInCpp(jsymType)) {
-		g_vecjsymClass.push_back(jsymType);
+		tc::cont_emplace_back(g_vecjsymClass, jsymType);
 	}
 
 	tc::append(std::cout, tc::repeat_n(' ', nOffset + 2), "members\n");
@@ -198,8 +198,8 @@ int main(int argc, char* argv[]) {
 	jtsCompilerOptions->target(ts::ScriptTarget::ES5);
 	jtsCompilerOptions->module(ts::ModuleKind::CommonJS);
 
-	auto rngFileNames = tc::make_iterator_range(argv + 1, argv + argc);
-	ts::Program jtsProgram = ts()->createProgram(ReadonlyArray<js_string>(rngFileNames), jtsCompilerOptions);
+	auto rngstrFileNames = tc::make_iterator_range(argv + 1, argv + argc);
+	ts::Program jtsProgram = ts()->createProgram(ReadonlyArray<js_string>(rngstrFileNames), jtsCompilerOptions);
 
 	ts::TypeChecker jtsTypeChecker = jtsProgram->getTypeChecker();
 
@@ -214,15 +214,15 @@ int main(int argc, char* argv[]) {
 	std::vector<ts::Symbol> vecjsymExportedModule;
 	tc::for_each(jtsProgram->getSourceFiles(),
 		[&](ts::SourceFile const& jtsSourceFile) {
-			if (!tc::find_unique<tc::return_bool>(rngFileNames, std::string(jtsSourceFile->fileName()))) {
+			if (!tc::find_unique<tc::return_bool>(rngstrFileNames, std::string(jtsSourceFile->fileName()))) {
 				return;
 			}
-			auto jsymSourceFile = jtsTypeChecker->getSymbolAtLocation(jtsSourceFile);
-			if (!jsymSourceFile) {
+			auto josymSourceFile = jtsTypeChecker->getSymbolAtLocation(jtsSourceFile);
+			if (!josymSourceFile) {
 				tc::append(std::cout, "Module not found for ", std::string(jtsSourceFile->fileName()), "\n");
 				return;
 			}
-			vecjsymExportedModule.push_back(*jsymSourceFile);
+			tc::cont_emplace_back(vecjsymExportedModule, *josymSourceFile);
 		}
 	);
 
@@ -288,7 +288,7 @@ int main(int argc, char* argv[]) {
 							if (auto jotsInterfaceType = ts::Type(jtsBaseType)->isClassOrInterface()) {
 								auto josymInterface = (*jotsInterfaceType)->getSymbol();
 								_ASSERT(josymInterface);
-								vecjsymBaseClass.push_back(*josymInterface);
+								tc::cont_emplace_back(vecjsymBaseClass, *josymInterface);
 							}
 						}
 					);
