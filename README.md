@@ -41,5 +41,6 @@ Close analogues are Rust's [stdweb](https://github.com/koute/stdweb) and [wasm-b
     * `js_optional<T>`'s type tag is `o<type-tag-of-T>`.
     * E.g. `js_ref<js_optional<ts::Symbol>> josymDeclaration;`
 * For (almost) singleton objects from TypeScript Compiler API: `jts<exact-type-name-from-typescript>`,
-    * "Almost singleton" ~ "does not require any name, type is enough".
+    * "Almost singleton" ~ "does not require any name in local scope, type is enough".
+    * `Symbol` is never "almost singleton" to avoid confusion.
     * E.g. `jtsTypeChecker`.
