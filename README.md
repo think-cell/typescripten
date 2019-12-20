@@ -44,4 +44,4 @@ Close analogues are Rust's [stdweb](https://github.com/koute/stdweb) and [wasm-b
     * "Almost singleton" ~ "does not require any name in local scope, type is enough".
     * `Symbol` is never "almost singleton" to avoid confusion.
     * E.g. `jtsTypeChecker`.
-* Optional singleton objects are `jtso<exact-type-name-from-typescript>`.
+* Optional singleton objects are `jots<exact-type-name-from-typescript>`.

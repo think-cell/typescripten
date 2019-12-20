@@ -102,9 +102,9 @@ void WalkType(ts::TypeChecker& jtsTypeChecker, int nOffset, ts::Symbol jsymType)
 		}
 	);
 
-	if (auto jtsoInterfaceType = jtsTypeChecker->getDeclaredTypeOfSymbol(jsymType)->isClassOrInterface()) {
+	if (auto jotsInterfaceType = jtsTypeChecker->getDeclaredTypeOfSymbol(jsymType)->isClassOrInterface()) {
 		tc::append(std::cout, tc::repeat_n(' ', nOffset + 2), "base types\n");
-		tc::for_each(jtsTypeChecker->getBaseTypes(*jtsoInterfaceType),
+		tc::for_each(jtsTypeChecker->getBaseTypes(*jotsInterfaceType),
 			[&](ts::BaseType jtsBaseType) {
 				tc::append(std::cout,
 					tc::repeat_n(' ', nOffset + 4),
@@ -156,12 +156,12 @@ std::string MangleType(ts::TypeChecker jtsTypeChecker, ts::Type jtypeRoot) {
 	if (jtypeRoot->flags() & static_cast<int>(ts::TypeFlags::Null)) {
 		return "js_null";
 	}
-	if (auto jtsoUnionType = jtypeRoot->isUnion()) {
-		_ASSERT(1 < (*jtsoUnionType)->types()->length());
+	if (auto jotsUnionType = jtypeRoot->isUnion()) {
+		_ASSERT(1 < (*jotsUnionType)->types()->length());
 		return tc::explicit_cast<std::string>(tc::concat(
 			"js_union<",
 			tc::join_separated(
-				tc::transform((*jtsoUnionType)->types(), [&](ts::Type jtypeUnionOption) {
+				tc::transform((*jotsUnionType)->types(), [&](ts::Type jtypeUnionOption) {
 					return MangleType(jtsTypeChecker, jtypeUnionOption);
 				}),
 				", "
@@ -169,13 +169,13 @@ std::string MangleType(ts::TypeChecker jtsTypeChecker, ts::Type jtypeRoot) {
 			">"
 		));
 	}
-	if (auto jtsoInterfaceType = jtypeRoot->isClassOrInterface()) {
-		_ASSERTEQUAL(static_cast<int>(ts::TypeFlags::Object), (*jtsoInterfaceType)->flags());
-		_ASSERT(!(*jtsoInterfaceType)->typeParameters());
-		_ASSERT(!(*jtsoInterfaceType)->outerTypeParameters());
-		_ASSERT(!(*jtsoInterfaceType)->localTypeParameters());
-		_ASSERT(!(*jtsoInterfaceType)->thisType());
-		auto josymInterface = (*jtsoInterfaceType)->getSymbol();
+	if (auto jotsInterfaceType = jtypeRoot->isClassOrInterface()) {
+		_ASSERTEQUAL(static_cast<int>(ts::TypeFlags::Object), (*jotsInterfaceType)->flags());
+		_ASSERT(!(*jotsInterfaceType)->typeParameters());
+		_ASSERT(!(*jotsInterfaceType)->outerTypeParameters());
+		_ASSERT(!(*jotsInterfaceType)->localTypeParameters());
+		_ASSERT(!(*jotsInterfaceType)->thisType());
+		auto josymInterface = (*jotsInterfaceType)->getSymbol();
 		_ASSERT(josymInterface);
 		return tc::explicit_cast<std::string>(tc::concat(
 			"js_ref<", MangleSymbolName(jtsTypeChecker, *josymInterface), ">"
@@ -247,10 +247,10 @@ int main(int argc, char* argv[]) {
 							_ASSERTEQUAL(jsymOption->getFlags(), static_cast<int>(ts::SymbolFlags::EnumMember));
 							auto jarrDeclaration = jsymOption->declarations();
 							_ASSERTEQUAL(jarrDeclaration->length(), 1);
-							auto jtsoEnumMember = ts()->isEnumMember(jarrDeclaration[0]);
-							_ASSERT(jtsoEnumMember);
-							_ASSERTEQUAL(ts()->getCombinedModifierFlags(*jtsoEnumMember), 0);
-							auto junionOptionValue = jtsTypeChecker->getConstantValue(*jtsoEnumMember);
+							auto jotsEnumMember = ts()->isEnumMember(jarrDeclaration[0]);
+							_ASSERT(jotsEnumMember);
+							_ASSERTEQUAL(ts()->getCombinedModifierFlags(*jotsEnumMember), 0);
+							auto junionOptionValue = jtsTypeChecker->getConstantValue(*jotsEnumMember);
 							if (!junionOptionValue.getEmval().isNumber()) {
 								// Uncomputed value.
 								return tc::explicit_cast<std::string>(tc::concat(
@@ -285,8 +285,8 @@ int main(int argc, char* argv[]) {
 				if (auto joptInterfaceType = jtsTypeChecker->getDeclaredTypeOfSymbol(jsymClass)->isClassOrInterface()) {
 					tc::for_each(jtsTypeChecker->getBaseTypes(*joptInterfaceType),
 						[&](ts::BaseType jtsBaseType) {
-							if (auto jtsoInterfaceType = ts::Type(jtsBaseType)->isClassOrInterface()) {
-								auto josymInterface = (*jtsoInterfaceType)->getSymbol();
+							if (auto jotsInterfaceType = ts::Type(jtsBaseType)->isClassOrInterface()) {
+								auto josymInterface = (*jotsInterfaceType)->getSymbol();
 								_ASSERT(josymInterface);
 								vecjsymBaseClass.push_back(*josymInterface);
 							}
@@ -367,19 +367,19 @@ int main(int argc, char* argv[]) {
 								jsymMethod->declarations(),
 								[&](ts::Declaration jdeclMethod) {
 									_ASSERTEQUAL(ts()->getCombinedModifierFlags(jdeclMethod), 0);
-									tc::js::js_optional<ts::SignatureDeclaration> jtsoSignatureDeclaration;
-									if (auto jtsoMethodSignature = ts()->isMethodSignature(jdeclMethod)) {
-										jtsoSignatureDeclaration = *jtsoMethodSignature;
+									tc::js::js_optional<ts::SignatureDeclaration> jotsSignatureDeclaration;
+									if (auto jotsMethodSignature = ts()->isMethodSignature(jdeclMethod)) {
+										jotsSignatureDeclaration = *jotsMethodSignature;
 									}
-									if (auto jtsoMethodDeclaration = ts()->isMethodDeclaration(jdeclMethod)) {
-										jtsoSignatureDeclaration = *jtsoMethodDeclaration;
+									if (auto jotsMethodDeclaration = ts()->isMethodDeclaration(jdeclMethod)) {
+										jotsSignatureDeclaration = *jotsMethodDeclaration;
 									}
-									_ASSERT(jtsoSignatureDeclaration);
+									_ASSERT(jotsSignatureDeclaration);
 
-									auto jtsoSignature = jtsTypeChecker->getSignatureFromDeclaration(*jtsoSignatureDeclaration);
-									_ASSERT(jtsoSignature);
+									auto jotsSignature = jtsTypeChecker->getSignatureFromDeclaration(*jotsSignatureDeclaration);
+									_ASSERT(jotsSignature);
 
-									auto jtsSignature = *jtsoSignature;
+									auto jtsSignature = *jotsSignature;
 									if (auto jrarrunkTypeParameter = jtsSignature->getTypeParameters()) {
 										_ASSERT(tc::empty(*jrarrunkTypeParameter));
 									}
