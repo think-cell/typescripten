@@ -34,13 +34,13 @@ private:
 
 std::vector<ts::Symbol> g_vecjsymEnum, g_vecjsymClass;
 
-bool isEnumInCpp(ts::Symbol jSymbol) {
+bool IsEnumInCpp(ts::Symbol jSymbol) {
 	return
 		static_cast<int>(ts::SymbolFlags::RegularEnum) == jSymbol->getFlags() ||
 		static_cast<int>(ts::SymbolFlags::ConstEnum) == jSymbol->getFlags();
 }
 
-bool isClassInCpp(ts::Symbol jSymbol) {
+bool IsClassInCpp(ts::Symbol jSymbol) {
 	return jSymbol->getFlags() & (
 		static_cast<int>(ts::SymbolFlags::Class) |
 		static_cast<int>(ts::SymbolFlags::Interface) |
@@ -49,7 +49,7 @@ bool isClassInCpp(ts::Symbol jSymbol) {
 		);
 }
 
-void walkType(ts::TypeChecker& jsTypeChecker, int offset, ts::Symbol jSymbol) {
+void WalkType(ts::TypeChecker& jsTypeChecker, int offset, ts::Symbol jSymbol) {
 	tc::append(std::cout,
 		tc::repeat_n(' ', offset),
 		"'", std::string(jsTypeChecker->getFullyQualifiedName(jSymbol)), "', ",
@@ -62,21 +62,21 @@ void walkType(ts::TypeChecker& jsTypeChecker, int offset, ts::Symbol jSymbol) {
 	// jsSymbol()->exports: nested static types/methods/properties
 	// jsTypeChecker->getExportsOfModule(jSymbol): same as 'exports', but when called on a module with `export = Foo`, returns members of `Foo`, not `Foo` itself.
 
-	if (isEnumInCpp(jSymbol)) {
+	if (IsEnumInCpp(jSymbol)) {
 		g_vecjsymEnum.push_back(jSymbol);
-	} else if (isClassInCpp(jSymbol)) {
+	} else if (IsClassInCpp(jSymbol)) {
 		g_vecjsymClass.push_back(jSymbol);
 	}
 
 	tc::append(std::cout, tc::repeat_n(' ', offset + 2), "members\n");
 	if (jSymbol->members()) {
-		tc::for_each(*jSymbol->members(), [&](ts::Symbol jChildSymbol) { walkType(jsTypeChecker, offset + 4, jChildSymbol); });
+		tc::for_each(*jSymbol->members(), [&](ts::Symbol jChildSymbol) { WalkType(jsTypeChecker, offset + 4, jChildSymbol); });
 	}
 
 	tc::append(std::cout, tc::repeat_n(' ', offset + 2), "exportsOfModule\n");
 	if (jSymbol->exports()) {
 		tc::for_each(jsTypeChecker->getExportsOfModule(jSymbol),
-			[&](ts::Symbol jChildSymbol) { walkType(jsTypeChecker, offset + 4, jChildSymbol); }
+			[&](ts::Symbol jChildSymbol) { WalkType(jsTypeChecker, offset + 4, jChildSymbol); }
 		);
 	}
 
@@ -116,7 +116,7 @@ void walkType(ts::TypeChecker& jsTypeChecker, int offset, ts::Symbol jSymbol) {
 	}
 }
 
-std::string mangleSymbolName(ts::TypeChecker jsTypeChecker, ts::Symbol jSymbol) {
+std::string MangleSymbolName(ts::TypeChecker jsTypeChecker, ts::Symbol jSymbol) {
 	std::string strMangled = "_js_j";
 	tc::for_each(std::string(jsTypeChecker->getFullyQualifiedName(jSymbol)), [&](char c) {
 		switch (c) {
@@ -131,7 +131,7 @@ std::string mangleSymbolName(ts::TypeChecker jsTypeChecker, ts::Symbol jSymbol) 
 	return strMangled;
 }
 
-std::string mangleType(ts::TypeChecker jsTypeChecker, ts::Type jType) {
+std::string MangleType(ts::TypeChecker jsTypeChecker, ts::Type jType) {
 	// See checker.ts:typeToTypeNodeHelper
 	if (jType->flags() & static_cast<int>(ts::TypeFlags::Any) ||
 		jType->flags() & static_cast<int>(ts::TypeFlags::Unknown)
@@ -162,7 +162,7 @@ std::string mangleType(ts::TypeChecker jsTypeChecker, ts::Type jType) {
 			"js_union<",
 			tc::join_separated(
 				tc::transform((*joptUnionType)->types(), [&](ts::Type jtypeUnionOption) {
-					return mangleType(jsTypeChecker, jtypeUnionOption);
+					return MangleType(jsTypeChecker, jtypeUnionOption);
 				}),
 				", "
 			),
@@ -178,7 +178,7 @@ std::string mangleType(ts::TypeChecker jsTypeChecker, ts::Type jType) {
 		auto joptInterfaceSymbol = (*joptInterfaceType)->getSymbol();
 		_ASSERT(joptInterfaceSymbol);
 		return tc::explicit_cast<std::string>(tc::concat(
-			"js_ref<", mangleSymbolName(jsTypeChecker, *joptInterfaceSymbol), ">"
+			"js_ref<", MangleSymbolName(jsTypeChecker, *joptInterfaceSymbol), ">"
 		));
 	}
 	return tc::explicit_cast<std::string>(tc::concat(
@@ -230,7 +230,7 @@ int main(int argc, char* argv[]) {
 		vecjsymExportedModule,
 		[&](ts::Symbol const& jsymSourceFileSymbol) {
 			tc::append(std::cout, "Module name is ", std::string(jsymSourceFileSymbol->getName()), "\n");
-			walkType(jsTypeChecker, 0, jsymSourceFileSymbol);
+			WalkType(jsTypeChecker, 0, jsymSourceFileSymbol);
 		}
 	);
 
@@ -241,7 +241,7 @@ int main(int argc, char* argv[]) {
 			tc::join(tc::transform(g_vecjsymEnum, [&](ts::Symbol jsymEnum) {
 				_ASSERT(jsymEnum->exports());
 				return tc::concat(
-					"enum class ", mangleSymbolName(jsTypeChecker, jsymEnum), " {\n",
+					"enum class ", MangleSymbolName(jsTypeChecker, jsymEnum), " {\n",
 					tc::join(
 						tc::transform(*jsymEnum->exports(), [&](ts::Symbol jsymOption) {
 							_ASSERTEQUAL(jsymOption->getFlags(), static_cast<int>(ts::SymbolFlags::EnumMember));
@@ -269,7 +269,7 @@ int main(int argc, char* argv[]) {
 				);
 			})),
 			tc::join(tc::transform(g_vecjsymClass, [&](ts::Symbol jsymClass) {
-				return tc::concat("struct ", mangleSymbolName(jsTypeChecker, jsymClass), ";\n");
+				return tc::concat("struct ", MangleSymbolName(jsTypeChecker, jsymClass), ";\n");
 			})),
 			tc::join(tc::transform(g_vecjsymClass, [&](ts::Symbol jsymClass) {
 				Array<ts::Symbol> jasymExports(std::initializer_list<ts::Symbol>{});
@@ -298,14 +298,14 @@ int main(int argc, char* argv[]) {
 
 				// TODO: force eager evaluation to keep jasymExports in scope.
 				return tc::explicit_cast<std::string>(tc::concat(
-					"struct ", mangleSymbolName(jsTypeChecker, jsymClass),
+					"struct ", MangleSymbolName(jsTypeChecker, jsymClass),
 					(vecjsymBaseClass.empty() ? "" :
 						tc::explicit_cast<std::string>(tc::concat(
 							" : ",
 							tc::join_separated(
 								tc::transform(vecjsymBaseClass,
 									[&](ts::Symbol jBaseClass) {
-										return tc::concat("virtual ", mangleSymbolName(jsTypeChecker, jBaseClass));
+										return tc::concat("virtual ", MangleSymbolName(jsTypeChecker, jBaseClass));
 									}
 								),
 								", "
@@ -315,14 +315,14 @@ int main(int argc, char* argv[]) {
 					" {\n",
 					tc::join(tc::transform(
 						tc::filter(jasymExports, [&](ts::Symbol jExportSymbol) {
-							return isEnumInCpp(jExportSymbol) || isClassInCpp(jExportSymbol);
+							return IsEnumInCpp(jExportSymbol) || IsClassInCpp(jExportSymbol);
 						}),
 						[&](ts::Symbol jExportSymbol) {
 							return tc::concat(
 								"	using ",
 								std::string(jExportSymbol->getName()),
 								" = js_ref<",
-								mangleSymbolName(jsTypeChecker, jExportSymbol),
+								MangleSymbolName(jsTypeChecker, jExportSymbol),
 								">;\n"
 							);
 						}
@@ -340,7 +340,7 @@ int main(int argc, char* argv[]) {
 								"	auto ",
 								std::string(jsymProperty->getName()),
 								"() noexcept { return _getProperty<",
-								mangleType(jsTypeChecker, jsTypeChecker->getTypeOfSymbolAtLocation(jsymProperty, jDeclaration)),
+								MangleType(jsTypeChecker, jsTypeChecker->getTypeOfSymbolAtLocation(jsymProperty, jDeclaration)),
 								">(\"",
 								std::string(jsymProperty->getName()),
 								"\"); }\n",
@@ -350,7 +350,7 @@ int main(int argc, char* argv[]) {
 										"	void ",
 										std::string(jsymProperty->getName()),
 										"(",
-										mangleType(jsTypeChecker, jsTypeChecker->getTypeOfSymbolAtLocation(jsymProperty, jDeclaration)),
+										MangleType(jsTypeChecker, jsTypeChecker->getTypeOfSymbolAtLocation(jsymProperty, jDeclaration)),
 										" v) noexcept { _setProperty(\"",
 										std::string(jsymProperty->getName()),
 										"\", v); }\n"
@@ -392,7 +392,7 @@ int main(int argc, char* argv[]) {
 												jSignature->getParameters(),
 												[&](ts::Symbol jsymParameter) {
 													return tc::concat(
-														mangleType(jsTypeChecker, jsTypeChecker->getTypeOfSymbolAtLocation(jsymParameter, jDeclaration)),
+														MangleType(jsTypeChecker, jsTypeChecker->getTypeOfSymbolAtLocation(jsymParameter, jDeclaration)),
 														" ",
 														std::string(jsymParameter->getName())
 													);
@@ -401,7 +401,7 @@ int main(int argc, char* argv[]) {
 											", "
 										),
 										") noexcept {\n",
-										"		return _call<", mangleType(jsTypeChecker, jSignature->getReturnType()), ">",
+										"		return _call<", MangleType(jsTypeChecker, jSignature->getReturnType()), ">",
 										"(\"", std::string(jsymMethod->getName()), "\"",
 										tc::join(tc::transform(
 											jSignature->getParameters(),
