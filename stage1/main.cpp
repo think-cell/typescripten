@@ -245,13 +245,13 @@ int main(int argc, char* argv[]) {
 					tc::join(
 						tc::transform(*jsymEnum->exports(), [&](ts::Symbol jsymOption) {
 							_ASSERTEQUAL(jsymOption->getFlags(), static_cast<int>(ts::SymbolFlags::EnumMember));
-							auto jaDeclarations = jsymOption->declarations();
-							_ASSERTEQUAL(jaDeclarations->length(), 1);
-							auto jDeclaration = ts()->isEnumMember(jaDeclarations[0]);
-							_ASSERT(jDeclaration);
-							_ASSERTEQUAL(ts()->getCombinedModifierFlags(*jDeclaration), 0);
-							auto juOptionValue = jtsTypeChecker->getConstantValue(*jDeclaration);
-							if (!juOptionValue.getEmval().isNumber()) {
+							auto jarrDeclaration = jsymOption->declarations();
+							_ASSERTEQUAL(jarrDeclaration->length(), 1);
+							auto jtsoEnumMember = ts()->isEnumMember(jarrDeclaration[0]);
+							_ASSERT(jtsoEnumMember);
+							_ASSERTEQUAL(ts()->getCombinedModifierFlags(*jtsoEnumMember), 0);
+							auto junionOptionValue = jtsTypeChecker->getConstantValue(*jtsoEnumMember);
+							if (!junionOptionValue.getEmval().isNumber()) {
 								// Uncomputed value.
 								return tc::explicit_cast<std::string>(tc::concat(
 									"	/*", std::string(jsymOption->getName()), " = ??? */\n"
@@ -259,7 +259,7 @@ int main(int argc, char* argv[]) {
 							} else {
 								return tc::explicit_cast<std::string>(tc::concat(
 									"	", std::string(jsymOption->getName()), " = ",
-									tc::as_dec(tc::explicit_cast<int>(double(juOptionValue))),
+									tc::as_dec(tc::explicit_cast<int>(double(junionOptionValue))),
 									",\n"
 								));
 							}
@@ -272,9 +272,9 @@ int main(int argc, char* argv[]) {
 				return tc::concat("struct ", MangleSymbolName(jtsTypeChecker, jsymClass), ";\n");
 			})),
 			tc::join(tc::transform(g_vecjsymClass, [&](ts::Symbol jsymClass) {
-				Array<ts::Symbol> jasymExports(std::initializer_list<ts::Symbol>{});
+				Array<ts::Symbol> jarrsymExport(std::initializer_list<ts::Symbol>{});
 				if (jsymClass->exports()) {
-					jasymExports = jtsTypeChecker->getExportsOfModule(jsymClass);
+					jarrsymExport = jtsTypeChecker->getExportsOfModule(jsymClass);
 				}
 				std::vector<ts::Symbol> vecjsymMember;
 				if (jsymClass->members()) {
@@ -284,11 +284,11 @@ int main(int argc, char* argv[]) {
 				std::vector<ts::Symbol> vecjsymBaseClass;
 				if (auto joptInterfaceType = jtsTypeChecker->getDeclaredTypeOfSymbol(jsymClass)->isClassOrInterface()) {
 					tc::for_each(jtsTypeChecker->getBaseTypes(*joptInterfaceType),
-						[&](ts::BaseType jBaseType) {
-							if (auto joptBaseInterfaceType = ts::Type(jBaseType)->isClassOrInterface()) {
-								auto joptInterfaceSymbol = (*joptBaseInterfaceType)->getSymbol();
-								_ASSERT(joptInterfaceSymbol);
-								vecjsymBaseClass.push_back(*joptInterfaceSymbol);
+						[&](ts::BaseType jtsBaseType) {
+							if (auto jtsoInterfaceType = ts::Type(jtsBaseType)->isClassOrInterface()) {
+								auto josymInterface = (*jtsoInterfaceType)->getSymbol();
+								_ASSERT(josymInterface);
+								vecjsymBaseClass.push_back(*josymInterface);
 							}
 						}
 					);
@@ -296,7 +296,7 @@ int main(int argc, char* argv[]) {
 					// Do nothing: e.g. namespaces.
 				}
 
-				// TODO: force eager evaluation to keep jasymExports in scope.
+				// TODO: force eager evaluation to keep arrays in scope.
 				return tc::explicit_cast<std::string>(tc::concat(
 					"struct ", MangleSymbolName(jtsTypeChecker, jsymClass),
 					(vecjsymBaseClass.empty() ? "" :
@@ -304,8 +304,8 @@ int main(int argc, char* argv[]) {
 							" : ",
 							tc::join_separated(
 								tc::transform(vecjsymBaseClass,
-									[&](ts::Symbol jBaseClass) {
-										return tc::concat("virtual ", MangleSymbolName(jtsTypeChecker, jBaseClass));
+									[&](ts::Symbol jsymBaseClass) {
+										return tc::concat("virtual ", MangleSymbolName(jtsTypeChecker, jsymBaseClass));
 									}
 								),
 								", "
@@ -314,43 +314,43 @@ int main(int argc, char* argv[]) {
 					),
 					" {\n",
 					tc::join(tc::transform(
-						tc::filter(jasymExports, [&](ts::Symbol jExportSymbol) {
-							return IsEnumInCpp(jExportSymbol) || IsClassInCpp(jExportSymbol);
+						tc::filter(jarrsymExport, [&](ts::Symbol jsymExport) {
+							return IsEnumInCpp(jsymExport) || IsClassInCpp(jsymExport);
 						}),
-						[&](ts::Symbol jExportSymbol) {
+						[&](ts::Symbol jsymExport) {
 							return tc::concat(
 								"	using ",
-								std::string(jExportSymbol->getName()),
+								std::string(jsymExport->getName()),
 								" = js_ref<",
-								MangleSymbolName(jtsTypeChecker, jExportSymbol),
+								MangleSymbolName(jtsTypeChecker, jsymExport),
 								">;\n"
 							);
 						}
 					)),
 					tc::join(tc::transform(
-						tc::filter(vecjsymMember, [&](ts::Symbol jMemberSymbol) {
-							return static_cast<int>(ts::SymbolFlags::Property) == jMemberSymbol->getFlags();
+						tc::filter(vecjsymMember, [&](ts::Symbol jsymMember) {
+							return static_cast<int>(ts::SymbolFlags::Property) == jsymMember->getFlags();
 						}),
 						[&](ts::Symbol jsymProperty) {
 							_ASSERTEQUAL(jsymProperty->declarations()->length(), 1);
-							ts::Declaration jDeclaration = jsymProperty->declarations()[0];
-							int iModifierFlags = ts()->getCombinedModifierFlags(jDeclaration);
+							ts::Declaration jdeclProperty = jsymProperty->declarations()[0];
+							int iModifierFlags = ts()->getCombinedModifierFlags(jdeclProperty);
 							_ASSERT(iModifierFlags == 0 || iModifierFlags == static_cast<int>(ts::ModifierFlags::Readonly));
 							return tc::concat(
 								"	auto ",
 								std::string(jsymProperty->getName()),
 								"() noexcept { return _getProperty<",
-								MangleType(jtsTypeChecker, jtsTypeChecker->getTypeOfSymbolAtLocation(jsymProperty, jDeclaration)),
+								MangleType(jtsTypeChecker, jtsTypeChecker->getTypeOfSymbolAtLocation(jsymProperty, jdeclProperty)),
 								">(\"",
 								std::string(jsymProperty->getName()),
 								"\"); }\n",
-								(ts()->getCombinedModifierFlags(jDeclaration) & static_cast<int>(ts::ModifierFlags::Readonly)) ?
+								(ts()->getCombinedModifierFlags(jdeclProperty) & static_cast<int>(ts::ModifierFlags::Readonly)) ?
 									"" :
 									tc::explicit_cast<std::string>(tc::concat(
 										"	void ",
 										std::string(jsymProperty->getName()),
 										"(",
-										MangleType(jtsTypeChecker, jtsTypeChecker->getTypeOfSymbolAtLocation(jsymProperty, jDeclaration)),
+										MangleType(jtsTypeChecker, jtsTypeChecker->getTypeOfSymbolAtLocation(jsymProperty, jdeclProperty)),
 										" v) noexcept { _setProperty(\"",
 										std::string(jsymProperty->getName()),
 										"\", v); }\n"
@@ -359,29 +359,29 @@ int main(int argc, char* argv[]) {
 						}
 					)),
 					tc::join(tc::transform(
-						tc::filter(vecjsymMember, [&](ts::Symbol jMemberSymbol) {
-							return static_cast<int>(ts::SymbolFlags::Method) == jMemberSymbol->getFlags();
+						tc::filter(vecjsymMember, [&](ts::Symbol jsymMember) {
+							return static_cast<int>(ts::SymbolFlags::Method) == jsymMember->getFlags();
 						}),
 						[&](ts::Symbol jsymMethod) {
 							return tc::join(tc::transform(
 								jsymMethod->declarations(),
-								[&](ts::Declaration jDeclaration) {
-									_ASSERTEQUAL(ts()->getCombinedModifierFlags(jDeclaration), 0);
-									tc::js::js_optional<ts::SignatureDeclaration> joptSignatureDeclaration;
-									if (auto joptMethodSignature = ts()->isMethodSignature(jDeclaration)) {
-										joptSignatureDeclaration = *joptMethodSignature;
+								[&](ts::Declaration jdeclMethod) {
+									_ASSERTEQUAL(ts()->getCombinedModifierFlags(jdeclMethod), 0);
+									tc::js::js_optional<ts::SignatureDeclaration> jtsoSignatureDeclaration;
+									if (auto jtsoMethodSignature = ts()->isMethodSignature(jdeclMethod)) {
+										jtsoSignatureDeclaration = *jtsoMethodSignature;
 									}
-									if (auto joptMethodDeclaration = ts()->isMethodDeclaration(jDeclaration)) {
-										joptSignatureDeclaration = *joptMethodDeclaration;
+									if (auto jtsoMethodDeclaration = ts()->isMethodDeclaration(jdeclMethod)) {
+										jtsoSignatureDeclaration = *jtsoMethodDeclaration;
 									}
-									_ASSERT(joptSignatureDeclaration);
+									_ASSERT(jtsoSignatureDeclaration);
 
-									auto joptSignature = jtsTypeChecker->getSignatureFromDeclaration(*joptSignatureDeclaration);
-									_ASSERT(joptSignature);
+									auto jtsoSignature = jtsTypeChecker->getSignatureFromDeclaration(*jtsoSignatureDeclaration);
+									_ASSERT(jtsoSignature);
 
-									auto jSignature = *joptSignature;
-									if (auto jrarrunkTypeParameters = jSignature->getTypeParameters()) {
-										_ASSERT(tc::empty(*jrarrunkTypeParameters));
+									auto jtsSignature = *jtsoSignature;
+									if (auto jrarrunkTypeParameter = jtsSignature->getTypeParameters()) {
+										_ASSERT(tc::empty(*jrarrunkTypeParameter));
 									}
 									return tc::concat(
 										"	auto ",
@@ -389,10 +389,10 @@ int main(int argc, char* argv[]) {
 										"(",
 										tc::join_separated(
 											tc::transform(
-												jSignature->getParameters(),
+												jtsSignature->getParameters(),
 												[&](ts::Symbol jsymParameter) {
 													return tc::concat(
-														MangleType(jtsTypeChecker, jtsTypeChecker->getTypeOfSymbolAtLocation(jsymParameter, jDeclaration)),
+														MangleType(jtsTypeChecker, jtsTypeChecker->getTypeOfSymbolAtLocation(jsymParameter, jdeclMethod)),
 														" ",
 														std::string(jsymParameter->getName())
 													);
@@ -401,10 +401,10 @@ int main(int argc, char* argv[]) {
 											", "
 										),
 										") noexcept {\n",
-										"		return _call<", MangleType(jtsTypeChecker, jSignature->getReturnType()), ">",
+										"		return _call<", MangleType(jtsTypeChecker, jtsSignature->getReturnType()), ">",
 										"(\"", std::string(jsymMethod->getName()), "\"",
 										tc::join(tc::transform(
-											jSignature->getParameters(),
+											jtsSignature->getParameters(),
 											[&](ts::Symbol jsymParameter) {
 												return tc::concat(", ", std::string(jsymParameter->getName()));
 											}
