@@ -32,7 +32,7 @@ private:
 };
 }; // namespace tc
 
-std::vector<ts::Symbol> g_vjsymEnums, g_vjsymClasses;
+std::vector<ts::Symbol> g_vecjsymEnum, g_vecjsymClass;
 
 bool isEnumInCpp(ts::Symbol jSymbol) {
 	return
@@ -64,9 +64,9 @@ void walkType(ts::TypeChecker& jsTypeChecker, int offset, ts::Symbol jSymbol) {
 	// jsTypeChecker->getExportsOfModule(jSymbol): same as 'exports', but when called on a module with `export = Foo`, returns members of `Foo`, not `Foo` itself.
 
 	if (isEnumInCpp(jSymbol)) {
-		g_vjsymEnums.push_back(jSymbol);
+		g_vecjsymEnum.push_back(jSymbol);
 	} else if (isClassInCpp(jSymbol)) {
-		g_vjsymClasses.push_back(jSymbol);
+		g_vecjsymClass.push_back(jSymbol);
 	}
 
 	tc::append(std::cout, tc::repeat_n(' ', offset + 2), "members\n");
@@ -212,7 +212,7 @@ int main(int argc, char* argv[]) {
 		}
 	}
 
-	std::vector<ts::Symbol> vjsym_exportedModules;
+	std::vector<ts::Symbol> vecjsymExportedModule;
 	tc::for_each(jsProgram->getSourceFiles(),
 		[&](ts::SourceFile const& jsSourceFile) {
 			if (!tc::find_unique<tc::return_bool>(rngFileNames, std::string(jsSourceFile->fileName()))) {
@@ -223,12 +223,12 @@ int main(int argc, char* argv[]) {
 				tc::append(std::cout, "Module not found for ", std::string(jsSourceFile->fileName()), "\n");
 				return;
 			}
-			vjsym_exportedModules.push_back(*jsymSourceFileSymbol);
+			vecjsymExportedModule.push_back(*jsymSourceFileSymbol);
 		}
 	);
 
 	tc::for_each(
-		vjsym_exportedModules,
+		vecjsymExportedModule,
 		[&](ts::Symbol const& jsymSourceFileSymbol) {
 			tc::append(std::cout, "Module name is ", std::string(jsymSourceFileSymbol->getName()), "\n");
 			walkType(jsTypeChecker, 0, jsymSourceFileSymbol);
@@ -239,7 +239,7 @@ int main(int argc, char* argv[]) {
 
 	{
 		tc::append(std::cout,
-			tc::join(tc::transform(g_vjsymEnums, [&](ts::Symbol jsymEnum) {
+			tc::join(tc::transform(g_vecjsymEnum, [&](ts::Symbol jsymEnum) {
 				_ASSERT(jsymEnum->exports());
 				return tc::concat(
 					"enum class ", mangleSymbolName(jsTypeChecker, jsymEnum), " {\n",
@@ -269,27 +269,27 @@ int main(int argc, char* argv[]) {
 					"};\n"
 				);
 			})),
-			tc::join(tc::transform(g_vjsymClasses, [&](ts::Symbol jsymClass) {
+			tc::join(tc::transform(g_vecjsymClass, [&](ts::Symbol jsymClass) {
 				return tc::concat("struct ", mangleSymbolName(jsTypeChecker, jsymClass), ";\n");
 			})),
-			tc::join(tc::transform(g_vjsymClasses, [&](ts::Symbol jsymClass) {
+			tc::join(tc::transform(g_vecjsymClass, [&](ts::Symbol jsymClass) {
 				Array<ts::Symbol> jasymExports(std::initializer_list<ts::Symbol>{});
 				if (jsymClass->exports()) {
 					jasymExports = jsTypeChecker->getExportsOfModule(jsymClass);
 				}
-				std::vector<ts::Symbol> vsymMembers;
+				std::vector<ts::Symbol> vecjsymMember;
 				if (jsymClass->members()) {
-					vsymMembers = tc::explicit_cast<std::vector<ts::Symbol>>(*jsymClass->members());
+					vecjsymMember = tc::explicit_cast<std::vector<ts::Symbol>>(*jsymClass->members());
 				}
 
-				std::vector<ts::Symbol> vsymBaseClasses;
+				std::vector<ts::Symbol> vecjsymBaseClass;
 				if (auto joptInterfaceType = jsTypeChecker->getDeclaredTypeOfSymbol(jsymClass)->isClassOrInterface()) {
 					tc::for_each(jsTypeChecker->getBaseTypes(*joptInterfaceType),
 						[&](ts::BaseType jBaseType) {
 							if (auto joptBaseInterfaceType = ts::Type(jBaseType)->isClassOrInterface()) {
 								auto joptInterfaceSymbol = (*joptBaseInterfaceType)->getSymbol();
 								_ASSERT(joptInterfaceSymbol);
-								vsymBaseClasses.push_back(*joptInterfaceSymbol);
+								vecjsymBaseClass.push_back(*joptInterfaceSymbol);
 							}
 						}
 					);
@@ -300,11 +300,11 @@ int main(int argc, char* argv[]) {
 				// TODO: force eager evaluation to keep jasymExports in scope.
 				return tc::explicit_cast<std::string>(tc::concat(
 					"struct ", mangleSymbolName(jsTypeChecker, jsymClass),
-					(vsymBaseClasses.empty() ? "" :
+					(vecjsymBaseClass.empty() ? "" :
 						tc::explicit_cast<std::string>(tc::concat(
 							" : ",
 							tc::join_separated(
-								tc::transform(vsymBaseClasses,
+								tc::transform(vecjsymBaseClass,
 									[&](ts::Symbol jBaseClass) {
 										return tc::concat("virtual ", mangleSymbolName(jsTypeChecker, jBaseClass));
 									}
@@ -329,7 +329,7 @@ int main(int argc, char* argv[]) {
 						}
 					)),
 					tc::join(tc::transform(
-						tc::filter(vsymMembers, [&](ts::Symbol jMemberSymbol) {
+						tc::filter(vecjsymMember, [&](ts::Symbol jMemberSymbol) {
 							return static_cast<int>(ts::SymbolFlags::Property) == jMemberSymbol->getFlags();
 						}),
 						[&](ts::Symbol jsymProperty) {
@@ -360,7 +360,7 @@ int main(int argc, char* argv[]) {
 						}
 					)),
 					tc::join(tc::transform(
-						tc::filter(vsymMembers, [&](ts::Symbol jMemberSymbol) {
+						tc::filter(vecjsymMember, [&](ts::Symbol jMemberSymbol) {
 							return static_cast<int>(ts::SymbolFlags::Method) == jMemberSymbol->getFlags();
 						}),
 						[&](ts::Symbol jsymMethod) {
