@@ -50,7 +50,6 @@ bool isClassInCpp(ts::Symbol jSymbol) {
 }
 
 void walkType(ts::TypeChecker& jsTypeChecker, int offset, ts::Symbol jSymbol) {
-	std::string s;
 	tc::append(std::cout,
 		tc::repeat_n(' ', offset),
 		"'", std::string(jsTypeChecker->getFullyQualifiedName(jSymbol)), "', ",
@@ -118,18 +117,18 @@ void walkType(ts::TypeChecker& jsTypeChecker, int offset, ts::Symbol jSymbol) {
 }
 
 std::string mangleSymbolName(ts::TypeChecker jsTypeChecker, ts::Symbol jSymbol) {
-	std::string sMangled = "_js_j";
+	std::string strMangled = "_js_j";
 	tc::for_each(std::string(jsTypeChecker->getFullyQualifiedName(jSymbol)), [&](char c) {
 		switch (c) {
-		case '_': sMangled += "_u"; break;
-		case ',': sMangled += "_c"; break;
-		case '.': sMangled += "_d"; break;
-		case '-': sMangled += "_m"; break;
-		case '"': sMangled += "_q"; break;
-		default: sMangled += c; break;
+		case '_': strMangled += "_u"; break;
+		case ',': strMangled += "_c"; break;
+		case '.': strMangled += "_d"; break;
+		case '-': strMangled += "_m"; break;
+		case '"': strMangled += "_q"; break;
+		default: strMangled += c; break;
 		}
 	});
-	return sMangled;
+	return strMangled;
 }
 
 std::string mangleType(ts::TypeChecker jsTypeChecker, ts::Type jType) {
