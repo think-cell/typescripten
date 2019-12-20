@@ -25,3 +25,21 @@ Close analogues are Rust's [stdweb](https://github.com/koute/stdweb) and [wasm-b
 * Standard `std::variant` construction is somewhat more restrictive than `js_union`:
   the former requires successful overload resolution, the latter requires that the
   argument is convertible to at least one option.
+
+# Naming conventions
+* Global variables start with `g_`.
+* Member fields start with `m_`.
+* All variables are prefixed with a type tag: `<type-tag>Name`.
+    * `Name` is camel-case.
+    * There should be no duplicates between type tag and name, e.g. `vecsArguments`, not `vecsArgumentsVector`.
+* Functions' and variables' names are `CamelCase`.
+* `int`'s type tag is `n`, e.g. `nArguments`.
+* `std::string`'s type tag is `str`.
+* `std::vector<T>`'s type tag is `vec<type-tag-of-T>`, name is singular, e.g. `vecstrArguments`.
+* `js_ref<T>`'s type tag is `j<type-tag-of-T>`
+    * `ts::Symbol`'s type tag is `sym`.
+    * `js_optional<T>`'s type tag is `o<type-tag-of-T>`.
+    * E.g. `js_ref<js_optional<ts::Symbol>> josymDeclaration;`
+* For (almost) singleton objects from TypeScript Compiler API: `jts<exact-type-name-from-typescript>`,
+    * "Almost singleton" ~ "does not require any name, type is enough".
+    * E.g. `jtsTypeChecker`.
