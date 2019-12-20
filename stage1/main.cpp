@@ -49,9 +49,9 @@ bool IsClassInCpp(ts::Symbol jsymType) {
 		);
 }
 
-void WalkType(ts::TypeChecker& jtsTypeChecker, int offset, ts::Symbol jsymType) {
+void WalkType(ts::TypeChecker& jtsTypeChecker, int nOffset, ts::Symbol jsymType) {
 	tc::append(std::cout,
-		tc::repeat_n(' ', offset),
+		tc::repeat_n(' ', nOffset),
 		"'", std::string(jtsTypeChecker->getFullyQualifiedName(jsymType)), "', ",
 		"flags=", tc::as_dec(jsymType->getFlags()),
 		"\n"
@@ -68,34 +68,34 @@ void WalkType(ts::TypeChecker& jtsTypeChecker, int offset, ts::Symbol jsymType) 
 		g_vecjsymClass.push_back(jsymType);
 	}
 
-	tc::append(std::cout, tc::repeat_n(' ', offset + 2), "members\n");
+	tc::append(std::cout, tc::repeat_n(' ', nOffset + 2), "members\n");
 	if (jsymType->members()) {
-		tc::for_each(*jsymType->members(), [&](ts::Symbol jsymChild) { WalkType(jtsTypeChecker, offset + 4, jsymChild); });
+		tc::for_each(*jsymType->members(), [&](ts::Symbol jsymChild) { WalkType(jtsTypeChecker, nOffset + 4, jsymChild); });
 	}
 
-	tc::append(std::cout, tc::repeat_n(' ', offset + 2), "exportsOfModule\n");
+	tc::append(std::cout, tc::repeat_n(' ', nOffset + 2), "exportsOfModule\n");
 	if (jsymType->exports()) {
 		tc::for_each(jtsTypeChecker->getExportsOfModule(jsymType),
-			[&](ts::Symbol jsymChild) { WalkType(jtsTypeChecker, offset + 4, jsymChild); }
+			[&](ts::Symbol jsymChild) { WalkType(jtsTypeChecker, nOffset + 4, jsymChild); }
 		);
 	}
 
-	tc::append(std::cout, tc::repeat_n(' ', offset + 2), "call signatures\n");
+	tc::append(std::cout, tc::repeat_n(' ', nOffset + 2), "call signatures\n");
 	tc::for_each(jtsTypeChecker->getSignaturesOfType(jtsTypeChecker->getDeclaredTypeOfSymbol(jsymType), ts::SignatureKind::Call),
 		[&](ts::Signature jtsSignature) {
 			tc::append(std::cout,
-				tc::repeat_n(' ', offset + 4),
+				tc::repeat_n(' ', nOffset + 4),
 				std::string(jtsTypeChecker->signatureToString(jtsSignature)),
 				"\n"
 			);
 		}
 	);
 
-	tc::append(std::cout, tc::repeat_n(' ', offset + 2), "constructors\n");
+	tc::append(std::cout, tc::repeat_n(' ', nOffset + 2), "constructors\n");
 	tc::for_each(jtsTypeChecker->getSignaturesOfType(jtsTypeChecker->getDeclaredTypeOfSymbol(jsymType), ts::SignatureKind::Construct),
 		[&](ts::Signature jtsSignature) {
 			tc::append(std::cout,
-				tc::repeat_n(' ', offset + 4),
+				tc::repeat_n(' ', nOffset + 4),
 				std::string(jtsTypeChecker->signatureToString(jtsSignature)),
 				"\n"
 			);
@@ -103,11 +103,11 @@ void WalkType(ts::TypeChecker& jtsTypeChecker, int offset, ts::Symbol jsymType) 
 	);
 
 	if (auto jtsoInterfaceType = jtsTypeChecker->getDeclaredTypeOfSymbol(jsymType)->isClassOrInterface()) {
-		tc::append(std::cout, tc::repeat_n(' ', offset + 2), "base types\n");
+		tc::append(std::cout, tc::repeat_n(' ', nOffset + 2), "base types\n");
 		tc::for_each(jtsTypeChecker->getBaseTypes(*jtsoInterfaceType),
 			[&](ts::BaseType jtsBaseType) {
 				tc::append(std::cout,
-					tc::repeat_n(' ', offset + 4),
+					tc::repeat_n(' ', nOffset + 4),
 					std::string(jtsTypeChecker->typeToString(jtsBaseType)),
 					"\n"
 				);
@@ -334,8 +334,8 @@ int main(int argc, char* argv[]) {
 						[&](ts::Symbol jsymProperty) {
 							_ASSERTEQUAL(jsymProperty->declarations()->length(), 1);
 							ts::Declaration jdeclProperty = jsymProperty->declarations()[0];
-							int iModifierFlags = ts()->getCombinedModifierFlags(jdeclProperty);
-							_ASSERT(iModifierFlags == 0 || iModifierFlags == static_cast<int>(ts::ModifierFlags::Readonly));
+							int nModifierFlags = ts()->getCombinedModifierFlags(jdeclProperty);
+							_ASSERT(nModifierFlags == 0 || nModifierFlags == static_cast<int>(ts::ModifierFlags::Readonly));
 							return tc::concat(
 								"	auto ",
 								std::string(jsymProperty->getName()),
