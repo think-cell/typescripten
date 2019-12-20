@@ -120,12 +120,12 @@ std::string MangleSymbolName(ts::TypeChecker jtsTypeChecker, ts::Symbol jsymType
 	std::string strMangled = "_js_j";
 	tc::for_each(std::string(jtsTypeChecker->getFullyQualifiedName(jsymType)), [&](char c) {
 		switch (c) {
-		case '_': strMangled += "_u"; break;
-		case ',': strMangled += "_c"; break;
-		case '.': strMangled += "_d"; break;
-		case '-': strMangled += "_m"; break;
-		case '"': strMangled += "_q"; break;
-		default: strMangled += c; break;
+		case '_': tc::append(strMangled, "_u"); break;
+		case ',': tc::append(strMangled, "_c"); break;
+		case '.': tc::append(strMangled, "_d"); break;
+		case '-': tc::append(strMangled, "_m"); break;
+		case '"': tc::append(strMangled, "_q"); break;
+		default: tc::cont_emplace_back(strMangled, c); break;
 		}
 	});
 	return strMangled;
