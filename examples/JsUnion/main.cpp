@@ -76,6 +76,27 @@ int main() {
 		}
 	}
 	{
+		using BigUnion = js_union<js_null, bool>;
+		{
+			BigUnion const u;
+			_ASSERT(u.getEmval().isNull());
+			static_cast<void>(js_null{u});
+			static_cast<void>(u.get<js_null>());
+		}
+		{
+			BigUnion const u(tc::aggregate_tag, false);
+			_ASSERT(!u.getEmval().isNull());
+			_ASSERT(u.getEmval().isFalse());
+			_ASSERT(!u.get<bool>());
+		}
+		{
+			BigUnion const u(tc::aggregate_tag, true);
+			_ASSERT(!u.getEmval().isNull());
+			_ASSERT(u.getEmval().isTrue());
+			_ASSERT(u.get<bool>());
+		}
+	}
+	{
 		using BigUnion = js_union<js_null, js_string>;
 		{
 			BigUnion const u;

@@ -180,11 +180,18 @@ struct js_union : js_union_detail::CDetectOptionLike<void, Ts...> {
 
 	// Extracting a specific type.
 	template<typename T, std::enable_if_t<
-		!std::is_same<bool, tc::remove_cvref_t<T>>::value && // TODO: how to get bool out? get<>() method?
+		!std::is_same<bool, tc::remove_cvref_t<T>>::value && // operator bool() has special meaning, use get<> to get `bool` out of `js_union`.
 		!(std::is_convertible<Ts, T>::value && ...) &&
 		(std::is_same<Ts, tc::remove_cvref_t<T>>::value || ...)
 	>* = nullptr>
 	explicit operator T() const& noexcept {
+		return get<tc::remove_cvref_t<T>>();
+	}
+
+	template<typename T, std::enable_if_t<
+		(std::is_same<Ts, T>::value || ...)
+	>* = nullptr>
+	T get() const& noexcept {
 		return m_emval.template as<T>();
 	}
 
@@ -203,14 +210,14 @@ public:
 	template<typename T = js_union>
 	typename T::option_like_type operator*() const& noexcept {
 		// TODO: ensure that we're not casting undefined/null to a non-nullable object.
-		return operator typename js_union::option_like_type();
+		return get<typename js_union::option_like_type>();
 	}
 
 	template<typename T = js_union>
 	CArrowProxy<typename T::option_like_type> operator->() const& noexcept {
 		// TODO: ensure that we're not casting undefined/null to a non-nullable object.
 		// TODO: ensure it does not work on js_optional<bool>
-		return operator typename js_union::option_like_type();
+		return get<typename js_union::option_like_type>();
 	}
 
 	explicit operator bool() const& noexcept {
