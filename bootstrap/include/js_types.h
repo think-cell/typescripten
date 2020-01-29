@@ -42,12 +42,16 @@ struct js_unknown {
 	js_unknown(T&& value) noexcept : m_emval(std::forward<T>(value)) {
 	}
 
-	template<typename U, typename = std::enable_if_t<IsJsInteropable<tc::remove_cvref_t<U>>::value>>
-	explicit operator U() const& noexcept { return m_emval.template as<U>(); }
+	// explicit operator bool() may be expected to have different semantics in C++ and JS:
+	// C++: undefined/null only.
+	// JS: undefined/null/NaN/0/""
+	// So we disable it altogether.
 
-	explicit operator bool() const& noexcept {
-		return !!m_emval;
-	}
+	template<typename U, typename = std::enable_if_t<
+		IsJsInteropable<tc::remove_cvref_t<U>>::value &&
+		!std::is_same<tc::remove_cvref_t<U>, bool>::value
+	>>
+	explicit operator U() const& noexcept { return m_emval.template as<U>(); }
 
 private:
 	emscripten::val m_emval;

@@ -41,7 +41,7 @@ using SomeJsClass = tc::js::js_ref<_js_SomeJsClass>;
 		_ASSERTEQUAL(jssjcThis->intValue(), 10); \
 		_ASSERTEQUAL(a, 1.0); \
 		_ASSERTEQUAL(std::string(b), "message"); \
-		_ASSERT(!c); \
+		_ASSERT(c.getEmval().isUndefined()); \
 	}) \
 	CreateCallback(TestPassThisPassAllArguments, void, (pass_this_t, SomeJsClass const jssjcThis, pass_all_arguments_t, Array<js_unknown> const jsarrunkArgs, double a), { \
 		_ASSERTEQUAL(jssjcThis->intValue(), 10); \
@@ -59,7 +59,7 @@ using SomeJsClass = tc::js::js_ref<_js_SomeJsClass>;
 		_ASSERTEQUAL(jssjcThis->intValue(), 10); \
 		_ASSERTEQUAL(a, 1.0); \
 		_ASSERTEQUAL(std::string(b), "message"); \
-		_ASSERT(!c); \
+		_ASSERT(c.getEmval().isUndefined()); \
 		return SomeJsClass(123); \
 	}) \
 	CreateCallback(TestPassThisPassAllArgumentsAndReturn, SomeJsClass, (pass_this_t, SomeJsClass const jssjcThis, pass_all_arguments_t, Array<js_unknown> const jsarrunkArgs, double a), { \
