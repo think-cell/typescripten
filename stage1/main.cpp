@@ -34,14 +34,14 @@ private:
 
 std::vector<ts::Symbol> g_vecjsymEnum, g_vecjsymClass;
 
-bool IsEnumInCpp(ts::Symbol jsymType) {
+bool IsEnumInCpp(ts::Symbol const jsymType) {
     // TODO: more assertions: "I've seen these flags, I think they are unimportant, explicitly ignoring".
 	return
 		static_cast<int>(ts::SymbolFlags::RegularEnum) == jsymType->getFlags() ||
 		static_cast<int>(ts::SymbolFlags::ConstEnum) == jsymType->getFlags();
 }
 
-bool IsClassInCpp(ts::Symbol jsymType) {
+bool IsClassInCpp(ts::Symbol const jsymType) {
     // TODO: more assertions: "I've seen these flags, I think they are unimportant, explicitly ignoring".
 	return jsymType->getFlags() & (
 		static_cast<int>(ts::SymbolFlags::Class) |
@@ -51,7 +51,7 @@ bool IsClassInCpp(ts::Symbol jsymType) {
 		);
 }
 
-void WalkType(ts::TypeChecker& jtsTypeChecker, int nOffset, ts::Symbol jsymType) {
+void WalkType(ts::TypeChecker const& jtsTypeChecker, int nOffset, ts::Symbol const jsymType) {
 	tc::append(std::cout,
 		tc::repeat_n(' ', nOffset),
 		"'", std::string(jtsTypeChecker->getFullyQualifiedName(jsymType)), "', ",
@@ -84,7 +84,7 @@ void WalkType(ts::TypeChecker& jtsTypeChecker, int nOffset, ts::Symbol jsymType)
 
 	tc::append(std::cout, tc::repeat_n(' ', nOffset + 2), "call signatures\n");
 	tc::for_each(jtsTypeChecker->getSignaturesOfType(jtsTypeChecker->getDeclaredTypeOfSymbol(jsymType), ts::SignatureKind::Call),
-		[&](ts::Signature jtsSignature) {
+		[&](ts::Signature const jtsSignature) {
 			tc::append(std::cout,
 				tc::repeat_n(' ', nOffset + 4),
 				std::string(jtsTypeChecker->signatureToString(jtsSignature)),
@@ -95,7 +95,7 @@ void WalkType(ts::TypeChecker& jtsTypeChecker, int nOffset, ts::Symbol jsymType)
 
 	tc::append(std::cout, tc::repeat_n(' ', nOffset + 2), "constructors\n");
 	tc::for_each(jtsTypeChecker->getSignaturesOfType(jtsTypeChecker->getDeclaredTypeOfSymbol(jsymType), ts::SignatureKind::Construct),
-		[&](ts::Signature jtsSignature) {
+		[&](ts::Signature const jtsSignature) {
 			tc::append(std::cout,
 				tc::repeat_n(' ', nOffset + 4),
 				std::string(jtsTypeChecker->signatureToString(jtsSignature)),
@@ -107,7 +107,7 @@ void WalkType(ts::TypeChecker& jtsTypeChecker, int nOffset, ts::Symbol jsymType)
 	if (auto jotsInterfaceType = jtsTypeChecker->getDeclaredTypeOfSymbol(jsymType)->isClassOrInterface()) {
 		tc::append(std::cout, tc::repeat_n(' ', nOffset + 2), "base types\n");
 		tc::for_each(jtsTypeChecker->getBaseTypes(*jotsInterfaceType),
-			[&](ts::BaseType jtsBaseType) {
+			[&](ts::BaseType const jtsBaseType) {
 				tc::append(std::cout,
 					tc::repeat_n(' ', nOffset + 4),
 					std::string(jtsTypeChecker->typeToString(jtsBaseType)),
@@ -118,7 +118,7 @@ void WalkType(ts::TypeChecker& jtsTypeChecker, int nOffset, ts::Symbol jsymType)
 	}
 }
 
-std::string MangleSymbolName(ts::TypeChecker jtsTypeChecker, ts::Symbol jsymType) {
+std::string MangleSymbolName(ts::TypeChecker const& jtsTypeChecker, ts::Symbol const jsymType) {
 	std::string strMangled = "_js_j";
 	tc::for_each(std::string(jtsTypeChecker->getFullyQualifiedName(jsymType)), [&](char c) {
 		switch (c) {
@@ -133,7 +133,7 @@ std::string MangleSymbolName(ts::TypeChecker jtsTypeChecker, ts::Symbol jsymType
 	return strMangled;
 }
 
-std::string MangleType(ts::TypeChecker jtsTypeChecker, ts::Type jtypeRoot) {
+std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtypeRoot) {
     // TODO: more assertions: "I've seen these flags, I think they are unimportant, explicitly ignoring".
 	// See checker.ts:typeToTypeNodeHelper
 	if (jtypeRoot->flags() & static_cast<int>(ts::TypeFlags::Any) ||
@@ -164,7 +164,7 @@ std::string MangleType(ts::TypeChecker jtsTypeChecker, ts::Type jtypeRoot) {
 		return tc::explicit_cast<std::string>(tc::concat(
 			"js_union<",
 			tc::join_separated(
-				tc::transform((*jotsUnionType)->types(), [&](ts::Type jtypeUnionOption) {
+				tc::transform((*jotsUnionType)->types(), [&](ts::Type const jtypeUnionOption) {
 					return MangleType(jtsTypeChecker, jtypeUnionOption);
 				}),
 				", "
@@ -196,18 +196,18 @@ std::string MangleType(ts::TypeChecker jtsTypeChecker, ts::Type jtypeRoot) {
 int main(int argc, char* argv[]) {
 	_ASSERT(2 <= argc);
 
-	ts::CompilerOptions jtsCompilerOptions;
+	ts::CompilerOptions const jtsCompilerOptions;
 	jtsCompilerOptions->strict(true);
 	jtsCompilerOptions->target(ts::ScriptTarget::ES5);
 	jtsCompilerOptions->module(ts::ModuleKind::CommonJS);
 
-	auto rngstrFileNames = tc::make_iterator_range(argv + 1, argv + argc);
-	ts::Program jtsProgram = ts()->createProgram(ReadonlyArray<js_string>(rngstrFileNames), jtsCompilerOptions);
+	auto const rngstrFileNames = tc::make_iterator_range(argv + 1, argv + argc);
+	ts::Program const jtsProgram = ts()->createProgram(ReadonlyArray<js_string>(rngstrFileNames), jtsCompilerOptions);
 
-	ts::TypeChecker jtsTypeChecker = jtsProgram->getTypeChecker();
+	ts::TypeChecker const jtsTypeChecker = jtsProgram->getTypeChecker();
 
 	{
-		auto jtsReadOnlyArrayDiagnostics = ts()->getPreEmitDiagnostics(jtsProgram);
+		auto const jtsReadOnlyArrayDiagnostics = ts()->getPreEmitDiagnostics(jtsProgram);
 		if (jtsReadOnlyArrayDiagnostics->length()) {
 			console()->log(ts()->formatDiagnosticsWithColorAndContext(jtsReadOnlyArrayDiagnostics, ts()->createCompilerHost(jtsCompilerOptions)));
 			return 1;
@@ -241,19 +241,19 @@ int main(int argc, char* argv[]) {
 
 	{
 		tc::append(std::cout,
-			tc::join(tc::transform(g_vecjsymEnum, [&](ts::Symbol jsymEnum) {
+			tc::join(tc::transform(g_vecjsymEnum, [&](ts::Symbol const jsymEnum) {
 				_ASSERT(jsymEnum->exports());
 				return tc::concat(
 					"enum class ", MangleSymbolName(jtsTypeChecker, jsymEnum), " {\n",
 					tc::join(
-						tc::transform(*jsymEnum->exports(), [&](ts::Symbol jsymOption) {
+						tc::transform(*jsymEnum->exports(), [&](ts::Symbol const jsymOption) {
 							_ASSERTEQUAL(jsymOption->getFlags(), static_cast<int>(ts::SymbolFlags::EnumMember));
-							auto jarrDeclaration = jsymOption->declarations();
+							auto const jarrDeclaration = jsymOption->declarations();
 							_ASSERTEQUAL(jarrDeclaration->length(), 1);
-							auto jotsEnumMember = ts()->isEnumMember(jarrDeclaration[0]);
+							auto const jotsEnumMember = ts()->isEnumMember(jarrDeclaration[0]);
 							_ASSERT(jotsEnumMember);
 							_ASSERTEQUAL(ts()->getCombinedModifierFlags(*jotsEnumMember), 0);
-							auto junionOptionValue = jtsTypeChecker->getConstantValue(*jotsEnumMember);
+							auto const junionOptionValue = jtsTypeChecker->getConstantValue(*jotsEnumMember);
 							if (!junionOptionValue.getEmval().isNumber()) {
 								// Uncomputed value.
 								return tc::explicit_cast<std::string>(tc::concat(
@@ -271,10 +271,10 @@ int main(int argc, char* argv[]) {
 					"};\n"
 				);
 			})),
-			tc::join(tc::transform(g_vecjsymClass, [&](ts::Symbol jsymClass) {
+			tc::join(tc::transform(g_vecjsymClass, [&](ts::Symbol const jsymClass) {
 				return tc::concat("struct ", MangleSymbolName(jtsTypeChecker, jsymClass), ";\n");
 			})),
-			tc::join(tc::transform(g_vecjsymClass, [&](ts::Symbol jsymClass) {
+			tc::join(tc::transform(g_vecjsymClass, [&](ts::Symbol const jsymClass) {
 				Array<ts::Symbol> jarrsymExport(std::initializer_list<ts::Symbol>{});
 				if (jsymClass->exports()) {
 					jarrsymExport = jtsTypeChecker->getExportsOfModule(jsymClass);
@@ -287,9 +287,9 @@ int main(int argc, char* argv[]) {
 				std::vector<ts::Symbol> vecjsymBaseClass;
 				if (auto joptInterfaceType = jtsTypeChecker->getDeclaredTypeOfSymbol(jsymClass)->isClassOrInterface()) {
 					tc::for_each(jtsTypeChecker->getBaseTypes(*joptInterfaceType),
-						[&](ts::BaseType jtsBaseType) {
-							if (auto jotsInterfaceType = tc::reluctant_implicit_cast<ts::Type>(jtsBaseType)->isClassOrInterface()) {
-								auto josymInterface = (*jotsInterfaceType)->getSymbol();
+						[&](ts::BaseType const jtsBaseType) {
+							if (auto const jotsInterfaceType = tc::reluctant_implicit_cast<ts::Type>(jtsBaseType)->isClassOrInterface()) {
+								auto const josymInterface = (*jotsInterfaceType)->getSymbol();
 								_ASSERT(josymInterface);
 								tc::cont_emplace_back(vecjsymBaseClass, *josymInterface);
 							}
@@ -306,7 +306,7 @@ int main(int argc, char* argv[]) {
 					!vecjsymBaseClass.empty() // TODO: tc::conditional_range
 					    ? tc::explicit_cast<std::string>(tc::join_separated(
 							tc::transform(vecjsymBaseClass,
-								[&](ts::Symbol jsymBaseClass) {
+								[&](ts::Symbol const jsymBaseClass) {
 									return tc::concat("virtual ", MangleSymbolName(jtsTypeChecker, jsymBaseClass));
 								}
 							),
@@ -315,7 +315,7 @@ int main(int argc, char* argv[]) {
 					,
 					" {\n",
 					tc::join(tc::transform(
-						tc::filter(jarrsymExport, [&](ts::Symbol jsymExport) {
+						tc::filter(jarrsymExport, [&](ts::Symbol const jsymExport) {
 							return IsEnumInCpp(jsymExport) || IsClassInCpp(jsymExport);
 						}),
 						[&](ts::Symbol jsymExport) {
@@ -329,13 +329,13 @@ int main(int argc, char* argv[]) {
 						}
 					)),
 					tc::join(tc::transform(
-						tc::filter(vecjsymMember, [&](ts::Symbol jsymMember) {
+						tc::filter(vecjsymMember, [&](ts::Symbol const jsymMember) {
 							return static_cast<int>(ts::SymbolFlags::Property) == jsymMember->getFlags();
 						}),
-						[&](ts::Symbol jsymProperty) {
+						[&](ts::Symbol const jsymProperty) {
 							_ASSERTEQUAL(jsymProperty->declarations()->length(), 1);
-							ts::Declaration jdeclProperty = jsymProperty->declarations()[0];
-							int nModifierFlags = ts()->getCombinedModifierFlags(jdeclProperty);
+							ts::Declaration const jdeclProperty = jsymProperty->declarations()[0];
+							int const nModifierFlags = ts()->getCombinedModifierFlags(jdeclProperty);
 							_ASSERT(nModifierFlags == 0 || nModifierFlags == static_cast<int>(ts::ModifierFlags::Readonly));
 							return tc::concat(
 								"	auto ",
@@ -360,19 +360,19 @@ int main(int argc, char* argv[]) {
 						}
 					)),
 					tc::join(tc::transform(
-						tc::filter(vecjsymMember, [&](ts::Symbol jsymMember) {
+						tc::filter(vecjsymMember, [&](ts::Symbol const jsymMember) {
 							return static_cast<int>(ts::SymbolFlags::Method) == jsymMember->getFlags();
 						}),
-						[&](ts::Symbol jsymMethod) {
+						[&](ts::Symbol const jsymMethod) {
 							return tc::join(tc::transform(
 								jsymMethod->declarations(),
-								[&](ts::Declaration jdeclMethod) {
+								[&](ts::Declaration const jdeclMethod) {
 									_ASSERTEQUAL(ts()->getCombinedModifierFlags(jdeclMethod), 0);
 									tc::js::js_optional<ts::SignatureDeclaration> jotsSignatureDeclaration;
-									if (auto jotsMethodSignature = ts()->isMethodSignature(jdeclMethod)) {
+									if (auto const jotsMethodSignature = ts()->isMethodSignature(jdeclMethod)) {
 										jotsSignatureDeclaration = *jotsMethodSignature;
 									}
-									if (auto jotsMethodDeclaration = ts()->isMethodDeclaration(jdeclMethod)) {
+									if (auto const jotsMethodDeclaration = ts()->isMethodDeclaration(jdeclMethod)) {
 									    // TODO: assert jotsSignatureDeclaration is empty.
 										jotsSignatureDeclaration = *jotsMethodDeclaration;
 									}
@@ -382,7 +382,7 @@ int main(int argc, char* argv[]) {
 									_ASSERT(jotsSignature);
 
 									auto const jtsSignature = *jotsSignature; // move _ASSERT to this asterisk, remove _ASSERT above.
-									if (auto jrarrunkTypeParameter = jtsSignature->getTypeParameters()) {
+									if (auto const jrarrunkTypeParameter = jtsSignature->getTypeParameters()) {
 										_ASSERT(tc::empty(*jrarrunkTypeParameter));
 									}
 									return tc::concat(
@@ -407,7 +407,7 @@ int main(int argc, char* argv[]) {
 											"(\"", std::string(jsymMethod->getName()), "\"",
 												tc::join(tc::transform(
 													jtsSignature->getParameters(),
-													[&](ts::Symbol jsymParameter) {
+													[&](ts::Symbol const jsymParameter) {
 														return tc::concat(", ", std::string(jsymParameter->getName()));
 													}
 												)),
