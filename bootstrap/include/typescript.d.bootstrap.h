@@ -547,25 +547,25 @@ struct _jsenums_ts {
 	};
 
 	enum class ModifierFlags {
-        None = 0,
-        Export = 1,
-        Ambient = 2,
-        Public = 4,
-        Private = 8,
-        Protected = 16,
-        Static = 32,
-        Readonly = 64,
-        Abstract = 128,
-        Async = 256,
-        Default = 512,
-        Const = 2048,
-        HasComputedFlags = 536870912,
-        AccessibilityModifier = 28,
-        ParameterPropertyModifier = 92,
-        NonPublicAccessibilityModifier = 24,
-        TypeScriptModifier = 2270,
-        ExportDefault = 513,
-        All = 3071
+		None = 0,
+		Export = 1,
+		Ambient = 2,
+		Public = 4,
+		Private = 8,
+		Protected = 16,
+		Static = 32,
+		Readonly = 64,
+		Abstract = 128,
+		Async = 256,
+		Default = 512,
+		Const = 2048,
+		HasComputedFlags = 536870912,
+		AccessibilityModifier = 28,
+		ParameterPropertyModifier = 92,
+		NonPublicAccessibilityModifier = 24,
+		TypeScriptModifier = 2270,
+		ExportDefault = 513,
+		All = 3071
 	};
 };
 } // namespace globals::no_adl
@@ -973,7 +973,7 @@ struct _js_ts : virtual IObject, _jsdefs_ts {
 	}
 
 	auto getCombinedModifierFlags(js_ref<_js_Declaration> node) noexcept {
-	    return tc::explicit_cast<int>(_call<double>("getCombinedModifierFlags", node));
+		return tc::explicit_cast<int>(_call<double>("getCombinedModifierFlags", node));
 	}
 
 	static emscripten::val _construct() noexcept { return emscripten::val::global("ts"); }

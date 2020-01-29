@@ -35,14 +35,14 @@ private:
 std::vector<ts::Symbol> g_vecjsymEnum, g_vecjsymClass;
 
 bool IsEnumInCpp(ts::Symbol const jsymType) {
-    // TODO: more assertions: "I've seen these flags, I think they are unimportant, explicitly ignoring".
+	// TODO: more assertions: "I've seen these flags, I think they are unimportant, explicitly ignoring".
 	return
 		static_cast<int>(ts::SymbolFlags::RegularEnum) == jsymType->getFlags() ||
 		static_cast<int>(ts::SymbolFlags::ConstEnum) == jsymType->getFlags();
 }
 
 bool IsClassInCpp(ts::Symbol const jsymType) {
-    // TODO: more assertions: "I've seen these flags, I think they are unimportant, explicitly ignoring".
+	// TODO: more assertions: "I've seen these flags, I think they are unimportant, explicitly ignoring".
 	return jsymType->getFlags() & (
 		static_cast<int>(ts::SymbolFlags::Class) |
 		static_cast<int>(ts::SymbolFlags::Interface) |
@@ -134,7 +134,7 @@ std::string MangleSymbolName(ts::TypeChecker const& jtsTypeChecker, ts::Symbol c
 }
 
 std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtypeRoot) {
-    // TODO: more assertions: "I've seen these flags, I think they are unimportant, explicitly ignoring".
+	// TODO: more assertions: "I've seen these flags, I think they are unimportant, explicitly ignoring".
 	// See checker.ts:typeToTypeNodeHelper
 	if (jtypeRoot->flags() & static_cast<int>(ts::TypeFlags::Any) ||
 		jtypeRoot->flags() & static_cast<int>(ts::TypeFlags::Unknown)
@@ -304,7 +304,7 @@ int main(int argc, char* argv[]) {
 					"struct ", MangleSymbolName(jtsTypeChecker, jsymClass),
 					" : ",
 					!vecjsymBaseClass.empty() // TODO: tc::conditional_range
-					    ? tc::explicit_cast<std::string>(tc::join_separated(
+						? tc::explicit_cast<std::string>(tc::join_separated(
 							tc::transform(vecjsymBaseClass,
 								[&](ts::Symbol const jsymBaseClass) {
 									return tc::concat("virtual ", MangleSymbolName(jtsTypeChecker, jsymBaseClass));
@@ -373,7 +373,7 @@ int main(int argc, char* argv[]) {
 										jotsSignatureDeclaration = *jotsMethodSignature;
 									}
 									if (auto const jotsMethodDeclaration = ts()->isMethodDeclaration(jdeclMethod)) {
-									    // TODO: assert jotsSignatureDeclaration is empty.
+										// TODO: assert jotsSignatureDeclaration is empty.
 										jotsSignatureDeclaration = *jotsMethodDeclaration;
 									}
 									_ASSERT(jotsSignatureDeclaration);
