@@ -258,13 +258,13 @@ struct js_string final {
 	) {
 	}
 
-	int length() noexcept { return m_emval["length"].as<int>(); }
+	int length() const& noexcept { return m_emval["length"].as<int>(); }
 
 	explicit operator bool() const& noexcept {
 		return !!m_emval;
 	}
 
-	explicit operator std::string() noexcept { return m_emval.template as<std::string>(); }
+	explicit operator std::string() const& noexcept { return m_emval.template as<std::string>(); }
 
 private:
 	emscripten::val m_emval;
