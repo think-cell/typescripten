@@ -285,7 +285,7 @@ int main(int argc, char* argv[]) {
 				if (auto joptInterfaceType = jtsTypeChecker->getDeclaredTypeOfSymbol(jsymClass)->isClassOrInterface()) {
 					tc::for_each(jtsTypeChecker->getBaseTypes(*joptInterfaceType),
 						[&](ts::BaseType jtsBaseType) {
-							if (auto jotsInterfaceType = ts::Type(jtsBaseType)->isClassOrInterface()) {
+							if (auto jotsInterfaceType = tc::reluctant_implicit_cast<ts::Type>(jtsBaseType)->isClassOrInterface()) {
 								auto josymInterface = (*jotsInterfaceType)->getSymbol();
 								_ASSERT(josymInterface);
 								tc::cont_emplace_back(vecjsymBaseClass, *josymInterface);
@@ -376,10 +376,10 @@ int main(int argc, char* argv[]) {
 									}
 									_ASSERT(jotsSignatureDeclaration);
 
-									auto jotsSignature = jtsTypeChecker->getSignatureFromDeclaration(*jotsSignatureDeclaration);
+									auto const jotsSignature = jtsTypeChecker->getSignatureFromDeclaration(*jotsSignatureDeclaration);
 									_ASSERT(jotsSignature);
 
-									auto jtsSignature = *jotsSignature;
+									auto const jtsSignature = *jotsSignature;
 									if (auto jrarrunkTypeParameter = jtsSignature->getTypeParameters()) {
 										_ASSERT(tc::empty(*jrarrunkTypeParameter));
 									}
@@ -390,7 +390,7 @@ int main(int argc, char* argv[]) {
 										tc::join_separated(
 											tc::transform(
 												jtsSignature->getParameters(),
-												[&](ts::Symbol jsymParameter) {
+												[&](ts::Symbol const jsymParameter) {
 													return tc::concat(
 														MangleType(jtsTypeChecker, jtsTypeChecker->getTypeOfSymbolAtLocation(jsymParameter, jdeclMethod)),
 														" ",
