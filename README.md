@@ -31,7 +31,7 @@ Close analogues are Rust's [stdweb](https://github.com/koute/stdweb) and [wasm-b
 * Member fields start with `m_`.
 * All variables are prefixed with a type tag: `<type-tag>Name`.
     * `Name` is camel-case.
-    * There should be no duplicates between type tag and name, e.g. `vecsArguments`, not `vecsArgumentsVector`.
+    * There should be no duplicates between type tag and name, e.g. `vecstrArguments`, not `vecstrArgumentsVector`.
 * Functions' and variables' names are `CamelCase`.
 * `int`'s type tag is `n`, e.g. `nArguments`.
 * `std::string`'s type tag is `str`.
@@ -42,6 +42,6 @@ Close analogues are Rust's [stdweb](https://github.com/koute/stdweb) and [wasm-b
     * E.g. `js_ref<js_optional<ts::Symbol>> josymDeclaration;`
 * For (almost) singleton objects from TypeScript Compiler API: `jts<exact-type-name-from-typescript>`.
     * "Almost singleton" ~ "does not require any name in local scope, type is enough".
-    * `Symbol` is never "almost singleton" to avoid confusion.
+    * The decision is made on a per-class basis, e.g. `Symbol` is never "almost singleton" to avoid confusion.
     * E.g. `jtsTypeChecker`.
 * Optional singleton objects are `jots<exact-type-name-from-typescript>`.
