@@ -375,6 +375,7 @@ int main(int argc, char* argv[]) {
 										jotsSignatureDeclaration = *jotsMethodSignature;
 									}
 									if (auto jotsMethodDeclaration = ts()->isMethodDeclaration(jdeclMethod)) {
+									    // TODO: assert jotsSignatureDeclaration is empty.
 										jotsSignatureDeclaration = *jotsMethodDeclaration;
 									}
 									_ASSERT(jotsSignatureDeclaration);
@@ -382,7 +383,7 @@ int main(int argc, char* argv[]) {
 									auto const jotsSignature = jtsTypeChecker->getSignatureFromDeclaration(*jotsSignatureDeclaration);
 									_ASSERT(jotsSignature);
 
-									auto const jtsSignature = *jotsSignature;
+									auto const jtsSignature = *jotsSignature; // move _ASSERT to this asterisk, remove _ASSERT above.
 									if (auto jrarrunkTypeParameter = jtsSignature->getTypeParameters()) {
 										_ASSERT(tc::empty(*jrarrunkTypeParameter));
 									}
@@ -405,14 +406,14 @@ int main(int argc, char* argv[]) {
 										),
 										") noexcept {\n",
 										"		return _call<", MangleType(jtsTypeChecker, jtsSignature->getReturnType()), ">",
-										"(\"", std::string(jsymMethod->getName()), "\"",
-										tc::join(tc::transform(
-											jtsSignature->getParameters(),
-											[&](ts::Symbol jsymParameter) {
-												return tc::concat(", ", std::string(jsymParameter->getName()));
-											}
-										)),
-										");\n",
+											"(\"", std::string(jsymMethod->getName()), "\"",
+												tc::join(tc::transform(
+													jtsSignature->getParameters(),
+													[&](ts::Symbol jsymParameter) {
+														return tc::concat(", ", std::string(jsymParameter->getName()));
+													}
+												)),
+											");\n",
 										"	}\n"
 									);
 								}
