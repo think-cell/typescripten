@@ -45,7 +45,7 @@ struct js_unknown {
 	template<typename U, typename = std::enable_if_t<IsJsInteropable<tc::remove_cvref_t<U>>::value>>
 	explicit operator U() const& noexcept { return m_emval.template as<U>(); }
 
-	explicit operator bool() const noexcept {
+	explicit operator bool() const& noexcept {
 		return !!m_emval;
 	}
 
@@ -58,7 +58,7 @@ struct js_undefined {
 	explicit js_undefined(emscripten::val const& emval) noexcept {
 		_ASSERT(emval.isUndefined());
 	}
-	emscripten::val getEmval() const noexcept { return emscripten::val::undefined(); }
+	emscripten::val getEmval() const& noexcept { return emscripten::val::undefined(); }
 };
 
 struct js_null {
@@ -66,7 +66,7 @@ struct js_null {
 	explicit js_null(emscripten::val const& emval) noexcept {
 		_ASSERT(emval.isNull());
 	}
-	emscripten::val getEmval() const noexcept { return emscripten::val::null(); }
+	emscripten::val getEmval() const& noexcept { return emscripten::val::null(); }
 };
 
 struct js_string;
@@ -169,7 +169,7 @@ struct js_union : js_union_detail::CDetectOptionLike<Ts...> {
 		!std::is_same<bool, tc::remove_cvref_t<T>>::value &&
 		(std::is_convertible<Ts, T>::value && ...)
 	>* = nullptr>
-	operator T() const noexcept {
+	operator T() const& noexcept {
 		return m_emval.template as<T>();
 	}
 
@@ -179,7 +179,7 @@ struct js_union : js_union_detail::CDetectOptionLike<Ts...> {
 		!(std::is_convertible<Ts, T>::value && ...) &&
 		(std::is_same<Ts, tc::remove_cvref_t<T>>::value || ...)
 	>* = nullptr>
-	explicit operator T() const noexcept {
+	explicit operator T() const& noexcept {
 		return m_emval.template as<T>();
 	}
 
@@ -190,25 +190,25 @@ private:
 	struct CArrowProxy {
 		T m_value;
 		CArrowProxy(T&& value) noexcept : m_value(tc_move(value)) {}
-		T* operator->() noexcept { return &m_value; }
-		T const* operator->() const noexcept { return &m_value; }
+		T* operator->() & noexcept { return &m_value; }
+		T const* operator->() const& noexcept { return &m_value; }
 	};
 
 public:
 	template<typename T = js_union>
-	typename T::option_like_type operator*() const noexcept {
+	typename T::option_like_type operator*() const& noexcept {
 		// TODO: ensure that we're not casting undefined/null to a non-nullable object.
 		return operator typename js_union::option_like_type();
 	}
 
 	template<typename T = js_union>
-	CArrowProxy<typename T::option_like_type> operator->() const noexcept {
+	CArrowProxy<typename T::option_like_type> operator->() const& noexcept {
 		// TODO: ensure that we're not casting undefined/null to a non-nullable object.
 		// TODO: ensure it does not work on js_optional<bool>
 		return operator typename js_union::option_like_type();
 	}
 
-	explicit operator bool() const noexcept {
+	explicit operator bool() const& noexcept {
 		// TODO: this matches JS logic for 0. But what should we do with js_union<js_undefined, double>?
 		// We probably should only enable this operator iff all of the following is true:
 		// 1. Contains exactly one of: undefined, null
@@ -220,7 +220,7 @@ public:
 private:
 	emscripten::val m_emval;
 
-	void assertEmvalInRange() const noexcept {
+	void assertEmvalInRange() const& noexcept {
 		if constexpr (!has_undefined) {
 			_ASSERT(!m_emval.isUndefined());
 		}
@@ -260,7 +260,7 @@ struct js_string final {
 
 	int length() noexcept { return m_emval["length"].as<int>(); }
 
-	explicit operator bool() const noexcept {
+	explicit operator bool() const& noexcept {
 		return !!m_emval;
 	}
 
