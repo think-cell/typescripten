@@ -302,19 +302,17 @@ int main(int argc, char* argv[]) {
 				// TODO: force eager evaluation to keep arrays in scope.
 				return tc::explicit_cast<std::string>(tc::concat(
 					"struct ", MangleSymbolName(jtsTypeChecker, jsymClass),
-					(vecjsymBaseClass.empty() ? "" :
-						tc::explicit_cast<std::string>(tc::concat(
-							" : ",
-							tc::join_separated(
-								tc::transform(vecjsymBaseClass,
-									[&](ts::Symbol jsymBaseClass) {
-										return tc::concat("virtual ", MangleSymbolName(jtsTypeChecker, jsymBaseClass));
-									}
-								),
-								", "
-							)
-						))
-					),
+					" : ",
+					!vecjsymBaseClass.empty() // TODO: tc::conditional_range
+					    ? tc::explicit_cast<std::string>(tc::join_separated(
+							tc::transform(vecjsymBaseClass,
+								[&](ts::Symbol jsymBaseClass) {
+									return tc::concat("virtual ", MangleSymbolName(jtsTypeChecker, jsymBaseClass));
+								}
+							),
+							", "
+						)) : std::string("virtual IObject")
+					,
 					" {\n",
 					tc::join(tc::transform(
 						tc::filter(jarrsymExport, [&](ts::Symbol jsymExport) {
