@@ -80,17 +80,21 @@ using no_adl::js_string;
 
 namespace js_union_detail {
 namespace no_adl {
-template<typename... Ts>
+template<typename, typename... Ts>
 struct CDetectOptionLike {
 };
 
 template<typename T>
-struct CDetectOptionLike<js_undefined, T> {
+struct CDetectOptionLike<std::enable_if_t<
+	!std::is_same<js_null, T>::value
+>, js_undefined, T> {
 	using option_like_type = T;
 };
 
 template<typename T>
-struct CDetectOptionLike<js_null, T> {
+struct CDetectOptionLike<std::enable_if_t<
+	!std::is_same<js_undefined, T>::value
+>, js_null, T> {
 	using option_like_type = T;
 };
 
@@ -112,7 +116,7 @@ using FindUniqueExplicitCastableFrom = tc::type::find_unique_if<ListTs, no_adl::
 namespace no_adl {
 // TODO: optimize by providing JS-side toWireType/fromWireType for integrals/bools and getting rid of emscripten::val
 template<typename... Ts>
-struct js_union : js_union_detail::CDetectOptionLike<Ts...> {
+struct js_union : js_union_detail::CDetectOptionLike<void, Ts...> {
 	static inline constexpr auto instantiated = true;
 
 	static_assert(1 < sizeof...(Ts));
