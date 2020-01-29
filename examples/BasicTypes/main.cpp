@@ -12,7 +12,7 @@ using tc::js::js_optional;
 
 int main() {
 	{
-		auto message = tc::explicit_cast<js_string>("Hello World");
+		auto const message = tc::explicit_cast<js_string>("Hello World");
 		static_assert(!std::is_constructible<js_string, double>::value);
 		_ASSERTEQUAL(message.length(), 11);
 		_ASSERTEQUAL(tc::explicit_cast<std::string>(message), "Hello World");
@@ -27,19 +27,19 @@ int main() {
 		_ASSERT(message.getEmval().strictlyEquals(anyMessage.getEmval()));
 
 		// Explicit derivedcast.
-		js_string message2(anyMessage);
+		js_string const message2(anyMessage);
 		static_assert(!std::is_convertible<js_unknown, js_string>::value);
 		_ASSERT(message.getEmval().strictlyEquals(message2.getEmval()));
 	}
 
 	{
-		emscripten::val emval{tc::js::js_undefined{}};
+		emscripten::val const emval{tc::js::js_undefined{}};
 		_ASSERTE(emval.isUndefined());
 		tc::js::js_undefined{emval};
 	}
 
 	{
-		emscripten::val emval{tc::js::js_null{}};
+		emscripten::val const emval{tc::js::js_null{}};
 		_ASSERTE(emval.isNull());
 		tc::js::js_null{emval};
 	}
@@ -54,22 +54,22 @@ int main() {
 			>::value);
 
 		{
-			emscripten::val emval{OptionalUnknown()};
+			emscripten::val const emval{OptionalUnknown()};
 			_ASSERT(!emval.template as<OptionalUnknown>());
 			_ASSERT(emval.isUndefined());
 		}
 		{
-			tc::js::js_ref<tc::js::IObject> jsOrigin(emscripten::val::object());
+			tc::js::js_ref<tc::js::IObject> const jsOrigin(emscripten::val::object());
 			emscripten::val emval{OptionalUnknown(jsOrigin)};
-			auto ounkParsed = emval.template as<OptionalUnknown>();
+			auto const ounkParsed = emval.template as<OptionalUnknown>();
 			_ASSERT(ounkParsed);
 			_ASSERT(ounkParsed->getEmval().strictlyEquals(jsOrigin.getEmval()));
 			_ASSERT(!emval.isUndefined());
 			_ASSERT(emval.strictlyEquals(jsOrigin.getEmval()));
 		}
 		{
-			OptionalUnknown ounk;
-			emscripten::val emval(ounk);
+			OptionalUnknown const ounk;
+			emscripten::val const emval(ounk);
 			_ASSERT(!emval.template as<OptionalUnknown>());
 			_ASSERT(emval.isUndefined());
 		}
@@ -78,14 +78,14 @@ int main() {
 	{
 		// Test optional of double.
 		{
-			js_optional<double> iValue;
-			emscripten::val emval(iValue);
+			js_optional<double> const iValue;
+			emscripten::val const emval(iValue);
 			_ASSERT(emval.isUndefined());
 			_ASSERT(!emval.isNumber());
 		}
 		{
-			js_optional<double> iValue(123.5);
-			emscripten::val emval(iValue);
+			js_optional<double> const iValue(123.5);
+			emscripten::val const emval(iValue);
 			_ASSERT(!emval.isUndefined());
 			_ASSERT(emval.isNumber());
 			_ASSERT(123.5 == emval.as<double>());
@@ -94,7 +94,7 @@ int main() {
 
 	{
 		// It works, that's why we prohibit int.
-		emscripten::val x(1.23);
+		emscripten::val const x(1.23);
 		_ASSERTEQUAL(x.as<int>(), 1);
 	}
 	return 0;

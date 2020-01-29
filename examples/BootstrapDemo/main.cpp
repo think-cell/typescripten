@@ -19,7 +19,7 @@ template<> struct IsJsIntegralEnum<MyIntEnum> : std::true_type {};
 
 int main() {
 	{
-		auto arr = tc::explicit_cast<ReadonlyArray<double>>(std::initializer_list<double>{1, 2, 3});
+		auto const arr = tc::explicit_cast<ReadonlyArray<double>>(std::initializer_list<double>{1, 2, 3});
 		static_assert(!tc::is_explicit_castable<ReadonlyArray<double>, double>::value);
 		console()->log(arr);
 		_ASSERTEQUAL(arr->length(), 3);
@@ -29,7 +29,7 @@ int main() {
 	}
 
 	{
-		Array<double> arr(std::initializer_list<double>{});
+		Array<double> const arr(std::initializer_list<double>{});
 		_ASSERT(tc::empty(arr));
 		_ASSERTEQUAL(arr->length(), 0);
 		arr->push(10);
@@ -39,14 +39,14 @@ int main() {
 	}
 
 	{
-		Array<js_string> arr(std::initializer_list<char const*>{"Hello", "Hi!"});
+		Array<js_string> const arr(std::initializer_list<char const*>{"Hello", "Hi!"});
 		_ASSERTEQUAL(arr->length(), 2);
 		_ASSERTEQUAL(arr[0].length(), 5);
 		_ASSERTEQUAL(arr[1].length(), 3);
 		_ASSERT(!tc::empty(arr));
 	}
 
-	auto arr = tc::explicit_cast<Array<double>>(std::initializer_list<double>{1, 2, 3});
+	auto const arr = tc::explicit_cast<Array<double>>(std::initializer_list<double>{1, 2, 3});
 	static_assert(!tc::is_explicit_castable<Array<double>, double>::value);
 	console()->log(arr);
 	_ASSERTEQUAL(arr->length(), 3);
@@ -75,7 +75,7 @@ int main() {
 	}
 
 	{
-		emscripten::val emval(MyIntEnum::Foo);
+		emscripten::val const emval(MyIntEnum::Foo);
 		_ASSERT(emval.isNumber());
 		_ASSERTEQUAL(emval.template as<double>(), 10.0);
 		_ASSERTEQUAL(emval.template as<MyIntEnum>(), MyIntEnum::Foo);
