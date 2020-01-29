@@ -35,12 +35,14 @@ private:
 std::vector<ts::Symbol> g_vecjsymEnum, g_vecjsymClass;
 
 bool IsEnumInCpp(ts::Symbol jsymType) {
+    // TODO: more assertions: "I've seen these flags, I think they are unimportant, explicitly ignoring".
 	return
 		static_cast<int>(ts::SymbolFlags::RegularEnum) == jsymType->getFlags() ||
 		static_cast<int>(ts::SymbolFlags::ConstEnum) == jsymType->getFlags();
 }
 
 bool IsClassInCpp(ts::Symbol jsymType) {
+    // TODO: more assertions: "I've seen these flags, I think they are unimportant, explicitly ignoring".
 	return jsymType->getFlags() & (
 		static_cast<int>(ts::SymbolFlags::Class) |
 		static_cast<int>(ts::SymbolFlags::Interface) |
@@ -132,6 +134,7 @@ std::string MangleSymbolName(ts::TypeChecker jtsTypeChecker, ts::Symbol jsymType
 }
 
 std::string MangleType(ts::TypeChecker jtsTypeChecker, ts::Type jtypeRoot) {
+    // TODO: more assertions: "I've seen these flags, I think they are unimportant, explicitly ignoring".
 	// See checker.ts:typeToTypeNodeHelper
 	if (jtypeRoot->flags() & static_cast<int>(ts::TypeFlags::Any) ||
 		jtypeRoot->flags() & static_cast<int>(ts::TypeFlags::Unknown)
