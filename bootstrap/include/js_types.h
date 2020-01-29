@@ -118,6 +118,7 @@ struct js_union : js_union_detail::CDetectOptionLike<Ts...> {
 	static_assert(1 < sizeof...(Ts));
 	static_assert((IsJsInteropable<Ts>::value && ...));
 	static_assert((!std::is_same<Ts, js_unknown>::value && ...));
+	static_assert((!std::is_same<Ts, void>::value && ...));
 
 	using ListTs = tc::type::list<Ts...>;
 
@@ -174,7 +175,7 @@ struct js_union : js_union_detail::CDetectOptionLike<Ts...> {
 
 	// Extracting a specific type.
 	template<typename T, std::enable_if_t<
-		!std::is_same<bool, tc::remove_cvref_t<T>>::value &&
+		!std::is_same<bool, tc::remove_cvref_t<T>>::value && // TODO: how to get bool out? get<>() method?
 		!(std::is_convertible<Ts, T>::value && ...) &&
 		(std::is_same<Ts, tc::remove_cvref_t<T>>::value || ...)
 	>* = nullptr>
@@ -196,15 +197,23 @@ private:
 public:
 	template<typename T = js_union>
 	typename T::option_like_type operator*() const noexcept {
+		// TODO: ensure that we're not casting undefined/null to a non-nullable object.
 		return operator typename js_union::option_like_type();
 	}
 
 	template<typename T = js_union>
 	CArrowProxy<typename T::option_like_type> operator->() const noexcept {
+		// TODO: ensure that we're not casting undefined/null to a non-nullable object.
+		// TODO: ensure it does not work on js_optional<bool>
 		return operator typename js_union::option_like_type();
 	}
 
 	explicit operator bool() const noexcept {
+		// TODO: this matches JS logic for 0. But what should we do with js_union<js_undefined, double>?
+		// We probably should only enable this operator iff all of the following is true:
+		// 1. Contains exactly one of: undefined, null
+		// 2. Contains only js objects (IObject).
+		// 3. Contains none of: number, string, boolean, enum.
 		return !!m_emval;
 	}
 
