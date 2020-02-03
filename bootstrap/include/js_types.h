@@ -185,8 +185,8 @@ struct js_union : js_union_detail::CDetectOptionLike<void, Ts...> {
 	// Extracting a specific type.
 	template<typename T, std::enable_if_t<
 		!std::is_same<bool, tc::remove_cvref_t<T>>::value && // operator bool() has special meaning, use get<> to get `bool` out of `js_union`.
-		!(std::is_convertible<Ts, T>::value && ...) &&
-		(std::is_same<Ts, tc::remove_cvref_t<T>>::value || ...)
+		!(std::is_convertible<Ts, T>::value && ...) && // implicit conversion takes care of that.
+		(std::is_same<Ts, tc::remove_cvref_t<T>>::value || ...) // TODO: can T ever be cvref-qualified? static_assert.
 	>* = nullptr>
 	explicit operator T() const& noexcept {
 		return get<tc::remove_cvref_t<T>>();
