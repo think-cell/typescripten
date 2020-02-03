@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <utility>
+#include "conditional_range.h"
 #include "explicit_cast.h"
 #include "range_defines.h"
 #include "range.h"
@@ -297,16 +298,18 @@ int main(int argc, char* argv[]) {
 				return tc::explicit_cast<std::string>(tc::concat(
 					"struct ", MangleSymbolName(jtsTypeChecker, jsymClass),
 					" : ",
-					!vecjsymBaseClass.empty() // TODO: tc::conditional_range
-						? tc::explicit_cast<std::string>(tc::join_separated(
+					tc_conditional_range(
+						tc::empty(vecjsymBaseClass),
+						std::string("virtual IObject"),
+						tc::explicit_cast<std::string>(tc::join_separated(
 							tc::transform(vecjsymBaseClass,
 								[&](ts::Symbol const jsymBaseClass) {
 									return tc::concat("virtual ", MangleSymbolName(jtsTypeChecker, jsymBaseClass));
 								}
 							),
 							", "
-						)) : std::string("virtual IObject")
-					,
+						))
+					),
 					" {\n",
 					tc::join(tc::transform(
 						tc::filter(jarrsymExport, [&](ts::Symbol const jsymExport) {
