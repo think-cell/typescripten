@@ -196,6 +196,11 @@ struct js_union : js_union_detail::CDetectOptionLike<void, Ts...> {
 		(std::is_same<Ts, T>::value || ...)
 	>* = nullptr>
 	T get() const& noexcept {
+		// Checks for 'double' vs 'undefined'/'null' are performed by emscripten.
+		// Checks for 'js_ref'/'js_string' vs 'undefined'/'null' are performed by js_ref/js_string's ctor.
+		if constexpr (std::is_same<T, bool>::value) {
+			_ASSERT(m_emval.isTrue() || m_emval.isFalse());
+		}
 		return m_emval.template as<T>();
 	}
 
@@ -213,14 +218,11 @@ private:
 public:
 	template<typename T = js_union>
 	typename T::option_like_type operator*() const& noexcept {
-		// TODO: ensure that we're not casting undefined/null to a non-nullable object.
 		return get<typename js_union::option_like_type>();
 	}
 
 	template<typename T = js_union>
 	CArrowProxy<typename T::option_like_type> operator->() const& noexcept {
-		// TODO: ensure that we're not casting undefined/null to a non-nullable object.
-		// TODO: ensure it does not work on js_optional<bool>
 		return get<typename js_union::option_like_type>();
 	}
 
