@@ -178,10 +178,8 @@ std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtyp
 		_ASSERT(!(*jotsInterfaceType)->outerTypeParameters());
 		_ASSERT(!(*jotsInterfaceType)->localTypeParameters());
 		_ASSERT(!(*jotsInterfaceType)->thisType());
-		auto josymInterface = (*jotsInterfaceType)->getSymbol();
-		_ASSERT(josymInterface);
 		return tc::explicit_cast<std::string>(tc::concat(
-			"js_ref<", MangleSymbolName(jtsTypeChecker, *josymInterface), ">"
+			"js_ref<", MangleSymbolName(jtsTypeChecker, *(*jotsInterfaceType)->getSymbol()), ">"
 		));
 	}
 	return tc::explicit_cast<std::string>(tc::concat(
@@ -242,7 +240,6 @@ int main(int argc, char* argv[]) {
 	{
 		tc::append(std::cout,
 			tc::join(tc::transform(g_vecjsymEnum, [&](ts::Symbol const jsymEnum) {
-				_ASSERT(jsymEnum->exports());
 				return tc::concat(
 					"enum class ", MangleSymbolName(jtsTypeChecker, jsymEnum), " {\n",
 					tc::join(
@@ -250,10 +247,9 @@ int main(int argc, char* argv[]) {
 							_ASSERTEQUAL(jsymOption->getFlags(), static_cast<int>(ts::SymbolFlags::EnumMember));
 							auto const jarrDeclaration = jsymOption->declarations();
 							_ASSERTEQUAL(jarrDeclaration->length(), 1);
-							auto const jotsEnumMember = ts()->isEnumMember(jarrDeclaration[0]);
-							_ASSERT(jotsEnumMember);
-							_ASSERTEQUAL(ts()->getCombinedModifierFlags(*jotsEnumMember), 0);
-							auto const junionOptionValue = jtsTypeChecker->getConstantValue(*jotsEnumMember);
+							auto const jotsEnumMember = *ts()->isEnumMember(jarrDeclaration[0]);
+							_ASSERTEQUAL(ts()->getCombinedModifierFlags(jotsEnumMember), 0);
+							auto const junionOptionValue = jtsTypeChecker->getConstantValue(jotsEnumMember);
 							if (!junionOptionValue.getEmval().isNumber()) {
 								// Uncomputed value.
 								return tc::explicit_cast<std::string>(tc::concat(
@@ -289,9 +285,7 @@ int main(int argc, char* argv[]) {
 					tc::for_each(jtsTypeChecker->getBaseTypes(*joptInterfaceType),
 						[&](ts::BaseType const jtsBaseType) {
 							if (auto const jotsInterfaceType = tc::reluctant_implicit_cast<ts::Type>(jtsBaseType)->isClassOrInterface()) {
-								auto const josymInterface = (*jotsInterfaceType)->getSymbol();
-								_ASSERT(josymInterface);
-								tc::cont_emplace_back(vecjsymBaseClass, *josymInterface);
+								tc::cont_emplace_back(vecjsymBaseClass, *(*jotsInterfaceType)->getSymbol());
 							}
 						}
 					);
@@ -368,20 +362,18 @@ int main(int argc, char* argv[]) {
 								jsymMethod->declarations(),
 								[&](ts::Declaration const jdeclMethod) {
 									_ASSERTEQUAL(ts()->getCombinedModifierFlags(jdeclMethod), 0);
-									tc::js::js_optional<ts::SignatureDeclaration> jotsSignatureDeclaration;
-									if (auto const jotsMethodSignature = ts()->isMethodSignature(jdeclMethod)) {
-										jotsSignatureDeclaration = *jotsMethodSignature;
-									}
-									if (auto const jotsMethodDeclaration = ts()->isMethodDeclaration(jdeclMethod)) {
-										// TODO: assert jotsSignatureDeclaration is empty.
-										jotsSignatureDeclaration = *jotsMethodDeclaration;
-									}
-									_ASSERT(jotsSignatureDeclaration);
+									ts::SignatureDeclaration jtsSignatureDeclaration = [&]() -> ts::SignatureDeclaration {
+										if (auto const jotsMethodSignature = ts()->isMethodSignature(jdeclMethod)) {
+											_ASSERT(!ts()->isMethodDeclaration(jdeclMethod));
+											return *jotsMethodSignature;
+										}
+										if (auto const jotsMethodDeclaration = ts()->isMethodDeclaration(jdeclMethod)) {
+											return *jotsMethodDeclaration;
+										}
+										_ASSERTFALSE;
+									}();
 
-									auto const jotsSignature = jtsTypeChecker->getSignatureFromDeclaration(*jotsSignatureDeclaration);
-									_ASSERT(jotsSignature);
-
-									auto const jtsSignature = *jotsSignature; // move _ASSERT to this asterisk, remove _ASSERT above.
+									auto const jtsSignature = *jtsTypeChecker->getSignatureFromDeclaration(jtsSignatureDeclaration);
 									if (auto const jrarrunkTypeParameter = jtsSignature->getTypeParameters()) {
 										_ASSERT(tc::empty(*jrarrunkTypeParameter));
 									}
