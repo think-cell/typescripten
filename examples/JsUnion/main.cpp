@@ -27,7 +27,6 @@ int main() {
 		{
 			BigUnion const u;
 			_ASSERT(u.getEmval().isUndefined());
-			_ASSERT(!u);
 			static_cast<void>(js_undefined{u});
 		}
 		{
@@ -41,21 +40,18 @@ int main() {
 			// Test explicit construction.
 			BigUnion const u(tc::aggregate_tag, "foo");
 			_ASSERT(u.getEmval().strictlyEquals(emscripten::val("foo")));
-			_ASSERT(u);
 			_ASSERTEQUAL(std::string(js_string(u)), "foo");
 		}
 		{
 			static_cast<void>(BigUnion(0.0));
 			BigUnion const u = 0.0;
 			_ASSERT(u.getEmval().strictlyEquals(emscripten::val(0)));
-			_ASSERT(!u);
 			_ASSERTEQUAL(double{u}, 0);
 		}
 		{
 			static_cast<void>(BigUnion(123.5));
 			BigUnion const u = 123.5;
 			_ASSERT(u.getEmval().strictlyEquals(emscripten::val(123.5)));
-			_ASSERT(u);
 			_ASSERTEQUAL(double{u}, 123.5);
 		}
 		{
@@ -63,7 +59,6 @@ int main() {
 			static_cast<void>(BigUnion(base));
 			BigUnion const u = base;
 			_ASSERT(u.getEmval().strictlyEquals(base.getEmval()));
-			_ASSERT(u);
 			_ASSERT(MyJsBase{u}.getEmval().strictlyEquals(base.getEmval()));
 		}
 		{
@@ -71,7 +66,6 @@ int main() {
 			static_cast<void>(BigUnion(derived));
 			BigUnion const u = derived;
 			_ASSERT(u.getEmval().strictlyEquals(derived.getEmval()));
-			_ASSERT(u);
 			_ASSERT(MyJsBase{u}.getEmval().strictlyEquals(derived.getEmval()));
 		}
 	}
@@ -101,13 +95,11 @@ int main() {
 		{
 			BigUnion const u;
 			_ASSERT(u.getEmval().isNull());
-			_ASSERT(!u);
 			static_cast<void>(js_null{u});
 		}
 		{
 			BigUnion const u(tc::aggregate_tag, "foo");
 			_ASSERT(u.getEmval().strictlyEquals(emscripten::val("foo")));
-			_ASSERT(u);
 			_ASSERTEQUAL(std::string(js_string(u)), "foo");
 		}
 	}
@@ -204,6 +196,18 @@ int main() {
 			js_union<MyJsBase, js_undefined>,
 			js_union<MyJsDerived, js_undefined, js_null>  // js_null is removed, but MyJsDerived is generalized.
 		>::value);
+	}
+	{
+		js_union<js_undefined, MyJsBase, MyJsDerived> const u;
+		static_cast<void>(u.get<js_undefined>());
+		static_cast<void>(js_undefined{u});
+		_ASSERT(!u);
+	}
+	{
+		js_union<js_undefined, MyJsBase, MyJsDerived> const u(MyJsBase(js_string(""), js_string("")));
+		static_cast<void>(u.get<MyJsBase>());
+		static_cast<void>(MyJsBase{u});
+		_ASSERT(u);
 	}
 	return 0;
 }

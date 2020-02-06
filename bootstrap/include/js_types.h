@@ -32,6 +32,9 @@ struct IsJsInteropable<
 template<typename T>
 struct IsJsIntegralEnum : std::false_type {};
 
+template<typename T>
+struct js_ref;
+
 struct js_unknown {
 	explicit js_unknown(emscripten::val const& _emval) noexcept : m_emval(_emval) {}
 	explicit js_unknown(emscripten::val&& _emval) noexcept : m_emval(tc_move(_emval)) {}
@@ -229,11 +232,16 @@ public:
 	}
 
 	explicit operator bool() const& noexcept {
-		// TODO: this matches JS logic for 0. But what should we do with js_union<js_undefined, double>?
-		// We probably should only enable this operator iff all of the following is true:
+		// This matches JS logic for 0. But what should we do with js_union<js_undefined, double>?
+		// So we only enable this operator iff all of the following is true:
 		// 1. Contains exactly one of: undefined, null
-		// 2. Contains only js objects (IObject).
-		// 3. Contains none of: number, string, boolean, enum.
+		// 2. Contains only js objects (IObject), which are non-nullable.
+		// Consequently: does not contain: string, boolean, number, enum.
+		static_assert(has_undefined ^ has_null);
+		static_assert(!has_string);
+		static_assert(!has_bool);
+		static_assert(!has_number);
+		static_assert(((std::is_same<Ts, js_undefined>::value || std::is_same<Ts, js_null>::value || tc::is_instance_or_derived<js_ref, Ts>::value) && ...));
 		return !!m_emval;
 	}
 
