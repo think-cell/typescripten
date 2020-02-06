@@ -5,6 +5,7 @@
 #include <type_traits>
 #include <utility>
 #include "explicit_cast.h"
+#include "range_defines.h"
 #include "tag_type.h"
 #include "type_list.h"
 #include "type_traits.h"
@@ -59,7 +60,7 @@ private:
 
 struct js_undefined {
 	js_undefined() noexcept {}
-	explicit js_undefined(emscripten::val const& emval) noexcept {
+	explicit js_undefined(emscripten::val const& IF_TC_CHECKS(IF_TC_DEBUG(emval))) noexcept {
 		_ASSERT(emval.isUndefined());
 	}
 	emscripten::val getEmval() const& noexcept { return emscripten::val::undefined(); }
@@ -67,7 +68,7 @@ struct js_undefined {
 
 struct js_null {
 	js_null() noexcept {}
-	explicit js_null(emscripten::val const& emval) noexcept {
+	explicit js_null(emscripten::val const& IF_TC_CHECKS(IF_TC_DEBUG(emval))) noexcept {
 		_ASSERT(emval.isNull());
 	}
 	emscripten::val getEmval() const& noexcept { return emscripten::val::null(); }
