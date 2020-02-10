@@ -153,7 +153,7 @@ private:
 	private:
 		void __IObject_and_derived_are_abstract_Use_js_ref_instead() noexcept override {
 			// Should never be called.
-			assert(false);
+			_ASSERTFALSE;
 		}
 	};
 
