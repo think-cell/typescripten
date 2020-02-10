@@ -19,10 +19,6 @@ private:
 protected:
 	explicit IObject(emscripten::val const& _emval) noexcept : m_emval(_emval) {}
 	explicit IObject(emscripten::val&& _emval) noexcept : m_emval(tc_move(_emval)) {}
-	explicit IObject() noexcept : m_emval(emscripten::val::undefined()) {
-		// Should never be called.
-		_ASSERTFALSE;
-	}
 
 	template<typename T>
 	T _this() noexcept {
