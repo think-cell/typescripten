@@ -826,7 +826,7 @@ struct _jsdefs_ts : _jsenums_ts {
 		auto typeParameters() noexcept { return _getProperty<js_union<js_undefined, Array<TypeParameter>>>("typeParameters"); }
 		auto outerTypeParameters() noexcept { return _getProperty<js_union<js_undefined, Array<TypeParameter>>>("outerTypeParameters"); }
 		auto localTypeParameters() noexcept { return _getProperty<js_union<js_undefined, Array<TypeParameter>>>("localTypeParameters"); }
-		auto thisType() noexcept { return _getProperty<js_union<js_undefined, TypeParameter>>("typeParameter"); }
+		auto thisType() noexcept { return _getProperty<js_union<js_undefined, TypeParameter>>("thisType"); }
 	};
 
 	struct _js_DiagnosticRelatedInformation : virtual IObject {
