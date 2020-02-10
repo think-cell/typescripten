@@ -248,9 +248,9 @@ int main(int argc, char* argv[]) {
 							_ASSERTEQUAL(jsymOption->getFlags(), static_cast<int>(ts::SymbolFlags::EnumMember));
 							auto const jarrDeclaration = jsymOption->declarations();
 							_ASSERTEQUAL(jarrDeclaration->length(), 1);
-							auto const jotsEnumMember = *ts()->isEnumMember(jarrDeclaration[0]);
-							_ASSERTEQUAL(ts()->getCombinedModifierFlags(jotsEnumMember), 0);
-							auto const junionOptionValue = jtsTypeChecker->getConstantValue(jotsEnumMember);
+							auto const jtsEnumMember = *ts()->isEnumMember(jarrDeclaration[0]);
+							_ASSERTEQUAL(ts()->getCombinedModifierFlags(jtsEnumMember), 0);
+							auto const junionOptionValue = jtsTypeChecker->getConstantValue(jtsEnumMember);
 							if (!junionOptionValue.getEmval().isNumber()) {
 								// Uncomputed value.
 								return tc::explicit_cast<std::string>(tc::concat(
