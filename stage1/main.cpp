@@ -160,12 +160,12 @@ std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtyp
 	if (jtypeRoot->flags() & static_cast<int>(ts::TypeFlags::Null)) {
 		return "js_null";
 	}
-	if (auto jotsUnionType = jtypeRoot->isUnion()) {
-		_ASSERT(1 < (*jotsUnionType)->types()->length());
+	if (auto jouniontypeRoot = jtypeRoot->isUnion()) {
+		_ASSERT(1 < (*jouniontypeRoot)->types()->length());
 		return tc::explicit_cast<std::string>(tc::concat(
 			"js_union<",
 			tc::join_separated(
-				tc::transform((*jotsUnionType)->types(), [&](ts::Type const jtypeUnionOption) {
+				tc::transform((*jouniontypeRoot)->types(), [&](ts::Type const jtypeUnionOption) {
 					return MangleType(jtsTypeChecker, jtypeUnionOption);
 				}),
 				", "
@@ -282,8 +282,8 @@ int main(int argc, char* argv[]) {
 				}
 
 				std::vector<ts::Symbol> vecjsymBaseClass;
-				if (auto joptInterfaceType = jtsTypeChecker->getDeclaredTypeOfSymbol(jsymClass)->isClassOrInterface()) {
-					tc::for_each(jtsTypeChecker->getBaseTypes(*joptInterfaceType),
+				if (auto jotsInterfaceType = jtsTypeChecker->getDeclaredTypeOfSymbol(jsymClass)->isClassOrInterface()) {
+					tc::for_each(jtsTypeChecker->getBaseTypes(*jotsInterfaceType),
 						[&](ts::BaseType const jtsBaseType) {
 							if (auto const jotsInterfaceType = tc::reluctant_implicit_cast<ts::Type>(jtsBaseType)->isClassOrInterface()) {
 								tc::cont_emplace_back(vecjsymBaseClass, *(*jotsInterfaceType)->getSymbol());
