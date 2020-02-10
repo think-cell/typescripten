@@ -105,9 +105,9 @@ void WalkType(ts::TypeChecker const& jtsTypeChecker, int nOffset, ts::Symbol con
 		}
 	);
 
-	if (auto jotsInterfaceType = jtsTypeChecker->getDeclaredTypeOfSymbol(jsymType)->isClassOrInterface()) {
+	if (auto jointerfacetype = jtsTypeChecker->getDeclaredTypeOfSymbol(jsymType)->isClassOrInterface()) {
 		tc::append(std::cout, tc::repeat_n(' ', nOffset + 2), "base types\n");
-		tc::for_each(jtsTypeChecker->getBaseTypes(*jotsInterfaceType),
+		tc::for_each(jtsTypeChecker->getBaseTypes(*jointerfacetype),
 			[&](ts::BaseType const jtsBaseType) {
 				tc::append(std::cout,
 					tc::repeat_n(' ', nOffset + 4),
@@ -173,14 +173,14 @@ std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtyp
 			">"
 		));
 	}
-	if (auto jotsInterfaceType = jtypeRoot->isClassOrInterface()) {
-		_ASSERTEQUAL(static_cast<int>(ts::TypeFlags::Object), (*jotsInterfaceType)->flags());
-		_ASSERT(!(*jotsInterfaceType)->typeParameters());
-		_ASSERT(!(*jotsInterfaceType)->outerTypeParameters());
-		_ASSERT(!(*jotsInterfaceType)->localTypeParameters());
-		_ASSERT(!(*jotsInterfaceType)->thisType());
+	if (auto jointerfacetypeRoot = jtypeRoot->isClassOrInterface()) {
+		_ASSERTEQUAL(static_cast<int>(ts::TypeFlags::Object), (*jointerfacetypeRoot)->flags());
+		_ASSERT(!(*jointerfacetypeRoot)->typeParameters());
+		_ASSERT(!(*jointerfacetypeRoot)->outerTypeParameters());
+		_ASSERT(!(*jointerfacetypeRoot)->localTypeParameters());
+		_ASSERT(!(*jointerfacetypeRoot)->thisType());
 		return tc::explicit_cast<std::string>(tc::concat(
-			"js_ref<", MangleSymbolName(jtsTypeChecker, *(*jotsInterfaceType)->getSymbol()), ">"
+			"js_ref<", MangleSymbolName(jtsTypeChecker, *(*jointerfacetypeRoot)->getSymbol()), ">"
 		));
 	}
 	return tc::explicit_cast<std::string>(tc::concat(
@@ -282,11 +282,11 @@ int main(int argc, char* argv[]) {
 				}
 
 				std::vector<ts::Symbol> vecjsymBaseClass;
-				if (auto jotsInterfaceType = jtsTypeChecker->getDeclaredTypeOfSymbol(jsymClass)->isClassOrInterface()) {
-					tc::for_each(jtsTypeChecker->getBaseTypes(*jotsInterfaceType),
+				if (auto jointerfacetypeClass = jtsTypeChecker->getDeclaredTypeOfSymbol(jsymClass)->isClassOrInterface()) {
+					tc::for_each(jtsTypeChecker->getBaseTypes(*jointerfacetypeClass),
 						[&](ts::BaseType const jtsBaseType) {
-							if (auto const jotsInterfaceType = tc::reluctant_implicit_cast<ts::Type>(jtsBaseType)->isClassOrInterface()) {
-								tc::cont_emplace_back(vecjsymBaseClass, *(*jotsInterfaceType)->getSymbol());
+							if (auto const jointerfacetypeBase = tc::reluctant_implicit_cast<ts::Type>(jtsBaseType)->isClassOrInterface()) {
+								tc::cont_emplace_back(vecjsymBaseClass, *(*jointerfacetypeBase)->getSymbol());
 							}
 						}
 					);
