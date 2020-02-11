@@ -237,7 +237,7 @@ public:
 		// 1. Contains exactly one of: undefined, null
 		// 2. Contains only js objects (IObject), which are non-nullable.
 		// Consequently: does not contain: string, boolean, number, enum.
-		static_assert(has_undefined ^ has_null);
+		static_assert(has_undefined != has_null);
 		static_assert(!has_string);
 		static_assert(!has_bool);
 		static_assert(!has_number);
