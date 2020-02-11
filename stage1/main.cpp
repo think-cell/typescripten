@@ -52,7 +52,7 @@ bool IsClassInCpp(ts::Symbol const jsymType) {
 		);
 }
 
-void WalkType(ts::TypeChecker const& jtsTypeChecker, int nOffset, ts::Symbol const jsymType) {
+void WalkType(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Symbol const jsymType) {
 	tc::append(std::cout,
 		tc::repeat_n(' ', nOffset),
 		"'", std::string(jtsTypeChecker->getFullyQualifiedName(jsymType)), "', ",
@@ -73,13 +73,13 @@ void WalkType(ts::TypeChecker const& jtsTypeChecker, int nOffset, ts::Symbol con
 
 	tc::append(std::cout, tc::repeat_n(' ', nOffset + 2), "members\n");
 	if (jsymType->members()) {
-		tc::for_each(*jsymType->members(), [&](ts::Symbol jsymChild) { WalkType(jtsTypeChecker, nOffset + 4, jsymChild); });
+		tc::for_each(*jsymType->members(), [&](ts::Symbol const jsymChild) { WalkType(jtsTypeChecker, nOffset + 4, jsymChild); });
 	}
 
 	tc::append(std::cout, tc::repeat_n(' ', nOffset + 2), "exportsOfModule\n");
 	if (jsymType->exports()) {
 		tc::for_each(jtsTypeChecker->getExportsOfModule(jsymType),
-			[&](ts::Symbol jsymChild) { WalkType(jtsTypeChecker, nOffset + 4, jsymChild); }
+			[&](ts::Symbol const jsymChild) { WalkType(jtsTypeChecker, nOffset + 4, jsymChild); }
 		);
 	}
 
@@ -219,7 +219,7 @@ int main(int argc, char* argv[]) {
 			if (!tc::find_unique<tc::return_bool>(rngstrFileNames, std::string(jtsSourceFile->fileName()))) {
 				return;
 			}
-			auto josymSourceFile = jtsTypeChecker->getSymbolAtLocation(jtsSourceFile);
+			auto const josymSourceFile = jtsTypeChecker->getSymbolAtLocation(jtsSourceFile);
 			if (!josymSourceFile) {
 				tc::append(std::cout, "Module not found for ", std::string(jtsSourceFile->fileName()), "\n");
 				return;
@@ -315,7 +315,7 @@ int main(int argc, char* argv[]) {
 						tc::filter(jarrsymExport, [](ts::Symbol const jsymExport) {
 							return IsEnumInCpp(jsymExport) || IsClassInCpp(jsymExport);
 						}),
-						[&jtsTypeChecker](ts::Symbol jsymExport) {
+						[&jtsTypeChecker](ts::Symbol const jsymExport) {
 							return tc::concat(
 								"	using ",
 								std::string(jsymExport->getName()),
