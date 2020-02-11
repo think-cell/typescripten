@@ -14,11 +14,10 @@ namespace tc::js {
 namespace no_adl {
 struct IObject {
 private:
-	emscripten::val m_emval;
+	emscripten::val& m_emval;
 
 protected:
-	explicit IObject(emscripten::val const& _emval) noexcept : m_emval(_emval) {}
-	explicit IObject(emscripten::val&& _emval) noexcept : m_emval(tc_move(_emval)) {}
+	explicit IObject(emscripten::val& _emval) noexcept : m_emval(_emval) {}
 
 	template<typename T>
 	T _this() noexcept {
@@ -139,12 +138,16 @@ struct js_ref {
 	}
 
 private:
-	emscripten::val m_emval;
+	// emscripten::val const does not allow to mutate its properties,
+	// while premitting deep mutations. This does not correspond to
+	// expected shared_ptr-like shallow constness for []/(): we need
+	// operator->() const& to be able to call any methods on the emval.
+	mutable emscripten::val m_emval;
 
 	template<typename> friend struct js_ref;
 
 	struct CArrowProxy final : T, private tc::nonmovable {
-		explicit CArrowProxy(emscripten::val const& m_emval) noexcept : IObject(m_emval) {}
+		explicit CArrowProxy(emscripten::val& m_emval) noexcept : IObject(m_emval) {}
 		T* operator->() && noexcept { return this; }
 	private:
 		void __IObject_and_derived_are_abstract_Use_js_ref_instead() noexcept override {
