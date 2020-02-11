@@ -240,11 +240,11 @@ int main(int argc, char* argv[]) {
 
 	{
 		tc::append(std::cout,
-			tc::join(tc::transform(g_vecjsymEnum, [&](ts::Symbol const jsymEnum) {
+			tc::join(tc::transform(g_vecjsymEnum, [&jtsTypeChecker](ts::Symbol const jsymEnum) {
 				return tc::concat(
 					"enum class ", MangleSymbolName(jtsTypeChecker, jsymEnum), " {\n",
 					tc::join(
-						tc::transform(*jsymEnum->exports(), [&](ts::Symbol const jsymOption) {
+						tc::transform(*jsymEnum->exports(), [&jtsTypeChecker](ts::Symbol const jsymOption) {
 							_ASSERTEQUAL(jsymOption->getFlags(), static_cast<int>(ts::SymbolFlags::EnumMember));
 							auto const jarrDeclaration = jsymOption->declarations();
 							_ASSERTEQUAL(jarrDeclaration->length(), 1);
@@ -268,10 +268,10 @@ int main(int argc, char* argv[]) {
 					"};\n"
 				);
 			})),
-			tc::join(tc::transform(g_vecjsymClass, [&](ts::Symbol const jsymClass) {
+			tc::join(tc::transform(g_vecjsymClass, [&jtsTypeChecker](ts::Symbol const jsymClass) {
 				return tc::concat("struct ", MangleSymbolName(jtsTypeChecker, jsymClass), ";\n");
 			})),
-			tc::join(tc::transform(g_vecjsymClass, [&](ts::Symbol const jsymClass) {
+			tc::join(tc::transform(g_vecjsymClass, [&jtsTypeChecker](ts::Symbol const jsymClass) {
 				Array<ts::Symbol> jarrsymExport(std::initializer_list<ts::Symbol>{});
 				if (jsymClass->exports()) {
 					jarrsymExport = jtsTypeChecker->getExportsOfModule(jsymClass);
@@ -303,7 +303,7 @@ int main(int argc, char* argv[]) {
 						std::string("virtual IObject"),
 						tc::explicit_cast<std::string>(tc::join_separated(
 							tc::transform(vecjsymBaseClass,
-								[&](ts::Symbol const jsymBaseClass) {
+								[&jtsTypeChecker](ts::Symbol const jsymBaseClass) {
 									return tc::concat("virtual ", MangleSymbolName(jtsTypeChecker, jsymBaseClass));
 								}
 							),
@@ -312,10 +312,10 @@ int main(int argc, char* argv[]) {
 					),
 					" {\n",
 					tc::join(tc::transform(
-						tc::filter(jarrsymExport, [&](ts::Symbol const jsymExport) {
+						tc::filter(jarrsymExport, [](ts::Symbol const jsymExport) {
 							return IsEnumInCpp(jsymExport) || IsClassInCpp(jsymExport);
 						}),
-						[&](ts::Symbol jsymExport) {
+						[&jtsTypeChecker](ts::Symbol jsymExport) {
 							return tc::concat(
 								"	using ",
 								std::string(jsymExport->getName()),
@@ -326,10 +326,10 @@ int main(int argc, char* argv[]) {
 						}
 					)),
 					tc::join(tc::transform(
-						tc::filter(vecjsymMember, [&](ts::Symbol const jsymMember) {
+						tc::filter(vecjsymMember, [](ts::Symbol const jsymMember) {
 							return static_cast<int>(ts::SymbolFlags::Property) == jsymMember->getFlags();
 						}),
-						[&](ts::Symbol const jsymProperty) {
+						[&jtsTypeChecker](ts::Symbol const jsymProperty) {
 							_ASSERTEQUAL(jsymProperty->declarations()->length(), 1);
 							ts::Declaration const jdeclProperty = jsymProperty->declarations()[0];
 							int const nModifierFlags = ts()->getCombinedModifierFlags(jdeclProperty);
@@ -357,13 +357,13 @@ int main(int argc, char* argv[]) {
 						}
 					)),
 					tc::join(tc::transform(
-						tc::filter(vecjsymMember, [&](ts::Symbol const jsymMember) {
+						tc::filter(vecjsymMember, [](ts::Symbol const jsymMember) {
 							return static_cast<int>(ts::SymbolFlags::Method) == jsymMember->getFlags();
 						}),
-						[&](ts::Symbol const jsymMethod) {
+						[&jtsTypeChecker](ts::Symbol const jsymMethod) {
 							return tc::join(tc::transform(
 								jsymMethod->declarations(),
-								[&](ts::Declaration const jdeclMethod) {
+								[&jtsTypeChecker, jsymMethod](ts::Declaration const jdeclMethod) {
 									_ASSERTEQUAL(ts()->getCombinedModifierFlags(jdeclMethod), 0);
 									ts::SignatureDeclaration jtsSignatureDeclaration = [&]() -> ts::SignatureDeclaration {
 										if (auto const jotsMethodSignature = ts()->isMethodSignature(jdeclMethod)) {
@@ -387,7 +387,7 @@ int main(int argc, char* argv[]) {
 										tc::join_separated(
 											tc::transform(
 												jtsSignature->getParameters(),
-												[&](ts::Symbol const jsymParameter) {
+												[&jtsTypeChecker, jdeclMethod](ts::Symbol const jsymParameter) {
 													return tc::concat(
 														MangleType(jtsTypeChecker, jtsTypeChecker->getTypeOfSymbolAtLocation(jsymParameter, jdeclMethod)),
 														" ",
@@ -402,7 +402,7 @@ int main(int argc, char* argv[]) {
 											"(\"", std::string(jsymMethod->getName()), "\"",
 												tc::join(tc::transform(
 													jtsSignature->getParameters(),
-													[&](ts::Symbol const jsymParameter) {
+													[](ts::Symbol const jsymParameter) {
 														return tc::concat(", ", std::string(jsymParameter->getName()));
 													}
 												)),
