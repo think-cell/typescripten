@@ -143,7 +143,7 @@ private:
 
 	template<typename> friend struct js_ref;
 
-	struct CArrowProxy final : T, tc::nonmovable {
+	struct CArrowProxy final : T, private tc::nonmovable {
 		explicit CArrowProxy(emscripten::val const& m_emval) noexcept : IObject(m_emval) {}
 		T* operator->() && noexcept { return this; }
 	private:

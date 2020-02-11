@@ -168,7 +168,7 @@ struct RequireRelaxedPointerSafety {
 // We do not care about slicing to js_ref<>, because this class is
 // only stored as a by-value field.
 template<typename T>
-struct CUniqueDetachableJsFunction : tc::nonmovable, RequireRelaxedPointerSafety, js_function<T> { // TODO: private inheritance?
+struct CUniqueDetachableJsFunction : private tc::nonmovable, private RequireRelaxedPointerSafety, js_function<T> {
 	CUniqueDetachableJsFunction(FunctionPointer pfunc, FirstArgument arg0) noexcept : js_function<T>(
 		emscripten::val::module_property("tc_js_callback_detail_js_CreateJsFunction")(reinterpret_cast<PointerNumber>(pfunc), reinterpret_cast<PointerNumber>(arg0))
 	) {}
