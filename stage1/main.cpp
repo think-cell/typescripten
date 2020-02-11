@@ -272,14 +272,20 @@ int main(int argc, char* argv[]) {
 				return tc::concat("struct ", MangleSymbolName(jtsTypeChecker, jsymClass), ";\n");
 			})),
 			tc::join(tc::transform(g_vecjsymClass, [&jtsTypeChecker](ts::Symbol const jsymClass) {
-				Array<ts::Symbol> jarrsymExport(std::initializer_list<ts::Symbol>{});
-				if (jsymClass->exports()) {
-					jarrsymExport = jtsTypeChecker->getExportsOfModule(jsymClass);
-				}
-				std::vector<ts::Symbol> vecjsymMember;
-				if (jsymClass->members()) {
-					vecjsymMember = tc::explicit_cast<std::vector<ts::Symbol>>(*jsymClass->members());
-				}
+				auto const jarrsymExport = [&]() -> Array<ts::Symbol> {
+					if (jsymClass->exports()) {
+						return jtsTypeChecker->getExportsOfModule(jsymClass);
+					} else {
+						return Array<ts::Symbol>(tc::make_empty_range<ts::Symbol>());
+					}
+				}();
+				auto const vecjsymMember = [&]() -> std::vector<ts::Symbol> {
+					if (jsymClass->members()) {
+						return tc::explicit_cast<std::vector<ts::Symbol>>(*jsymClass->members());
+					} else {
+						return {};
+					}
+				}();
 
 				std::vector<ts::Symbol> vecjsymBaseClass;
 				if (auto jointerfacetypeClass = jtsTypeChecker->getDeclaredTypeOfSymbol(jsymClass)->isClassOrInterface()) {
