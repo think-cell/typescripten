@@ -273,18 +273,18 @@ int main(int argc, char* argv[]) {
 				return tc::concat("struct ", MangleSymbolName(jtsTypeChecker, jsymClass), ";\n");
 			})),
 			tc::join(tc::transform(g_vecjsymClass, [&jtsTypeChecker](ts::Symbol const jsymClass) {
-				auto const jarrsymExport = [&]() -> Array<ts::Symbol> {
+				auto const jarrsymExport = [&]() {
 					if (jsymClass->exports()) {
 						return jtsTypeChecker->getExportsOfModule(jsymClass);
 					} else {
 						return Array<ts::Symbol>(tc::make_empty_range<ts::Symbol>());
 					}
 				}();
-				auto const vecjsymMember = [&]() -> std::vector<ts::Symbol> {
+				auto const vecjsymMember = [&]() {
 					if (jsymClass->members()) {
 						return tc::explicit_cast<std::vector<ts::Symbol>>(*jsymClass->members());
 					} else {
-						return {};
+						return std::vector<ts::Symbol>();
 					}
 				}();
 
