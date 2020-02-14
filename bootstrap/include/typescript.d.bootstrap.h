@@ -688,9 +688,9 @@ struct _jsdefs_ts : _jsenums_ts {
 	};
 
 	struct _js_Signature : virtual IObject {
-		auto getTypeParameters() { return _call<js_optional<ReadonlyArray<js_unknown>>>("getTypeParameters"); }
-		auto getParameters() { return _call<ReadonlyArray<Symbol>>("getParameters"); }
-		auto getReturnType() { return _call<Type>("getReturnType"); }
+		auto getTypeParameters() noexcept { return _call<js_optional<ReadonlyArray<js_unknown>>>("getTypeParameters"); }
+		auto getParameters() noexcept { return _call<ReadonlyArray<Symbol>>("getParameters"); }
+		auto getReturnType() noexcept { return _call<Type>("getReturnType"); }
 	};
 
 	struct _js_DeclarationStatement : virtual _js_NamedDeclaration {
@@ -760,9 +760,9 @@ struct _jsdefs_ts : _jsenums_ts {
 		auto getSignatureFromDeclaration(SignatureDeclaration declaration) noexcept { return _call<js_optional<Signature>>("getSignatureFromDeclaration", declaration); }
 		auto signatureToString(Signature signature) noexcept { return _call<js_string>("signatureToString", signature); }
 		auto getFullyQualifiedName(Symbol symbol) noexcept { return _call<js_string>("getFullyQualifiedName", symbol); }
-		auto getConstantValue(EnumMember node) { return _call<js_union<js_string, double, js_undefined>>("getConstantValue", node); }
-		auto typeToString(Type type) { return _call<js_string>("typeToString", type); }
-		auto getBaseTypes(InterfaceType type) { return _call<Array<BaseType>>("getBaseTypes", type); }
+		auto getConstantValue(EnumMember node) noexcept { return _call<js_union<js_string, double, js_undefined>>("getConstantValue", node); }
+		auto typeToString(Type type) noexcept { return _call<js_string>("typeToString", type); }
+		auto getBaseTypes(InterfaceType type) noexcept { return _call<Array<BaseType>>("getBaseTypes", type); }
 	};
 
 	struct _js_Symbol : virtual IObject {
