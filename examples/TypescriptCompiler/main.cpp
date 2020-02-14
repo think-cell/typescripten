@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string>
+#include "explicit_cast.h"
 #include "range_defines.h"
 #include "range.h"
 #include "typescript.d.bootstrap.h"
@@ -33,13 +34,13 @@ int main(int argc, char* argv[]) {
 				ts::LineAndCharacter const jsLineAndCharacter = (*jsDiagnostic->file())->getLineAndCharacterOfPosition(*jsDiagnostic->start());
 				js_string const jsMessage = ts()->flattenDiagnosticMessageText(jsDiagnostic->messageText(), js_string("\n"));
 				printf("%s (%d,%d): %s\n",
-					std::string((*jsDiagnostic->file())->fileName()).c_str(),
+					tc::explicit_cast<std::string>((*jsDiagnostic->file())->fileName()).c_str(),
 					jsLineAndCharacter->line() + 1,
 					jsLineAndCharacter->character() + 1,
-					std::string(jsMessage).c_str()
+					tc::explicit_cast<std::string>(jsMessage).c_str()
 				);
 			} else {
-				printf("%s\n", std::string(ts()->flattenDiagnosticMessageText(jsDiagnostic->messageText(), js_string("\n"))).c_str());
+				printf("%s\n", tc::explicit_cast<std::string>(ts()->flattenDiagnosticMessageText(jsDiagnostic->messageText(), js_string("\n"))).c_str());
 			}
 		}
 	);
