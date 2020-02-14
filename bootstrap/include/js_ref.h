@@ -139,7 +139,7 @@ struct js_ref {
 
 private:
 	// emscripten::val const does not allow to mutate its properties,
-	// while premitting deep mutations. This does not correspond to
+	// while permitting deep mutations. This does not correspond to
 	// expected shared_ptr-like shallow constness for []/(): we need
 	// operator->() const& to be able to call any methods on the emval.
 	mutable emscripten::val m_emval;
