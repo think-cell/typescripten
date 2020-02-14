@@ -174,14 +174,15 @@ std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtyp
 		));
 	}
 	if (auto jointerfacetypeRoot = jtypeRoot->isClassOrInterface()) {
-		_ASSERTEQUAL(static_cast<int>(ts::TypeFlags::Object), (*jointerfacetypeRoot)->flags());
-		_ASSERT(!(*jointerfacetypeRoot)->typeParameters());
-		_ASSERT(!(*jointerfacetypeRoot)->outerTypeParameters());
-		_ASSERT(!(*jointerfacetypeRoot)->localTypeParameters());
-		_ASSERT(!(*jointerfacetypeRoot)->thisType());
-		return tc::explicit_cast<std::string>(tc::concat(
-			"js_ref<", MangleSymbolName(jtsTypeChecker, *(*jointerfacetypeRoot)->getSymbol()), ">"
-		));
+		if (!(*jointerfacetypeRoot)->typeParameters() &&
+			!(*jointerfacetypeRoot)->outerTypeParameters() &&
+			!(*jointerfacetypeRoot)->localTypeParameters() &&
+			!(*jointerfacetypeRoot)->thisType()) {
+			_ASSERTEQUAL(static_cast<int>(ts::TypeFlags::Object), (*jointerfacetypeRoot)->flags());
+			return tc::explicit_cast<std::string>(tc::concat(
+				"js_ref<", MangleSymbolName(jtsTypeChecker, *(*jointerfacetypeRoot)->getSymbol()), ">"
+			));
+		}
 	}
 	return tc::explicit_cast<std::string>(tc::concat(
 		"js_unknown /*flags=",
