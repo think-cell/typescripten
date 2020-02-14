@@ -55,7 +55,7 @@ bool IsClassInCpp(ts::Symbol const jsymType) noexcept {
 void WalkType(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Symbol const jsymType) noexcept {
 	tc::append(std::cout,
 		tc::repeat_n(' ', nOffset),
-		"'", std::string(jtsTypeChecker->getFullyQualifiedName(jsymType)), "', ",
+		"'", tc::explicit_cast<std::string>(jtsTypeChecker->getFullyQualifiedName(jsymType)), "', ",
 		"flags=", tc::as_dec(jsymType->getFlags()),
 		"\n"
 	);
@@ -88,7 +88,7 @@ void WalkType(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Symb
 		[&](ts::Signature const jtsSignature) noexcept {
 			tc::append(std::cout,
 				tc::repeat_n(' ', nOffset + 4),
-				std::string(jtsTypeChecker->signatureToString(jtsSignature)),
+				tc::explicit_cast<std::string>(jtsTypeChecker->signatureToString(jtsSignature)),
 				"\n"
 			);
 		}
@@ -99,7 +99,7 @@ void WalkType(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Symb
 		[&](ts::Signature const jtsSignature) noexcept {
 			tc::append(std::cout,
 				tc::repeat_n(' ', nOffset + 4),
-				std::string(jtsTypeChecker->signatureToString(jtsSignature)),
+				tc::explicit_cast<std::string>(jtsTypeChecker->signatureToString(jtsSignature)),
 				"\n"
 			);
 		}
@@ -111,7 +111,7 @@ void WalkType(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Symb
 			[&](ts::BaseType const jtsBaseType) noexcept {
 				tc::append(std::cout,
 					tc::repeat_n(' ', nOffset + 4),
-					std::string(jtsTypeChecker->typeToString(jtsBaseType)),
+					tc::explicit_cast<std::string>(jtsTypeChecker->typeToString(jtsBaseType)),
 					"\n"
 				);
 			}
@@ -121,7 +121,7 @@ void WalkType(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Symb
 
 std::string MangleSymbolName(ts::TypeChecker const& jtsTypeChecker, ts::Symbol const jsymType) {
 	std::string strMangled = "_js_j";
-	tc::for_each(std::string(jtsTypeChecker->getFullyQualifiedName(jsymType)), [&](char c) noexcept {
+	tc::for_each(tc::explicit_cast<std::string>(jtsTypeChecker->getFullyQualifiedName(jsymType)), [&](char c) noexcept {
 		switch (c) {
 		case '_': tc::append(strMangled, "_u"); break;
 		case ',': tc::append(strMangled, "_c"); break;
@@ -188,7 +188,7 @@ std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtyp
 		"js_unknown /*flags=",
 		tc::as_dec(jtypeRoot->flags()),
 		": ",
-		std::string(jtsTypeChecker->typeToString(jtypeRoot)),
+		tc::explicit_cast<std::string>(jtsTypeChecker->typeToString(jtypeRoot)),
 		"*/")
 	);
 };
@@ -217,12 +217,12 @@ int main(int argc, char* argv[]) {
 	std::vector<ts::Symbol> vecjsymExportedModule;
 	tc::for_each(jtsProgram->getSourceFiles(),
 		[&](ts::SourceFile const& jtsSourceFile) noexcept {
-			if (!tc::find_unique<tc::return_bool>(rngstrFileNames, std::string(jtsSourceFile->fileName()))) {
+			if (!tc::find_unique<tc::return_bool>(rngstrFileNames, tc::explicit_cast<std::string>(jtsSourceFile->fileName()))) {
 				return;
 			}
 			auto const josymSourceFile = jtsTypeChecker->getSymbolAtLocation(jtsSourceFile);
 			if (!josymSourceFile) {
-				tc::append(std::cout, "Module not found for ", std::string(jtsSourceFile->fileName()), "\n");
+				tc::append(std::cout, "Module not found for ", tc::explicit_cast<std::string>(jtsSourceFile->fileName()), "\n");
 				return;
 			}
 			tc::cont_emplace_back(vecjsymExportedModule, *josymSourceFile);
@@ -232,7 +232,7 @@ int main(int argc, char* argv[]) {
 	tc::for_each(
 		vecjsymExportedModule,
 		[&](ts::Symbol const& jsymSourceFile) noexcept {
-			tc::append(std::cout, "Module name is ", std::string(jsymSourceFile->getName()), "\n");
+			tc::append(std::cout, "Module name is ", tc::explicit_cast<std::string>(jsymSourceFile->getName()), "\n");
 			WalkType(jtsTypeChecker, 0, jsymSourceFile);
 		}
 	);
@@ -255,11 +255,11 @@ int main(int argc, char* argv[]) {
 							if (!junionOptionValue.getEmval().isNumber()) {
 								// Uncomputed value.
 								return tc::explicit_cast<std::string>(tc::concat(
-									"	/*", std::string(jsymOption->getName()), " = ??? */\n"
+									"	/*", tc::explicit_cast<std::string>(jsymOption->getName()), " = ??? */\n"
 								));
 							} else {
 								return tc::explicit_cast<std::string>(tc::concat(
-									"	", std::string(jsymOption->getName()), " = ",
+									"	", tc::explicit_cast<std::string>(jsymOption->getName()), " = ",
 									tc::as_dec(tc::explicit_cast<int>(double(junionOptionValue))),
 									",\n"
 								));
@@ -306,7 +306,7 @@ int main(int argc, char* argv[]) {
 					" : ",
 					tc_conditional_range(
 						tc::empty(vecjsymBaseClass),
-						std::string("virtual IObject"),
+						tc::explicit_cast<std::string>("virtual IObject"),
 						tc::explicit_cast<std::string>(tc::join_separated(
 							tc::transform(vecjsymBaseClass,
 								[&jtsTypeChecker](ts::Symbol const jsymBaseClass) noexcept {
@@ -324,7 +324,7 @@ int main(int argc, char* argv[]) {
 						[&jtsTypeChecker](ts::Symbol const jsymExport) noexcept {
 							return tc::concat(
 								"	using ",
-								std::string(jsymExport->getName()),
+								tc::explicit_cast<std::string>(jsymExport->getName()),
 								" = js_ref<",
 								MangleSymbolName(jtsTypeChecker, jsymExport),
 								">;\n"
@@ -342,21 +342,21 @@ int main(int argc, char* argv[]) {
 							_ASSERT(nModifierFlags == 0 || nModifierFlags == static_cast<int>(ts::ModifierFlags::Readonly));
 							return tc::concat(
 								"	auto ",
-								std::string(jsymProperty->getName()),
+								tc::explicit_cast<std::string>(jsymProperty->getName()),
 								"() noexcept { return _getProperty<",
 								MangleType(jtsTypeChecker, jtsTypeChecker->getTypeOfSymbolAtLocation(jsymProperty, jdeclProperty)),
 								">(\"",
-								std::string(jsymProperty->getName()),
+								tc::explicit_cast<std::string>(jsymProperty->getName()),
 								"\"); }\n",
 								(ts()->getCombinedModifierFlags(jdeclProperty) & static_cast<int>(ts::ModifierFlags::Readonly)) ?
 									"" :
 									tc::explicit_cast<std::string>(tc::concat(
 										"	void ",
-										std::string(jsymProperty->getName()),
+										tc::explicit_cast<std::string>(jsymProperty->getName()),
 										"(",
 										MangleType(jtsTypeChecker, jtsTypeChecker->getTypeOfSymbolAtLocation(jsymProperty, jdeclProperty)),
 										" v) noexcept { _setProperty(\"",
-										std::string(jsymProperty->getName()),
+										tc::explicit_cast<std::string>(jsymProperty->getName()),
 										"\", v); }\n"
 									))
 							);
@@ -387,14 +387,14 @@ int main(int argc, char* argv[]) {
 										if (!tc::empty(*jrarrunkTypeParameter)) {
 											return tc::explicit_cast<std::string>(tc::concat(
 												"	/* ",
-												std::string(jtsTypeChecker->signatureToString(jtsSignature)),
+												tc::explicit_cast<std::string>(jtsTypeChecker->signatureToString(jtsSignature)),
 												" */\n"
 											));
 										}
 									}
 									return tc::explicit_cast<std::string>(tc::concat(
 										"	auto ",
-										std::string(jsymMethod->getName()),
+										tc::explicit_cast<std::string>(jsymMethod->getName()),
 										"(",
 										tc::join_separated(
 											tc::transform(
@@ -403,7 +403,7 @@ int main(int argc, char* argv[]) {
 													return tc::concat(
 														MangleType(jtsTypeChecker, jtsTypeChecker->getTypeOfSymbolAtLocation(jsymParameter, jdeclMethod)),
 														" ",
-														std::string(jsymParameter->getName())
+														tc::explicit_cast<std::string>(jsymParameter->getName())
 													);
 												}
 											),
@@ -411,11 +411,11 @@ int main(int argc, char* argv[]) {
 										),
 										") noexcept {\n",
 										"		return _call<", MangleType(jtsTypeChecker, jtsSignature->getReturnType()), ">",
-											"(\"", std::string(jsymMethod->getName()), "\"",
+											"(\"", tc::explicit_cast<std::string>(jsymMethod->getName()), "\"",
 												tc::join(tc::transform(
 													jtsSignature->getParameters(),
 													[](ts::Symbol const jsymParameter) noexcept {
-														return tc::concat(", ", std::string(jsymParameter->getName()));
+														return tc::concat(", ", tc::explicit_cast<std::string>(jsymParameter->getName()));
 													}
 												)),
 											");\n",
