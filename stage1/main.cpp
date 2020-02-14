@@ -385,9 +385,15 @@ int main(int argc, char* argv[]) {
 
 									auto const jtsSignature = *jtsTypeChecker->getSignatureFromDeclaration(jtsSignatureDeclaration);
 									if (auto const jrarrunkTypeParameter = jtsSignature->getTypeParameters()) {
-										_ASSERT(tc::empty(*jrarrunkTypeParameter));
+										if (!tc::empty(*jrarrunkTypeParameter)) {
+											return tc::explicit_cast<std::string>(tc::concat(
+												"	/* ",
+												std::string(jtsTypeChecker->signatureToString(jtsSignature)),
+												" */\n"
+											));
+										}
 									}
-									return tc::concat(
+									return tc::explicit_cast<std::string>(tc::concat(
 										"	auto ",
 										std::string(jsymMethod->getName()),
 										"(",
@@ -415,7 +421,7 @@ int main(int argc, char* argv[]) {
 												)),
 											");\n",
 										"	}\n"
-									);
+									));
 								}
 							));
 						}
