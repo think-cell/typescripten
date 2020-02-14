@@ -301,7 +301,6 @@ int main(int argc, char* argv[]) {
 					// Do nothing: e.g. namespaces.
 				}
 
-				// TODO: force eager evaluation to keep arrays in scope.
 				return tc::explicit_cast<std::string>(tc::concat(
 					"struct ", MangleSymbolName(jtsTypeChecker, jsymClass),
 					" : ",
