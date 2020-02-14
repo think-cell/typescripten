@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
 
 	tc::for_each(
 		tc::concat(ts()->getPreEmitDiagnostics(jsProgram), jsEmitresult->diagnostics()),
-		[](ts::Diagnostic const jsDiagnostic) {
+		[](ts::Diagnostic const jsDiagnostic) noexcept {
 			if (jsDiagnostic->file()) {
 				ts::LineAndCharacter const jsLineAndCharacter = (*jsDiagnostic->file())->getLineAndCharacterOfPosition(*jsDiagnostic->start());
 				js_string const jsMessage = ts()->flattenDiagnosticMessageText(jsDiagnostic->messageText(), js_string("\n"));

@@ -56,7 +56,7 @@ int main() {
 
 	{
 		std::vector<double> result;
-		tc::for_each(arr, [&](double item) { result.push_back(item); });
+		tc::for_each(arr, [&](double item) noexcept { result.push_back(item); });
 		_ASSERTEQUAL(result, (std::vector{1.0, 15.0, 3.0}));
 	}
 
@@ -65,11 +65,11 @@ int main() {
 		tc::for_each(
 			tc::filter(
 				tc::transform(arr,
-					[](double x) { return x * x; }
+					[](double x) noexcept { return x * x; }
 				),
-				[](double x) { return x >= 2; }
+				[](double x) noexcept { return x >= 2; }
 			),
-			[&](double item) { result.push_back(item); }
+			[&](double item) noexcept { result.push_back(item); }
 		);
 		_ASSERTEQUAL(result, (std::vector{225.0, 9.0}));
 	}
