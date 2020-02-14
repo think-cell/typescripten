@@ -22,7 +22,7 @@ template<>
 struct appender_type<std::ostream> {
 	using sink_value_type = char;
 
-	appender_type(std::ostream& os) : m_os(os) {}
+	appender_type(std::ostream& os) noexcept : m_os(os) {}
 
 	void operator()(char c) const& noexcept {
 		m_os.put(c);
@@ -35,14 +35,14 @@ private:
 
 std::vector<ts::Symbol> g_vecjsymEnum, g_vecjsymClass;
 
-bool IsEnumInCpp(ts::Symbol const jsymType) {
+bool IsEnumInCpp(ts::Symbol const jsymType) noexcept {
 	// TODO: more assertions: "I've seen these flags, I think they are unimportant, explicitly ignoring".
 	return
 		static_cast<int>(ts::SymbolFlags::RegularEnum) == jsymType->getFlags() ||
 		static_cast<int>(ts::SymbolFlags::ConstEnum) == jsymType->getFlags();
 }
 
-bool IsClassInCpp(ts::Symbol const jsymType) {
+bool IsClassInCpp(ts::Symbol const jsymType) noexcept {
 	// TODO: more assertions: "I've seen these flags, I think they are unimportant, explicitly ignoring".
 	return jsymType->getFlags() & (
 		static_cast<int>(ts::SymbolFlags::Class) |
@@ -52,7 +52,7 @@ bool IsClassInCpp(ts::Symbol const jsymType) {
 		);
 }
 
-void WalkType(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Symbol const jsymType) {
+void WalkType(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Symbol const jsymType) noexcept {
 	tc::append(std::cout,
 		tc::repeat_n(' ', nOffset),
 		"'", std::string(jtsTypeChecker->getFullyQualifiedName(jsymType)), "', ",
@@ -73,19 +73,19 @@ void WalkType(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Symb
 
 	tc::append(std::cout, tc::repeat_n(' ', nOffset + 2), "members\n");
 	if (jsymType->members()) {
-		tc::for_each(*jsymType->members(), [&](ts::Symbol const jsymChild) { WalkType(jtsTypeChecker, nOffset + 4, jsymChild); });
+		tc::for_each(*jsymType->members(), [&](ts::Symbol const jsymChild) noexcept { WalkType(jtsTypeChecker, nOffset + 4, jsymChild); });
 	}
 
 	tc::append(std::cout, tc::repeat_n(' ', nOffset + 2), "exportsOfModule\n");
 	if (jsymType->exports()) {
 		tc::for_each(jtsTypeChecker->getExportsOfModule(jsymType),
-			[&](ts::Symbol const jsymChild) { WalkType(jtsTypeChecker, nOffset + 4, jsymChild); }
+			[&](ts::Symbol const jsymChild) noexcept { WalkType(jtsTypeChecker, nOffset + 4, jsymChild); }
 		);
 	}
 
 	tc::append(std::cout, tc::repeat_n(' ', nOffset + 2), "call signatures\n");
 	tc::for_each(jtsTypeChecker->getSignaturesOfType(jtsTypeChecker->getDeclaredTypeOfSymbol(jsymType), ts::SignatureKind::Call),
-		[&](ts::Signature const jtsSignature) {
+		[&](ts::Signature const jtsSignature) noexcept {
 			tc::append(std::cout,
 				tc::repeat_n(' ', nOffset + 4),
 				std::string(jtsTypeChecker->signatureToString(jtsSignature)),
@@ -96,7 +96,7 @@ void WalkType(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Symb
 
 	tc::append(std::cout, tc::repeat_n(' ', nOffset + 2), "constructors\n");
 	tc::for_each(jtsTypeChecker->getSignaturesOfType(jtsTypeChecker->getDeclaredTypeOfSymbol(jsymType), ts::SignatureKind::Construct),
-		[&](ts::Signature const jtsSignature) {
+		[&](ts::Signature const jtsSignature) noexcept {
 			tc::append(std::cout,
 				tc::repeat_n(' ', nOffset + 4),
 				std::string(jtsTypeChecker->signatureToString(jtsSignature)),
@@ -108,7 +108,7 @@ void WalkType(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Symb
 	if (auto jointerfacetype = jtsTypeChecker->getDeclaredTypeOfSymbol(jsymType)->isClassOrInterface()) {
 		tc::append(std::cout, tc::repeat_n(' ', nOffset + 2), "base types\n");
 		tc::for_each(jtsTypeChecker->getBaseTypes(*jointerfacetype),
-			[&](ts::BaseType const jtsBaseType) {
+			[&](ts::BaseType const jtsBaseType) noexcept {
 				tc::append(std::cout,
 					tc::repeat_n(' ', nOffset + 4),
 					std::string(jtsTypeChecker->typeToString(jtsBaseType)),
@@ -121,7 +121,7 @@ void WalkType(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Symb
 
 std::string MangleSymbolName(ts::TypeChecker const& jtsTypeChecker, ts::Symbol const jsymType) {
 	std::string strMangled = "_js_j";
-	tc::for_each(std::string(jtsTypeChecker->getFullyQualifiedName(jsymType)), [&](char c) {
+	tc::for_each(std::string(jtsTypeChecker->getFullyQualifiedName(jsymType)), [&](char c) noexcept {
 		switch (c) {
 		case '_': tc::append(strMangled, "_u"); break;
 		case ',': tc::append(strMangled, "_c"); break;
@@ -134,7 +134,7 @@ std::string MangleSymbolName(ts::TypeChecker const& jtsTypeChecker, ts::Symbol c
 	return strMangled;
 }
 
-std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtypeRoot) {
+std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtypeRoot) noexcept {
 	// TODO: more assertions: "I've seen these flags, I think they are unimportant, explicitly ignoring".
 	// See checker.ts:typeToTypeNodeHelper
 	if (jtypeRoot->flags() & static_cast<int>(ts::TypeFlags::Any) ||
@@ -165,7 +165,7 @@ std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtyp
 		return tc::explicit_cast<std::string>(tc::concat(
 			"js_union<",
 			tc::join_separated(
-				tc::transform((*jouniontypeRoot)->types(), [&](ts::Type const jtypeUnionOption) {
+				tc::transform((*jouniontypeRoot)->types(), [&](ts::Type const jtypeUnionOption) noexcept {
 					return MangleType(jtsTypeChecker, jtypeUnionOption);
 				}),
 				", "
@@ -216,7 +216,7 @@ int main(int argc, char* argv[]) {
 
 	std::vector<ts::Symbol> vecjsymExportedModule;
 	tc::for_each(jtsProgram->getSourceFiles(),
-		[&](ts::SourceFile const& jtsSourceFile) {
+		[&](ts::SourceFile const& jtsSourceFile) noexcept {
 			if (!tc::find_unique<tc::return_bool>(rngstrFileNames, std::string(jtsSourceFile->fileName()))) {
 				return;
 			}
@@ -231,7 +231,7 @@ int main(int argc, char* argv[]) {
 
 	tc::for_each(
 		vecjsymExportedModule,
-		[&](ts::Symbol const& jsymSourceFile) {
+		[&](ts::Symbol const& jsymSourceFile) noexcept {
 			tc::append(std::cout, "Module name is ", std::string(jsymSourceFile->getName()), "\n");
 			WalkType(jtsTypeChecker, 0, jsymSourceFile);
 		}
@@ -241,11 +241,11 @@ int main(int argc, char* argv[]) {
 
 	{
 		tc::append(std::cout,
-			tc::join(tc::transform(g_vecjsymEnum, [&jtsTypeChecker](ts::Symbol const jsymEnum) {
+			tc::join(tc::transform(g_vecjsymEnum, [&jtsTypeChecker](ts::Symbol const jsymEnum) noexcept {
 				return tc::concat(
 					"enum class ", MangleSymbolName(jtsTypeChecker, jsymEnum), " {\n",
 					tc::join(
-						tc::transform(*jsymEnum->exports(), [&jtsTypeChecker](ts::Symbol const jsymOption) {
+						tc::transform(*jsymEnum->exports(), [&jtsTypeChecker](ts::Symbol const jsymOption) noexcept {
 							_ASSERTEQUAL(jsymOption->getFlags(), static_cast<int>(ts::SymbolFlags::EnumMember));
 							auto const jarrDeclaration = jsymOption->declarations();
 							_ASSERTEQUAL(jarrDeclaration->length(), 1);
@@ -269,18 +269,18 @@ int main(int argc, char* argv[]) {
 					"};\n"
 				);
 			})),
-			tc::join(tc::transform(g_vecjsymClass, [&jtsTypeChecker](ts::Symbol const jsymClass) {
+			tc::join(tc::transform(g_vecjsymClass, [&jtsTypeChecker](ts::Symbol const jsymClass) noexcept {
 				return tc::concat("struct ", MangleSymbolName(jtsTypeChecker, jsymClass), ";\n");
 			})),
-			tc::join(tc::transform(g_vecjsymClass, [&jtsTypeChecker](ts::Symbol const jsymClass) {
-				auto const jarrsymExport = [&]() {
+			tc::join(tc::transform(g_vecjsymClass, [&jtsTypeChecker](ts::Symbol const jsymClass) noexcept {
+				auto const jarrsymExport = [&]() noexcept {
 					if (jsymClass->exports()) {
 						return jtsTypeChecker->getExportsOfModule(jsymClass);
 					} else {
 						return Array<ts::Symbol>(tc::make_empty_range<ts::Symbol>());
 					}
 				}();
-				auto const vecjsymMember = [&]() {
+				auto const vecjsymMember = [&]() noexcept {
 					if (jsymClass->members()) {
 						return tc::explicit_cast<std::vector<ts::Symbol>>(*jsymClass->members());
 					} else {
@@ -291,7 +291,7 @@ int main(int argc, char* argv[]) {
 				std::vector<ts::Symbol> vecjsymBaseClass;
 				if (auto jointerfacetypeClass = jtsTypeChecker->getDeclaredTypeOfSymbol(jsymClass)->isClassOrInterface()) {
 					tc::for_each(jtsTypeChecker->getBaseTypes(*jointerfacetypeClass),
-						[&](ts::BaseType const jtsBaseType) {
+						[&](ts::BaseType const jtsBaseType) noexcept {
 							if (auto const jointerfacetypeBase = tc::reluctant_implicit_cast<ts::Type>(jtsBaseType)->isClassOrInterface()) {
 								tc::cont_emplace_back(vecjsymBaseClass, *(*jointerfacetypeBase)->getSymbol());
 							}
@@ -310,7 +310,7 @@ int main(int argc, char* argv[]) {
 						std::string("virtual IObject"),
 						tc::explicit_cast<std::string>(tc::join_separated(
 							tc::transform(vecjsymBaseClass,
-								[&jtsTypeChecker](ts::Symbol const jsymBaseClass) {
+								[&jtsTypeChecker](ts::Symbol const jsymBaseClass) noexcept {
 									return tc::concat("virtual ", MangleSymbolName(jtsTypeChecker, jsymBaseClass));
 								}
 							),
@@ -319,10 +319,10 @@ int main(int argc, char* argv[]) {
 					),
 					" {\n",
 					tc::join(tc::transform(
-						tc::filter(jarrsymExport, [](ts::Symbol const jsymExport) {
+						tc::filter(jarrsymExport, [](ts::Symbol const jsymExport) noexcept {
 							return IsEnumInCpp(jsymExport) || IsClassInCpp(jsymExport);
 						}),
-						[&jtsTypeChecker](ts::Symbol const jsymExport) {
+						[&jtsTypeChecker](ts::Symbol const jsymExport) noexcept {
 							return tc::concat(
 								"	using ",
 								std::string(jsymExport->getName()),
@@ -333,10 +333,10 @@ int main(int argc, char* argv[]) {
 						}
 					)),
 					tc::join(tc::transform(
-						tc::filter(vecjsymMember, [](ts::Symbol const jsymMember) {
+						tc::filter(vecjsymMember, [](ts::Symbol const jsymMember) noexcept {
 							return static_cast<int>(ts::SymbolFlags::Property) == jsymMember->getFlags();
 						}),
-						[&jtsTypeChecker](ts::Symbol const jsymProperty) {
+						[&jtsTypeChecker](ts::Symbol const jsymProperty) noexcept {
 							_ASSERTEQUAL(jsymProperty->declarations()->length(), 1);
 							ts::Declaration const jdeclProperty = jsymProperty->declarations()[0];
 							int const nModifierFlags = ts()->getCombinedModifierFlags(jdeclProperty);
@@ -364,13 +364,13 @@ int main(int argc, char* argv[]) {
 						}
 					)),
 					tc::join(tc::transform(
-						tc::filter(vecjsymMember, [](ts::Symbol const jsymMember) {
+						tc::filter(vecjsymMember, [](ts::Symbol const jsymMember) noexcept {
 							return static_cast<int>(ts::SymbolFlags::Method) == jsymMember->getFlags();
 						}),
-						[&jtsTypeChecker](ts::Symbol const jsymMethod) {
+						[&jtsTypeChecker](ts::Symbol const jsymMethod) noexcept {
 							return tc::join(tc::transform(
 								jsymMethod->declarations(),
-								[&jtsTypeChecker, jsymMethod](ts::Declaration const jdeclMethod) {
+								[&jtsTypeChecker, jsymMethod](ts::Declaration const jdeclMethod) noexcept {
 									_ASSERTEQUAL(ts()->getCombinedModifierFlags(jdeclMethod), 0);
 									ts::SignatureDeclaration jtsSignatureDeclaration = [&]() -> ts::SignatureDeclaration {
 										if (auto const jotsMethodSignature = ts()->isMethodSignature(jdeclMethod)) {
@@ -400,7 +400,7 @@ int main(int argc, char* argv[]) {
 										tc::join_separated(
 											tc::transform(
 												jtsSignature->getParameters(),
-												[&jtsTypeChecker, jdeclMethod](ts::Symbol const jsymParameter) {
+												[&jtsTypeChecker, jdeclMethod](ts::Symbol const jsymParameter) noexcept {
 													return tc::concat(
 														MangleType(jtsTypeChecker, jtsTypeChecker->getTypeOfSymbolAtLocation(jsymParameter, jdeclMethod)),
 														" ",
@@ -415,7 +415,7 @@ int main(int argc, char* argv[]) {
 											"(\"", std::string(jsymMethod->getName()), "\"",
 												tc::join(tc::transform(
 													jtsSignature->getParameters(),
-													[](ts::Symbol const jsymParameter) {
+													[](ts::Symbol const jsymParameter) noexcept {
 														return tc::concat(", ", std::string(jsymParameter->getName()));
 													}
 												)),
