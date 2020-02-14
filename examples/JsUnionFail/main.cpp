@@ -14,42 +14,42 @@ using tc::js::js_union;
 using tc::js::js_ref;
 using tc::js::IObject;
 
-void derefUndefinedJsRefGet() {
+void derefUndefinedJsRefGet() noexcept {
     js_union<js_undefined, js_ref<IObject>> const u;
 	static_cast<void>(u.get<js_ref<IObject>>());
 }
 
-void derefNullJsRefGet() {
+void derefNullJsRefGet() noexcept {
     js_union<js_null, js_ref<IObject>> const u;
 	static_cast<void>(u.get<js_ref<IObject>>());
 }
 
-void derefUndefinedStringGet() {
+void derefUndefinedStringGet() noexcept {
     js_union<js_undefined, js_string> const u;
 	static_cast<void>(u.get<js_string>());
 }
 
-void derefNullStringGet() {
+void derefNullStringGet() noexcept {
     js_union<js_null, js_string> const u;
 	static_cast<void>(u.get<js_string>());
 }
 
-void derefUndefinedDoubleGet() {
+void derefUndefinedDoubleGet() noexcept {
     js_union<js_undefined, double> const u;
 	static_cast<void>(u.get<double>());
 }
 
-void derefNullDoubleGet() {
+void derefNullDoubleGet() noexcept {
     js_union<js_null, double> const u;
 	static_cast<void>(u.get<double>());
 }
 
-void derefUndefinedBoolGet() {
+void derefUndefinedBoolGet() noexcept {
     js_union<js_undefined, bool> const u;
 	static_cast<void>(u.get<bool>());
 }
 
-void derefNullBoolGet() {
+void derefNullBoolGet() noexcept {
     js_union<js_null, bool> const u;
 	static_cast<void>(u.get<bool>());
 }

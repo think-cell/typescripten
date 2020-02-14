@@ -13,10 +13,10 @@ using tc::js::js_union;
 using tc::js::js_ref;
 
 struct _js_MyJsBase : virtual tc::js::IObject {
-	static auto _construct(js_string, js_string) { return emscripten::val::object(); }
+	static auto _construct(js_string, js_string) noexcept { return emscripten::val::object(); }
 };
 struct _js_MyJsDerived : virtual _js_MyJsBase {
-	static auto _construct(js_string, js_string) { return emscripten::val::object(); }
+	static auto _construct(js_string, js_string) noexcept { return emscripten::val::object(); }
 };
 using MyJsBase = tc::js::js_ref<_js_MyJsBase>;
 using MyJsDerived = tc::js::js_ref<_js_MyJsDerived>;

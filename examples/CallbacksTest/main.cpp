@@ -14,9 +14,9 @@ using tc::js::pass_all_arguments_t;
 using tc::js::globals::Array;
 
 struct _js_SomeJsClass : virtual tc::js::IObject {
-	auto intValue() { return tc::explicit_cast<int>(_getProperty<double>("intValue")); }
+	auto intValue() noexcept { return tc::explicit_cast<int>(_getProperty<double>("intValue")); }
 
-	static auto _construct(int v) {
+	static auto _construct(int v) noexcept {
 		return emscripten::val::module_property("SomeJsClass").new_(v);
 	}
 };
