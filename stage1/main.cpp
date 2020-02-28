@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <utility>
+#include <optional>
 #include "conditional_range.h"
 #include "explicit_cast.h"
 #include "range_defines.h"
@@ -134,6 +135,17 @@ std::string MangleSymbolName(ts::TypeChecker const& jtsTypeChecker, ts::Symbol c
 	return strMangled;
 }
 
+std::optional<ts::TypeReference> IsTypeReference(ts::Type jtypeRoot) noexcept {
+	if (jtypeRoot->flags() != ts::TypeFlags::Object) {
+		return std::nullopt;
+	}
+	ts::ObjectType jobjecttypeRoot(tc_move(jtypeRoot));
+	if (jobjecttypeRoot->objectFlags() != ts::ObjectFlags::Reference) {
+		return std::nullopt;
+	}
+	return ts::TypeReference(tc_move(jobjecttypeRoot));
+}
+
 std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtypeRoot) noexcept {
 	// TODO: more assertions: "I've seen these flags, I think they are unimportant, explicitly ignoring".
 	// See checker.ts:typeToTypeNodeHelper
@@ -173,13 +185,20 @@ std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtyp
 			">"
 		));
 	}
-	if (jtsTypeChecker->isArrayType(jtypeRoot)) {
-		ts::TypeReference jtypereferenceRoot(jtypeRoot);
-		auto jrarrTypeArguments = jtypereferenceRoot->typeArguments();
-		_ASSERTEQUAL(1, jrarrTypeArguments->length());
-		return tc::explicit_cast<std::string>(tc::concat(
-			"Array<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">"
-		));
+	if (auto jotypereferenceRoot = IsTypeReference(jtypeRoot)) {
+		std::string sTarget = tc::explicit_cast<std::string>(jtsTypeChecker->getFullyQualifiedName(*(*jotypereferenceRoot)->target()->getSymbol()));
+		auto jrarrTypeArguments = (*jotypereferenceRoot)->typeArguments();
+		if (sTarget == "Array") {
+			_ASSERTEQUAL(1, jrarrTypeArguments->length());
+			return tc::explicit_cast<std::string>(tc::concat(
+				"Array<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">"
+			));
+		} else if (sTarget == "ReadonlyArray") {
+			_ASSERTEQUAL(1, jrarrTypeArguments->length());
+			return tc::explicit_cast<std::string>(tc::concat(
+				"ReadonlyArray<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">"
+			));
+		}
 	}
 	if (auto jointerfacetypeRoot = jtypeRoot->isClassOrInterface()) {
 		if (!(*jointerfacetypeRoot)->typeParameters() &&
