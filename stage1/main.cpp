@@ -173,6 +173,14 @@ std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtyp
 			">"
 		));
 	}
+	if (jtsTypeChecker->isArrayType(jtypeRoot)) {
+		ts::TypeReference jtypereferenceRoot(jtypeRoot);
+		auto jrarrTypeArguments = jtypereferenceRoot->typeArguments();
+		_ASSERTEQUAL(1, jrarrTypeArguments->length());
+		return tc::explicit_cast<std::string>(tc::concat(
+			"Array<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">"
+		));
+	}
 	if (auto jointerfacetypeRoot = jtypeRoot->isClassOrInterface()) {
 		if (!(*jointerfacetypeRoot)->typeParameters() &&
 			!(*jointerfacetypeRoot)->outerTypeParameters() &&

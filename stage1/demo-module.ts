@@ -59,6 +59,8 @@ declare namespace Foo {
 
         overloadedFunc(param1: number): number;
         overloadedFunc(param1: string): null;
+
+        complexFunc(a: (Interface1Or2 | number)[]) : (Interface1Or2 | number)[];
     }
 
     var someProperty: number;
