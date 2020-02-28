@@ -185,6 +185,7 @@ std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtyp
 			">"
 		));
 	}
+	std::vector<std::string> vecstrExtraInfo;
 	if (auto jotypereferenceRoot = IsTypeReference(jtypeRoot)) {
 		std::string strTarget = tc::explicit_cast<std::string>(jtsTypeChecker->getFullyQualifiedName(*(*jotypereferenceRoot)->target()->getSymbol()));
 		auto jrarrTypeArguments = (*jotypereferenceRoot)->typeArguments();
@@ -199,6 +200,7 @@ std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtyp
 				"ReadonlyArray<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">"
 			));
 		}
+		tc::cont_emplace_back(vecstrExtraInfo, "TypeReference");
 	}
 	if (auto jointerfacetypeRoot = jtypeRoot->isClassOrInterface()) {
 		if (!(*jointerfacetypeRoot)->typeParameters() &&
@@ -210,12 +212,25 @@ std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtyp
 				"js_ref<", MangleSymbolName(jtsTypeChecker, *(*jointerfacetypeRoot)->getSymbol()), ">"
 			));
 		}
+		std::string strThisType = "undefined";
+		if ((*jointerfacetypeRoot)->thisType()) {
+			strThisType = tc::explicit_cast<std::string>(jtsTypeChecker->getFullyQualifiedName(*(*(*jointerfacetypeRoot)->thisType())->getSymbol()));
+		}
+		tc::cont_emplace_back(vecstrExtraInfo, tc::concat(
+			"ClassOrInterface(",
+			"typeParameters:", tc::as_dec((*jointerfacetypeRoot)->typeParameters() ? (*(*jointerfacetypeRoot)->typeParameters())->length() : -1), ","
+			"outerTypeParameters:", tc::as_dec((*jointerfacetypeRoot)->outerTypeParameters() ? (*(*jointerfacetypeRoot)->outerTypeParameters())->length() : -1), ",",
+			"localTypeParameters:", tc::as_dec((*jointerfacetypeRoot)->localTypeParameters() ? (*(*jointerfacetypeRoot)->localTypeParameters())->length() : -1), ","
+			"thisType:", strThisType,
+			")"
+		));
 	}
 	return tc::explicit_cast<std::string>(tc::concat(
 		"js_unknown /*flags=",
 		tc::as_dec(static_cast<int>(jtypeRoot->flags())),
 		": ",
 		tc::explicit_cast<std::string>(jtsTypeChecker->typeToString(jtypeRoot)),
+		" (", tc::join_separated(vecstrExtraInfo, ","), ")",
 		"*/")
 	);
 };
