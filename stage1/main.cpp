@@ -186,14 +186,14 @@ std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtyp
 		));
 	}
 	if (auto jotypereferenceRoot = IsTypeReference(jtypeRoot)) {
-		std::string sTarget = tc::explicit_cast<std::string>(jtsTypeChecker->getFullyQualifiedName(*(*jotypereferenceRoot)->target()->getSymbol()));
+		std::string strTarget = tc::explicit_cast<std::string>(jtsTypeChecker->getFullyQualifiedName(*(*jotypereferenceRoot)->target()->getSymbol()));
 		auto jrarrTypeArguments = (*jotypereferenceRoot)->typeArguments();
-		if (sTarget == "Array") {
+		if (strTarget == "Array") {
 			_ASSERTEQUAL(1, jrarrTypeArguments->length());
 			return tc::explicit_cast<std::string>(tc::concat(
 				"Array<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">"
 			));
-		} else if (sTarget == "ReadonlyArray") {
+		} else if (strTarget == "ReadonlyArray") {
 			_ASSERTEQUAL(1, jrarrTypeArguments->length());
 			return tc::explicit_cast<std::string>(tc::concat(
 				"ReadonlyArray<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">"
