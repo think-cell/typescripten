@@ -784,6 +784,9 @@ struct _jsdefs_ts : _jsenums_ts {
 		auto getConstantValue(EnumMember node) noexcept { return _call<js_union<js_string, double, js_undefined>>("getConstantValue", node); }
 		auto typeToString(Type type) noexcept { return _call<js_string>("typeToString", type); }
 		auto getBaseTypes(InterfaceType type) noexcept { return _call<Array<BaseType>>("getBaseTypes", type); }
+
+		// Internal, see src/compiler/types.ts
+		auto isArrayType(Type type) noexcept { return _call<bool>("isArrayType", type); }
 	};
 
 	struct _js_Symbol : virtual IObject {
