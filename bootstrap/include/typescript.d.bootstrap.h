@@ -626,6 +626,8 @@ struct _jsdefs_ts : _jsenums_ts {
 	struct _js_IntersectionType;
 	struct _js_ObjectType;
 	struct _js_InterfaceType;
+	struct _js_TypeReference;
+	struct _js_GenericType;
 	struct _js_DiagnosticRelatedInformation;
 	struct _js_Diagnostic;
 	struct _js_SymbolTable;
@@ -664,6 +666,8 @@ struct _jsdefs_ts : _jsenums_ts {
 	using IntersectionType = js_ref<_js_IntersectionType>;
 	using ObjectType = js_ref<_js_ObjectType>;
 	using InterfaceType = js_ref<_js_InterfaceType>;
+	using TypeReference = js_ref<_js_TypeReference>;
+	using GenericType = js_ref<_js_GenericType>;
 	using DiagnosticRelatedInformation = js_ref<_js_DiagnosticRelatedInformation>;
 	using Diagnostic = js_ref<_js_Diagnostic>;
 	using SymbolTable = js_ref<_js_SymbolTable>;
@@ -844,6 +848,14 @@ struct _jsdefs_ts : _jsenums_ts {
 		auto outerTypeParameters() noexcept { return _getProperty<js_union<js_undefined, Array<TypeParameter>>>("outerTypeParameters"); }
 		auto localTypeParameters() noexcept { return _getProperty<js_union<js_undefined, Array<TypeParameter>>>("localTypeParameters"); }
 		auto thisType() noexcept { return _getProperty<js_union<js_undefined, TypeParameter>>("thisType"); }
+	};
+
+	struct _js_TypeReference : virtual _js_ObjectType {
+		auto target() noexcept { return _getProperty<GenericType>("target"); }
+		auto typeArguments() noexcept { return _getProperty<ReadonlyArray<Type>>("typeArguments"); }
+	};
+
+	struct 	_js_GenericType : virtual _js_InterfaceType, virtual _js_TypeReference {
 	};
 
 	struct _js_DiagnosticRelatedInformation : virtual IObject {
