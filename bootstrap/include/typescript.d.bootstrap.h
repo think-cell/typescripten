@@ -568,6 +568,19 @@ struct _jsenums_ts {
 		All = 3071
 	};
 };
+
+// Manually implemented instead of DEFINE_CONTIGUOUS_ENUM + enumset to avoid manually checking that all enums are indeed contiguous.
+_jsenums_ts::SymbolFlags operator|(_jsenums_ts::SymbolFlags a, _jsenums_ts::SymbolFlags b) { return static_cast<_jsenums_ts::SymbolFlags>(static_cast<int>(a) | static_cast<int>(b)); }
+bool operator&(_jsenums_ts::SymbolFlags a, _jsenums_ts::SymbolFlags b) { return static_cast<int>(a) & static_cast<int>(b); }
+
+_jsenums_ts::TypeFlags operator|(_jsenums_ts::TypeFlags a, _jsenums_ts::TypeFlags b) { return static_cast<_jsenums_ts::TypeFlags>(static_cast<int>(a) | static_cast<int>(b)); }
+bool operator&(_jsenums_ts::TypeFlags a, _jsenums_ts::TypeFlags b) { return static_cast<int>(a) & static_cast<int>(b); }
+
+_jsenums_ts::ObjectFlags operator|(_jsenums_ts::ObjectFlags a, _jsenums_ts::ObjectFlags b) { return static_cast<_jsenums_ts::ObjectFlags>(static_cast<int>(a) | static_cast<int>(b)); }
+bool operator&(_jsenums_ts::ObjectFlags a, _jsenums_ts::ObjectFlags b) { return static_cast<int>(a) & static_cast<int>(b); }
+
+_jsenums_ts::ModifierFlags operator|(_jsenums_ts::ModifierFlags a, _jsenums_ts::ModifierFlags b) { return static_cast<_jsenums_ts::ModifierFlags>(static_cast<int>(a) | static_cast<int>(b)); }
+bool operator&(_jsenums_ts::ModifierFlags a, _jsenums_ts::ModifierFlags b) { return static_cast<int>(a) & static_cast<int>(b); }
 } // namespace globals::no_adl
 
 // We have to specialize IsJsIntegralEnum before these types are used below.
@@ -575,6 +588,10 @@ template<> struct IsJsIntegralEnum<globals::no_adl::_jsenums_ts::SyntaxKind> : s
 template<> struct IsJsIntegralEnum<globals::no_adl::_jsenums_ts::ModuleKind> : std::true_type {};
 template<> struct IsJsIntegralEnum<globals::no_adl::_jsenums_ts::ScriptTarget> : std::true_type {};
 template<> struct IsJsIntegralEnum<globals::no_adl::_jsenums_ts::SignatureKind> : std::true_type {};
+template<> struct IsJsIntegralEnum<globals::no_adl::_jsenums_ts::SymbolFlags> : std::true_type {};
+template<> struct IsJsIntegralEnum<globals::no_adl::_jsenums_ts::TypeFlags> : std::true_type {};
+template<> struct IsJsIntegralEnum<globals::no_adl::_jsenums_ts::ObjectFlags> : std::true_type {};
+template<> struct IsJsIntegralEnum<globals::no_adl::_jsenums_ts::ModifierFlags> : std::true_type {};
 
 namespace globals {
 namespace no_adl {
@@ -752,7 +769,7 @@ struct _jsdefs_ts : _jsenums_ts {
 		auto getPropertiesOfType(Type type) noexcept { return _call<Array<Symbol>>("getPropertiesOfType", type); }
 		auto getRootSymbols(Symbol type) noexcept { return _call<ReadonlyArray<Symbol>>("getRootSymbols", type); }
 		auto getAugmentedPropertiesOfType(Type type) noexcept { return _call<Array<Symbol>>("getAugmentedPropertiesOfType", type); }
-		auto getSymbolsInScope(Node location, int /*SymbolFlags*/ meaning) noexcept { return _call<Array<Symbol>>("getSymbolsInScope", location, tc::explicit_cast<double>(meaning)); }
+		auto getSymbolsInScope(Node location, SymbolFlags meaning) noexcept { return _call<Array<Symbol>>("getSymbolsInScope", location, meaning); }
 		auto getSymbolAtLocation(Node node) noexcept { return _call<js_optional<Symbol>>("getSymbolAtLocation", node); }
 		auto getExportsOfModule(Symbol moduleSymbol) noexcept { return _call<Array<Symbol>>("getExportsOfModule", moduleSymbol); }
 		auto getExportSymbolOfSymbol(Symbol symbol) noexcept { return _call<Symbol>("getExportSymbolOfSymbol", symbol); }
@@ -768,7 +785,7 @@ struct _jsdefs_ts : _jsenums_ts {
 	struct _js_Symbol : virtual IObject {
 		auto getName() noexcept { return _call<js_string>("getName"); }
 
-		auto getFlags() noexcept { return tc::explicit_cast<int>(_call<double /*SymbolFlags*/>("getFlags")); }
+		auto getFlags() noexcept { return _call<SymbolFlags>("getFlags"); }
 
 		auto members() noexcept { return _getProperty<js_optional<SymbolTable>>("members"); }
 
@@ -783,7 +800,7 @@ struct _jsdefs_ts : _jsenums_ts {
 
 
 	struct _js_Type : virtual IObject {
-		auto flags() noexcept { return tc::explicit_cast<int>(_getProperty<double /*TypeFlags*/>("flags")); }
+		auto flags() noexcept { return _getProperty<TypeFlags>("flags"); }
 
 		auto getSymbol() noexcept { return _call<js_union<js_undefined, Symbol>>("getSymbol"); }
 
@@ -819,7 +836,7 @@ struct _jsdefs_ts : _jsenums_ts {
 	};
 
 	struct _js_ObjectType : virtual _js_Type {
-		auto objectFlags() noexcept { return tc::explicit_cast<int>(_getProperty<double>("objectFlags")); }
+		auto objectFlags() noexcept { return _getProperty<ObjectFlags>("objectFlags"); }
 	};
 
 	struct _js_InterfaceType : virtual _js_ObjectType {
@@ -973,7 +990,7 @@ struct _js_ts : virtual IObject, _jsdefs_ts {
 	}
 
 	auto getCombinedModifierFlags(js_ref<_js_Declaration> node) noexcept {
-		return tc::explicit_cast<int>(_call<double>("getCombinedModifierFlags", node));
+		return _call<ModifierFlags>("getCombinedModifierFlags", node);
 	}
 
 	static emscripten::val _construct() noexcept { return emscripten::val::global("ts"); }
