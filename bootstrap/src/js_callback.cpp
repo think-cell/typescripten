@@ -38,7 +38,7 @@ emscripten::val Call(PointerNumber iFunctionPtr, PointerNumber iArg0, emscripten
 }
 
 EMSCRIPTEN_BINDINGS(tc_js_callback_detail_bind) {
-	function("tc_js_callback_detail_js_Call", &Call);
+	emscripten::function("tc_js_callback_detail_js_Call", &Call);
 }
 
 } // namespace callback_detail
