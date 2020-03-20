@@ -10,7 +10,7 @@ ifndef PRE_JS
 $(error "$$PRE_JS variable should be specified")
 endif
 
-TARGETS=$(TARGET) $(TARGET:%.js=%.wasm) $(TARGET:%.js=%.wasm.map)
+TARGETS=$(TARGET) $(TARGET:.js=.wasm) $(TARGET:.js=.wasm.map)
 OBJDIR=obj
 SRCS+=$(wildcard $(BOOTSTRAP_PATH)/src/*.cpp)
 OBJS=$(patsubst %.cpp,$(OBJDIR)/%.o,$(notdir $(SRCS)))
