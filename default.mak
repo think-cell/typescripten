@@ -41,14 +41,16 @@ $(TARGETS) &: $(OBJS)
 
 $(OBJDIR)/%.o: %.cpp | $(OBJDIR)
 	test -n "$(EMCXX)"  # Expect $$EMCXX
-	$(EMCXX) $(EMCXXFLAGS) -c "$<" -o "$@"
+	$(EMCXX) $(EMCXXFLAGS) -MMD -MP -c "$<" -o "$@"
 
 $(OBJDIR)/%.o: $(BOOTSTRAP_PATH)/src/%.cpp | $(OBJDIR)
 	test -n "$(EMCXX)"  # Expect $$EMCXX
-	$(EMCXX) $(EMCXXFLAGS) -c "$<" -o "$@"
+	$(EMCXX) $(EMCXXFLAGS) -MMD -MP -c "$<" -o "$@"
 
 clean:
 	rm -rf $(TARGETS) $(OBJDIR) *.wasm.map
 
 $(OBJDIR):
 	mkdir $@
+
+-include $(OBJS:.o=.d)
