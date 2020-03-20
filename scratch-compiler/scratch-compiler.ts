@@ -1,6 +1,5 @@
 import * as assert from "assert";
 import * as ts from "typescript";
-import "source-map-support/register";
 
 const compilerOptions = {
     strict: true,

@@ -6,3 +6,6 @@
 node_modules/
 /build-config.cmd
 /build-config.sh
+bin/
+obj/
+/.vs/
