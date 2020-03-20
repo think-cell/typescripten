@@ -27,13 +27,13 @@ assert(myModule.name == "\"scratch-module\"");
 const [myInterface] = typeChecker.getExportsOfModule(myModule);
 assert(myInterface.name == "MyInterface");
 
-export const symMembers: ts.Symbol[] = [];
+const symMembers: ts.Symbol[] = [];
 myInterface.members.forEach((symMember) => { symMembers.push(symMember); });
 
-export const [symMember] = symMembers;
+const [symMember] = symMembers;
 console.log(symMember.name, symMember.flags);
 
 assert(symMember.flags & ts.SymbolFlags.Property);
 const [declaration] = symMember.declarations;
-export const type = typeChecker.getTypeOfSymbolAtLocation(symMember, declaration);
+const type = typeChecker.getTypeOfSymbolAtLocation(symMember, declaration);
 console.log((<any>typeChecker).isArrayType(type));
