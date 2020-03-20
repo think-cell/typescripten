@@ -5,7 +5,7 @@
 @set EMCXX=em++
 @set BOOTSTRAP_PATH=%~dp0\bootstrap
 @set EMCXX_FLAGS=^
-    -s SAFE_HEAP=1 -s ASSERTIONS=2 -s WASM=1 -s DEMANGLE_SUPPORT=1 ^
+    -s SAFE_HEAP=1 -s ASSERTIONS=2 -s DEMANGLE_SUPPORT=1 ^
     -D_DEBUG ^
     -Wall -Wextra -Werror ^
     -g4 --source-map-base http://localhost:8080/ ^
