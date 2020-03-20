@@ -10,8 +10,3 @@ EMCXXFLAGS="\
 	-g -s SAFE_HEAP=1 -s ASSERTIONS=2 -s DEMANGLE_SUPPORT=1"
 EMLDFLAGS="\
     -g4 --source-map-base http://localhost:8080/"
-DEFAULT_EMCXXFLAGS="\
-    $EMCXXFLAGS -std=c++17\
-    -isystem $THINK_CELL_PUBLIC_PATH\
-    -isystem $BOOST_PATH\
-    $EMLDFLAGS --bind"
