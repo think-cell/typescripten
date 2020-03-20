@@ -7,9 +7,9 @@ Close analogues are Rust's [stdweb](https://github.com/koute/stdweb) and [wasm-b
 
 # Dependencies
 
-* [Emscripten](https://emscripten.org/) (Node.js and NPM are included)
+* [Emscripten](https://emscripten.org/) 1.38.41 or newer (Node.js and NPM are included)
 * [think-cell public library](https://github.com/think-cell/range)
-* Boost 1.68.0 or newer
+* Boost 1.68.0 (exactly)
 
 # Misc thoughts
 * C++ callbacks passed to JS are always `noexpect` because exceptions cannot be passed between JS and C++ at the moment.
