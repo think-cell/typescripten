@@ -1,0 +1,38 @@
+.PHONY: all clean
+
+TARGETS=main.js main.wasm main.wasm.map
+OBJDIR=obj
+SRCS=main.cpp $(wildcard $(BOOTSTRAP_PATH)/src/*.cpp)
+OBJS=$(patsubst %.cpp,$(OBJDIR)/%.o,$(notdir $(SRCS)))
+PRE_JS=main-pre.js $(wildcard $(BOOTSTRAP_PATH)/src/*.js)
+
+EMCXXFLAGS?=$(CXXFLAGS)
+EMLDFLAGS?=$(LDFLAGS)
+
+EMCXXFLAGS+=-std=c++17
+EMCXXFLAGS+=-I "$(BOOTSTRAP_PATH)/include"
+EMCXXFLAGS+=-isystem "$(THINK_CELL_PUBLIC_PATH)"
+EMCXXFLAGS+=-isystem "$(BOOST_PATH)"
+
+EMLDFLAGS+=--bind
+EMLDFLAGS+=$(PRE_JS:%=--pre-js "%")
+
+all: $(TARGETS)
+
+$(TARGETS) &: $(OBJS)
+	test -n "$(EMCXX)"  # Expect $$EMCXX
+	$(EMCXX) $(EMLDFLAGS) $(^:%="%") -o "$@"
+
+$(OBJDIR)/%.o: %.cpp | $(OBJDIR)
+	test -n "$(EMCXX)"  # Expect $$EMCXX
+	$(EMCXX) $(EMCXXFLAGS) -c "$<" -o "$@"
+
+$(OBJDIR)/%.o: $(BOOTSTRAP_PATH)/src/%.cpp | $(OBJDIR)
+	test -n "$(EMCXX)"  # Expect $$EMCXX
+	$(EMCXX) $(EMCXXFLAGS) -c "$<" -o "$@"
+
+clean:
+	rm -rf $(TARGETS) $(OBJDIR) *.wasm.map
+
+$(OBJDIR):
+	mkdir $@
