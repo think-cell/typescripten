@@ -1,44 +1,5 @@
-.PHONY: all clean
+TARGET=main.js
+SRCS=main.cpp
+PRE_JS=main-pre.js
 
-TARGETS=main.js main.wasm main.wasm.map
-OBJDIR=obj
-SRCS=main.cpp $(wildcard $(BOOTSTRAP_PATH)/src/*.cpp)
-OBJS=$(patsubst %.cpp,$(OBJDIR)/%.o,$(notdir $(SRCS)))
-PRE_JS=main-pre.js $(wildcard $(BOOTSTRAP_PATH)/src/*.js)
-
-EMCXXFLAGS?=$(CXXFLAGS)
-EMLDFLAGS?=$(LDFLAGS)
-
-EMCXXFLAGS+=-std=c++17
-ifdef BOOTSTRAP_PATH
-EMCXXFLAGS+=-I "$(BOOTSTRAP_PATH)/include"
-endif
-ifdef THINK_CELL_PUBLIC_PATH
-EMCXXFLAGS+=-isystem "$(THINK_CELL_PUBLIC_PATH)"
-endif
-ifdef BOOST_PATH
-EMCXXFLAGS+=-isystem "$(BOOST_PATH)"
-endif
-
-EMLDFLAGS+=--bind
-EMLDFLAGS+=$(PRE_JS:%=--pre-js "%")
-
-all: $(TARGETS)
-
-$(TARGETS) &: $(OBJS)
-	test -n "$(EMCXX)"  # Expect $$EMCXX
-	$(EMCXX) $(EMLDFLAGS) $(^:%="%") -o "$@"
-
-$(OBJDIR)/%.o: %.cpp | $(OBJDIR)
-	test -n "$(EMCXX)"  # Expect $$EMCXX
-	$(EMCXX) $(EMCXXFLAGS) -c "$<" -o "$@"
-
-$(OBJDIR)/%.o: $(BOOTSTRAP_PATH)/src/%.cpp | $(OBJDIR)
-	test -n "$(EMCXX)"  # Expect $$EMCXX
-	$(EMCXX) $(EMCXXFLAGS) -c "$<" -o "$@"
-
-clean:
-	rm -rf $(TARGETS) $(OBJDIR) *.wasm.map
-
-$(OBJDIR):
-	mkdir $@
+include ../../default.mak
