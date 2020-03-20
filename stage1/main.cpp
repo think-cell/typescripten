@@ -1,14 +1,4 @@
-#include <string>
-#include <iostream>
-#include <vector>
-#include <utility>
-#include <optional>
-#include "conditional_range.h"
-#include "explicit_cast.h"
-#include "range_defines.h"
-#include "range.h"
-#include "join_adaptor.h"
-#include "js_bootstrap.h"
+#include "precompiled.h"
 #include "typescript.d.bootstrap.h"
 
 using tc::js::js_string;
