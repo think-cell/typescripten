@@ -9,6 +9,13 @@ for i in *; do
         if [ -e "test.sh" ]; then
             ./test.sh || exit 1
         fi
+        if [ -e "build-make.sh" ]; then
+            ./build-make.sh clean || exit 1
+            ./build-make.sh
+            if [ -e "test.sh" ]; then
+                ./test.sh || exit 1
+            fi
+        fi
         popd
     fi
 done
