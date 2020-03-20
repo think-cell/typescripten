@@ -4,7 +4,7 @@
 @set THINK_CELL_PUBLIC_PATH=<path-to-think-cell-public-library-includes>
 @set EMCXX=em++
 @set BOOTSTRAP_PATH=%~dp0\bootstrap
-@set EMCXX_FLAGS=^
+@set DEFAULT_EMCXXFLAGS=^
     -s SAFE_HEAP=1 -s ASSERTIONS=2 -s DEMANGLE_SUPPORT=1 ^
     -D_DEBUG ^
     -Wall -Wextra -Werror ^

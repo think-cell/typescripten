@@ -5,7 +5,7 @@ BOOST_PATH=<path-to-boost-includes>
 THINK_CELL_PUBLIC_PATH=<path-to-think-cell-public-library-includes>
 EMCXX=em++
 BOOTSTRAP_PATH=$(dirname "$0")/bootstrap
-EMCXX_FLAGS="\
+DEFAULT_EMCXXFLAGS="\
     -s SAFE_HEAP=1 -s ASSERTIONS=2 -s DEMANGLE_SUPPORT=1\
     -D_DEBUG\
     -Wall -Wextra -Werror\
