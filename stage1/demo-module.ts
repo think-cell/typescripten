@@ -17,7 +17,7 @@ declare namespace Foo {
     namespace NsInterface2 {
         interface Interface2 {
             do2(): void;
-            enumFoo(a: MyEnum, b: MyEnum.A | MyEnum.B): MyEnum;
+            enumFoo(a: MyEnum, b: MyEnum.A | MyEnum.B, c: MyEnum.A | string): MyEnum;
         }
     }
     namespace NsInterface1 {

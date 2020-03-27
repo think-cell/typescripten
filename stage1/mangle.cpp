@@ -69,16 +69,20 @@ std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtyp
 	}
 	if (auto jouniontypeRoot = jtypeRoot->isUnion()) {
 		_ASSERT(1 < (*jouniontypeRoot)->types()->length());
-		return tc::explicit_cast<std::string>(tc::concat(
-			"js_union<",
-			tc::join_separated(
-				tc::transform((*jouniontypeRoot)->types(), [&](ts::Type const jtypeUnionOption) noexcept {
-					return MangleType(jtsTypeChecker, jtypeUnionOption);
-				}),
-				", "
-			),
-			">"
-		));
+		auto vecstrType = tc::make_vector(tc::transform((*jouniontypeRoot)->types(), [&](ts::Type const jtypeUnionOption) noexcept {
+			return MangleType(jtsTypeChecker, jtypeUnionOption);
+		}));
+		// NOTE: sort_unique works with final names which go to C++. It may potentially hide
+		// some errors in mangling (e.g. if two different types map to the same type in C++).
+		tc::sort_unique_inplace(vecstrType);
+		_ASSERT(vecstrType.size() > 0);
+		if (vecstrType.size() == 1) {
+			return vecstrType[0];
+		} else {
+			return tc::explicit_cast<std::string>(tc::concat(
+				"js_union<", tc::join_separated(vecstrType, ", "), ">"
+			));
+		}
 	}
 	std::vector<std::string> vecstrExtraInfo;
 	if (auto jotypereferenceRoot = IsTypeReference(jtypeRoot)) {
