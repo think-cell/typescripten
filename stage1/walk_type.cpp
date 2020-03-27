@@ -6,20 +6,18 @@ using tc::js::globals::ts;
 std::vector<ts::Symbol> g_vecjsymEnum, g_vecjsymClass;
 
 bool IsEnumInCpp(ts::Symbol const jsymType) noexcept {
-	// TODO: more assertions: "I've seen these flags, I think they are unimportant, explicitly ignoring".
 	return
 		ts::SymbolFlags::RegularEnum == jsymType->getFlags() ||
 		ts::SymbolFlags::ConstEnum == jsymType->getFlags();
 }
 
 bool IsClassInCpp(ts::Symbol const jsymType) noexcept {
-	// TODO: more assertions: "I've seen these flags, I think they are unimportant, explicitly ignoring".
-	return jsymType->getFlags() & (
-		ts::SymbolFlags::Class |
-		ts::SymbolFlags::Interface |
-		ts::SymbolFlags::ValueModule |
-		ts::SymbolFlags::NamespaceModule
-		);
+	return
+		ts::SymbolFlags::Class == jsymType->getFlags() ||
+		ts::SymbolFlags::Interface == jsymType->getFlags() ||
+		ts::SymbolFlags::ValueModule == jsymType->getFlags() ||
+		(ts::SymbolFlags::ValueModule | ts::SymbolFlags::Interface) == jsymType->getFlags() ||
+		ts::SymbolFlags::NamespaceModule == jsymType->getFlags();
 }
 
 void WalkType(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Symbol const jsymType) noexcept {
