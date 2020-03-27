@@ -136,7 +136,21 @@ int main(int argc, char* argv[]) {
 					" {\n",
 					tc::join(tc::transform(
 						tc::filter(jarrsymExport, [](ts::Symbol const jsymExport) noexcept {
-							return IsEnumInCpp(jsymExport) || IsClassInCpp(jsymExport);
+							return IsEnumInCpp(jsymExport);
+						}),
+						[&jtsTypeChecker](ts::Symbol const jsymExport) noexcept {
+							return tc::concat(
+								"	using ",
+								tc::explicit_cast<std::string>(jsymExport->getName()),
+								" = ",
+								MangleSymbolName(jtsTypeChecker, jsymExport),
+								";\n"
+							);
+						}
+					)),
+					tc::join(tc::transform(
+						tc::filter(jarrsymExport, [](ts::Symbol const jsymExport) noexcept {
+							return IsClassInCpp(jsymExport);
 						}),
 						[&jtsTypeChecker](ts::Symbol const jsymExport) noexcept {
 							return tc::concat(
