@@ -59,6 +59,8 @@ template<typename T>
 struct _js_ReadonlyArray : virtual IObject {
 	static_assert(IsJsInteropable<T>::value);
 
+	using value_type = T;
+
 	auto length() noexcept { return tc::explicit_cast<int>(_getProperty<double>("length")); }
 
 	auto operator[](int i) noexcept { return _getProperty<T>(i); }
@@ -98,3 +100,15 @@ using no_adl::Console;
 inline auto console() noexcept { return Console(emscripten::val::global("console")); }
 
 } // namespace tc::js::globals
+
+namespace tc::no_adl {
+template<typename ArrayType, typename T>
+struct range_value<ArrayType, tc::js::globals::Array<T>> {
+    using type = T;
+};
+
+template<typename ReadonlyArrayType, typename T>
+struct range_value<ReadonlyArrayType, tc::js::globals::ReadonlyArray<T>> {
+    using type = T;
+};
+} // namespace tc::no_adl

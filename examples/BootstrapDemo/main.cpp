@@ -1,6 +1,7 @@
 #include <emscripten/val.h>
 #include <vector>
 #include <initializer_list>
+#include <type_traits>
 #include "explicit_cast.h"
 #include "range.h"
 #include "range_defines.h"
@@ -21,6 +22,7 @@ int main() {
 	{
 		auto const arr = tc::explicit_cast<ReadonlyArray<double>>(std::initializer_list<double>{1, 2, 3});
 		static_assert(!tc::is_explicit_castable<ReadonlyArray<double>, double>::value);
+		static_assert(std::is_same_v<tc::range_value_t<ReadonlyArray<double>>, double>);
 		console()->log(arr);
 		_ASSERTEQUAL(arr->length(), 3);
 		_ASSERTEQUAL(arr[0], 1);
@@ -40,6 +42,7 @@ int main() {
 
 	{
 		Array<js_string> const arr(std::initializer_list<char const*>{"Hello", "Hi!"});
+		static_assert(std::is_same_v<tc::range_value_t<decltype(arr)>, js_string>);
 		_ASSERTEQUAL(arr->length(), 2);
 		_ASSERTEQUAL(arr[0].length(), 5);
 		_ASSERTEQUAL(arr[1].length(), 3);
@@ -48,6 +51,7 @@ int main() {
 
 	auto const arr = tc::explicit_cast<Array<double>>(std::initializer_list<double>{1, 2, 3});
 	static_assert(!tc::is_explicit_castable<Array<double>, double>::value);
+	static_assert(std::is_same_v<tc::range_value_t<Array<double>>, double>);
 	console()->log(arr);
 	_ASSERTEQUAL(arr->length(), 3);
 	_ASSERTEQUAL(arr[1], 2);
