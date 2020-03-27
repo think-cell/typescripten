@@ -42,29 +42,28 @@ bool IsTrivialType(ts::InterfaceType jinterfacetypeRoot) {
 }
 
 std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtypeRoot) noexcept {
-	// TODO: more assertions: "I've seen these flags, I think they are unimportant, explicitly ignoring".
 	// See checker.ts:typeToTypeNodeHelper
-	if (jtypeRoot->flags() & ts::TypeFlags::Any ||
-		jtypeRoot->flags() & ts::TypeFlags::Unknown
+	if (jtypeRoot->flags() == ts::TypeFlags::Any ||
+		jtypeRoot->flags() == ts::TypeFlags::Unknown
 		) {
 		return "js_unknown";
 	}
-	if (jtypeRoot->flags() & ts::TypeFlags::String) {
+	if (jtypeRoot->flags() == ts::TypeFlags::String) {
 		return "js_string";
 	}
-	if (jtypeRoot->flags() & ts::TypeFlags::Number) {
+	if (jtypeRoot->flags() == ts::TypeFlags::Number) {
 		return "double";
 	}
 	if (jtypeRoot->flags() == ts::TypeFlags::Boolean || jtypeRoot->flags() == ts::TypeFlags::BooleanLiteral) {
 		return "bool";
 	}
-	if (jtypeRoot->flags() & ts::TypeFlags::Void) {
+	if (jtypeRoot->flags() == ts::TypeFlags::Void) {
 		return "void";
 	}
-	if (jtypeRoot->flags() & ts::TypeFlags::Undefined) {
+	if (jtypeRoot->flags() == ts::TypeFlags::Undefined) {
 		return "js_undefined";
 	}
-	if (jtypeRoot->flags() & ts::TypeFlags::Null) {
+	if (jtypeRoot->flags() == ts::TypeFlags::Null) {
 		return "js_null";
 	}
 	if (auto jouniontypeRoot = jtypeRoot->isUnion()) {
@@ -121,9 +120,8 @@ std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtyp
 			")"
 		));
 	}
-	if (jtypeRoot->flags() & ts::TypeFlags::EnumLiteral) {
-		_ASSERT((ts::TypeFlags::NumberLiteral | ts::TypeFlags::EnumLiteral) == jtypeRoot->flags() ||
-			(ts::TypeFlags::StringLiteral | ts::TypeFlags::EnumLiteral) == jtypeRoot->flags());
+	if ((ts::TypeFlags::NumberLiteral | ts::TypeFlags::EnumLiteral) == jtypeRoot->flags() ||
+			(ts::TypeFlags::StringLiteral | ts::TypeFlags::EnumLiteral) == jtypeRoot->flags()) {
 		auto jsymParentSymbol = (*jtypeRoot->getSymbol())->parent();
 		_ASSERT(ts::SymbolFlags::RegularEnum == jsymParentSymbol->getFlags() ||
 			ts::SymbolFlags::ConstEnum == jsymParentSymbol->getFlags());
