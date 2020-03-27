@@ -810,6 +810,8 @@ struct _jsdefs_ts : _jsenums_ts {
 
 		auto getProperties() noexcept { return _call<Array<Symbol>>("getProperties"); }
 
+		auto constraint() noexcept { return _getProperty<js_union<js_undefined, Type>>("constraint"); }
+
 		auto isUnion() noexcept {
 			std::optional<UnionType> result;
 			if (_call<bool>("isUnion"))
