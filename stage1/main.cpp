@@ -202,7 +202,7 @@ int main(int argc, char* argv[]) {
 								jsymMethod->declarations(),
 								[&jtsTypeChecker, jsymMethod](ts::Declaration const jdeclMethod) noexcept {
 									_ASSERTEQUAL(ts()->getCombinedModifierFlags(jdeclMethod), ts::ModifierFlags::None);
-									auto jtsSignatureDeclaration = [&]() -> ts::SignatureDeclaration noexcept {
+									auto jtsSignatureDeclaration = [&]() noexcept -> ts::SignatureDeclaration {
 										if (auto const jotsMethodSignature = ts()->isMethodSignature(jdeclMethod)) {
 											_ASSERT(!ts()->isMethodDeclaration(jdeclMethod));
 											return *jotsMethodSignature;
