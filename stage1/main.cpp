@@ -8,22 +8,6 @@ using tc::js::globals::ts;
 using tc::js::globals::Array;
 using tc::js::globals::ReadonlyArray;
 
-namespace tc {
-template<>
-struct appender_type<std::ostream> {
-	using sink_value_type = char;
-
-	appender_type(std::ostream& os) noexcept : m_os(os) {}
-
-	void operator()(char c) const& noexcept {
-		m_os.put(c);
-	}
-
-private:
-	std::ostream& m_os;
-};
-}; // namespace tc
-
 std::vector<ts::Symbol> g_vecjsymEnum, g_vecjsymClass;
 
 bool IsEnumInCpp(ts::Symbol const jsymType) noexcept {
