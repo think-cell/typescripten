@@ -30,15 +30,15 @@ std::optional<ts::TypeReference> IsTypeReference(ts::Type jtypeRoot) noexcept {
 }
 
 bool IsTrivialType(ts::InterfaceType jinterfacetypeRoot) {
-    if (jinterfacetypeRoot->typeParameters()) return false;
-    if (jinterfacetypeRoot->outerTypeParameters()) return false;
-    if (jinterfacetypeRoot->localTypeParameters()) return false;
-    if (jinterfacetypeRoot->thisType()) {
-        auto jtypeThis = *jinterfacetypeRoot->thisType();
-        _ASSERTEQUAL(ts::TypeFlags::TypeParameter, jtypeThis->flags());
-        if (!jtypeThis->constraint().getEmval().strictlyEquals(jinterfacetypeRoot.getEmval())) return false;
-    }
-    return true;
+	if (jinterfacetypeRoot->typeParameters()) return false;
+	if (jinterfacetypeRoot->outerTypeParameters()) return false;
+	if (jinterfacetypeRoot->localTypeParameters()) return false;
+	if (jinterfacetypeRoot->thisType()) {
+		auto jtypeThis = *jinterfacetypeRoot->thisType();
+		_ASSERTEQUAL(ts::TypeFlags::TypeParameter, jtypeThis->flags());
+		if (!jtypeThis->constraint().getEmval().strictlyEquals(jinterfacetypeRoot.getEmval())) return false;
+	}
+	return true;
 }
 
 std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtypeRoot) noexcept {
@@ -98,7 +98,7 @@ std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtyp
 		tc::cont_emplace_back(vecstrExtraInfo, "TypeReference");
 	}
 	if (auto jointerfacetypeRoot = jtypeRoot->isClassOrInterface()) {
-	    if (IsTrivialType(*jointerfacetypeRoot)) {
+		if (IsTrivialType(*jointerfacetypeRoot)) {
 			_ASSERTEQUAL(ts::TypeFlags::Object, (*jointerfacetypeRoot)->flags());
 			return tc::explicit_cast<std::string>(tc::concat(
 				"js_ref<", MangleSymbolName(jtsTypeChecker, *(*jointerfacetypeRoot)->getSymbol()), ">"
