@@ -74,7 +74,7 @@ std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtyp
 		// NOTE: sort_unique works with final names which go to C++. It may potentially hide
 		// some errors in mangling (e.g. if two different types map to the same type in C++).
 		tc::sort_unique_inplace(vecstrType);
-		_ASSERT(vecstrType.size() > 0);
+		_ASSERT(0 < vecstrType.size());
 		if (vecstrType.size() == 1) {
 			return vecstrType[0];
 		} else {
