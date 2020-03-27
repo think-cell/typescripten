@@ -570,17 +570,17 @@ struct _jsenums_ts {
 };
 
 // Manually implemented instead of DEFINE_CONTIGUOUS_ENUM + enumset to avoid manually checking that all enums are indeed contiguous.
-_jsenums_ts::SymbolFlags operator|(_jsenums_ts::SymbolFlags a, _jsenums_ts::SymbolFlags b) { return static_cast<_jsenums_ts::SymbolFlags>(static_cast<int>(a) | static_cast<int>(b)); }
-bool operator&(_jsenums_ts::SymbolFlags a, _jsenums_ts::SymbolFlags b) { return static_cast<int>(a) & static_cast<int>(b); }
+inline _jsenums_ts::SymbolFlags operator|(_jsenums_ts::SymbolFlags a, _jsenums_ts::SymbolFlags b) { return static_cast<_jsenums_ts::SymbolFlags>(static_cast<int>(a) | static_cast<int>(b)); }
+inline bool operator&(_jsenums_ts::SymbolFlags a, _jsenums_ts::SymbolFlags b) { return static_cast<int>(a) & static_cast<int>(b); }
 
-_jsenums_ts::TypeFlags operator|(_jsenums_ts::TypeFlags a, _jsenums_ts::TypeFlags b) { return static_cast<_jsenums_ts::TypeFlags>(static_cast<int>(a) | static_cast<int>(b)); }
-bool operator&(_jsenums_ts::TypeFlags a, _jsenums_ts::TypeFlags b) { return static_cast<int>(a) & static_cast<int>(b); }
+inline _jsenums_ts::TypeFlags operator|(_jsenums_ts::TypeFlags a, _jsenums_ts::TypeFlags b) { return static_cast<_jsenums_ts::TypeFlags>(static_cast<int>(a) | static_cast<int>(b)); }
+inline bool operator&(_jsenums_ts::TypeFlags a, _jsenums_ts::TypeFlags b) { return static_cast<int>(a) & static_cast<int>(b); }
 
-_jsenums_ts::ObjectFlags operator|(_jsenums_ts::ObjectFlags a, _jsenums_ts::ObjectFlags b) { return static_cast<_jsenums_ts::ObjectFlags>(static_cast<int>(a) | static_cast<int>(b)); }
-bool operator&(_jsenums_ts::ObjectFlags a, _jsenums_ts::ObjectFlags b) { return static_cast<int>(a) & static_cast<int>(b); }
+inline _jsenums_ts::ObjectFlags operator|(_jsenums_ts::ObjectFlags a, _jsenums_ts::ObjectFlags b) { return static_cast<_jsenums_ts::ObjectFlags>(static_cast<int>(a) | static_cast<int>(b)); }
+inline bool operator&(_jsenums_ts::ObjectFlags a, _jsenums_ts::ObjectFlags b) { return static_cast<int>(a) & static_cast<int>(b); }
 
-_jsenums_ts::ModifierFlags operator|(_jsenums_ts::ModifierFlags a, _jsenums_ts::ModifierFlags b) { return static_cast<_jsenums_ts::ModifierFlags>(static_cast<int>(a) | static_cast<int>(b)); }
-bool operator&(_jsenums_ts::ModifierFlags a, _jsenums_ts::ModifierFlags b) { return static_cast<int>(a) & static_cast<int>(b); }
+inline _jsenums_ts::ModifierFlags operator|(_jsenums_ts::ModifierFlags a, _jsenums_ts::ModifierFlags b) { return static_cast<_jsenums_ts::ModifierFlags>(static_cast<int>(a) | static_cast<int>(b)); }
+inline bool operator&(_jsenums_ts::ModifierFlags a, _jsenums_ts::ModifierFlags b) { return static_cast<int>(a) & static_cast<int>(b); }
 } // namespace globals::no_adl
 
 // We have to specialize IsJsIntegralEnum before these types are used below.
