@@ -55,7 +55,7 @@ std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtyp
 	if (jtypeRoot->flags() & ts::TypeFlags::Number) {
 		return "double";
 	}
-	if (jtypeRoot->flags() & ts::TypeFlags::Boolean) {
+	if (jtypeRoot->flags() == ts::TypeFlags::Boolean || jtypeRoot->flags() == ts::TypeFlags::BooleanLiteral) {
 		return "bool";
 	}
 	if (jtypeRoot->flags() & ts::TypeFlags::Void) {
