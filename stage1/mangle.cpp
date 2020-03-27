@@ -3,7 +3,7 @@
 
 using tc::js::globals::ts;
 
-std::string MangleSymbolName(ts::TypeChecker const& jtsTypeChecker, ts::Symbol const jsymType) {
+std::string MangleSymbolName(ts::TypeChecker const& jtsTypeChecker, ts::Symbol const jsymType) noexcept {
 	std::string strMangled = "_js_j";
 	tc::for_each(tc::explicit_cast<std::string>(jtsTypeChecker->getFullyQualifiedName(jsymType)), [&](char c) noexcept {
 		switch (c) {
@@ -29,7 +29,7 @@ std::optional<ts::TypeReference> IsTypeReference(ts::Type jtypeRoot) noexcept {
 	return ts::TypeReference(tc_move(jobjecttypeRoot));
 }
 
-bool IsTrivialType(ts::InterfaceType jinterfacetypeRoot) {
+bool IsTrivialType(ts::InterfaceType jinterfacetypeRoot) noexcept {
 	if (jinterfacetypeRoot->typeParameters()) return false;
 	if (jinterfacetypeRoot->outerTypeParameters()) return false;
 	if (jinterfacetypeRoot->localTypeParameters()) return false;
