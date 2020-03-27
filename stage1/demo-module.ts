@@ -12,6 +12,7 @@ declare namespace Foo {
             someFlag() : boolean;
             trueFlag() : true;
             falseFlag() : false;
+            anyValue(): any;
         }
     }
     namespace NsInterface2 {
