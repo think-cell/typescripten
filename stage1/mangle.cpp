@@ -117,6 +117,14 @@ std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtyp
 			")"
 		));
 	}
+	if (jtypeRoot->flags() & ts::TypeFlags::EnumLiteral) {
+		_ASSERT((ts::TypeFlags::NumberLiteral | ts::TypeFlags::EnumLiteral) == jtypeRoot->flags() ||
+			(ts::TypeFlags::StringLiteral | ts::TypeFlags::EnumLiteral) == jtypeRoot->flags());
+		auto jsymParentSymbol = (*jtypeRoot->getSymbol())->parent();
+		_ASSERT(ts::SymbolFlags::RegularEnum == jsymParentSymbol->getFlags() ||
+			ts::SymbolFlags::ConstEnum == jsymParentSymbol->getFlags());
+		return MangleSymbolName(jtsTypeChecker, jsymParentSymbol);
+	}
 	return tc::explicit_cast<std::string>(tc::concat(
 		"js_unknown /*flags=",
 		tc::as_dec(static_cast<int>(jtypeRoot->flags())),

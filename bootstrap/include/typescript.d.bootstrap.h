@@ -800,6 +800,8 @@ struct _jsdefs_ts : _jsenums_ts {
 		auto valueDeclaration() noexcept { return _getProperty<js_optional<Declaration>>("valueDeclaration"); }
 
 		auto declarations() noexcept { return _getProperty<Array<Declaration>>("declarations"); }
+
+		auto parent() noexcept { return _getProperty<Symbol>("parent"); }  // @internal
 	};
 
 
