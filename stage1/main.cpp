@@ -170,7 +170,7 @@ int main(int argc, char* argv[]) {
 							_ASSERTEQUAL(jsymProperty->declarations()->length(), 1);
 							ts::Declaration const jdeclProperty = jsymProperty->declarations()[0];
 							ts::ModifierFlags const nModifierFlags = ts()->getCombinedModifierFlags(jdeclProperty);
-							_ASSERT(nModifierFlags == ts::ModifierFlags::None || nModifierFlags == ts::ModifierFlags::Readonly);
+							_ASSERT(ts::ModifierFlags::None == nModifierFlags || ts::ModifierFlags::Readonly == nModifierFlags);
 							return tc::concat(
 								"	auto ",
 								tc::explicit_cast<std::string>(jsymProperty->getName()),

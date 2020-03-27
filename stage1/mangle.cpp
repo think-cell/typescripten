@@ -19,11 +19,11 @@ std::string MangleSymbolName(ts::TypeChecker const& jtsTypeChecker, ts::Symbol c
 }
 
 std::optional<ts::TypeReference> IsTypeReference(ts::Type jtypeRoot) noexcept {
-	if (jtypeRoot->flags() != ts::TypeFlags::Object) {
+	if (ts::TypeFlags::Object != jtypeRoot->flags()) {
 		return std::nullopt;
 	}
 	ts::ObjectType jobjecttypeRoot(tc_move(jtypeRoot));
-	if (jobjecttypeRoot->objectFlags() != ts::ObjectFlags::Reference) {
+	if (ts::ObjectFlags::Reference != jobjecttypeRoot->objectFlags()) {
 		return std::nullopt;
 	}
 	return ts::TypeReference(tc_move(jobjecttypeRoot));
@@ -43,27 +43,27 @@ bool IsTrivialType(ts::InterfaceType jinterfacetypeRoot) noexcept {
 
 std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtypeRoot) noexcept {
 	// See checker.ts:typeToTypeNodeHelper
-	if (jtypeRoot->flags() == ts::TypeFlags::Any ||
-		jtypeRoot->flags() == ts::TypeFlags::Unknown
+	if (ts::TypeFlags::Any == jtypeRoot->flags() ||
+		ts::TypeFlags::Unknown == jtypeRoot->flags()
 		) {
 		return "js_unknown";
 	}
-	if (jtypeRoot->flags() == ts::TypeFlags::String) {
+	if (ts::TypeFlags::String == jtypeRoot->flags()) {
 		return "js_string";
 	}
-	if (jtypeRoot->flags() == ts::TypeFlags::Number) {
+	if (ts::TypeFlags::Number == jtypeRoot->flags()) {
 		return "double";
 	}
-	if (jtypeRoot->flags() == ts::TypeFlags::Boolean || jtypeRoot->flags() == ts::TypeFlags::BooleanLiteral) {
+	if (ts::TypeFlags::Boolean == jtypeRoot->flags() || ts::TypeFlags::BooleanLiteral == jtypeRoot->flags()) {
 		return "bool";
 	}
-	if (jtypeRoot->flags() == ts::TypeFlags::Void) {
+	if (ts::TypeFlags::Void == jtypeRoot->flags()) {
 		return "void";
 	}
-	if (jtypeRoot->flags() == ts::TypeFlags::Undefined) {
+	if (ts::TypeFlags::Undefined == jtypeRoot->flags()) {
 		return "js_undefined";
 	}
-	if (jtypeRoot->flags() == ts::TypeFlags::Null) {
+	if (ts::TypeFlags::Null == jtypeRoot->flags()) {
 		return "js_null";
 	}
 	if (auto jouniontypeRoot = jtypeRoot->isUnion()) {
@@ -75,7 +75,7 @@ std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtyp
 		// some errors in mangling (e.g. if two different types map to the same type in C++).
 		tc::sort_unique_inplace(vecstrType);
 		_ASSERT(0 < vecstrType.size());
-		if (vecstrType.size() == 1) {
+		if (1 == vecstrType.size()) {
 			return vecstrType[0];
 		} else {
 			return tc::explicit_cast<std::string>(tc::concat(
@@ -87,12 +87,12 @@ std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtyp
 	if (auto jotypereferenceRoot = IsTypeReference(jtypeRoot)) {
 		std::string strTarget = tc::explicit_cast<std::string>(jtsTypeChecker->getFullyQualifiedName(*(*jotypereferenceRoot)->target()->getSymbol()));
 		auto jrarrTypeArguments = (*jotypereferenceRoot)->typeArguments();
-		if (strTarget == "Array") {
+		if ("Array" == strTarget) {
 			_ASSERTEQUAL(1, jrarrTypeArguments->length());
 			return tc::explicit_cast<std::string>(tc::concat(
 				"Array<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">"
 			));
-		} else if (strTarget == "ReadonlyArray") {
+		} else if ("ReadonlyArray" == strTarget) {
 			_ASSERTEQUAL(1, jrarrTypeArguments->length());
 			return tc::explicit_cast<std::string>(tc::concat(
 				"ReadonlyArray<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">"
