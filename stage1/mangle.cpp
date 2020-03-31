@@ -103,9 +103,7 @@ std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtyp
 	if (auto jointerfacetypeRoot = jtypeRoot->isClassOrInterface()) {
 		if (IsTrivialType(*jointerfacetypeRoot)) {
 			_ASSERTEQUAL(ts::TypeFlags::Object, (*jointerfacetypeRoot)->flags());
-			return tc::explicit_cast<std::string>(tc::concat(
-				"js_ref<", MangleSymbolName(jtsTypeChecker, *(*jointerfacetypeRoot)->getSymbol()), ">"
-			));
+			return MangleSymbolName(jtsTypeChecker, *(*jointerfacetypeRoot)->getSymbol());
 		}
 		std::string strThisType = "undefined";
 		if ((*jointerfacetypeRoot)->thisType()) {

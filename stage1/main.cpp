@@ -60,8 +60,10 @@ int main(int argc, char* argv[]) {
 		tc::append(std::cout,
 			"namespace tc::js {\n",
 			tc::join(tc::transform(g_vecjsymEnum, [&jtsTypeChecker](ts::Symbol const jsymEnum) noexcept {
+				// Enums are declared outside of the _jsall class because we have to mark them as IsJsIntegralEnum
+				// before using in js interop.
 				return tc::concat(
-					"enum class ", MangleSymbolName(jtsTypeChecker, jsymEnum), " {\n",
+					"enum class _enum", MangleSymbolName(jtsTypeChecker, jsymEnum), " {\n",
 					tc::join(
 						tc::transform(*jsymEnum->exports(), [&jtsTypeChecker](ts::Symbol const jsymOption) noexcept {
 							_ASSERTEQUAL(jsymOption->getFlags(), ts::SymbolFlags::EnumMember);
@@ -85,12 +87,20 @@ int main(int argc, char* argv[]) {
 						})
 					),
 					"};\n",
-					"template<> struct IsJsIntegralEnum<", MangleSymbolName(jtsTypeChecker, jsymEnum), "> : std::true_type {};\n"
+					"template<> struct IsJsIntegralEnum<_enum", MangleSymbolName(jtsTypeChecker, jsymEnum), "> : std::true_type {};\n"
 				);
 			})),
 			"struct _jsall {\n",
+			tc::join(tc::transform(g_vecjsymEnum, [&jtsTypeChecker](ts::Symbol const jsymEnum) noexcept {
+				return tc::concat(
+					"	using ", MangleSymbolName(jtsTypeChecker, jsymEnum), " = _enum", MangleSymbolName(jtsTypeChecker, jsymEnum), ";\n"
+				);
+			})),
 			tc::join(tc::transform(g_vecjsymClass, [&jtsTypeChecker](ts::Symbol const jsymClass) noexcept {
-				return tc::concat("struct ", MangleSymbolName(jtsTypeChecker, jsymClass), ";\n");
+				return tc::concat(
+					"	struct _impl", MangleSymbolName(jtsTypeChecker, jsymClass), ";\n",
+					"	using ", MangleSymbolName(jtsTypeChecker, jsymClass), " = js_ref<_impl", MangleSymbolName(jtsTypeChecker, jsymClass), ">;\n"
+				);
 			})),
 			tc::join(tc::transform(g_vecjsymClass, [&jtsTypeChecker](ts::Symbol const jsymClass) noexcept {
 				auto const jarrsymExport = [&]() noexcept {
@@ -122,7 +132,7 @@ int main(int argc, char* argv[]) {
 				}
 
 				return tc::explicit_cast<std::string>(tc::concat(
-					"	struct ", MangleSymbolName(jtsTypeChecker, jsymClass),
+					"	struct _impl", MangleSymbolName(jtsTypeChecker, jsymClass),
 					" : ",
 					tc_conditional_range(
 						tc::empty(vecjsymBaseClass),
@@ -130,20 +140,21 @@ int main(int argc, char* argv[]) {
 						tc::explicit_cast<std::string>(tc::join_separated(
 							tc::transform(vecjsymBaseClass,
 								[&jtsTypeChecker](ts::Symbol const jsymBaseClass) noexcept {
-									return tc::concat("virtual ", MangleSymbolName(jtsTypeChecker, jsymBaseClass));
+									return tc::concat("virtual _impl", MangleSymbolName(jtsTypeChecker, jsymBaseClass));
 								}
 							),
 							", "
 						))
 					),
 					" {\n",
+					"		struct _js_ref_definitions {\n",
 					tc::join(tc::transform(
 						tc::filter(jarrsymExport, [](ts::Symbol const jsymExport) noexcept {
-							return IsEnumInCpp(jsymExport);
+							return IsEnumInCpp(jsymExport) || IsClassInCpp(jsymExport);
 						}),
 						[&jtsTypeChecker](ts::Symbol const jsymExport) noexcept {
 							return tc::concat(
-								"		using ",
+								"			using ",
 								tc::explicit_cast<std::string>(jsymExport->getName()),
 								" = ",
 								MangleSymbolName(jtsTypeChecker, jsymExport),
@@ -151,20 +162,7 @@ int main(int argc, char* argv[]) {
 							);
 						}
 					)),
-					tc::join(tc::transform(
-						tc::filter(jarrsymExport, [](ts::Symbol const jsymExport) noexcept {
-							return IsClassInCpp(jsymExport);
-						}),
-						[&jtsTypeChecker](ts::Symbol const jsymExport) noexcept {
-							return tc::concat(
-								"		using ",
-								tc::explicit_cast<std::string>(jsymExport->getName()),
-								" = js_ref<",
-								MangleSymbolName(jtsTypeChecker, jsymExport),
-								">;\n"
-							);
-						}
-					)),
+					"		};\n",
 					tc::join(tc::transform(
 						tc::filter(vecjsymMember, [](ts::Symbol const jsymMember) noexcept {
 							return ts::SymbolFlags::Property == jsymMember->getFlags();
