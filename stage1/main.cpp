@@ -58,6 +58,7 @@ int main(int argc, char* argv[]) {
 
 	{
 		tc::append(std::cout,
+			"namespace tc::js {\n",
 			tc::join(tc::transform(g_vecjsymEnum, [&jtsTypeChecker](ts::Symbol const jsymEnum) noexcept {
 				return tc::concat(
 					"enum class ", MangleSymbolName(jtsTypeChecker, jsymEnum), " {\n",
@@ -83,9 +84,11 @@ int main(int argc, char* argv[]) {
 							}
 						})
 					),
-					"};\n"
+					"};\n",
+					"template<> struct IsJsIntegralEnum<", MangleSymbolName(jtsTypeChecker, jsymEnum), "> : std::true_type {};\n"
 				);
 			})),
+			"struct _jsall {\n",
 			tc::join(tc::transform(g_vecjsymClass, [&jtsTypeChecker](ts::Symbol const jsymClass) noexcept {
 				return tc::concat("struct ", MangleSymbolName(jtsTypeChecker, jsymClass), ";\n");
 			})),
@@ -119,7 +122,7 @@ int main(int argc, char* argv[]) {
 				}
 
 				return tc::explicit_cast<std::string>(tc::concat(
-					"struct ", MangleSymbolName(jtsTypeChecker, jsymClass),
+					"	struct ", MangleSymbolName(jtsTypeChecker, jsymClass),
 					" : ",
 					tc_conditional_range(
 						tc::empty(vecjsymBaseClass),
@@ -140,7 +143,7 @@ int main(int argc, char* argv[]) {
 						}),
 						[&jtsTypeChecker](ts::Symbol const jsymExport) noexcept {
 							return tc::concat(
-								"	using ",
+								"		using ",
 								tc::explicit_cast<std::string>(jsymExport->getName()),
 								" = ",
 								MangleSymbolName(jtsTypeChecker, jsymExport),
@@ -154,7 +157,7 @@ int main(int argc, char* argv[]) {
 						}),
 						[&jtsTypeChecker](ts::Symbol const jsymExport) noexcept {
 							return tc::concat(
-								"	using ",
+								"		using ",
 								tc::explicit_cast<std::string>(jsymExport->getName()),
 								" = js_ref<",
 								MangleSymbolName(jtsTypeChecker, jsymExport),
@@ -172,7 +175,7 @@ int main(int argc, char* argv[]) {
 							ts::ModifierFlags const nModifierFlags = ts()->getCombinedModifierFlags(jdeclProperty);
 							_ASSERT(ts::ModifierFlags::None == nModifierFlags || ts::ModifierFlags::Readonly == nModifierFlags);
 							return tc::concat(
-								"	auto ",
+								"		auto ",
 								tc::explicit_cast<std::string>(jsymProperty->getName()),
 								"() noexcept { return _getProperty<",
 								MangleType(jtsTypeChecker, jtsTypeChecker->getTypeOfSymbolAtLocation(jsymProperty, jdeclProperty)),
@@ -224,7 +227,7 @@ int main(int argc, char* argv[]) {
 										}
 									}
 									return tc::explicit_cast<std::string>(tc::concat(
-										"	auto ",
+										"		auto ",
 										tc::explicit_cast<std::string>(jsymMethod->getName()),
 										"(",
 										tc::join_separated(
@@ -241,7 +244,7 @@ int main(int argc, char* argv[]) {
 											", "
 										),
 										") noexcept {\n",
-										"		return _call<", MangleType(jtsTypeChecker, jtsSignature->getReturnType()), ">",
+										"			return _call<", MangleType(jtsTypeChecker, jtsSignature->getReturnType()), ">",
 											"(\"", tc::explicit_cast<std::string>(jsymMethod->getName()), "\"",
 												tc::join(tc::transform(
 													jtsSignature->getParameters(),
@@ -250,15 +253,17 @@ int main(int argc, char* argv[]) {
 													}
 												)),
 											");\n",
-										"	}\n"
+										"		}\n"
 									));
 								}
 							));
 						}
 					)),
-					"};\n"
+					"	};\n"
 				));
-			}))
+			})),
+			"};\n",
+			"}  // namespace tc::js\n"
 		);
 	}
 	return 0;

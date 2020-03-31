@@ -90,12 +90,12 @@ std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtyp
 		if ("Array" == strTarget) {
 			_ASSERTEQUAL(1, jrarrTypeArguments->length());
 			return tc::explicit_cast<std::string>(tc::concat(
-				"Array<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">"
+				"globals::Array<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">"
 			));
 		} else if ("ReadonlyArray" == strTarget) {
 			_ASSERTEQUAL(1, jrarrTypeArguments->length());
 			return tc::explicit_cast<std::string>(tc::concat(
-				"ReadonlyArray<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">"
+				"globals::ReadonlyArray<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">"
 			));
 		}
 		tc::cont_emplace_back(vecstrExtraInfo, "TypeReference");
