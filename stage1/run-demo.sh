@@ -1,4 +1,5 @@
 #!/bin/bash
 set -ue
 source ../build-config.sh
-node main.js demo-module.ts
+echo "#include \"precompiled.h\"" >demo-module-use.cpp
+node main.js demo-module.ts >>demo-module-use.cpp
