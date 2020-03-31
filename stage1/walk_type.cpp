@@ -21,7 +21,7 @@ bool IsClassInCpp(ts::Symbol const jsymType) noexcept {
 }
 
 void WalkType(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Symbol const jsymType) noexcept {
-	tc::append(std::cout,
+	tc::append(std::cerr,
 		tc::repeat_n(' ', nOffset),
 		"'", tc::explicit_cast<std::string>(jtsTypeChecker->getFullyQualifiedName(jsymType)), "', ",
 		"flags=", tc::as_dec(static_cast<int>(jsymType->getFlags())),
@@ -39,22 +39,22 @@ void WalkType(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Symb
 		tc::cont_emplace_back(g_vecjsymClass, jsymType);
 	}
 
-	tc::append(std::cout, tc::repeat_n(' ', nOffset + 2), "members\n");
+	tc::append(std::cerr, tc::repeat_n(' ', nOffset + 2), "members\n");
 	if (jsymType->members()) {
 		tc::for_each(*jsymType->members(), [&](ts::Symbol const jsymChild) noexcept { WalkType(jtsTypeChecker, nOffset + 4, jsymChild); });
 	}
 
-	tc::append(std::cout, tc::repeat_n(' ', nOffset + 2), "exportsOfModule\n");
+	tc::append(std::cerr, tc::repeat_n(' ', nOffset + 2), "exportsOfModule\n");
 	if (jsymType->exports()) {
 		tc::for_each(jtsTypeChecker->getExportsOfModule(jsymType),
 			[&](ts::Symbol const jsymChild) noexcept { WalkType(jtsTypeChecker, nOffset + 4, jsymChild); }
 		);
 	}
 
-	tc::append(std::cout, tc::repeat_n(' ', nOffset + 2), "call signatures\n");
+	tc::append(std::cerr, tc::repeat_n(' ', nOffset + 2), "call signatures\n");
 	tc::for_each(jtsTypeChecker->getSignaturesOfType(jtsTypeChecker->getDeclaredTypeOfSymbol(jsymType), ts::SignatureKind::Call),
 		[&](ts::Signature const jtsSignature) noexcept {
-			tc::append(std::cout,
+			tc::append(std::cerr,
 				tc::repeat_n(' ', nOffset + 4),
 				tc::explicit_cast<std::string>(jtsTypeChecker->signatureToString(jtsSignature)),
 				"\n"
@@ -62,10 +62,10 @@ void WalkType(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Symb
 		}
 	);
 
-	tc::append(std::cout, tc::repeat_n(' ', nOffset + 2), "constructors\n");
+	tc::append(std::cerr, tc::repeat_n(' ', nOffset + 2), "constructors\n");
 	tc::for_each(jtsTypeChecker->getSignaturesOfType(jtsTypeChecker->getDeclaredTypeOfSymbol(jsymType), ts::SignatureKind::Construct),
 		[&](ts::Signature const jtsSignature) noexcept {
-			tc::append(std::cout,
+			tc::append(std::cerr,
 				tc::repeat_n(' ', nOffset + 4),
 				tc::explicit_cast<std::string>(jtsTypeChecker->signatureToString(jtsSignature)),
 				"\n"
@@ -74,10 +74,10 @@ void WalkType(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Symb
 	);
 
 	if (auto jointerfacetype = jtsTypeChecker->getDeclaredTypeOfSymbol(jsymType)->isClassOrInterface()) {
-		tc::append(std::cout, tc::repeat_n(' ', nOffset + 2), "base types\n");
+		tc::append(std::cerr, tc::repeat_n(' ', nOffset + 2), "base types\n");
 		tc::for_each(jtsTypeChecker->getBaseTypes(*jointerfacetype),
 			[&](ts::BaseType const jtsBaseType) noexcept {
-				tc::append(std::cout,
+				tc::append(std::cerr,
 					tc::repeat_n(' ', nOffset + 4),
 					tc::explicit_cast<std::string>(jtsTypeChecker->typeToString(jtsBaseType)),
 					"\n"

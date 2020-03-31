@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
 			}
 			auto const josymSourceFile = jtsTypeChecker->getSymbolAtLocation(jtsSourceFile);
 			if (!josymSourceFile) {
-				tc::append(std::cout, "Module not found for ", tc::explicit_cast<std::string>(jtsSourceFile->fileName()), "\n");
+				tc::append(std::cerr, "Module not found for ", tc::explicit_cast<std::string>(jtsSourceFile->fileName()), "\n");
 				return;
 			}
 			tc::cont_emplace_back(vecjsymExportedModule, *josymSourceFile);
@@ -49,12 +49,12 @@ int main(int argc, char* argv[]) {
 	tc::for_each(
 		vecjsymExportedModule,
 		[&](ts::Symbol const& jsymSourceFile) noexcept {
-			tc::append(std::cout, "Module name is ", tc::explicit_cast<std::string>(jsymSourceFile->getName()), "\n");
+			tc::append(std::cerr, "Module name is ", tc::explicit_cast<std::string>(jsymSourceFile->getName()), "\n");
 			WalkType(jtsTypeChecker, 0, jsymSourceFile);
 		}
 	);
 
-	tc::append(std::cout, "\n========== GENERATED CODE ==========\n");
+	tc::append(std::cerr, "\n========== GENERATED CODE ==========\n");
 
 	{
 		tc::append(std::cout,
