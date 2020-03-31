@@ -66,7 +66,7 @@ struct empty_base {};
 } // namespace no_adl
 using no_adl::empty_base;
 
-template<typename T> typename T::js_ref_definitions base_detector(T*);
+template<typename T> typename T::_js_ref_definitions base_detector(T*);
 empty_base base_detector(...);
 
 template<typename T>

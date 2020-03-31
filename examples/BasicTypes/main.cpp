@@ -11,7 +11,7 @@ using tc::js::js_unknown;
 using tc::js::js_optional;
 
 struct ISomeObject : virtual tc::js::IObject {
-	struct js_ref_definitions {  // Optional
+	struct _js_ref_definitions {  // Optional
 		using Foo = int;
 	};
 
