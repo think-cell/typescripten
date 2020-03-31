@@ -185,7 +185,7 @@ int main(int argc, char* argv[]) {
 								(ts()->getCombinedModifierFlags(jdeclProperty) & ts::ModifierFlags::Readonly) ?
 									"" :
 									tc::explicit_cast<std::string>(tc::concat(
-										"	void ",
+										"		void ",
 										tc::explicit_cast<std::string>(jsymProperty->getName()),
 										"(",
 										MangleType(jtsTypeChecker, jtsTypeChecker->getTypeOfSymbolAtLocation(jsymProperty, jdeclProperty)),
