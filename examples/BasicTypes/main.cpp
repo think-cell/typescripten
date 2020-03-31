@@ -10,7 +10,24 @@ using tc::js::js_string;
 using tc::js::js_unknown;
 using tc::js::js_optional;
 
+struct ISomeObject : virtual tc::js::IObject {
+	struct js_ref_definitions {  // Optional
+		using Foo = int;
+	};
+
+	auto foo() {
+		return _call<js_string>("foo");
+	}
+};
+
+using SomeObject = tc::js::js_ref<ISomeObject>;
+
 int main() {
+	{
+		static_assert(std::is_same<int, SomeObject::Foo>::value);
+		static_assert(std::is_same<js_string, decltype(std::declval<SomeObject>()->foo())>::value);
+	}
+
 	{
 		auto const message = tc::explicit_cast<js_string>("Hello World");
 		static_assert(!std::is_constructible<js_string, double>::value);

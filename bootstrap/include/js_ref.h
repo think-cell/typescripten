@@ -60,10 +60,23 @@ template<typename> struct js_ref;
 using no_adl::IObject;
 using no_adl::js_ref;
 
+namespace js_ref_detail {
+namespace no_adl {
+struct empty_base {};
+} // namespace no_adl
+using no_adl::empty_base;
+
+template<typename T> typename T::js_ref_definitions base_detector(T*);
+empty_base base_detector(...);
+
+template<typename T>
+using base = decltype(base_detector(static_cast<T*>(nullptr)));
+} // namespace js_ref_detail
+
 namespace no_adl {
 // Non-final, but non-polymorphic as well. Derive with care.
 template<typename T>
-struct js_ref {
+struct js_ref : js_ref_detail::base<T> {
 	static_assert(std::is_class<T>::value);  // void is explicitly excluded as well, even though void* is base of all pointers.
 	static_assert(!std::is_volatile<T>::value);
 	static_assert(!std::is_const<T>::value, "We cannot guarantee constness of JS values");
