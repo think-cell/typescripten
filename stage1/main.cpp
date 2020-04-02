@@ -224,33 +224,35 @@ int main(int argc, char* argv[]) {
 											));
 										}
 									}
-									return tc::explicit_cast<std::string>(tc::concat(
-										"		auto ",
-										tc::explicit_cast<std::string>(jsymMethod->getName()),
-										"(",
-										tc::join_separated(
-											tc::transform(
-												jtsSignature->getParameters(),
-												[&jtsTypeChecker, jdeclMethod](ts::Symbol const jsymParameter) noexcept {
-													return tc::concat(
-														MangleType(jtsTypeChecker, jtsTypeChecker->getTypeOfSymbolAtLocation(jsymParameter, jdeclMethod)),
-														" ",
-														tc::explicit_cast<std::string>(jsymParameter->getName())
-													);
-												}
-											),
-											", "
+									auto const rngchParameters = tc::join_separated(
+										tc::transform(
+											jtsSignature->getParameters(),
+											[&jtsTypeChecker, jdeclMethod](ts::Symbol const jsymParameter) noexcept {
+												return tc::concat(
+													MangleType(jtsTypeChecker, jtsTypeChecker->getTypeOfSymbolAtLocation(jsymParameter, jdeclMethod)),
+													" ",
+													tc::explicit_cast<std::string>(jsymParameter->getName())
+												);
+											}
 										),
-										") noexcept {\n",
-										"			return _call<", MangleType(jtsTypeChecker, jtsSignature->getReturnType()), ">",
-											"(\"", tc::explicit_cast<std::string>(jsymMethod->getName()), "\"",
-												tc::join(tc::transform(
-													jtsSignature->getParameters(),
-													[](ts::Symbol const jsymParameter) noexcept {
-														return tc::concat(", ", tc::explicit_cast<std::string>(jsymParameter->getName()));
-													}
-												)),
-											");\n",
+										", "
+									);
+									auto const rngstrArguments = tc::transform(
+										jtsSignature->getParameters(),
+										[](ts::Symbol const jsymParameter) noexcept {
+											return tc::explicit_cast<std::string>(jsymParameter->getName());
+										}
+									);
+									auto const rngchCallArguments = tc::join_separated(
+										tc::concat(
+											tc::single(tc::concat("\"", tc::explicit_cast<std::string>(jsymMethod->getName()), "\"")),
+											rngstrArguments
+										),
+										", "
+									);
+									return tc::explicit_cast<std::string>(tc::concat(
+										"		auto ", tc::explicit_cast<std::string>(jsymMethod->getName()), "(", rngchParameters, ") noexcept {\n",
+										"			return _call<", MangleType(jtsTypeChecker, jtsSignature->getReturnType()), ">(", rngchCallArguments, ");\n",
 										"		}\n"
 									));
 								}
