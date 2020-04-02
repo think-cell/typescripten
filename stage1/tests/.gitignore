@@ -1,2 +1,3 @@
 my-lib.d.h
-*.js
+main.js
+my-lib.js
