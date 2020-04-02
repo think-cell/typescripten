@@ -19,23 +19,6 @@ PRECOMPILED_OBJ=$(OBJDIR)/$(PRECOMPILED).pch
 endif
 PRE_JS+=$(wildcard $(BOOTSTRAP_PATH)/src/*.js)
 
-EMCXXFLAGS?=$(CXXFLAGS)
-EMLDFLAGS?=$(LDFLAGS)
-
-EMCXXFLAGS+=-std=c++17
-ifdef BOOTSTRAP_PATH
-EMCXXFLAGS+=-I "$(BOOTSTRAP_PATH)/include"
-endif
-ifdef THINK_CELL_PUBLIC_PATH
-EMCXXFLAGS+=-isystem "$(THINK_CELL_PUBLIC_PATH)"
-endif
-ifdef BOOST_PATH
-EMCXXFLAGS+=-isystem "$(BOOST_PATH)"
-endif
-
-EMLDFLAGS+=--bind
-EMLDFLAGS+=$(PRE_JS:%=--pre-js "%")
-
 all: $(TARGETS)
 
 $(TARGETS) &: $(OBJS)
