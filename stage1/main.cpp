@@ -10,7 +10,7 @@ using tc::js::globals::ts;
 using tc::js::globals::Array;
 using tc::js::globals::ReadonlyArray;
 
-std::string RetrieveSymbolFromCpp(ts::Symbol jsymSymbol) {
+std::string RetrieveSymbolFromCpp(ts::Symbol jsymSymbol) noexcept {
 	std::string strSymbolName = tc::explicit_cast<std::string>(jsymSymbol->getName());
 	if (!jsymSymbol->parent()) {
 		return tc::explicit_cast<std::string>(tc::concat("emscripten::val::global(\"", strSymbolName, "\")"));
