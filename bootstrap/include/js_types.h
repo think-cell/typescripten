@@ -179,7 +179,7 @@ struct js_union : js_union_detail::CDetectOptionLike<void, Ts...> {
 	// Basecast to a common type. Assumption: the underlying representation does not depend on what element of ListTs is chosen.
 	template<typename T, std::enable_if_t<
 		!std::is_same<bool, tc::remove_cvref_t<T>>::value &&
-		!std::is_same<js_unknown, tc::remove_cvref_t<T>>::value &&  // js_unkown(T&&) ctor takes care of that.
+		!std::is_same<js_unknown, tc::remove_cvref_t<T>>::value && // js_unkown(T&&) ctor takes care of that.
 		(std::is_convertible<Ts, T>::value && ...)
 	>* = nullptr>
 	operator T() const& noexcept {

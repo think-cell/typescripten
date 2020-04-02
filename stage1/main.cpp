@@ -216,10 +216,10 @@ int main(int argc, char* argv[]) {
 								[&jtsTypeChecker, &jsymClass, jsymMethod](ts::Declaration const jdeclMethod) noexcept {
 									_ASSERTEQUAL(ts()->getCombinedModifierFlags(jdeclMethod), ts::ModifierFlags::None);
 									auto jtsSignatureDeclaration = [&]() noexcept -> ts::SignatureDeclaration {
-										if (auto const jotsMethodSignature = ts()->isMethodSignature(jdeclMethod)) {  // In interfaces.
+										if (auto const jotsMethodSignature = ts()->isMethodSignature(jdeclMethod)) { // In interfaces.
 											return *jotsMethodSignature;
 										}
-										if (auto const jotsMethodDeclaration = ts()->isMethodDeclaration(jdeclMethod)) {  // In classes.
+										if (auto const jotsMethodDeclaration = ts()->isMethodDeclaration(jdeclMethod)) { // In classes.
 											return *jotsMethodDeclaration;
 										}
 										if (auto const jotsConstructorDeclaration = ts()->isConstructorDeclaration(jdeclMethod)) {
@@ -289,7 +289,7 @@ int main(int argc, char* argv[]) {
 				));
 			})),
 			"};\n",
-			"}  // namespace tc::js\n"
+			"} // namespace tc::js\n"
 		);
 	}
 	return 0;

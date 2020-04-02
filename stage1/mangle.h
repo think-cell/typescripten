@@ -8,4 +8,4 @@ std::string MangleSymbolName(tc::js::globals::ts::TypeChecker const& jtsTypeChec
 
 std::string MangleType(tc::js::globals::ts::TypeChecker jtsTypeChecker, tc::js::globals::ts::Type jtypeRoot) noexcept;
 
-#endif  // MANGLE_H_
+#endif // MANGLE_H_

@@ -189,12 +189,12 @@ int main() {
 
 		// Union crosscasts are prohibited.
 		static_assert(!std::is_constructible<
-			js_union<MyJsDerived, js_undefined, js_null>,  // js_null is removed, but MyJsDerived is generalized.
+			js_union<MyJsDerived, js_undefined, js_null>, // js_null is removed, but MyJsDerived is generalized.
 			js_union<MyJsBase, js_undefined>
 		>::value);
 		static_assert(!std::is_constructible<
 			js_union<MyJsBase, js_undefined>,
-			js_union<MyJsDerived, js_undefined, js_null>  // js_null is removed, but MyJsDerived is generalized.
+			js_union<MyJsDerived, js_undefined, js_null> // js_null is removed, but MyJsDerived is generalized.
 		>::value);
 	}
 	{

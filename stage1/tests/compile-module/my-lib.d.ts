@@ -68,8 +68,8 @@ declare namespace Foo {
     var someProperty: number;
 
     interface InterfaceWithThisType {
-        foo(): this is InterfaceWithThisType;  // Trigger 'thisType != undefined' inside TypeScript compiler.
-        bar(): InterfaceWithThisType;  // Ensure that type is mangled correctly.
+        foo(): this is InterfaceWithThisType; // Trigger 'thisType != undefined' inside TypeScript compiler.
+        bar(): InterfaceWithThisType; // Ensure that type is mangled correctly.
     }
 }
 

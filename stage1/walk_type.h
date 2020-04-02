@@ -12,4 +12,4 @@ bool IsClassInCpp(tc::js::globals::ts::Symbol jsymType) noexcept;
 
 void WalkType(tc::js::globals::ts::TypeChecker const& jtsTypeChecker, int nOffset, tc::js::globals::ts::Symbol jsymType) noexcept;
 
-#endif  // WALK_TYPE_H_
+#endif // WALK_TYPE_H_
