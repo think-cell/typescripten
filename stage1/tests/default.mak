@@ -1,5 +1,7 @@
 .PHONY: all
 
+PRE_JS=main-pre.js
+
 include ../../../build-flags.mak
 
 ifdef COMPILATION_ONLY
@@ -17,7 +19,7 @@ my-lib.d.h: ../../main.js my-lib.d.ts
 
 main.js: main.cpp main-pre.js my-lib.d.h ../../obj/precompiled.h.pch
 	test -n "$(EMCXX)"  # Expect $$EMCXX
-	$(EMCXX) $(EMCXXFLAGS) $(EMLDFLAGS) --pre-js main-pre.js -o "$@" -include-pch ../../obj/precompiled.h.pch "$<"
+	$(EMCXX) $(EMCXXFLAGS) $(EMLDFLAGS) -o "$@" -include-pch ../../obj/precompiled.h.pch "$<"
 
 clean:
 	rm -rf my-lib.d.h *.js *.wasm *.wasm.map

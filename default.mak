@@ -6,9 +6,6 @@ endif
 ifndef SRCS
 $(error "$$SRCS variable should be specified")
 endif
-ifndef PRE_JS
-$(error "$$PRE_JS variable should be specified")
-endif
 
 TARGETS=$(TARGET) $(TARGET:.js=.wasm) $(TARGET:.js=.wasm.map)
 OBJDIR=obj
@@ -17,7 +14,6 @@ OBJS=$(patsubst %.cpp,$(OBJDIR)/%.o,$(notdir $(SRCS)))
 ifdef PRECOMPILED
 PRECOMPILED_OBJ=$(OBJDIR)/$(PRECOMPILED).pch
 endif
-PRE_JS+=$(wildcard $(BOOTSTRAP_PATH)/src/*.js)
 
 all: $(TARGETS)
 

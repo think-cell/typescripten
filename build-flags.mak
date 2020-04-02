@@ -1,3 +1,7 @@
+ifndef PRE_JS
+$(error "$$PRE_JS variable should be specified")
+endif
+
 EMCXXFLAGS?=$(CXXFLAGS)
 EMLDFLAGS?=$(LDFLAGS)
 
@@ -11,6 +15,8 @@ endif
 ifdef BOOST_PATH
 EMCXXFLAGS+=-isystem "$(BOOST_PATH)"
 endif
+
+PRE_JS+=$(wildcard $(BOOTSTRAP_PATH)/src/*.js)
 
 EMLDFLAGS+=--bind
 EMLDFLAGS+=$(PRE_JS:%=--pre-js "%")
