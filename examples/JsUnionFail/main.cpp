@@ -15,52 +15,52 @@ using tc::js::js_ref;
 using tc::js::IObject;
 
 void derefUndefinedJsRefGet() noexcept {
-    js_union<js_undefined, js_ref<IObject>> const u;
+	js_union<js_undefined, js_ref<IObject>> const u;
 	static_cast<void>(u.get<js_ref<IObject>>());
 }
 
 void derefNullJsRefGet() noexcept {
-    js_union<js_null, js_ref<IObject>> const u;
+	js_union<js_null, js_ref<IObject>> const u;
 	static_cast<void>(u.get<js_ref<IObject>>());
 }
 
 void derefUndefinedStringGet() noexcept {
-    js_union<js_undefined, js_string> const u;
+	js_union<js_undefined, js_string> const u;
 	static_cast<void>(u.get<js_string>());
 }
 
 void derefNullStringGet() noexcept {
-    js_union<js_null, js_string> const u;
+	js_union<js_null, js_string> const u;
 	static_cast<void>(u.get<js_string>());
 }
 
 void derefUndefinedDoubleGet() noexcept {
-    js_union<js_undefined, double> const u;
+	js_union<js_undefined, double> const u;
 	static_cast<void>(u.get<double>());
 }
 
 void derefNullDoubleGet() noexcept {
-    js_union<js_null, double> const u;
+	js_union<js_null, double> const u;
 	static_cast<void>(u.get<double>());
 }
 
 void derefUndefinedBoolGet() noexcept {
-    js_union<js_undefined, bool> const u;
+	js_union<js_undefined, bool> const u;
 	static_cast<void>(u.get<bool>());
 }
 
 void derefNullBoolGet() noexcept {
-    js_union<js_null, bool> const u;
+	js_union<js_null, bool> const u;
 	static_cast<void>(u.get<bool>());
 }
 
 EMSCRIPTEN_BINDINGS(js_union_fail) {
-    emscripten::function("derefUndefinedJsRefGet", &derefUndefinedJsRefGet);
-    emscripten::function("derefNullJsRefGet", &derefNullJsRefGet);
-    emscripten::function("derefUndefinedStringGet", &derefUndefinedStringGet);
-    emscripten::function("derefNullStringGet", &derefNullStringGet);
-    emscripten::function("derefUndefinedDoubleGet", &derefUndefinedDoubleGet);
-    emscripten::function("derefNullDoubleGet", &derefNullDoubleGet);
-    emscripten::function("derefUndefinedBoolGet", &derefUndefinedBoolGet);
-    emscripten::function("derefNullBoolGet", &derefNullBoolGet);
+	emscripten::function("derefUndefinedJsRefGet", &derefUndefinedJsRefGet);
+	emscripten::function("derefNullJsRefGet", &derefNullJsRefGet);
+	emscripten::function("derefUndefinedStringGet", &derefUndefinedStringGet);
+	emscripten::function("derefNullStringGet", &derefNullStringGet);
+	emscripten::function("derefUndefinedDoubleGet", &derefUndefinedDoubleGet);
+	emscripten::function("derefNullDoubleGet", &derefNullDoubleGet);
+	emscripten::function("derefUndefinedBoolGet", &derefUndefinedBoolGet);
+	emscripten::function("derefNullBoolGet", &derefNullBoolGet);
 }
