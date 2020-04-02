@@ -2,7 +2,15 @@
 
 include ../../../build-flags.mak
 
+ifdef COMPILATION_ONLY
 all: main.js
+else
+all: my-lib.js main.js
+	node $^
+
+my-lib.js: my-lib.ts
+	tsc --strict --declaration "$<"
+endif
 
 my-lib.d.h: ../../main.js my-lib.d.ts
 	node ../../main.js my-lib.d.ts >my-lib.d.h
