@@ -120,7 +120,7 @@ std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtyp
 	}
 	if ((ts::TypeFlags::NumberLiteral | ts::TypeFlags::EnumLiteral) == jtypeRoot->flags() ||
 			(ts::TypeFlags::StringLiteral | ts::TypeFlags::EnumLiteral) == jtypeRoot->flags()) {
-		auto jsymParentSymbol = (*jtypeRoot->getSymbol())->parent();
+		auto jsymParentSymbol = *(*jtypeRoot->getSymbol())->parent();
 		_ASSERT(ts::SymbolFlags::RegularEnum == jsymParentSymbol->getFlags() ||
 			ts::SymbolFlags::ConstEnum == jsymParentSymbol->getFlags());
 		return MangleSymbolName(jtsTypeChecker, jsymParentSymbol);

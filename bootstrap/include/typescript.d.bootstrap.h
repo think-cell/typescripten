@@ -801,7 +801,7 @@ struct _jsdefs_ts : _jsenums_ts {
 
 		auto declarations() noexcept { return _getProperty<Array<Declaration>>("declarations"); }
 
-		auto parent() noexcept { return _getProperty<Symbol>("parent"); }  // @internal
+		auto parent() noexcept { return _getProperty<js_optional<Symbol>>("parent"); }  // @internal
 	};
 
 
