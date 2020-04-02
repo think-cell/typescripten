@@ -24,16 +24,18 @@ const sourceFile = program.getSourceFiles().filter((sourceFile) => sourceFile.fi
 const myModule = typeChecker.getSymbolAtLocation(sourceFile);
 assert(myModule.name == "\"scratch-module\"");
 
-const [myInterface] = typeChecker.getExportsOfModule(myModule);
-assert(myInterface.name == "MyInterface");
-
 const symMembers: ts.Symbol[] = [];
-myInterface.members.forEach((symMember) => { symMembers.push(symMember); });
+typeChecker.getExportsOfModule(myModule).forEach(exp => {
+    exp.members.forEach((symMember) => { symMembers.push(symMember); });
+});
 
-const [symMember] = symMembers;
-console.log(symMember.name, symMember.flags);
+symMembers.forEach(sym => {
+    const tc = typeChecker, ts0 = ts; // Ensure these are captured in the debugger.
+    console.log(sym);
+    const decls = sym.getDeclarations();
+    console.log(decls);
+});
 
-assert(symMember.flags & ts.SymbolFlags.Property);
-const [declaration] = symMember.declarations;
-const type = typeChecker.getTypeOfSymbolAtLocation(symMember, declaration);
-console.log((<any>typeChecker).isArrayType(type));
+// Make sure symbols are not garbage collected.
+console.log(typeChecker === undefined);
+console.log(ts === undefined);
