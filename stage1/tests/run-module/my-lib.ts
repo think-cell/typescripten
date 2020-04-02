@@ -4,6 +4,7 @@ namespace MyLib {
     }
 
     export class SomeObject {
+        constructor() {} // TODO: is it implicitly defined?
         str: string = "";
         arr: Array<SomeObject> = [];
     }
