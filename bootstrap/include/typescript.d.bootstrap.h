@@ -602,6 +602,7 @@ struct _jsdefs_ts : _jsenums_ts {
 	struct _js_CallSignatureDeclaration;
 	struct _js_MethodSignature;
 	struct _js_MethodDeclaration;
+	struct _js_ConstructorDeclaration;
 	struct _js_Identifier;
 	struct _js_NamedDeclaration;
 	struct _js_Signature;
@@ -642,6 +643,7 @@ struct _jsdefs_ts : _jsenums_ts {
 	using CallSignatureDeclaration = js_ref<_js_CallSignatureDeclaration>;
 	using MethodSignature = js_ref<_js_MethodSignature>;
 	using MethodDeclaration = js_ref<_js_MethodDeclaration>;
+	using ConstructorDeclaration = js_ref<_js_ConstructorDeclaration>;
 	using Identifier = js_ref<_js_Identifier>;
 	using NamedDeclaration = js_ref<_js_NamedDeclaration>;
 	using Signature = js_ref<_js_Signature>;
@@ -676,7 +678,7 @@ struct _jsdefs_ts : _jsenums_ts {
 	using CompilerHost = js_ref<_js_CompilerHost>;
 	using FormatDiagnosticsHost = js_ref<_js_FormatDiagnosticsHost>;
 
-	using SignatureDeclaration = js_union<MethodSignature, MethodDeclaration, CallSignatureDeclaration>;
+	using SignatureDeclaration = js_union<MethodSignature, MethodDeclaration, ConstructorDeclaration, CallSignatureDeclaration>;
 	using BaseType = js_union<ObjectType, IntersectionType>;
 
 	struct _js_TextRange : virtual IObject {
@@ -706,6 +708,9 @@ struct _jsdefs_ts : _jsenums_ts {
 	};
 
 	struct _js_MethodDeclaration : virtual _js_NamedDeclaration {
+	};
+
+	struct _js_ConstructorDeclaration : virtual _js_NamedDeclaration {
 	};
 
 	struct _js_Signature : virtual IObject {
@@ -970,6 +975,13 @@ struct _js_ts : virtual IObject, _jsdefs_ts {
 	auto isMethodDeclaration(Node node) noexcept {
 		std::optional<MethodDeclaration> result;
 		if (_call<bool>("isMethodDeclaration", node))
+			result.emplace(node);
+		return result;
+	}
+
+	auto isConstructorDeclaration(Node node) noexcept {
+		std::optional<ConstructorDeclaration> result;
+		if (_call<bool>("isConstructorDeclaration", node))
 			result.emplace(node);
 		return result;
 	}

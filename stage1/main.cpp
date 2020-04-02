@@ -10,6 +10,18 @@ using tc::js::globals::ts;
 using tc::js::globals::Array;
 using tc::js::globals::ReadonlyArray;
 
+std::string RetrieveSymbolFromCpp(ts::Symbol jsymSymbol) {
+	std::string strSymbolName = tc::explicit_cast<std::string>(jsymSymbol->getName());
+	if (!jsymSymbol->parent()) {
+		return tc::explicit_cast<std::string>(tc::concat("emscripten::val::global(\"", strSymbolName, "\")"));
+	} else {
+		return tc::explicit_cast<std::string>(tc::concat(
+			RetrieveSymbolFromCpp(*jsymSymbol->parent()),
+			"[\"", strSymbolName, "\"]"
+		));
+	}
+}
+
 int main(int argc, char* argv[]) {
 	_ASSERT(2 <= argc);
 
@@ -196,20 +208,22 @@ int main(int argc, char* argv[]) {
 					)),
 					tc::join(tc::transform(
 						tc::filter(vecjsymMember, [](ts::Symbol const jsymMember) noexcept {
-							return ts::SymbolFlags::Method == jsymMember->getFlags();
+							return ts::SymbolFlags::Method == jsymMember->getFlags() || ts::SymbolFlags::Constructor == jsymMember->getFlags();
 						}),
-						[&jtsTypeChecker](ts::Symbol const jsymMethod) noexcept {
+						[&jtsTypeChecker, &jsymClass](ts::Symbol const jsymMethod) noexcept {
 							return tc::join(tc::transform(
 								jsymMethod->declarations(),
-								[&jtsTypeChecker, jsymMethod](ts::Declaration const jdeclMethod) noexcept {
+								[&jtsTypeChecker, &jsymClass, jsymMethod](ts::Declaration const jdeclMethod) noexcept {
 									_ASSERTEQUAL(ts()->getCombinedModifierFlags(jdeclMethod), ts::ModifierFlags::None);
 									auto jtsSignatureDeclaration = [&]() noexcept -> ts::SignatureDeclaration {
-										if (auto const jotsMethodSignature = ts()->isMethodSignature(jdeclMethod)) {
-											_ASSERT(!ts()->isMethodDeclaration(jdeclMethod));
+										if (auto const jotsMethodSignature = ts()->isMethodSignature(jdeclMethod)) {  // In interfaces.
 											return *jotsMethodSignature;
 										}
-										if (auto const jotsMethodDeclaration = ts()->isMethodDeclaration(jdeclMethod)) {
+										if (auto const jotsMethodDeclaration = ts()->isMethodDeclaration(jdeclMethod)) {  // In classes.
 											return *jotsMethodDeclaration;
+										}
+										if (auto const jotsConstructorDeclaration = ts()->isConstructorDeclaration(jdeclMethod)) {
+											return *jotsConstructorDeclaration;
 										}
 										_ASSERTFALSE;
 									}();
@@ -243,18 +257,30 @@ int main(int argc, char* argv[]) {
 											return tc::explicit_cast<std::string>(jsymParameter->getName());
 										}
 									);
-									auto const rngchCallArguments = tc::join_separated(
-										tc::concat(
-											tc::single(tc::concat("\"", tc::explicit_cast<std::string>(jsymMethod->getName()), "\"")),
-											rngstrArguments
-										),
-										", "
-									);
-									return tc::explicit_cast<std::string>(tc::concat(
-										"		auto ", tc::explicit_cast<std::string>(jsymMethod->getName()), "(", rngchParameters, ") noexcept {\n",
-										"			return _call<", MangleType(jtsTypeChecker, jtsSignature->getReturnType()), ">(", rngchCallArguments, ");\n",
-										"		}\n"
-									));
+									if (ts::SymbolFlags::Method == jsymMethod->getFlags()) {
+										auto const rngchCallArguments = tc::join_separated(
+											tc::concat(
+												tc::single(tc::concat("\"", tc::explicit_cast<std::string>(jsymMethod->getName()), "\"")),
+												rngstrArguments
+											),
+											", "
+										);
+										return tc::explicit_cast<std::string>(tc::concat(
+											"		auto ", tc::explicit_cast<std::string>(jsymMethod->getName()), "(", rngchParameters, ") noexcept {\n",
+											"			return _call<", MangleType(jtsTypeChecker, jtsSignature->getReturnType()), ">(", rngchCallArguments, ");\n",
+											"		}\n"
+										));
+									} else if (ts::SymbolFlags::Constructor == jsymMethod->getFlags()) {
+										auto const rngchSelfType = MangleType(jtsTypeChecker, jtsTypeChecker->getDeclaredTypeOfSymbol(jsymClass));
+										auto const rngchCallArguments = tc::join_separated(rngstrArguments, ", ");
+										return tc::explicit_cast<std::string>(tc::concat(
+											"		static auto _construct(", rngchParameters, ") noexcept {\n",
+											"			return ", rngchSelfType, "(", RetrieveSymbolFromCpp(jsymClass), ".new_(", rngchCallArguments, "));\n",
+											"		}\n"
+										));
+									} else {
+										_ASSERTFALSE;
+									}
 								}
 							));
 						}
