@@ -1,2 +1,2 @@
 #include "../../precompiled.h"
-#include "demo-module.d.h"
+#include "my-lib.d.h"
