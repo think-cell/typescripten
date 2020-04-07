@@ -25,6 +25,9 @@ std::string RetrieveSymbolFromCpp(ts::Symbol jsymSymbol) noexcept {
 
 std::string CppifyName(ts::Symbol jsymSymbol) noexcept {
 	std::string strSourceName = tc::explicit_cast<std::string>(jsymSymbol->getName());
+	if (strSourceName.front() == '"' && strSourceName.back() == '"') {
+		strSourceName = strSourceName.substr(1, strSourceName.length() - 2);
+	}
 	std::string strResult = tc::explicit_cast<std::string>(tc::transform(
 		strSourceName,
 		[&strSourceName](char c) noexcept {
@@ -390,7 +393,42 @@ int main(int argc, char* argv[]) {
 					))
 				));
 			})),
+			tc::join(tc::transform(
+				vecjsymExportedModule,
+				[&jtsTypeChecker](ts::Symbol const& jsymSourceFile) noexcept {
+					auto strNamespace = tc::explicit_cast<std::string>(tc::concat("_ns", MangleSymbolName(jtsTypeChecker, jsymSourceFile)));
+					return tc::explicit_cast<std::string>(tc::concat(
+						"	namespace ", strNamespace, " {\n",
+						tc::join(tc::transform(
+							tc::filter(
+								jtsTypeChecker->getExportsOfModule(jsymSourceFile),
+								[](ts::Symbol const jsymChild) noexcept {
+									return IsEnumInCpp(jsymChild) || IsClassInCpp(jsymChild);
+								}
+							),
+							[&jtsTypeChecker](ts::Symbol const jsymType) noexcept {
+								return tc::explicit_cast<std::string>(tc::concat(
+									"		using ", CppifyName(jsymType), " = ", MangleType(jtsTypeChecker, jtsTypeChecker->getDeclaredTypeOfSymbol(jsymType)), ";\n"
+								));
+							}
+						)),
+						"	} // namespace ", strNamespace, "\n"
+					));
+				}
+			)),
 			"}; // namespace _jsall\n",
+			tc::join(tc::transform(
+				vecjsymExportedModule,
+				[&jtsTypeChecker](ts::Symbol const& jsymSourceFile) noexcept {
+					std::string strCppNamespace = CppifyName(jsymSourceFile);
+					std::string strMangledNamespace = tc::explicit_cast<std::string>(tc::concat("_ns", MangleSymbolName(jtsTypeChecker, jsymSourceFile)));
+					return tc::explicit_cast<std::string>(tc::concat(
+						"namespace ", strCppNamespace, " {\n",
+						"using namespace _jsall::", strMangledNamespace, ";\n",
+						"} // namespace ", strCppNamespace, "\n"
+					));
+				}
+			)),
 			"} // namespace tc::js\n"
 		);
 	}
