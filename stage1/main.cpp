@@ -86,7 +86,7 @@ struct SJsMethod {
 
 struct SJsClass {
 	ts::Symbol m_jsymClass;
-	Array<ts::Symbol> m_jarrsymExport;
+	std::vector<ts::Symbol> m_vecjsymExportType;
 	std::vector<ts::Symbol> m_vecjsymMember;
 	std::vector<SJsMethod> m_vecjsmethodMethod;
 	std::vector<ts::Symbol> m_vecjsymProperty;
@@ -94,13 +94,16 @@ struct SJsClass {
 
 	SJsClass(ts::TypeChecker const jtsTypeChecker, ts::Symbol const jsymClass) noexcept
 		: m_jsymClass(jsymClass)
-		, m_jarrsymExport([&]() noexcept {
-			if (jsymClass->exports()) {
-				return jtsTypeChecker->getExportsOfModule(jsymClass);
-			} else {
-				return Array<ts::Symbol>(tc::make_empty_range<ts::Symbol>());
-			}
-		}())
+		, m_vecjsymExportType(
+			!jsymClass->exports()
+			? tc::make_vector(tc::make_empty_range<ts::Symbol>())
+			: tc::make_vector(tc::filter(
+				jtsTypeChecker->getExportsOfModule(jsymClass),
+				[](ts::Symbol const jsymExport) noexcept {
+					return IsEnumInCpp(jsymExport) || IsClassInCpp(jsymExport);
+				}
+			))
+		)
 		, m_vecjsymMember([&]() noexcept {
 			if (jsymClass->members()) {
 				return tc::explicit_cast<std::vector<ts::Symbol>>(*jsymClass->members());
@@ -257,9 +260,7 @@ int main(int argc, char* argv[]) {
 					" {\n",
 					"		struct _js_ref_definitions {\n",
 					tc::join(tc::transform(
-						tc::filter(jsclassClass.m_jarrsymExport, [](ts::Symbol const jsymExport) noexcept {
-							return IsEnumInCpp(jsymExport) || IsClassInCpp(jsymExport);
-						}),
+						jsclassClass.m_vecjsymExportType,
 						[&jtsTypeChecker](ts::Symbol const jsymExport) noexcept {
 							return tc::concat(
 								"			using ",
