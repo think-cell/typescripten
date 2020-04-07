@@ -258,7 +258,7 @@ int main(int argc, char* argv[]) {
 					"template<> struct IsJsIntegralEnum<_enum", MangleSymbolName(jtsTypeChecker, jsymEnum), "> : std::true_type {};\n"
 				);
 			})),
-			"struct _jsall {\n",
+			"namespace _jsall {\n",
 			tc::join(tc::transform(g_vecjsymEnum, [&jtsTypeChecker](ts::Symbol const jsymEnum) noexcept {
 				return tc::concat(
 					"	using ", MangleSymbolName(jtsTypeChecker, jsymEnum), " = _enum", MangleSymbolName(jtsTypeChecker, jsymEnum), ";\n"
@@ -305,12 +305,49 @@ int main(int argc, char* argv[]) {
 						jsclassClass.m_vecjspropertyProperty,
 						[](SJsProperty const &jspropertyProperty) noexcept {
 							return tc::concat(
-								"		auto ", jspropertyProperty.m_strCppifiedName, "() noexcept ",
+								"		auto ", jspropertyProperty.m_strCppifiedName, "() noexcept;\n",
+								jspropertyProperty.m_bReadonly ?
+									"" :
+									tc::explicit_cast<std::string>(tc::concat(
+										"		void ", jspropertyProperty.m_strCppifiedName, "(", jspropertyProperty.m_strMangledPropertyType, " v) noexcept;\n"
+									))
+							);
+						}
+					)),
+					tc::join(tc::transform(
+						jsclassClass.m_vecjsmethodMethod,
+						[](SJsMethod const& jsmethodMethod) noexcept {
+							if (ts::SymbolFlags::Method == jsmethodMethod.m_jsymMethod->getFlags()) {
+								return tc::explicit_cast<std::string>(tc::concat(
+									"		auto ", CppifyName(jsmethodMethod.m_jsymMethod), "(", jsmethodMethod.m_strCppifiedParameters, ") noexcept;\n"
+								));
+							} else if (ts::SymbolFlags::Constructor == jsmethodMethod.m_jsymMethod->getFlags()) {
+								return tc::explicit_cast<std::string>(tc::concat(
+									"		static auto _construct(", jsmethodMethod.m_strCppifiedParameters, ") noexcept;\n"
+								));
+							} else {
+								_ASSERTFALSE;
+							}
+						}
+					)),
+					"	};\n"
+				));
+			})),
+			tc::join(tc::transform(vecjsclassClass, [&jtsTypeChecker](SJsClass const& jsclassClass) noexcept {
+				auto strClassNamespace = tc::explicit_cast<std::string>(tc::concat(
+					"_impl", MangleSymbolName(jtsTypeChecker, jsclassClass.m_jsymClass), "::"
+				));
+				return tc::explicit_cast<std::string>(tc::concat(
+					tc::join(tc::transform(
+						jsclassClass.m_vecjspropertyProperty,
+						[&strClassNamespace](SJsProperty const &jspropertyProperty) noexcept {
+							return tc::concat(
+								"	auto ", strClassNamespace, jspropertyProperty.m_strCppifiedName, "() noexcept ",
 								"{ return _getProperty<", jspropertyProperty.m_strMangledPropertyType, ">(\"", jspropertyProperty.m_strJsName, "\"); }\n",
 								jspropertyProperty.m_bReadonly ?
 									"" :
 									tc::explicit_cast<std::string>(tc::concat(
-										"		void ", jspropertyProperty.m_strCppifiedName, "(", jspropertyProperty.m_strMangledPropertyType, " v) noexcept ",
+										"	void ", strClassNamespace, jspropertyProperty.m_strCppifiedName, "(", jspropertyProperty.m_strMangledPropertyType, " v) noexcept ",
 										"{ _setProperty(\"", jspropertyProperty.m_strJsName, "\", v); }\n"
 									))
 							);
@@ -318,7 +355,7 @@ int main(int argc, char* argv[]) {
 					)),
 					tc::join(tc::transform(
 						jsclassClass.m_vecjsmethodMethod,
-						[&jtsTypeChecker, &jsclassClass](SJsMethod const& jsmethodMethod) noexcept {
+						[&jtsTypeChecker, &jsclassClass, &strClassNamespace](SJsMethod const& jsmethodMethod) noexcept {
 							auto const rngstrArguments = tc::transform(
 								jsmethodMethod.m_jtsSignature->getParameters(),
 								[](ts::Symbol const jsymParameter) noexcept {
@@ -334,27 +371,26 @@ int main(int argc, char* argv[]) {
 									", "
 								);
 								return tc::explicit_cast<std::string>(tc::concat(
-									"		auto ", CppifyName(jsmethodMethod.m_jsymMethod), "(", jsmethodMethod.m_strCppifiedParameters, ") noexcept {\n",
-									"			return _call<", MangleType(jtsTypeChecker, jsmethodMethod.m_jtsSignature->getReturnType()), ">(", rngchCallArguments, ");\n",
-									"		}\n"
+									"	auto ", strClassNamespace, CppifyName(jsmethodMethod.m_jsymMethod), "(", jsmethodMethod.m_strCppifiedParameters, ") noexcept {\n",
+									"		return _call<", MangleType(jtsTypeChecker, jsmethodMethod.m_jtsSignature->getReturnType()), ">(", rngchCallArguments, ");\n",
+									"	}\n"
 								));
 							} else if (ts::SymbolFlags::Constructor == jsmethodMethod.m_jsymMethod->getFlags()) {
 								auto const rngchSelfType = MangleType(jtsTypeChecker, jtsTypeChecker->getDeclaredTypeOfSymbol(jsclassClass.m_jsymClass));
 								auto const rngchCallArguments = tc::join_separated(rngstrArguments, ", ");
 								return tc::explicit_cast<std::string>(tc::concat(
-									"		static auto _construct(", jsmethodMethod.m_strCppifiedParameters, ") noexcept {\n",
-									"			return ", rngchSelfType, "(", RetrieveSymbolFromCpp(jsclassClass.m_jsymClass), ".new_(", rngchCallArguments, "));\n",
-									"		}\n"
+									"	auto ", strClassNamespace, "_construct(", jsmethodMethod.m_strCppifiedParameters, ") noexcept {\n",
+									"		return ", rngchSelfType, "(", RetrieveSymbolFromCpp(jsclassClass.m_jsymClass), ".new_(", rngchCallArguments, "));\n",
+									"	}\n"
 								));
 							} else {
 								_ASSERTFALSE;
 							}
 						}
-					)),
-					"	};\n"
+					))
 				));
 			})),
-			"};\n",
+			"}; // namespace _jsall\n",
 			"} // namespace tc::js\n"
 		);
 	}
