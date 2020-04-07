@@ -22,6 +22,24 @@ std::string RetrieveSymbolFromCpp(ts::Symbol jsymSymbol) noexcept {
 	}
 }
 
+std::string CppifyName(ts::Symbol jsymSymbol) noexcept {
+	std::string strSourceName = tc::explicit_cast<std::string>(jsymSymbol->getName());
+	std::string strResult = tc::explicit_cast<std::string>(tc::transform(
+		strSourceName,
+		[&strSourceName](char c) noexcept {
+			if (c == '-') return '_';
+			if (c == '_') return c;
+			if ('a' <= c && c <= 'z') return c;
+			if ('A' <= c && c <= 'Z') return c;
+			if ('0' <= c && c <= '9') return c;
+			tc::append(std::cerr, "Cannot convert JS name to C++ name: '", strSourceName, "'\n");
+			_ASSERTFALSE;
+		}
+	));
+	_ASSERT(!strResult.empty());
+	return strResult;
+}
+
 int main(int argc, char* argv[]) {
 	_ASSERT(2 <= argc);
 
@@ -91,7 +109,7 @@ int main(int argc, char* argv[]) {
 								));
 							} else {
 								return tc::explicit_cast<std::string>(tc::concat(
-									"	", tc::explicit_cast<std::string>(jsymOption->getName()), " = ",
+									"	", CppifyName(jsymOption), " = ",
 									tc::as_dec(tc::explicit_cast<int>(double(junionOptionValue))),
 									",\n"
 								));
@@ -167,7 +185,7 @@ int main(int argc, char* argv[]) {
 						[&jtsTypeChecker](ts::Symbol const jsymExport) noexcept {
 							return tc::concat(
 								"			using ",
-								tc::explicit_cast<std::string>(jsymExport->getName()),
+								CppifyName(jsymExport),
 								" = ",
 								MangleSymbolName(jtsTypeChecker, jsymExport),
 								";\n"
@@ -186,7 +204,7 @@ int main(int argc, char* argv[]) {
 							_ASSERT(ts::ModifierFlags::None == nModifierFlags || ts::ModifierFlags::Readonly == nModifierFlags);
 							return tc::concat(
 								"		auto ",
-								tc::explicit_cast<std::string>(jsymProperty->getName()),
+								CppifyName(jsymProperty),
 								"() noexcept { return _getProperty<",
 								MangleType(jtsTypeChecker, jtsTypeChecker->getTypeOfSymbolAtLocation(jsymProperty, jdeclProperty)),
 								">(\"",
@@ -196,7 +214,7 @@ int main(int argc, char* argv[]) {
 									"" :
 									tc::explicit_cast<std::string>(tc::concat(
 										"		void ",
-										tc::explicit_cast<std::string>(jsymProperty->getName()),
+										CppifyName(jsymProperty),
 										"(",
 										MangleType(jtsTypeChecker, jtsTypeChecker->getTypeOfSymbolAtLocation(jsymProperty, jdeclProperty)),
 										" v) noexcept { _setProperty(\"",
@@ -245,7 +263,7 @@ int main(int argc, char* argv[]) {
 												return tc::concat(
 													MangleType(jtsTypeChecker, jtsTypeChecker->getTypeOfSymbolAtLocation(jsymParameter, jdeclMethod)),
 													" ",
-													tc::explicit_cast<std::string>(jsymParameter->getName())
+													CppifyName(jsymParameter)
 												);
 											}
 										),
@@ -254,7 +272,7 @@ int main(int argc, char* argv[]) {
 									auto const rngstrArguments = tc::transform(
 										jtsSignature->getParameters(),
 										[](ts::Symbol const jsymParameter) noexcept {
-											return tc::explicit_cast<std::string>(jsymParameter->getName());
+											return CppifyName(jsymParameter);
 										}
 									);
 									if (ts::SymbolFlags::Method == jsymMethod->getFlags()) {
@@ -266,7 +284,7 @@ int main(int argc, char* argv[]) {
 											", "
 										);
 										return tc::explicit_cast<std::string>(tc::concat(
-											"		auto ", tc::explicit_cast<std::string>(jsymMethod->getName()), "(", rngchParameters, ") noexcept {\n",
+											"		auto ", CppifyName(jsymMethod), "(", rngchParameters, ") noexcept {\n",
 											"			return _call<", MangleType(jtsTypeChecker, jtsSignature->getReturnType()), ">(", rngchCallArguments, ");\n",
 											"		}\n"
 										));
