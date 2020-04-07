@@ -84,12 +84,38 @@ struct SJsMethod {
 	}
 };
 
+struct SJsProperty {
+	ts::Symbol m_jsymProperty;
+	std::string m_strJsName;
+	std::string m_strCppifiedName;
+	ts::Declaration m_jdeclProperty;
+	ts::Type m_jtypeProperty;
+	std::string m_strMangledPropertyType;
+	bool m_bReadonly;
+
+	SJsProperty(ts::TypeChecker const jtsTypeChecker, ts::Symbol const jsymProperty) noexcept
+		: m_jsymProperty(jsymProperty)
+		, m_strJsName(tc::explicit_cast<std::string>(jsymProperty->getName()))
+		, m_strCppifiedName(CppifyName(jsymProperty))
+		, m_jdeclProperty([&]() {
+			_ASSERTEQUAL(jsymProperty->declarations()->length(), 1);
+			return jsymProperty->declarations()[0];
+		}())
+		, m_jtypeProperty(jtsTypeChecker->getTypeOfSymbolAtLocation(jsymProperty, m_jdeclProperty))
+		, m_strMangledPropertyType(MangleType(jtsTypeChecker, m_jtypeProperty))
+		, m_bReadonly(ts()->getCombinedModifierFlags(m_jdeclProperty) & ts::ModifierFlags::Readonly)
+	{
+		ts::ModifierFlags const nModifierFlags = ts()->getCombinedModifierFlags(m_jdeclProperty);
+		_ASSERT(ts::ModifierFlags::None == nModifierFlags || ts::ModifierFlags::Readonly == nModifierFlags);
+	}
+};
+
 struct SJsClass {
 	ts::Symbol m_jsymClass;
 	std::vector<ts::Symbol> m_vecjsymExportType;
 	std::vector<ts::Symbol> m_vecjsymMember;
 	std::vector<SJsMethod> m_vecjsmethodMethod;
-	std::vector<ts::Symbol> m_vecjsymProperty;
+	std::vector<SJsProperty> m_vecjspropertyProperty;
 	std::vector<ts::Symbol> m_vecjsymBaseClass;
 
 	SJsClass(ts::TypeChecker const jtsTypeChecker, ts::Symbol const jsymClass) noexcept
@@ -124,9 +150,12 @@ struct SJsClass {
 				);
 			}
 		))))
-		, m_vecjsymProperty(tc::make_vector(
+		, m_vecjspropertyProperty(tc::make_vector(tc::transform(
 			tc::filter(m_vecjsymMember, [](ts::Symbol const jsymMember) noexcept {
 				return ts::SymbolFlags::Property == jsymMember->getFlags();
+			}),
+			[&](ts::Symbol const jsymProperty) noexcept {
+				return SJsProperty(jtsTypeChecker, jsymProperty);
 			}
 		)))
 		, m_vecjsymBaseClass()
@@ -273,30 +302,16 @@ int main(int argc, char* argv[]) {
 					)),
 					"		};\n",
 					tc::join(tc::transform(
-						jsclassClass.m_vecjsymProperty,
-						[&jtsTypeChecker](ts::Symbol const jsymProperty) noexcept {
-							_ASSERTEQUAL(jsymProperty->declarations()->length(), 1);
-							ts::Declaration const jdeclProperty = jsymProperty->declarations()[0];
-							ts::ModifierFlags const nModifierFlags = ts()->getCombinedModifierFlags(jdeclProperty);
-							_ASSERT(ts::ModifierFlags::None == nModifierFlags || ts::ModifierFlags::Readonly == nModifierFlags);
+						jsclassClass.m_vecjspropertyProperty,
+						[](SJsProperty const &jspropertyProperty) noexcept {
 							return tc::concat(
-								"		auto ",
-								CppifyName(jsymProperty),
-								"() noexcept { return _getProperty<",
-								MangleType(jtsTypeChecker, jtsTypeChecker->getTypeOfSymbolAtLocation(jsymProperty, jdeclProperty)),
-								">(\"",
-								tc::explicit_cast<std::string>(jsymProperty->getName()),
-								"\"); }\n",
-								(ts()->getCombinedModifierFlags(jdeclProperty) & ts::ModifierFlags::Readonly) ?
+								"		auto ", jspropertyProperty.m_strCppifiedName, "() noexcept ",
+								"{ return _getProperty<", jspropertyProperty.m_strMangledPropertyType, ">(\"", jspropertyProperty.m_strJsName, "\"); }\n",
+								jspropertyProperty.m_bReadonly ?
 									"" :
 									tc::explicit_cast<std::string>(tc::concat(
-										"		void ",
-										CppifyName(jsymProperty),
-										"(",
-										MangleType(jtsTypeChecker, jtsTypeChecker->getTypeOfSymbolAtLocation(jsymProperty, jdeclProperty)),
-										" v) noexcept { _setProperty(\"",
-										tc::explicit_cast<std::string>(jsymProperty->getName()),
-										"\", v); }\n"
+										"		void ", jspropertyProperty.m_strCppifiedName, "(", jspropertyProperty.m_strMangledPropertyType, " v) noexcept ",
+										"{ _setProperty(\"", jspropertyProperty.m_strJsName, "\", v); }\n"
 									))
 							);
 						}
