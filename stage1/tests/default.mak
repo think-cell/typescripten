@@ -10,8 +10,8 @@ else
 all: main.js my-lib.js
 	node $<
 
-my-lib.js: my-lib.ts
-	tsc --strict --declaration "$<"
+my-lib.js my-lib.d.ts: my-lib.ts
+	../../node_modules/typescript/bin/tsc --strict --declaration "$<"
 endif
 
 my-lib.d.h: ../../main.js my-lib.d.ts
