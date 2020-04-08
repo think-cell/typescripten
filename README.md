@@ -42,8 +42,8 @@ namespace Bar {  // ValueModule: instantiated because class should become a func
 
 In C++, we have `namespace` and `class`.
 The former, in some sense, may only contain `static` functions and variables.
-It may be a good idea to render some namespaces to `namespace` instead of `js_ref<>`
-so `using namespace` works and variable declarations does not.
+It may be a good idea to emit some namespaces to `namespace` instead of `js_ref<>`
+so `using namespace` works and variable declarations do not.
 However, we have to disambiguate them manually and generate slightly different code
 for `namespace` and `class`.
 
@@ -67,7 +67,15 @@ export namespace Foo {
 ```
 Similarly, it's possible to have `Interface | ValueModule`, but it will be emitted
 to JS as a simple namespace, because interfaces are not emitted.
-
+```
+interface Bar {
+    method(): void;
+}
+namespace Bar {
+    var a: number;
+    function someFunction() {}
+}
+```
 If we have `Bar` which is `Interface | ValueModule`, in C++ we should make sure that:
 
 1. `Bar` is a valid base type for corresponding classes and interfaces.
