@@ -26,6 +26,60 @@ Close analogues are Rust's [stdweb](https://github.com/koute/stdweb) and [wasm-b
   the former requires successful overload resolution, the latter requires that the
   argument is convertible to at least one option.
 
+## Namespaces vs classes
+TypeScript disambiguates between instantiated namespaces (`ValueModule`) and
+non-instantiated (`NamespaceModule`), see `TypeScript/src/compiler/binder.ts:getModuleInstanceStateWorker`.
+The former is visible in the emitted JS, the latter is fully erased.
+```
+namespace Foo {  // NamespaceModule: non-instantiated in JS. May only export (recursively)
+                 // interfaces, enums, type aliases. No classes or functions.
+    interface MyInterface { }
+}
+namespace Bar {  // ValueModule: instantiated because class should become a function in JS.
+    class MyClass { }
+}
+```
+
+In C++, we have `namespace` and `class`.
+The former, in some sense, may only contain `static` functions and variables.
+It may be a good idea to render some namespaces to `namespace` instead of `js_ref<>`
+so `using namespace` works and variable declarations does not.
+However, we have to disambiguate them manually and generate slightly different code
+for `namespace` and `class`.
+
+## Syntax for static functions and static variables
+Interfaces are not emitted to JavaScript.
+
+A class in JavaScript is a special constructor function which should be
+called with a `new Foo()` syntax instead of `Foo()`.
+Moreover, any function is an object itself, and an object may have any properties it want.
+So, a class may have nested classes.
+TypeScript will see it as `Class | ValueModule`:
+```
+export class Foo {  // Class | ValueModule
+    someMethod() { }  // Method
+    a: number;  // Property
+}
+export namespace Foo {
+    export function someFunction() { }  // Function
+    export var a: number;  // FunctionScopedVariable
+}
+```
+Similarly, it's possible to have `Interface | ValueModule`, but it will be emitted
+to JS as a simple namespace, because interfaces are not emitted.
+
+If we have `Bar` which is `Interface | ValueModule`, in C++ we should make sure that:
+
+1. `Bar` is a valid base type for corresponding classes and interfaces.
+2. `Bar` cannot be instantiated on its own.
+   Hence, we cannot say "a TS namespace is a `js_ref<>` with default constructor",
+   like it was the case with `console()->log(....)`.
+3. We can somehow call static functions from `Bar`.
+
+Hence, we conclude that standard C++ syntax should be used: `Bar::someFunction()`.
+As `Bar` for interfaces is an alias for `js_ref<>`, we should make sure
+`js_ref<>` has corresponding static function and does not have any members with names.
+
 # Naming conventions
 * Global variables start with `g_`.
 * Member fields start with `m_`.
