@@ -115,6 +115,7 @@ struct SJsProperty {
 
 struct SJsClass {
 	ts::Symbol m_jsymClass;
+	std::vector<ts::Symbol> m_vecjsymExportOfModule;
 	std::vector<ts::Symbol> m_vecjsymExportType;
 	std::vector<ts::Symbol> m_vecjsymMember;
 	std::vector<SJsMethod> m_vecjsmethodMethod;
@@ -123,16 +124,17 @@ struct SJsClass {
 
 	SJsClass(ts::TypeChecker const jtsTypeChecker, ts::Symbol const jsymClass) noexcept
 		: m_jsymClass(jsymClass)
-		, m_vecjsymExportType(
+		, m_vecjsymExportOfModule(
 			jsymClass->getFlags() & ts::SymbolFlags::Module
-			? tc::make_vector(tc::filter(
-				jtsTypeChecker->getExportsOfModule(jsymClass),
-				[](ts::Symbol const jsymExport) noexcept {
-					return IsEnumInCpp(jsymExport) || IsClassInCpp(jsymExport);
-				}
-			))
+			? tc::make_vector(jtsTypeChecker->getExportsOfModule(jsymClass))
 			: tc::make_vector(tc::make_empty_range<ts::Symbol>())
 		)
+		, m_vecjsymExportType(tc::make_vector(tc::filter(
+			m_vecjsymExportOfModule,
+			[](ts::Symbol const jsymExport) noexcept {
+				return IsEnumInCpp(jsymExport) || IsClassInCpp(jsymExport);
+			}
+		)))
 		, m_vecjsymMember([&]() noexcept {
 			if (jsymClass->members()) {
 				return tc::explicit_cast<std::vector<ts::Symbol>>(*jsymClass->members());
