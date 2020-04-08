@@ -89,7 +89,8 @@ struct SJsFunctionLike {
 			", "
 		)))
 	{
-		if (ts::ModifierFlags::None != ts()->getCombinedModifierFlags(jdeclFunctionLike)) {
+		if (ts::ModifierFlags::None != ts()->getCombinedModifierFlags(jdeclFunctionLike) &&
+			ts::ModifierFlags::Export != ts()->getCombinedModifierFlags(jdeclFunctionLike)) {
 			tc::append(std::cerr,
 				"Unknown getCombinedModifierFlags for jdeclFunctionLike ",
 				tc::explicit_cast<std::string>(m_jsymFunctionLike->getName()),
@@ -125,6 +126,7 @@ struct SJsVariableLike {
 	{
 		ts::ModifierFlags const nModifierFlags = ts()->getCombinedModifierFlags(m_jdeclVariableLike);
 		if (ts::ModifierFlags::None != nModifierFlags &&
+			ts::ModifierFlags::Export != nModifierFlags &&
 			ts::ModifierFlags::Readonly != nModifierFlags) {
 			tc::append(std::cerr,
 				"Unknown getCombinedModifierFlags for jdeclVariableLike ",
