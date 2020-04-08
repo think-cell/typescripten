@@ -3,6 +3,8 @@ namespace MyLib {
         return a + b;
     }
 
+    export var initially10: number = 10;
+
     export class SomeObject {
         constructor() {} // TODO: is it implicitly defined?
         str: string = "";

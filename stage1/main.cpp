@@ -121,6 +121,7 @@ struct SJsClass {
 	std::vector<ts::Symbol> m_vecjsymExportOfModule;
 	std::vector<ts::Symbol> m_vecjsymExportType;
 	std::vector<SJsFunctionLike> m_vecjsfunctionlikeExportFunction;
+	std::vector<SJsVariableLike> m_vecjsvariablelikeExportVariable;
 	std::vector<ts::Symbol> m_vecjsymMember;
 	std::vector<SJsFunctionLike> m_vecjsfunctionlikeMethod;
 	std::vector<SJsVariableLike> m_vecjsvariablelikeProperty;
@@ -155,6 +156,19 @@ struct SJsClass {
 				);
 			}
 		))))
+		, m_vecjsvariablelikeExportVariable(tc::make_vector(tc::transform(
+			tc::filter(
+				m_vecjsymExportOfModule,
+				[](ts::Symbol const jsymExport) noexcept {
+					return
+						ts::SymbolFlags::FunctionScopedVariable == jsymExport->getFlags() ||
+						ts::SymbolFlags::BlockScopedVariable == jsymExport->getFlags();
+				}
+			),
+			[&jtsTypeChecker](ts::Symbol const jsymVariable) noexcept {
+				return SJsVariableLike(jtsTypeChecker, jsymVariable);
+			}
+		)))
 		, m_vecjsymMember([&]() noexcept {
 			if (jsymClass->members()) {
 				return tc::explicit_cast<std::vector<ts::Symbol>>(*jsymClass->members());
@@ -333,6 +347,19 @@ int main(int argc, char* argv[]) {
 							));
 						}
 					)),
+					tc::join(tc::transform(
+						jsclassClass.m_vecjsvariablelikeExportVariable,
+						[](SJsVariableLike const &jsvariablelikeVariable) noexcept {
+							return tc::concat(
+								"			static auto ", jsvariablelikeVariable.m_strCppifiedName, "() noexcept;\n",
+								jsvariablelikeVariable.m_bReadonly ?
+									"" :
+									tc::explicit_cast<std::string>(tc::concat(
+										"			static void ", jsvariablelikeVariable.m_strCppifiedName, "(", jsvariablelikeVariable.m_strMangledType, " v) noexcept;\n"
+									))
+							);
+						}
+					)),
 					"		};\n",
 					tc::join(tc::transform(
 						jsclassClass.m_vecjsvariablelikeProperty,
@@ -370,6 +397,7 @@ int main(int argc, char* argv[]) {
 				auto strClassNamespace = tc::explicit_cast<std::string>(tc::concat(
 					"_impl", MangleSymbolName(jtsTypeChecker, jsclassClass.m_jsymClass), "::"
 				));
+				auto strClassInstanceRetrieve = RetrieveSymbolFromCpp(jsclassClass.m_jsymClass);
 				return tc::explicit_cast<std::string>(tc::concat(
 					tc::join(tc::transform(
 						jsclassClass.m_vecjsfunctionlikeExportFunction,
@@ -396,6 +424,21 @@ int main(int argc, char* argv[]) {
 									)),
 								"	}\n"
 							));
+						}
+					)),
+					tc::join(tc::transform(
+						jsclassClass.m_vecjsvariablelikeExportVariable,
+						[&strClassNamespace, &strClassInstanceRetrieve](SJsVariableLike const &jsvariablelikeVariable) noexcept {
+							return tc::concat(
+								"	inline auto ", strClassNamespace, "_js_ref_definitions::", jsvariablelikeVariable.m_strCppifiedName, "() noexcept ",
+								"{ return ", strClassInstanceRetrieve, "[\"", jsvariablelikeVariable.m_strJsName, "\"].template as<", jsvariablelikeVariable.m_strMangledType, ">(); }\n",
+								jsvariablelikeVariable.m_bReadonly ?
+									"" :
+									tc::explicit_cast<std::string>(tc::concat(
+										"	inline void ", strClassNamespace, "_js_ref_definitions::", jsvariablelikeVariable.m_strCppifiedName, "(", jsvariablelikeVariable.m_strMangledType, " v) noexcept ",
+										"{ ", strClassInstanceRetrieve, ".set(\"", jsvariablelikeVariable.m_strJsName, "\", v); }\n"
+									))
+							);
 						}
 					)),
 					tc::join(tc::transform(

@@ -13,4 +13,8 @@ int main() {
 	_ASSERT(tc::empty(obj2->arr()));
 
 	_ASSERTEQUAL(30, tc::js::MyLib::sumOfTwo(10, 20));
+
+	_ASSERTEQUAL(10, tc::js::MyLib::initially10());
+	tc::js::MyLib::initially10(12);
+	_ASSERTEQUAL(12, tc::js::MyLib::initially10());
 }
