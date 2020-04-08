@@ -90,28 +90,28 @@ struct SJsFunctionLike {
 	}
 };
 
-struct SJsProperty {
-	ts::Symbol m_jsymProperty;
+struct SJsVariableLike {
+	ts::Symbol m_jsymName;
 	std::string m_strJsName;
 	std::string m_strCppifiedName;
-	ts::Declaration m_jdeclProperty;
-	ts::Type m_jtypeProperty;
-	std::string m_strMangledPropertyType;
+	ts::Declaration m_jdeclVariableLike;
+	ts::Type m_jtypeDeclared;
+	std::string m_strMangledType;
 	bool m_bReadonly;
 
-	SJsProperty(ts::TypeChecker const jtsTypeChecker, ts::Symbol const jsymProperty) noexcept
-		: m_jsymProperty(jsymProperty)
-		, m_strJsName(tc::explicit_cast<std::string>(jsymProperty->getName()))
-		, m_strCppifiedName(CppifyName(jsymProperty))
-		, m_jdeclProperty([&]() noexcept {
-			_ASSERTEQUAL(jsymProperty->declarations()->length(), 1);
-			return jsymProperty->declarations()[0];
+	SJsVariableLike(ts::TypeChecker const jtsTypeChecker, ts::Symbol const jsymName) noexcept
+		: m_jsymName(jsymName)
+		, m_strJsName(tc::explicit_cast<std::string>(jsymName->getName()))
+		, m_strCppifiedName(CppifyName(jsymName))
+		, m_jdeclVariableLike([&]() noexcept {
+			_ASSERTEQUAL(jsymName->declarations()->length(), 1);
+			return jsymName->declarations()[0];
 		}())
-		, m_jtypeProperty(jtsTypeChecker->getTypeOfSymbolAtLocation(jsymProperty, m_jdeclProperty))
-		, m_strMangledPropertyType(MangleType(jtsTypeChecker, m_jtypeProperty))
-		, m_bReadonly(ts()->getCombinedModifierFlags(m_jdeclProperty) & ts::ModifierFlags::Readonly)
+		, m_jtypeDeclared(jtsTypeChecker->getTypeOfSymbolAtLocation(jsymName, m_jdeclVariableLike))
+		, m_strMangledType(MangleType(jtsTypeChecker, m_jtypeDeclared))
+		, m_bReadonly(ts()->getCombinedModifierFlags(m_jdeclVariableLike) & ts::ModifierFlags::Readonly)
 	{
-		ts::ModifierFlags const nModifierFlags = ts()->getCombinedModifierFlags(m_jdeclProperty);
+		ts::ModifierFlags const nModifierFlags = ts()->getCombinedModifierFlags(m_jdeclVariableLike);
 		_ASSERT(ts::ModifierFlags::None == nModifierFlags || ts::ModifierFlags::Readonly == nModifierFlags);
 	}
 };
@@ -123,7 +123,7 @@ struct SJsClass {
 	std::vector<SJsFunctionLike> m_vecjsfunctionlikeExportFunction;
 	std::vector<ts::Symbol> m_vecjsymMember;
 	std::vector<SJsFunctionLike> m_vecjsfunctionlikeMethod;
-	std::vector<SJsProperty> m_vecjspropertyProperty;
+	std::vector<SJsVariableLike> m_vecjsvariablelikeProperty;
 	std::vector<ts::Symbol> m_vecjsymBaseClass;
 
 	SJsClass(ts::TypeChecker const jtsTypeChecker, ts::Symbol const jsymClass) noexcept
@@ -175,12 +175,12 @@ struct SJsClass {
 				);
 			}
 		))))
-		, m_vecjspropertyProperty(tc::make_vector(tc::transform(
+		, m_vecjsvariablelikeProperty(tc::make_vector(tc::transform(
 			tc::filter(m_vecjsymMember, [](ts::Symbol const jsymMember) noexcept {
 				return ts::SymbolFlags::Property == jsymMember->getFlags();
 			}),
 			[&](ts::Symbol const jsymProperty) noexcept {
-				return SJsProperty(jtsTypeChecker, jsymProperty);
+				return SJsVariableLike(jtsTypeChecker, jsymProperty);
 			}
 		)))
 		, m_vecjsymBaseClass()
@@ -335,14 +335,14 @@ int main(int argc, char* argv[]) {
 					)),
 					"		};\n",
 					tc::join(tc::transform(
-						jsclassClass.m_vecjspropertyProperty,
-						[](SJsProperty const &jspropertyProperty) noexcept {
+						jsclassClass.m_vecjsvariablelikeProperty,
+						[](SJsVariableLike const &jsvariablelikeProperty) noexcept {
 							return tc::concat(
-								"		auto ", jspropertyProperty.m_strCppifiedName, "() noexcept;\n",
-								jspropertyProperty.m_bReadonly ?
+								"		auto ", jsvariablelikeProperty.m_strCppifiedName, "() noexcept;\n",
+								jsvariablelikeProperty.m_bReadonly ?
 									"" :
 									tc::explicit_cast<std::string>(tc::concat(
-										"		void ", jspropertyProperty.m_strCppifiedName, "(", jspropertyProperty.m_strMangledPropertyType, " v) noexcept;\n"
+										"		void ", jsvariablelikeProperty.m_strCppifiedName, "(", jsvariablelikeProperty.m_strMangledType, " v) noexcept;\n"
 									))
 							);
 						}
@@ -393,16 +393,16 @@ int main(int argc, char* argv[]) {
 						}
 					)),
 					tc::join(tc::transform(
-						jsclassClass.m_vecjspropertyProperty,
-						[&strClassNamespace](SJsProperty const &jspropertyProperty) noexcept {
+						jsclassClass.m_vecjsvariablelikeProperty,
+						[&strClassNamespace](SJsVariableLike const &jsvariablelikeProperty) noexcept {
 							return tc::concat(
-								"	inline auto ", strClassNamespace, jspropertyProperty.m_strCppifiedName, "() noexcept ",
-								"{ return _getProperty<", jspropertyProperty.m_strMangledPropertyType, ">(\"", jspropertyProperty.m_strJsName, "\"); }\n",
-								jspropertyProperty.m_bReadonly ?
+								"	inline auto ", strClassNamespace, jsvariablelikeProperty.m_strCppifiedName, "() noexcept ",
+								"{ return _getProperty<", jsvariablelikeProperty.m_strMangledType, ">(\"", jsvariablelikeProperty.m_strJsName, "\"); }\n",
+								jsvariablelikeProperty.m_bReadonly ?
 									"" :
 									tc::explicit_cast<std::string>(tc::concat(
-										"	inline void ", strClassNamespace, jspropertyProperty.m_strCppifiedName, "(", jspropertyProperty.m_strMangledPropertyType, " v) noexcept ",
-										"{ _setProperty(\"", jspropertyProperty.m_strJsName, "\", v); }\n"
+										"	inline void ", strClassNamespace, jsvariablelikeProperty.m_strCppifiedName, "(", jsvariablelikeProperty.m_strMangledType, " v) noexcept ",
+										"{ _setProperty(\"", jsvariablelikeProperty.m_strJsName, "\", v); }\n"
 									))
 							);
 						}
