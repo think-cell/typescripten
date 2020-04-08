@@ -89,7 +89,16 @@ struct SJsFunctionLike {
 			", "
 		)))
 	{
-		_ASSERTEQUAL(ts()->getCombinedModifierFlags(jdeclFunctionLike), ts::ModifierFlags::None);
+		if (ts::ModifierFlags::None != ts()->getCombinedModifierFlags(jdeclFunctionLike)) {
+			tc::append(std::cerr,
+				"Unknown getCombinedModifierFlags for jdeclFunctionLike ",
+				tc::explicit_cast<std::string>(m_jsymFunctionLike->getName()),
+				": ",
+				tc::as_dec(static_cast<int>(ts()->getCombinedModifierFlags(jdeclFunctionLike))),
+				"\n"
+			);
+			_ASSERTFALSE;
+		}
 	}
 };
 
