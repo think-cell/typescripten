@@ -44,25 +44,25 @@ std::string CppifyName(ts::Symbol jsymSymbol) noexcept {
 	return strResult;
 }
 
-struct SJsMethod {
-	ts::Symbol m_jsymMethod;
-	ts::Declaration m_jdeclMethod;
+struct SJsFunctionLike {
+	ts::Symbol m_jsymFunctionLike;
+	ts::Declaration m_jdeclFunctionLike;
 	ts::SignatureDeclaration m_jtsSignatureDeclaration;
 	ts::Signature m_jtsSignature;
 	js_optional<ReadonlyArray<js_unknown>> m_joptarrunkTypeParameter;
 	std::string m_strCppifiedParameters;
 
-	SJsMethod(ts::TypeChecker const jtsTypeChecker, ts::Symbol const jsymMethod, ts::Declaration const jdeclMethod) noexcept
-		: m_jsymMethod(jsymMethod)
-		, m_jdeclMethod(jdeclMethod)
+	SJsFunctionLike(ts::TypeChecker const jtsTypeChecker, ts::Symbol const jsymFunctionLike, ts::Declaration const jdeclFunctionLike) noexcept
+		: m_jsymFunctionLike(jsymFunctionLike)
+		, m_jdeclFunctionLike(jdeclFunctionLike)
 		, m_jtsSignatureDeclaration([&]() noexcept -> ts::SignatureDeclaration {
-			if (auto const jotsMethodSignature = ts()->isMethodSignature(jdeclMethod)) { // In interfaces.
+			if (auto const jotsMethodSignature = ts()->isMethodSignature(jdeclFunctionLike)) { // In interfaces.
 				return *jotsMethodSignature;
 			}
-			if (auto const jotsMethodDeclaration = ts()->isMethodDeclaration(jdeclMethod)) { // In classes.
+			if (auto const jotsMethodDeclaration = ts()->isMethodDeclaration(jdeclFunctionLike)) { // In classes.
 				return *jotsMethodDeclaration;
 			}
-			if (auto const jotsConstructorDeclaration = ts()->isConstructorDeclaration(jdeclMethod)) {
+			if (auto const jotsConstructorDeclaration = ts()->isConstructorDeclaration(jdeclFunctionLike)) {
 				return *jotsConstructorDeclaration;
 			}
 			_ASSERTFALSE;
@@ -72,9 +72,9 @@ struct SJsMethod {
 		, m_strCppifiedParameters(tc::explicit_cast<std::string>(tc::join_separated(
 			tc::transform(
 				m_jtsSignature->getParameters(),
-				[&jtsTypeChecker, &jdeclMethod](ts::Symbol const jsymParameter) noexcept {
+				[&jtsTypeChecker, &jdeclFunctionLike](ts::Symbol const jsymParameter) noexcept {
 					return tc::concat(
-						MangleType(jtsTypeChecker, jtsTypeChecker->getTypeOfSymbolAtLocation(jsymParameter, jdeclMethod)),
+						MangleType(jtsTypeChecker, jtsTypeChecker->getTypeOfSymbolAtLocation(jsymParameter, jdeclFunctionLike)),
 						" ",
 						CppifyName(jsymParameter)
 					);
@@ -83,7 +83,7 @@ struct SJsMethod {
 			", "
 		)))
 	{
-		_ASSERTEQUAL(ts()->getCombinedModifierFlags(jdeclMethod), ts::ModifierFlags::None);
+		_ASSERTEQUAL(ts()->getCombinedModifierFlags(jdeclFunctionLike), ts::ModifierFlags::None);
 	}
 };
 
@@ -118,7 +118,7 @@ struct SJsClass {
 	std::vector<ts::Symbol> m_vecjsymExportOfModule;
 	std::vector<ts::Symbol> m_vecjsymExportType;
 	std::vector<ts::Symbol> m_vecjsymMember;
-	std::vector<SJsMethod> m_vecjsmethodMethod;
+	std::vector<SJsFunctionLike> m_vecjsfunctionlikeMethod;
 	std::vector<SJsProperty> m_vecjspropertyProperty;
 	std::vector<ts::Symbol> m_vecjsymBaseClass;
 
@@ -142,7 +142,7 @@ struct SJsClass {
 				return std::vector<ts::Symbol>();
 			}
 		}())
-		, m_vecjsmethodMethod(tc::make_vector(tc::join(tc::transform(
+		, m_vecjsfunctionlikeMethod(tc::make_vector(tc::join(tc::transform(
 			tc::filter(m_vecjsymMember, [](ts::Symbol const jsymMember) noexcept {
 				return ts::SymbolFlags::Method == jsymMember->getFlags() || ts::SymbolFlags::Constructor == jsymMember->getFlags();
 			}),
@@ -150,7 +150,7 @@ struct SJsClass {
 				return tc::transform(
 					jsymMethod->declarations(),
 					[&jtsTypeChecker, jsymMethod](ts::Declaration const jdeclMethod) noexcept {
-						return SJsMethod(jtsTypeChecker, jsymMethod, jdeclMethod);
+						return SJsFunctionLike(jtsTypeChecker, jsymMethod, jdeclMethod);
 					}
 				);
 			}
@@ -320,15 +320,15 @@ int main(int argc, char* argv[]) {
 						}
 					)),
 					tc::join(tc::transform(
-						jsclassClass.m_vecjsmethodMethod,
-						[](SJsMethod const& jsmethodMethod) noexcept {
-							if (ts::SymbolFlags::Method == jsmethodMethod.m_jsymMethod->getFlags()) {
+						jsclassClass.m_vecjsfunctionlikeMethod,
+						[](SJsFunctionLike const& jsfunctionlikeMethod) noexcept {
+							if (ts::SymbolFlags::Method == jsfunctionlikeMethod.m_jsymFunctionLike->getFlags()) {
 								return tc::explicit_cast<std::string>(tc::concat(
-									"		auto ", CppifyName(jsmethodMethod.m_jsymMethod), "(", jsmethodMethod.m_strCppifiedParameters, ") noexcept;\n"
+									"		auto ", CppifyName(jsfunctionlikeMethod.m_jsymFunctionLike), "(", jsfunctionlikeMethod.m_strCppifiedParameters, ") noexcept;\n"
 								));
-							} else if (ts::SymbolFlags::Constructor == jsmethodMethod.m_jsymMethod->getFlags()) {
+							} else if (ts::SymbolFlags::Constructor == jsfunctionlikeMethod.m_jsymFunctionLike->getFlags()) {
 								return tc::explicit_cast<std::string>(tc::concat(
-									"		static auto _construct(", jsmethodMethod.m_strCppifiedParameters, ") noexcept;\n"
+									"		static auto _construct(", jsfunctionlikeMethod.m_strCppifiedParameters, ") noexcept;\n"
 								));
 							} else {
 								_ASSERTFALSE;
@@ -359,32 +359,32 @@ int main(int argc, char* argv[]) {
 						}
 					)),
 					tc::join(tc::transform(
-						jsclassClass.m_vecjsmethodMethod,
-						[&jtsTypeChecker, &jsclassClass, &strClassNamespace](SJsMethod const& jsmethodMethod) noexcept {
+						jsclassClass.m_vecjsfunctionlikeMethod,
+						[&jtsTypeChecker, &jsclassClass, &strClassNamespace](SJsFunctionLike const& jsfunctionlikeMethod) noexcept {
 							auto const rngstrArguments = tc::transform(
-								jsmethodMethod.m_jtsSignature->getParameters(),
+								jsfunctionlikeMethod.m_jtsSignature->getParameters(),
 								[](ts::Symbol const jsymParameter) noexcept {
 									return CppifyName(jsymParameter);
 								}
 							);
-							if (ts::SymbolFlags::Method == jsmethodMethod.m_jsymMethod->getFlags()) {
+							if (ts::SymbolFlags::Method == jsfunctionlikeMethod.m_jsymFunctionLike->getFlags()) {
 								auto const rngchCallArguments = tc::join_separated(
 									tc::concat(
-										tc::single(tc::concat("\"", tc::explicit_cast<std::string>(jsmethodMethod.m_jsymMethod->getName()), "\"")),
+										tc::single(tc::concat("\"", tc::explicit_cast<std::string>(jsfunctionlikeMethod.m_jsymFunctionLike->getName()), "\"")),
 										rngstrArguments
 									),
 									", "
 								);
 								return tc::explicit_cast<std::string>(tc::concat(
-									"	auto ", strClassNamespace, CppifyName(jsmethodMethod.m_jsymMethod), "(", jsmethodMethod.m_strCppifiedParameters, ") noexcept {\n",
-									"		return _call<", MangleType(jtsTypeChecker, jsmethodMethod.m_jtsSignature->getReturnType()), ">(", rngchCallArguments, ");\n",
+									"	auto ", strClassNamespace, CppifyName(jsfunctionlikeMethod.m_jsymFunctionLike), "(", jsfunctionlikeMethod.m_strCppifiedParameters, ") noexcept {\n",
+									"		return _call<", MangleType(jtsTypeChecker, jsfunctionlikeMethod.m_jtsSignature->getReturnType()), ">(", rngchCallArguments, ");\n",
 									"	}\n"
 								));
-							} else if (ts::SymbolFlags::Constructor == jsmethodMethod.m_jsymMethod->getFlags()) {
+							} else if (ts::SymbolFlags::Constructor == jsfunctionlikeMethod.m_jsymFunctionLike->getFlags()) {
 								auto const rngchSelfType = MangleType(jtsTypeChecker, jtsTypeChecker->getDeclaredTypeOfSymbol(jsclassClass.m_jsymClass));
 								auto const rngchCallArguments = tc::join_separated(rngstrArguments, ", ");
 								return tc::explicit_cast<std::string>(tc::concat(
-									"	auto ", strClassNamespace, "_construct(", jsmethodMethod.m_strCppifiedParameters, ") noexcept {\n",
+									"	auto ", strClassNamespace, "_construct(", jsfunctionlikeMethod.m_strCppifiedParameters, ") noexcept {\n",
 									"		return ", rngchSelfType, "(", RetrieveSymbolFromCpp(jsclassClass.m_jsymClass), ".new_(", rngchCallArguments, "));\n",
 									"	}\n"
 								));
