@@ -100,7 +100,7 @@ struct SJsProperty {
 		: m_jsymProperty(jsymProperty)
 		, m_strJsName(tc::explicit_cast<std::string>(jsymProperty->getName()))
 		, m_strCppifiedName(CppifyName(jsymProperty))
-		, m_jdeclProperty([&]() {
+		, m_jdeclProperty([&]() noexcept {
 			_ASSERTEQUAL(jsymProperty->declarations()->length(), 1);
 			return jsymProperty->declarations()[0];
 		}())
@@ -224,7 +224,7 @@ int main(int argc, char* argv[]) {
 	tc::append(std::cerr, "\n========== GENERATED CODE ==========\n");
 
 	{
-		auto vecjsclassClass = tc::make_vector(tc::transform(g_vecjsymClass, [&jtsTypeChecker](ts::Symbol const jsymClass) {
+		auto vecjsclassClass = tc::make_vector(tc::transform(g_vecjsymClass, [&jtsTypeChecker](ts::Symbol const jsymClass) noexcept {
 			return SJsClass(jtsTypeChecker, jsymClass);
 		}));
 
