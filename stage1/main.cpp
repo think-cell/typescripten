@@ -124,7 +124,17 @@ struct SJsVariableLike {
 		, m_bReadonly(ts()->getCombinedModifierFlags(m_jdeclVariableLike) & ts::ModifierFlags::Readonly)
 	{
 		ts::ModifierFlags const nModifierFlags = ts()->getCombinedModifierFlags(m_jdeclVariableLike);
-		_ASSERT(ts::ModifierFlags::None == nModifierFlags || ts::ModifierFlags::Readonly == nModifierFlags);
+		if (ts::ModifierFlags::None != nModifierFlags &&
+			ts::ModifierFlags::Readonly != nModifierFlags) {
+			tc::append(std::cerr,
+				"Unknown getCombinedModifierFlags for jdeclVariableLike ",
+				m_strJsName,
+				": ",
+				tc::as_dec(static_cast<int>(nModifierFlags)),
+				"\n"
+			);
+			_ASSERTFALSE;
+		}
 	}
 };
 
