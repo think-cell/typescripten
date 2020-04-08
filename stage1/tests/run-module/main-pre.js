@@ -1,1 +1,1 @@
-global.MyLib = require('./my-lib');
+global.MyLib = require('./MyLib');

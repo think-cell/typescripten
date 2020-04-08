@@ -7,19 +7,19 @@ include ../../../build-flags.mak
 ifdef COMPILATION_ONLY
 all: main.js
 else
-all: main.js my-lib.js
+all: main.js MyLib.js
 	node $<
 
-my-lib.js my-lib.d.ts: my-lib.ts
+MyLib.js MyLib.d.ts: MyLib.ts
 	../../node_modules/typescript/bin/tsc --strict --declaration "$<"
 endif
 
-my-lib.d.h: ../../main.js my-lib.d.ts
-	node ../../main.js my-lib.d.ts >my-lib.d.h
+MyLib.d.h: ../../main.js MyLib.d.ts
+	node ../../main.js MyLib.d.ts >MyLib.d.h
 
-main.js: main.cpp another-ts.cpp main-pre.js my-lib.d.h ../../obj/precompiled.h.pch
+main.js: main.cpp another-ts.cpp main-pre.js MyLib.d.h ../../obj/precompiled.h.pch
 	test -n "$(EMCXX)"  # Expect $$EMCXX
 	$(EMCXX) $(EMCXXFLAGS) $(EMLDFLAGS) -o "$@" -include-pch ../../obj/precompiled.h.pch main.cpp another-ts.cpp
 
 clean:
-	rm -rf my-lib.d.h *.js *.wasm *.wasm.map
+	rm -rf MyLib.d.h *.js *.wasm *.wasm.map
