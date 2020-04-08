@@ -678,7 +678,7 @@ struct _jsdefs_ts : _jsenums_ts {
 	using CompilerHost = js_ref<_js_CompilerHost>;
 	using FormatDiagnosticsHost = js_ref<_js_FormatDiagnosticsHost>;
 
-	using SignatureDeclaration = js_union<MethodSignature, MethodDeclaration, ConstructorDeclaration, CallSignatureDeclaration>;
+	using SignatureDeclaration = js_union<MethodSignature, MethodDeclaration, ConstructorDeclaration, CallSignatureDeclaration, FunctionDeclaration>;
 	using BaseType = js_union<ObjectType, IntersectionType>;
 
 	struct _js_TextRange : virtual IObject {
