@@ -25,14 +25,14 @@ std::string RetrieveSymbolFromCpp(ts::Symbol jsymSymbol) noexcept {
 
 std::string CppifyName(ts::Symbol jsymSymbol) noexcept {
 	std::string strSourceName = tc::explicit_cast<std::string>(jsymSymbol->getName());
-	if (strSourceName.front() == '"' && strSourceName.back() == '"') {
+	if ('"' == strSourceName.front() && '"' == strSourceName.back()) {
 		strSourceName = strSourceName.substr(1, strSourceName.length() - 2);
 	}
 	std::string strResult = tc::explicit_cast<std::string>(tc::transform(
 		strSourceName,
 		[&strSourceName](char c) noexcept {
-			if (c == '-') return '_';
-			if (c == '_') return c;
+			if ('-' == c) return '_';
+			if ('_' == c) return c;
 			if ('a' <= c && c <= 'z') return c;
 			if ('A' <= c && c <= 'Z') return c;
 			if ('0' <= c && c <= '9') return c;
