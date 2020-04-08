@@ -24,12 +24,17 @@ const sourceFile = program.getSourceFiles().filter((sourceFile) => sourceFile.fi
 const myModule = typeChecker.getSymbolAtLocation(sourceFile);
 assert(myModule.name == "\"scratch-module\"");
 
-const symMembers: ts.Symbol[] = [];
+const syms: ts.Symbol[] = [];
 typeChecker.getExportsOfModule(myModule).forEach(exp => {
-    exp.members.forEach((symMember) => { symMembers.push(symMember); });
+    if (exp.members) {
+        exp.members.forEach((symMember) => { syms.push(symMember); });
+    }
+    if (exp.exports) {
+        exp.exports.forEach((symExport) => { syms.push(symExport); });
+    }
 });
 
-symMembers.forEach(sym => {
+syms.forEach(sym => {
     const tc = typeChecker, ts0 = ts; // Ensure these are captured in the debugger.
     console.log(sym);
     const decls = sym.getDeclarations();
