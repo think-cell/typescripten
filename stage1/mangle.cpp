@@ -1,5 +1,6 @@
 #include "precompiled.h"
 #include "typescript.d.bootstrap.h"
+#include "mangle.h"
 
 using tc::js::globals::ts;
 
