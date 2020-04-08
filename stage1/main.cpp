@@ -383,11 +383,17 @@ int main(int argc, char* argv[]) {
 								),
 								", "
 							);
+							auto const rngchFunctionCall = tc::concat(
+								RetrieveSymbolFromCpp(jsfunctionlikeFunction.m_jsymFunctionLike), "(", rngchCallArguments, ")"
+							);
 							return tc::explicit_cast<std::string>(tc::concat(
 								"	inline auto ", strClassNamespace, "_js_ref_definitions::",
 									CppifyName(jsfunctionlikeFunction.m_jsymFunctionLike), "(", jsfunctionlikeFunction.m_strCppifiedParameters, ") noexcept {\n",
-								"		return ", RetrieveSymbolFromCpp(jsfunctionlikeFunction.m_jsymFunctionLike), "(", rngchCallArguments, ")",
-									".template as<", MangleType(jtsTypeChecker, jsfunctionlikeFunction.m_jtsSignature->getReturnType()), ">();\n",
+								ts::TypeFlags::Void == jsfunctionlikeFunction.m_jtsSignature->getReturnType()->flags()
+									? tc::explicit_cast<std::string>(tc::concat("		", rngchFunctionCall, ";\n"))
+									: tc::explicit_cast<std::string>(tc::concat(
+										"		return ", rngchFunctionCall, ".template as<", MangleType(jtsTypeChecker, jsfunctionlikeFunction.m_jtsSignature->getReturnType()), ">();\n"
+									)),
 								"	}\n"
 							));
 						}
