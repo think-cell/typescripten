@@ -384,7 +384,7 @@ int main(int argc, char* argv[]) {
 								", "
 							);
 							return tc::explicit_cast<std::string>(tc::concat(
-								"	auto ", strClassNamespace, "_js_ref_definitions::",
+								"	inline auto ", strClassNamespace, "_js_ref_definitions::",
 									CppifyName(jsfunctionlikeFunction.m_jsymFunctionLike), "(", jsfunctionlikeFunction.m_strCppifiedParameters, ") noexcept {\n",
 								"		return ", RetrieveSymbolFromCpp(jsfunctionlikeFunction.m_jsymFunctionLike), "(", rngchCallArguments, ")",
 									".template as<", MangleType(jtsTypeChecker, jsfunctionlikeFunction.m_jtsSignature->getReturnType()), ">();\n",
@@ -396,12 +396,12 @@ int main(int argc, char* argv[]) {
 						jsclassClass.m_vecjspropertyProperty,
 						[&strClassNamespace](SJsProperty const &jspropertyProperty) noexcept {
 							return tc::concat(
-								"	auto ", strClassNamespace, jspropertyProperty.m_strCppifiedName, "() noexcept ",
+								"	inline auto ", strClassNamespace, jspropertyProperty.m_strCppifiedName, "() noexcept ",
 								"{ return _getProperty<", jspropertyProperty.m_strMangledPropertyType, ">(\"", jspropertyProperty.m_strJsName, "\"); }\n",
 								jspropertyProperty.m_bReadonly ?
 									"" :
 									tc::explicit_cast<std::string>(tc::concat(
-										"	void ", strClassNamespace, jspropertyProperty.m_strCppifiedName, "(", jspropertyProperty.m_strMangledPropertyType, " v) noexcept ",
+										"	inline void ", strClassNamespace, jspropertyProperty.m_strCppifiedName, "(", jspropertyProperty.m_strMangledPropertyType, " v) noexcept ",
 										"{ _setProperty(\"", jspropertyProperty.m_strJsName, "\", v); }\n"
 									))
 							);
@@ -425,7 +425,7 @@ int main(int argc, char* argv[]) {
 									", "
 								);
 								return tc::explicit_cast<std::string>(tc::concat(
-									"	auto ", strClassNamespace, CppifyName(jsfunctionlikeMethod.m_jsymFunctionLike), "(", jsfunctionlikeMethod.m_strCppifiedParameters, ") noexcept {\n",
+									"	inline auto ", strClassNamespace, CppifyName(jsfunctionlikeMethod.m_jsymFunctionLike), "(", jsfunctionlikeMethod.m_strCppifiedParameters, ") noexcept {\n",
 									"		return _call<", MangleType(jtsTypeChecker, jsfunctionlikeMethod.m_jtsSignature->getReturnType()), ">(", rngchCallArguments, ");\n",
 									"	}\n"
 								));
@@ -433,7 +433,7 @@ int main(int argc, char* argv[]) {
 								auto const rngchSelfType = MangleType(jtsTypeChecker, jtsTypeChecker->getDeclaredTypeOfSymbol(jsclassClass.m_jsymClass));
 								auto const rngchCallArguments = tc::join_separated(rngstrArguments, ", ");
 								return tc::explicit_cast<std::string>(tc::concat(
-									"	auto ", strClassNamespace, "_construct(", jsfunctionlikeMethod.m_strCppifiedParameters, ") noexcept {\n",
+									"	inline auto ", strClassNamespace, "_construct(", jsfunctionlikeMethod.m_strCppifiedParameters, ") noexcept {\n",
 									"		return ", rngchSelfType, "(", RetrieveSymbolFromCpp(jsclassClass.m_jsymClass), ".new_(", rngchCallArguments, "));\n",
 									"	}\n"
 								));
