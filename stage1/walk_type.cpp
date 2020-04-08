@@ -45,9 +45,14 @@ void WalkType(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Symb
 		tc::for_each(*jsymType->members(), [&](ts::Symbol const jsymChild) noexcept { WalkType(jtsTypeChecker, nOffset + 4, jsymChild); });
 	}
 
-	tc::append(std::cerr, tc::repeat_n(' ', nOffset + 2), "exportsOfModule\n");
-	if (jsymType->exports()) {
+	if (jsymType->getFlags() & ts::SymbolFlags::Module) {
+		tc::append(std::cerr, tc::repeat_n(' ', nOffset + 2), "exportsOfModule\n");
 		tc::for_each(jtsTypeChecker->getExportsOfModule(jsymType),
+			[&](ts::Symbol const jsymChild) noexcept { WalkType(jtsTypeChecker, nOffset + 4, jsymChild); }
+		);
+	} else if (jsymType->exports()) {
+		tc::append(std::cerr, tc::repeat_n(' ', nOffset + 2), "exports\n");
+		tc::for_each(*jsymType->exports(),
 			[&](ts::Symbol const jsymChild) noexcept { WalkType(jtsTypeChecker, nOffset + 4, jsymChild); }
 		);
 	}

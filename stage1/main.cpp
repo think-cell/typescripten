@@ -124,14 +124,14 @@ struct SJsClass {
 	SJsClass(ts::TypeChecker const jtsTypeChecker, ts::Symbol const jsymClass) noexcept
 		: m_jsymClass(jsymClass)
 		, m_vecjsymExportType(
-			!jsymClass->exports()
-			? tc::make_vector(tc::make_empty_range<ts::Symbol>())
-			: tc::make_vector(tc::filter(
+			jsymClass->getFlags() & ts::SymbolFlags::Module
+			? tc::make_vector(tc::filter(
 				jtsTypeChecker->getExportsOfModule(jsymClass),
 				[](ts::Symbol const jsymExport) noexcept {
 					return IsEnumInCpp(jsymExport) || IsClassInCpp(jsymExport);
 				}
 			))
+			: tc::make_vector(tc::make_empty_range<ts::Symbol>())
 		)
 		, m_vecjsymMember([&]() noexcept {
 			if (jsymClass->members()) {
