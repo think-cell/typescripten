@@ -14,7 +14,7 @@ const program = ts.createProgram([sourceFileName], compilerOptions);
 export const typeChecker = program.getTypeChecker();
 {
     const errors = ts.getPreEmitDiagnostics(program);
-    if (!errors.length) {
+    if (errors.length) {
         console.error(ts.formatDiagnosticsWithColorAndContext(errors, ts.createCompilerHost(compilerOptions)));
     }
 }
