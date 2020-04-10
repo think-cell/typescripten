@@ -610,6 +610,8 @@ struct _jsdefs_ts : _jsenums_ts {
 	struct _js_FunctionDeclaration;
 	struct _js_ClassDeclaration;
 	struct _js_EnumDeclaration;
+	struct _js_VariableDeclaration;
+	struct _js_VariableDeclarationList;
 	struct _js_VariableStatement;
 	struct _js_InterfaceDeclaration;
 	struct _js_TypeAliasDeclaration;
@@ -653,6 +655,8 @@ struct _jsdefs_ts : _jsenums_ts {
 	using FunctionDeclaration = js_ref<_js_FunctionDeclaration>;
 	using ClassDeclaration = js_ref<_js_ClassDeclaration>;
 	using EnumDeclaration = js_ref<_js_EnumDeclaration>;
+	using VariableDeclaration = js_ref<_js_VariableDeclaration>;
+	using VariableDeclarationList = js_ref<_js_VariableDeclarationList>;
 	using VariableStatement = js_ref<_js_VariableStatement>;
 	using InterfaceDeclaration = js_ref<_js_InterfaceDeclaration>;
 	using TypeAliasDeclaration = js_ref<_js_TypeAliasDeclaration>;
@@ -736,7 +740,16 @@ struct _jsdefs_ts : _jsenums_ts {
 	struct _js_EnumDeclaration : virtual _js_DeclarationStatement {
 	};
 
+	struct _js_VariableDeclaration : virtual _js_NamedDeclaration {
+		auto name() noexcept { return _getProperty<Node>("name"); }
+	};
+
+	struct _js_VariableDeclarationList : virtual _js_Node {
+		auto declarations() noexcept { return _getProperty<ReadonlyArray<VariableDeclaration>>("declarations"); }
+	};
+
 	struct _js_VariableStatement : virtual _js_Node {
+		auto declarationList() noexcept { return _getProperty<VariableDeclarationList>("declarationList"); }
 	};
 
 	struct _js_InterfaceDeclaration : virtual _js_DeclarationStatement {

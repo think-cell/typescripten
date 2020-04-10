@@ -128,7 +128,8 @@ struct SJsVariableLike {
 		ts::ModifierFlags const nModifierFlags = ts()->getCombinedModifierFlags(m_jdeclVariableLike);
 		if (ts::ModifierFlags::None != nModifierFlags &&
 			ts::ModifierFlags::Export != nModifierFlags &&
-			ts::ModifierFlags::Readonly != nModifierFlags) {
+			ts::ModifierFlags::Readonly != nModifierFlags &&
+			ts::ModifierFlags::Ambient != ts()->getCombinedModifierFlags(m_jdeclVariableLike)) {
 			tc::append(std::cerr,
 				"Unknown getCombinedModifierFlags for jdeclVariableLike ",
 				m_strJsName,
@@ -583,12 +584,12 @@ int main(int argc, char* argv[]) {
 						// TODO: deduplicate following code into SJsVariableLike.
 						return tc::explicit_cast<std::string>(tc::concat(
 							"	inline auto ", jsvariablelikeVariable.m_strCppifiedName, "() noexcept ",
-							"{ using namespace _jsall; return emscripten::global(\"", jsvariablelikeVariable.m_strJsName, "\").template as<", jsvariablelikeVariable.m_strMangledType, ">(); }\n",
+							"{ using namespace _jsall; return emscripten::val::global(\"", jsvariablelikeVariable.m_strJsName, "\").template as<", jsvariablelikeVariable.m_strMangledType, ">(); }\n",
 							jsvariablelikeVariable.m_bReadonly ?
 								"" :
 								tc::explicit_cast<std::string>(tc::concat(
 									"	inline void ", jsvariablelikeVariable.m_strCppifiedName, "(", jsvariablelikeVariable.m_strMangledType, " v) noexcept ",
-									"{ using namespace _jsall; emscripten::global().set(\"", jsvariablelikeVariable.m_strJsName, "\", v); }\n"
+									"{ using namespace _jsall; emscripten::val::global().set(\"", jsvariablelikeVariable.m_strJsName, "\", v); }\n"
 								))
 						));
 					} else {

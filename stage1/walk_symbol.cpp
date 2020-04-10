@@ -98,7 +98,11 @@ std::vector<ts::Symbol> ListSourceFileTopLevel(ts::TypeChecker const& jtsTypeChe
 	ts()->forEachChild(jtsSourceFile, tc::js::js_lambda_wrap([&](ts::Node jnodeChild) noexcept {
 		if (auto const jotsFunctionDeclaration = ts()->isFunctionDeclaration(jnodeChild)) {
 			tc::cont_emplace_back(vecjsymTopLevel, jtsTypeChecker->getSymbolAtLocation(*(*jotsFunctionDeclaration)->name()));
-		} else /* TODO: VariableStatement */if (auto const jotsClassDeclaration = ts()->isClassDeclaration(jnodeChild)) {
+		} else if (auto const jotsVariableStatement = ts()->isVariableStatement(jnodeChild)) {
+			tc::for_each((*jotsVariableStatement)->declarationList()->declarations(), [&](ts::VariableDeclaration const jtsVariableDeclaration) {
+				tc::cont_emplace_back(vecjsymTopLevel, jtsTypeChecker->getSymbolAtLocation(jtsVariableDeclaration->name()));
+			});
+		} else if (auto const jotsClassDeclaration = ts()->isClassDeclaration(jnodeChild)) {
 			tc::cont_emplace_back(vecjsymTopLevel, jtsTypeChecker->getSymbolAtLocation(*(*jotsClassDeclaration)->name()));
 		} else /* TODO: InterfaceDeclaration, TypeAliasDeclaration */ if (auto const jotsEnumDeclaration = ts()->isEnumDeclaration(jnodeChild)) {
 			tc::cont_emplace_back(vecjsymTopLevel, jtsTypeChecker->getSymbolAtLocation(*(*jotsEnumDeclaration)->name()));
