@@ -22,4 +22,7 @@ main.js: main.cpp another-ts.cpp main-pre.js MyLib.d.h ../../obj/precompiled.h.p
 	$(EMCXX) $(EMCXXFLAGS) $(EMLDFLAGS) -o "$@" -include-pch ../../obj/precompiled.h.pch main.cpp another-ts.cpp
 
 clean:
-	rm -rf MyLib.d.h *.js *.wasm *.wasm.map
+	rm -rf MyLib.d.h main.js MyLib.js *.wasm *.wasm.map
+ifndef COMPILATION_ONLY
+	rm -rf MyLib.d.ts
+endif
