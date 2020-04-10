@@ -82,8 +82,8 @@ using SomeJsClass = tc::js::js_ref<_js_SomeJsClass>;
 			typename ExpectedType::function_type \
 		>::value, #Name); \
 		static_assert(std::is_convertible< \
-			tc::remove_cvref_t<Fn>*, \
-			ExpectedType* \
+			tc::remove_cvref_t<Fn>, \
+			ExpectedType \
 		>::value, #Name); \
 		emscripten::val::module_property(#Name)(std::forward<Fn>(cb)); \
 		printf(#Name " end\n"); \
@@ -116,6 +116,15 @@ int main() {
 		});
 		js_function<js_string(js_string const)> cb = cbStorage;
 		_ASSERTEQUAL(tc::explicit_cast<std::string>(cb(js_string("world"))), "hello world");
+	}
+	{
+		printf("Passing callbacks as js_function parameter with temporary js_lambda_wrap\n");
+		auto test = [](js_function<js_string(js_string)> cb) {
+			_ASSERTEQUAL(tc::explicit_cast<std::string>(cb(js_string("world"))), "hello world");
+		};
+		test(tc::js::js_lambda_wrap([](js_string const str) noexcept {
+			return js_string(tc::concat("hello ", tc::explicit_cast<std::string>(str)));
+		}));
 	}
 	return 0;
 }

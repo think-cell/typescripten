@@ -169,8 +169,8 @@ struct RequireRelaxedPointerSafety {
 	}
 };
 
-// We do not care about slicing to js_ref<>, because this class is
-// only stored as a by-value field.
+// We do not care about slicing to js_ref<> or moving from this class, because
+// it is only stored as a by-value const field.
 template<typename T>
 struct CUniqueDetachableJsFunction : private tc::nonmovable, private RequireRelaxedPointerSafety, js_function<T> {
 	CUniqueDetachableJsFunction(FunctionPointer pfunc, FirstArgument arg0) noexcept : js_function<T>(
@@ -203,23 +203,30 @@ using no_adl::CUniqueDetachableJsFunction;
 // Heap-allocated "fire-and-forget" callbacks are explicitly out of scope for the library: there are typically
 // no guarantees on when they're called and we want the user to think about that carefully and make sure all
 // proper cancellations are in place (e.g. by using member callback tied to the object which initiates the request).
-namespace callback_detail {
-template<typename Fn>
-using js_lambda_wrap_base_t = callback_detail::CUniqueDetachableJsFunction<boost::callable_traits::function_type_t<Fn>>;
-} // namespace callback_detail
-
 namespace no_adl {
-// We do not care about slicing to emscripten::val, because this class is only stored by-value.
 template<typename Fn>
-struct js_lambda_wrap final : callback_detail::js_lambda_wrap_base_t<Fn> {
+struct js_lambda_wrap final : private tc::nonmovable {
+	using function_type = boost::callable_traits::function_type_t<Fn>;
+
 	static_assert(!std::is_reference<Fn>::value);
 	static_assert(boost::callable_traits::is_noexcept<Fn>::value, "Callbacks for JS should be noexcept");
 
 	template<typename FnSrc>
-	js_lambda_wrap(FnSrc&& fn) noexcept : callback_detail::js_lambda_wrap_base_t<Fn>(&FnWrapper, this), m_fn(std::forward<FnSrc>(fn)) {}
+	js_lambda_wrap(FnSrc&& fn) noexcept : m_fn(std::forward<FnSrc>(fn)), m_jsFunction(&FnWrapper, this) {}
+
+	// Explicitly disable two-way conversion enabled by IsEmvalWrapper below.
+	js_lambda_wrap(emscripten::val) = delete;
+
+	// Always return a copy of `m_emval` and keep ownership even if we're rvalue.
+	operator js_function<function_type>() const { return m_jsFunction; }
+
+	emscripten::val getEmval() const {
+		return m_jsFunction.getEmval();
+	}
 
 private:
 	Fn m_fn;
+	callback_detail::CUniqueDetachableJsFunction<function_type> const m_jsFunction;
 
 	static emscripten::val FnWrapper(void* pThis, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) noexcept {
 		return callback_detail::CCallableWrapper<boost::callable_traits::args_t<Fn, tc::type::list>>()(
@@ -232,4 +239,17 @@ private:
 template<typename Fn> js_lambda_wrap(Fn) -> js_lambda_wrap<Fn>;
 } // namespace no_adl
 using no_adl::js_lambda_wrap;
+
+namespace no_adl {
+template<typename T>
+struct IsJsInteropable<T, std::enable_if_t<
+	tc::is_instance_or_derived<js_lambda_wrap, T>::value
+>> : std::true_type {};
+} // namespace no_adl
+
+namespace emscripten_interop_detail::no_adl {
+template<typename T>
+struct IsEmvalWrapper<T, std::enable_if_t<tc::is_instance_or_derived<tc::js::js_lambda_wrap, T>::value>> : std::true_type {
+};
+} // namespace emscripten_interop_detail::no_adl
 } // namespace tc::js
