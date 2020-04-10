@@ -608,6 +608,8 @@ struct _jsdefs_ts : _jsenums_ts {
 	struct _js_Signature;
 	struct _js_DeclarationStatement;
 	struct _js_FunctionDeclaration;
+	struct _js_ClassDeclaration;
+	struct _js_EnumDeclaration;
 	struct _js_VariableStatement;
 	struct _js_InterfaceDeclaration;
 	struct _js_TypeAliasDeclaration;
@@ -649,6 +651,8 @@ struct _jsdefs_ts : _jsenums_ts {
 	using Signature = js_ref<_js_Signature>;
 	using DeclarationStatement = js_ref<_js_DeclarationStatement>;
 	using FunctionDeclaration = js_ref<_js_FunctionDeclaration>;
+	using ClassDeclaration = js_ref<_js_ClassDeclaration>;
+	using EnumDeclaration = js_ref<_js_EnumDeclaration>;
 	using VariableStatement = js_ref<_js_VariableStatement>;
 	using InterfaceDeclaration = js_ref<_js_InterfaceDeclaration>;
 	using TypeAliasDeclaration = js_ref<_js_TypeAliasDeclaration>;
@@ -720,9 +724,16 @@ struct _jsdefs_ts : _jsenums_ts {
 	};
 
 	struct _js_DeclarationStatement : virtual _js_NamedDeclaration {
+	    auto name() noexcept { return _getProperty<js_optional<Declaration>>("name"); }
 	};
 
 	struct _js_FunctionDeclaration : virtual _js_DeclarationStatement {
+	};
+
+	struct _js_ClassDeclaration : virtual _js_DeclarationStatement {
+	};
+
+	struct _js_EnumDeclaration : virtual _js_DeclarationStatement {
 	};
 
 	struct _js_VariableStatement : virtual _js_Node {
@@ -944,6 +955,20 @@ struct _js_ts : virtual IObject, _jsdefs_ts {
 		return result;
 	}
 
+	auto isClassDeclaration(Node node) noexcept {
+		std::optional<ClassDeclaration> result;
+		if (_call<bool>("isClassDeclaration", node))
+			result.emplace(node);
+		return result;
+	}
+
+	auto isEnumDeclaration(Node node) noexcept {
+		std::optional<EnumDeclaration> result;
+		if (_call<bool>("isEnumDeclaration", node))
+			result.emplace(node);
+		return result;
+	}
+
 	auto isTypeAliasDeclaration(Node node) noexcept {
 		std::optional<TypeAliasDeclaration> result;
 		if (_call<bool>("isTypeAliasDeclaration", node))
@@ -1019,6 +1044,10 @@ struct _js_ts : virtual IObject, _jsdefs_ts {
 
 	auto getCombinedModifierFlags(js_ref<_js_Declaration> node) noexcept {
 		return _call<ModifierFlags>("getCombinedModifierFlags", node);
+	}
+
+	auto forEachChild(Node node, js_function<void(Node)> func) noexcept {
+	    return _call<void>("forEachChild", node, func);
 	}
 
 	static emscripten::val _construct() noexcept { return emscripten::val::global("ts"); }
