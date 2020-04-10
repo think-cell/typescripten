@@ -5,12 +5,14 @@ PRE_JS=main-pre.js
 
 include ../../../build-flags.mak
 
-ifdef COMPILATION_ONLY
+ifdef NO_NODE_RUN
 all: $(TARGET)
 else
 all: $(TARGET) MyLib.js
 	node $<
+endif
 
+ifndef NO_TYPESCRIPT_COMPILATION
 MyLib.js MyLib.d.ts: MyLib.ts
 	../../node_modules/typescript/bin/tsc --strict --declaration "$<"
 endif
@@ -24,6 +26,6 @@ $(TARGET): main.cpp another-ts.cpp main-pre.js MyLib.d.h ../../obj/precompiled.h
 
 clean:
 	rm -rf MyLib.d.h $(TARGET) MyLib.js *.wasm *.wasm.map
-ifndef COMPILATION_ONLY
+ifndef NO_TYPESCRIPT_COMPILATION
 	rm -rf MyLib.d.ts
 endif
