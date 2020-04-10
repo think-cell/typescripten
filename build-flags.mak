@@ -1,7 +1,3 @@
-ifndef PRE_JS
-$(error "$$PRE_JS variable should be specified")
-endif
-
 EMCXXFLAGS?=$(CXXFLAGS)
 EMLDFLAGS?=$(LDFLAGS)
 
