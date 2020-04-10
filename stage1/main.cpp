@@ -601,7 +601,7 @@ int main(int argc, char* argv[]) {
 						));
 					} else {
 						return tc::explicit_cast<std::string>(tc::concat(
-							"/* ", tc::explicit_cast<std::string>(jtsTypeChecker->getFullyQualifiedName(jsymExported)), " */\n"
+							"	/* ", tc::explicit_cast<std::string>(jtsTypeChecker->getFullyQualifiedName(jsymExported)), " flags=", tc::as_dec(static_cast<int>(jsymExported->getFlags())), "*/\n"
 						));
 					}
 				}
