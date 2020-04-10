@@ -72,13 +72,15 @@ using SomeJsClass = tc::js::js_ref<_js_SomeJsClass>;
 	})
 
 // Macro so callback creation is performed between "start" and "end".
-// As ExpectedType is wrapped into parenthesis (to templates can be passed),
-// we prepend 'void' to make it a function type.
 #define RUN_TEST(Name, ExpectedType, Callback) \
 	{ \
 		printf(#Name " start\n"); \
 		auto&& cb = Callback; \
 		using Fn = decltype(cb); \
+		static_assert(std::is_same< \
+			typename tc::remove_cvref_t<Fn>::function_type, \
+			typename ExpectedType::function_type \
+		>::value, #Name); \
 		static_assert(std::is_convertible< \
 			tc::remove_cvref_t<Fn>*, \
 			ExpectedType* \
