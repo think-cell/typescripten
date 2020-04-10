@@ -90,7 +90,8 @@ struct SJsFunctionLike {
 		)))
 	{
 		if (ts::ModifierFlags::None != ts()->getCombinedModifierFlags(jdeclFunctionLike) &&
-			ts::ModifierFlags::Export != ts()->getCombinedModifierFlags(jdeclFunctionLike)) {
+			ts::ModifierFlags::Export != ts()->getCombinedModifierFlags(jdeclFunctionLike) &&
+			ts::ModifierFlags::Ambient!= ts()->getCombinedModifierFlags(jdeclFunctionLike)) {
 			tc::append(std::cerr,
 				"Unknown getCombinedModifierFlags for jdeclFunctionLike ",
 				tc::explicit_cast<std::string>(m_jsymFunctionLike->getName()),
@@ -259,6 +260,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	std::vector<ts::Symbol> vecjsymExportedModule;
+	std::vector<ts::Symbol> vecjsymExportedSymbol;
 	tc::for_each(jtsProgram->getSourceFiles(),
 		[&](ts::SourceFile const& jtsSourceFile) noexcept {
 			if (!tc::find_unique<tc::return_bool>(rngstrFileNames, tc::explicit_cast<std::string>(jtsSourceFile->fileName()))) {
@@ -266,7 +268,8 @@ int main(int argc, char* argv[]) {
 			}
 			auto const josymSourceFile = jtsTypeChecker->getSymbolAtLocation(jtsSourceFile);
 			if (!josymSourceFile) {
-				tc::append(std::cerr, "Module not found for ", tc::explicit_cast<std::string>(jtsSourceFile->fileName()), "\n");
+				tc::append(std::cerr, "Module not found for ", tc::explicit_cast<std::string>(jtsSourceFile->fileName()), ", treating at as a global library\n");
+				tc::append(vecjsymExportedSymbol, ListSourceFileTopLevel(jtsTypeChecker, jtsSourceFile));
 				return;
 			}
 			tc::cont_emplace_back(vecjsymExportedModule, *josymSourceFile);
@@ -278,6 +281,14 @@ int main(int argc, char* argv[]) {
 		[&](ts::Symbol const& jsymSourceFile) noexcept {
 			tc::append(std::cerr, "Module name is ", tc::explicit_cast<std::string>(jsymSourceFile->getName()), "\n");
 			WalkSymbol(jtsTypeChecker, 0, jsymSourceFile);
+		}
+	);
+
+	tc::for_each(
+		vecjsymExportedSymbol,
+		[&](ts::Symbol const& jsymSymbol) noexcept {
+			tc::append(std::cerr, "Global exported symbol is ", tc::explicit_cast<std::string>(jsymSymbol->getName()), "\n");
+			WalkSymbol(jtsTypeChecker, 0, jsymSymbol);
 		}
 	);
 
@@ -527,6 +538,67 @@ int main(int argc, char* argv[]) {
 					));
 				}
 			)),
+			"namespace globals {\n",
+			tc::join(tc::transform(
+				vecjsymExportedSymbol,
+				[&jtsTypeChecker](ts::Symbol const& jsymExported) noexcept {
+					if (IsClassInCpp(jsymExported) || IsEnumInCpp(jsymExported)) {
+						return tc::explicit_cast<std::string>(tc::concat(
+							"	using ", CppifyName(jsymExported), " = _jsall::", MangleSymbolName(jtsTypeChecker, jsymExported), ";\n"
+						));
+					} else if (ts::SymbolFlags::Function == jsymExported->getFlags()) {
+						return tc::explicit_cast<std::string>(tc::join(tc::transform(
+							jsymExported->declarations(),
+							[&jtsTypeChecker, &jsymExported](ts::Declaration const jdeclFunction) {
+								SJsFunctionLike jsfunctionlikeFunction(jtsTypeChecker, jsymExported, jdeclFunction);
+								// TODO: deduplicate following code into SJsFunctionLike.
+								auto const rngchCallArguments = tc::join_separated(
+									tc::transform(
+										jsfunctionlikeFunction.m_jtsSignature->getParameters(),
+										[](ts::Symbol const jsymParameter) noexcept {
+											return CppifyName(jsymParameter);
+										}
+									),
+									", "
+								);
+								auto const rngchFunctionCall = tc::concat(
+									RetrieveSymbolFromCpp(jsfunctionlikeFunction.m_jsymFunctionLike), "(", rngchCallArguments, ")"
+								);
+								return tc::explicit_cast<std::string>(tc::concat(
+									"	inline auto ",
+										CppifyName(jsfunctionlikeFunction.m_jsymFunctionLike), "(", jsfunctionlikeFunction.m_strCppifiedParameters, ") noexcept {\n",
+									"	using namespace _jsall;\n",
+									ts::TypeFlags::Void == jsfunctionlikeFunction.m_jtsSignature->getReturnType()->flags()
+										? tc::explicit_cast<std::string>(tc::concat("		", rngchFunctionCall, ";\n"))
+										: tc::explicit_cast<std::string>(tc::concat(
+											"		return ", rngchFunctionCall, ".template as<", MangleType(jtsTypeChecker, jsfunctionlikeFunction.m_jtsSignature->getReturnType()), ">();\n"
+										)),
+									"	}\n"
+								));
+							}
+						)));
+					} else if (ts::SymbolFlags::FunctionScopedVariable == jsymExported->getFlags() ||
+						ts::SymbolFlags::BlockScopedVariable == jsymExported->getFlags()) {
+						SJsVariableLike jsvariablelikeVariable(jtsTypeChecker, jsymExported);
+						// TODO: deduplicate following code into SJsVariableLike.
+						return tc::explicit_cast<std::string>(tc::concat(
+							"	inline auto ", jsvariablelikeVariable.m_strCppifiedName, "() noexcept ",
+							"{ using namespace _jsall; return emscripten::global(\"", jsvariablelikeVariable.m_strJsName, "\").template as<", jsvariablelikeVariable.m_strMangledType, ">(); }\n",
+							jsvariablelikeVariable.m_bReadonly ?
+								"" :
+								tc::explicit_cast<std::string>(tc::concat(
+									"	inline void ", jsvariablelikeVariable.m_strCppifiedName, "(", jsvariablelikeVariable.m_strMangledType, " v) noexcept ",
+									"{ using namespace _jsall; emscripten::global().set(\"", jsvariablelikeVariable.m_strJsName, "\", v); }\n"
+								))
+						));
+					} else {
+						return tc::explicit_cast<std::string>(tc::concat(
+							"/* ", tc::explicit_cast<std::string>(jtsTypeChecker->getFullyQualifiedName(jsymExported)), " */\n"
+						));
+					}
+				}
+			)),
+			"} // namespace globals\n",
 			"} // namespace tc::js\n"
 		);
 	}

@@ -92,3 +92,23 @@ void WalkSymbol(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Sy
 		);
 	}
 }
+
+std::vector<ts::Symbol> ListSourceFileTopLevel(ts::TypeChecker const& jtsTypeChecker, ts::SourceFile const jtsSourceFile) noexcept {
+	std::vector<ts::Symbol> vecjsymTopLevel;
+	ts()->forEachChild(jtsSourceFile, tc::js::js_lambda_wrap([&](ts::Node jnodeChild) noexcept {
+		if (auto const jotsFunctionDeclaration = ts()->isFunctionDeclaration(jnodeChild)) {
+			tc::cont_emplace_back(vecjsymTopLevel, jtsTypeChecker->getSymbolAtLocation(*(*jotsFunctionDeclaration)->name()));
+		} else /* TODO: VariableStatement */if (auto const jotsClassDeclaration = ts()->isClassDeclaration(jnodeChild)) {
+			tc::cont_emplace_back(vecjsymTopLevel, jtsTypeChecker->getSymbolAtLocation(*(*jotsClassDeclaration)->name()));
+		} else /* TODO: InterfaceDeclaration, TypeAliasDeclaration */ if (auto const jotsEnumDeclaration = ts()->isEnumDeclaration(jnodeChild)) {
+			tc::cont_emplace_back(vecjsymTopLevel, jtsTypeChecker->getSymbolAtLocation(*(*jotsEnumDeclaration)->name()));
+		} else if (auto const jotsModuleDeclaration = ts()->isModuleDeclaration(jnodeChild)) {
+			tc::cont_emplace_back(vecjsymTopLevel, jtsTypeChecker->getSymbolAtLocation((*jotsModuleDeclaration)->name()));
+		} else if (jnodeChild->kind() == ts::SyntaxKind::EndOfFileToken) {
+			// Do nothing
+		} else {
+			tc::append(std::cerr, "Unknown source file-level child kind: ", tc::as_dec(static_cast<int>(jnodeChild->kind())), "\n");
+		}
+	}));
+	return vecjsymTopLevel;
+}
