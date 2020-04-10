@@ -4,6 +4,8 @@
 
 using tc::js::globals::ts;
 
+std::unordered_set<std::string> g_usstrAllowedMangledTypes;
+
 std::string MangleSymbolName(ts::TypeChecker const& jtsTypeChecker, ts::Symbol const jsymType) noexcept {
 	std::string strMangled = "_js_j";
 	tc::for_each(tc::explicit_cast<std::string>(jtsTypeChecker->getFullyQualifiedName(jsymType)), [&](char c) noexcept {
@@ -104,7 +106,12 @@ std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtyp
 	if (auto jointerfacetypeRoot = jtypeRoot->isClassOrInterface()) {
 		if (IsTrivialType(*jointerfacetypeRoot)) {
 			_ASSERTEQUAL(ts::TypeFlags::Object, (*jointerfacetypeRoot)->flags());
-			return MangleSymbolName(jtsTypeChecker, *(*jointerfacetypeRoot)->getSymbol());
+			auto strMangledType = MangleSymbolName(jtsTypeChecker, *(*jointerfacetypeRoot)->getSymbol());
+			if (0 < g_usstrAllowedMangledTypes.count(strMangledType)) {
+				return strMangledType;
+			} else {
+				tc::cont_emplace_back(vecstrExtraInfo, tc::concat("UnknownMangledClassOrInterface=", strMangledType));
+			}
 		}
 		std::string strThisType = "undefined";
 		if ((*jointerfacetypeRoot)->thisType()) {
@@ -124,7 +131,12 @@ std::string MangleType(ts::TypeChecker const jtsTypeChecker, ts::Type const jtyp
 		auto jsymParentSymbol = *(*jtypeRoot->getSymbol())->parent();
 		_ASSERT(ts::SymbolFlags::RegularEnum == jsymParentSymbol->getFlags() ||
 			ts::SymbolFlags::ConstEnum == jsymParentSymbol->getFlags());
-		return MangleSymbolName(jtsTypeChecker, jsymParentSymbol);
+		auto strMangledType = MangleSymbolName(jtsTypeChecker, jsymParentSymbol);
+		if (0 < g_usstrAllowedMangledTypes.count(strMangledType)) {
+			return strMangledType;
+		} else {
+			tc::cont_emplace_back(vecstrExtraInfo, tc::concat("UnknownMangledEnum=", strMangledType));
+		}
 	}
 	return tc::explicit_cast<std::string>(tc::concat(
 		"js_unknown /*flags=",
