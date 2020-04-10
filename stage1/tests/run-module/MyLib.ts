@@ -5,10 +5,28 @@ namespace MyLib {
 
     export var initially10: number = 10;
 
-    export class SomeObject {
-        constructor() {} // TODO: is it implicitly defined?
+    export class SomeBaseClass {
+        foo(x: number): string { return "base"; }
+    }
+
+    export class SomeObject extends SomeBaseClass {
+        constructor() { super(); } // TODO: is it implicitly defined?
         str: string = "";
         arr: Array<SomeObject> = [];
+
+        foo(x: number) { return "foo() retval " + (typeof x) + " " + x; }
+    }
+
+    export enum SomeEnum {
+        ENUM10 = 10,
+        ENUM20 = 20,
+        ENUM21
+    }
+
+    export namespace SomeModule {
+        export function sumOfThree(a: number, b:number, c: number): number {
+            return a + b + c;
+        }
     }
 
     export function createObject(a: string): SomeObject {
