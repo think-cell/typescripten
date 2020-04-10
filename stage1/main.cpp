@@ -1,7 +1,7 @@
 #include "precompiled.h"
 #include "typescript.d.bootstrap.h"
 #include "mangle.h"
-#include "walk_type.h"
+#include "walk_symbol.h"
 
 using tc::js::js_string;
 using tc::js::js_optional;
@@ -277,7 +277,7 @@ int main(int argc, char* argv[]) {
 		vecjsymExportedModule,
 		[&](ts::Symbol const& jsymSourceFile) noexcept {
 			tc::append(std::cerr, "Module name is ", tc::explicit_cast<std::string>(jsymSourceFile->getName()), "\n");
-			WalkType(jtsTypeChecker, 0, jsymSourceFile);
+			WalkSymbol(jtsTypeChecker, 0, jsymSourceFile);
 		}
 	);
 

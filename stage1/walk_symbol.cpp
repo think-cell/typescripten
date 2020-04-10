@@ -1,6 +1,6 @@
 #include "precompiled.h"
 #include "typescript.d.bootstrap.h"
-#include "walk_type.h"
+#include "walk_symbol.h"
 
 using tc::js::globals::ts;
 
@@ -21,7 +21,7 @@ bool IsClassInCpp(ts::Symbol const jsymType) noexcept {
 		ts::SymbolFlags::NamespaceModule == jsymType->getFlags();
 }
 
-void WalkType(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Symbol const jsymType) noexcept {
+void WalkSymbol(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Symbol const jsymType) noexcept {
 	tc::append(std::cerr,
 		tc::repeat_n(' ', nOffset),
 		"'", tc::explicit_cast<std::string>(jtsTypeChecker->getFullyQualifiedName(jsymType)), "', ",
@@ -42,18 +42,18 @@ void WalkType(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Symb
 
 	tc::append(std::cerr, tc::repeat_n(' ', nOffset + 2), "members\n");
 	if (jsymType->members()) {
-		tc::for_each(*jsymType->members(), [&](ts::Symbol const jsymChild) noexcept { WalkType(jtsTypeChecker, nOffset + 4, jsymChild); });
+		tc::for_each(*jsymType->members(), [&](ts::Symbol const jsymChild) noexcept { WalkSymbol(jtsTypeChecker, nOffset + 4, jsymChild); });
 	}
 
 	if (jsymType->getFlags() & ts::SymbolFlags::Module) {
 		tc::append(std::cerr, tc::repeat_n(' ', nOffset + 2), "exportsOfModule\n");
 		tc::for_each(jtsTypeChecker->getExportsOfModule(jsymType),
-			[&](ts::Symbol const jsymChild) noexcept { WalkType(jtsTypeChecker, nOffset + 4, jsymChild); }
+			[&](ts::Symbol const jsymChild) noexcept { WalkSymbol(jtsTypeChecker, nOffset + 4, jsymChild); }
 		);
 	} else if (jsymType->exports()) {
 		tc::append(std::cerr, tc::repeat_n(' ', nOffset + 2), "exports\n");
 		tc::for_each(*jsymType->exports(),
-			[&](ts::Symbol const jsymChild) noexcept { WalkType(jtsTypeChecker, nOffset + 4, jsymChild); }
+			[&](ts::Symbol const jsymChild) noexcept { WalkSymbol(jtsTypeChecker, nOffset + 4, jsymChild); }
 		);
 	}
 

@@ -1,5 +1,5 @@
 TARGET=main.js
-SRCS=main.cpp mangle.cpp walk_type.cpp
+SRCS=main.cpp mangle.cpp walk_symbol.cpp
 PRECOMPILED=precompiled.h
 PRE_JS=main-pre.js
 
