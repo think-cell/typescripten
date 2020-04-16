@@ -53,7 +53,7 @@ struct SJsVariableLike {
 	std::string m_strCppifiedName;
 	ts::Declaration m_jdeclVariableLike;
 	ts::Type m_jtypeDeclared;
-	std::string m_strMangledType;
+	SMangledType m_mtType;
 	bool m_bReadonly;
 
 	SJsVariableLike(ts::TypeChecker const jtsTypeChecker, ts::Symbol const jsymName) noexcept
@@ -65,7 +65,7 @@ struct SJsVariableLike {
 			return jsymName->declarations()[0];
 		}())
 		, m_jtypeDeclared(jtsTypeChecker->getTypeOfSymbolAtLocation(jsymName, m_jdeclVariableLike))
-		, m_strMangledType(MangleType(jtsTypeChecker, m_jtypeDeclared).m_strWithComments)
+		, m_mtType(MangleType(jtsTypeChecker, m_jtypeDeclared))
 		, m_bReadonly(ts()->getCombinedModifierFlags(m_jdeclVariableLike) & ts::ModifierFlags::Readonly)
 	{
 		ts::ModifierFlags const nModifierFlags = ts()->getCombinedModifierFlags(m_jdeclVariableLike);
@@ -122,7 +122,7 @@ struct SJsFunctionLike {
 		)))
 		, m_strCppifiedParameters(tc::explicit_cast<std::string>(tc::join_separated(
 			tc::transform(m_vecjsvariablelikeParameters, [](SJsVariableLike const& jsvariablelikeParameter) noexcept {
-				return tc::concat(jsvariablelikeParameter.m_strMangledType, " ", jsvariablelikeParameter.m_strCppifiedName);
+				return tc::concat(jsvariablelikeParameter.m_mtType.m_strWithComments, " ", jsvariablelikeParameter.m_strCppifiedName);
 			}),
 			", "
 		)))
@@ -398,7 +398,7 @@ int main(int argc, char* argv[]) {
 								jsvariablelikeVariable.m_bReadonly ?
 									"" :
 									tc::explicit_cast<std::string>(tc::concat(
-										"			static void ", jsvariablelikeVariable.m_strCppifiedName, "(", jsvariablelikeVariable.m_strMangledType, " v) noexcept;\n"
+										"			static void ", jsvariablelikeVariable.m_strCppifiedName, "(", jsvariablelikeVariable.m_mtType.m_strWithComments, " v) noexcept;\n"
 									))
 							);
 						}
@@ -412,7 +412,7 @@ int main(int argc, char* argv[]) {
 								jsvariablelikeProperty.m_bReadonly ?
 									"" :
 									tc::explicit_cast<std::string>(tc::concat(
-										"		void ", jsvariablelikeProperty.m_strCppifiedName, "(", jsvariablelikeProperty.m_strMangledType, " v) noexcept;\n"
+										"		void ", jsvariablelikeProperty.m_strCppifiedName, "(", jsvariablelikeProperty.m_mtType.m_strWithComments, " v) noexcept;\n"
 									))
 							);
 						}
@@ -474,11 +474,11 @@ int main(int argc, char* argv[]) {
 						[&strClassNamespace, &strClassInstanceRetrieve](SJsVariableLike const &jsvariablelikeVariable) noexcept {
 							return tc::concat(
 								"	inline auto ", strClassNamespace, "_js_ref_definitions::", jsvariablelikeVariable.m_strCppifiedName, "() noexcept ",
-								"{ return ", strClassInstanceRetrieve, "[\"", jsvariablelikeVariable.m_strJsName, "\"].template as<", jsvariablelikeVariable.m_strMangledType, ">(); }\n",
+								"{ return ", strClassInstanceRetrieve, "[\"", jsvariablelikeVariable.m_strJsName, "\"].template as<", jsvariablelikeVariable.m_mtType.m_strWithComments, ">(); }\n",
 								jsvariablelikeVariable.m_bReadonly ?
 									"" :
 									tc::explicit_cast<std::string>(tc::concat(
-										"	inline void ", strClassNamespace, "_js_ref_definitions::", jsvariablelikeVariable.m_strCppifiedName, "(", jsvariablelikeVariable.m_strMangledType, " v) noexcept ",
+										"	inline void ", strClassNamespace, "_js_ref_definitions::", jsvariablelikeVariable.m_strCppifiedName, "(", jsvariablelikeVariable.m_mtType.m_strWithComments, " v) noexcept ",
 										"{ ", strClassInstanceRetrieve, ".set(\"", jsvariablelikeVariable.m_strJsName, "\", v); }\n"
 									))
 							);
@@ -489,11 +489,11 @@ int main(int argc, char* argv[]) {
 						[&strClassNamespace](SJsVariableLike const &jsvariablelikeProperty) noexcept {
 							return tc::concat(
 								"	inline auto ", strClassNamespace, jsvariablelikeProperty.m_strCppifiedName, "() noexcept ",
-								"{ return _getProperty<", jsvariablelikeProperty.m_strMangledType, ">(\"", jsvariablelikeProperty.m_strJsName, "\"); }\n",
+								"{ return _getProperty<", jsvariablelikeProperty.m_mtType.m_strWithComments, ">(\"", jsvariablelikeProperty.m_strJsName, "\"); }\n",
 								jsvariablelikeProperty.m_bReadonly ?
 									"" :
 									tc::explicit_cast<std::string>(tc::concat(
-										"	inline void ", strClassNamespace, jsvariablelikeProperty.m_strCppifiedName, "(", jsvariablelikeProperty.m_strMangledType, " v) noexcept ",
+										"	inline void ", strClassNamespace, jsvariablelikeProperty.m_strCppifiedName, "(", jsvariablelikeProperty.m_mtType.m_strWithComments, " v) noexcept ",
 										"{ _setProperty(\"", jsvariablelikeProperty.m_strJsName, "\", v); }\n"
 									))
 							);
@@ -591,11 +591,11 @@ int main(int argc, char* argv[]) {
 						// TODO: deduplicate following code into SJsVariableLike.
 						return tc::explicit_cast<std::string>(tc::concat(
 							"	inline auto ", jsvariablelikeVariable.m_strCppifiedName, "() noexcept ",
-							"{ using namespace _jsall; return emscripten::val::global(\"", jsvariablelikeVariable.m_strJsName, "\").template as<", jsvariablelikeVariable.m_strMangledType, ">(); }\n",
+							"{ using namespace _jsall; return emscripten::val::global(\"", jsvariablelikeVariable.m_strJsName, "\").template as<", jsvariablelikeVariable.m_mtType.m_strWithComments, ">(); }\n",
 							jsvariablelikeVariable.m_bReadonly ?
 								"" :
 								tc::explicit_cast<std::string>(tc::concat(
-									"	inline void ", jsvariablelikeVariable.m_strCppifiedName, "(", jsvariablelikeVariable.m_strMangledType, " v) noexcept ",
+									"	inline void ", jsvariablelikeVariable.m_strCppifiedName, "(", jsvariablelikeVariable.m_mtType.m_strWithComments, " v) noexcept ",
 									"{ using namespace _jsall; emscripten::val::global().set(\"", jsvariablelikeVariable.m_strJsName, "\", v); }\n"
 								))
 						));
