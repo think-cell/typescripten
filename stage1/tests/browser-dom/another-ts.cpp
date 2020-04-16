@@ -1,2 +1,2 @@
 #include "../../precompiled.h"
-#include "MyLib.d.h"
+#include "lib.dom.d.h"
