@@ -26,6 +26,10 @@ template<typename T>
 struct _js_Array : virtual IObject {
 	static_assert(IsJsInteropable<T>::value);
 
+	struct _js_ref_definitions {
+		using value_type = T;
+	};
+
 	auto length() noexcept { return tc::explicit_cast<int>(_getProperty<double>("length")); }
 
 	auto push(T const& item) noexcept { return _call<void>("push", item); }
@@ -59,7 +63,9 @@ template<typename T>
 struct _js_ReadonlyArray : virtual IObject {
 	static_assert(IsJsInteropable<T>::value);
 
-	using value_type = T;
+	struct _js_ref_definitions {
+		using value_type = T;
+	};
 
 	auto length() noexcept { return tc::explicit_cast<int>(_getProperty<double>("length")); }
 
@@ -100,15 +106,3 @@ using no_adl::Console;
 inline auto console() noexcept { return Console(emscripten::val::global("console")); }
 
 } // namespace tc::js::globals
-
-namespace tc::no_adl {
-template<typename ArrayType, typename T>
-struct range_value<ArrayType, tc::js::globals::Array<T>> {
-	using type = T;
-};
-
-template<typename ReadonlyArrayType, typename T>
-struct range_value<ReadonlyArrayType, tc::js::globals::ReadonlyArray<T>> {
-	using type = T;
-};
-} // namespace tc::no_adl
