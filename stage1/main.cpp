@@ -169,6 +169,7 @@ void MergeWithSameCppSignatureInplace(Rng& rngjsfunctionlikeFuncs) noexcept {
 
 struct SJsClass {
 	ts::Symbol m_jsymClass;
+	std::string m_strMangledName;
 	std::vector<ts::Symbol> m_vecjsymExportOfModule;
 	std::vector<ts::Symbol> m_vecjsymExportType;
 	std::vector<SJsFunctionLike> m_vecjsfunctionlikeExportFunction;
@@ -180,6 +181,7 @@ struct SJsClass {
 
 	SJsClass(ts::TypeChecker const jtsTypeChecker, ts::Symbol const jsymClass) noexcept
 		: m_jsymClass(jsymClass)
+		, m_strMangledName(MangleSymbolName(jtsTypeChecker, jsymClass))
 		, m_vecjsymExportOfModule(
 			jsymClass->getFlags() & ts::SymbolFlags::Module
 			? tc::make_vector(jtsTypeChecker->getExportsOfModule(jsymClass))
@@ -326,13 +328,14 @@ int main(int argc, char* argv[]) {
 		tc::for_each(g_vecjsymEnum, [&jtsTypeChecker](ts::Symbol const jsymEnum) noexcept {
 			g_usstrAllowedMangledTypes.insert(MangleSymbolName(jtsTypeChecker, jsymEnum));
 		});
-		tc::for_each(g_vecjsymClass, [&jtsTypeChecker](ts::Symbol const jsymClass) noexcept {
-			g_usstrAllowedMangledTypes.insert(MangleSymbolName(jtsTypeChecker, jsymClass));
-		});
 
 		auto vecjsclassClass = tc::make_vector(tc::transform(g_vecjsymClass, [&jtsTypeChecker](ts::Symbol const jsymClass) noexcept {
 			return SJsClass(jtsTypeChecker, jsymClass);
 		}));
+
+		tc::for_each(vecjsclassClass, [](SJsClass const& jsclassClass) noexcept {
+			g_usstrAllowedMangledTypes.insert(jsclassClass.m_strMangledName);
+		});
 
 		tc::append(std::cout,
 			"namespace tc::js {\n",
@@ -373,15 +376,15 @@ int main(int argc, char* argv[]) {
 					"	using ", MangleSymbolName(jtsTypeChecker, jsymEnum), " = _enum", MangleSymbolName(jtsTypeChecker, jsymEnum), ";\n"
 				);
 			})),
-			tc::join(tc::transform(g_vecjsymClass, [&jtsTypeChecker](ts::Symbol const jsymClass) noexcept {
+			tc::join(tc::transform(vecjsclassClass, [](SJsClass const& jsclassClass) noexcept {
 				return tc::concat(
-					"	struct _impl", MangleSymbolName(jtsTypeChecker, jsymClass), ";\n",
-					"	using ", MangleSymbolName(jtsTypeChecker, jsymClass), " = js_ref<_impl", MangleSymbolName(jtsTypeChecker, jsymClass), ">;\n"
+					"	struct _impl", jsclassClass.m_strMangledName, ";\n",
+					"	using ", jsclassClass.m_strMangledName, " = js_ref<_impl", jsclassClass.m_strMangledName, ">;\n"
 				);
 			})),
 			tc::join(tc::transform(vecjsclassClass, [&jtsTypeChecker](SJsClass const& jsclassClass) noexcept {
 				return tc::explicit_cast<std::string>(tc::concat(
-					"	struct _impl", MangleSymbolName(jtsTypeChecker, jsclassClass.m_jsymClass),
+					"	struct _impl", jsclassClass.m_strMangledName,
 					" : ",
 					tc_conditional_range(
 						tc::empty(jsclassClass.m_vecjsymBaseClass),
@@ -465,7 +468,7 @@ int main(int argc, char* argv[]) {
 			})),
 			tc::join(tc::transform(vecjsclassClass, [&jtsTypeChecker](SJsClass const& jsclassClass) noexcept {
 				auto strClassNamespace = tc::explicit_cast<std::string>(tc::concat(
-					"_impl", MangleSymbolName(jtsTypeChecker, jsclassClass.m_jsymClass), "::"
+					"_impl", jsclassClass.m_strMangledName, "::"
 				));
 				auto strClassInstanceRetrieve = RetrieveSymbolFromCpp(jsclassClass.m_jsymClass);
 				return tc::explicit_cast<std::string>(tc::concat(
