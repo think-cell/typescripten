@@ -44,14 +44,14 @@ bool IsTrivialType(ts::InterfaceType jinterfacetypeRoot) noexcept {
 	return true;
 }
 
-SMangledType WrapType(std::string strPrefix, SMangledType mtType, std::string strSuffix) {
+SMangledType WrapType(std::string const strPrefix, SMangledType const mtType, std::string const strSuffix) {
 	return {
 		tc::explicit_cast<std::string>(tc::concat(strPrefix, mtType.m_strWithComments, strSuffix)),
 		tc::explicit_cast<std::string>(tc::concat(strPrefix, mtType.m_strCppCanonized, strSuffix)),
 	};
 }
 
-SMangledType CommentType(tc::js::globals::ts::TypeChecker jtsTypeChecker, std::string strCppType, tc::js::globals::ts::Type jtypeRoot) {
+SMangledType CommentType(tc::js::globals::ts::TypeChecker const jtsTypeChecker, std::string const strCppType, tc::js::globals::ts::Type const jtypeRoot) {
 	return {
 		tc::explicit_cast<std::string>(tc::concat(
 			strCppType,
