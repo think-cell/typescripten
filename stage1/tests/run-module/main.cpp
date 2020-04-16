@@ -29,4 +29,6 @@ int main() {
 	_ASSERTEQUAL("foobar", tc::explicit_cast<std::string>(obj2->str()));
 	_ASSERTEQUAL(0, obj2->arr()->length());
 	_ASSERT(tc::empty(obj2->arr()));
+
+	tc::js::MyLib::double_u_uunderscore();
 }

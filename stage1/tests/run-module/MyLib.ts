@@ -34,6 +34,9 @@ namespace MyLib {
         x.str = a;
         return x;
     }
+
+    export function double__underscore() {
+    }
 }
 
 export = MyLib;
