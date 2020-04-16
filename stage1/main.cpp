@@ -80,7 +80,7 @@ struct SJsFunctionLike {
 				m_jtsSignature->getParameters(),
 				[&jtsTypeChecker, &jdeclFunctionLike](ts::Symbol const jsymParameter) noexcept {
 					return tc::concat(
-						MangleType(jtsTypeChecker, jtsTypeChecker->getTypeOfSymbolAtLocation(jsymParameter, jdeclFunctionLike)),
+						MangleType(jtsTypeChecker, jtsTypeChecker->getTypeOfSymbolAtLocation(jsymParameter, jdeclFunctionLike)).m_strWithComments,
 						" ",
 						CppifyName(jsymParameter)
 					);
@@ -122,7 +122,7 @@ struct SJsVariableLike {
 			return jsymName->declarations()[0];
 		}())
 		, m_jtypeDeclared(jtsTypeChecker->getTypeOfSymbolAtLocation(jsymName, m_jdeclVariableLike))
-		, m_strMangledType(MangleType(jtsTypeChecker, m_jtypeDeclared))
+		, m_strMangledType(MangleType(jtsTypeChecker, m_jtypeDeclared).m_strWithComments)
 		, m_bReadonly(ts()->getCombinedModifierFlags(m_jdeclVariableLike) & ts::ModifierFlags::Readonly)
 	{
 		ts::ModifierFlags const nModifierFlags = ts()->getCombinedModifierFlags(m_jdeclVariableLike);
@@ -463,7 +463,7 @@ int main(int argc, char* argv[]) {
 								ts::TypeFlags::Void == jsfunctionlikeFunction.m_jtsSignature->getReturnType()->flags()
 									? tc::explicit_cast<std::string>(tc::concat("		", rngchFunctionCall, ";\n"))
 									: tc::explicit_cast<std::string>(tc::concat(
-										"		return ", rngchFunctionCall, ".template as<", MangleType(jtsTypeChecker, jsfunctionlikeFunction.m_jtsSignature->getReturnType()), ">();\n"
+										"		return ", rngchFunctionCall, ".template as<", MangleType(jtsTypeChecker, jsfunctionlikeFunction.m_jtsSignature->getReturnType()).m_strWithComments, ">();\n"
 									)),
 								"	}\n"
 							));
@@ -518,11 +518,11 @@ int main(int argc, char* argv[]) {
 								);
 								return tc::explicit_cast<std::string>(tc::concat(
 									"	inline auto ", strClassNamespace, CppifyName(jsfunctionlikeMethod.m_jsymFunctionLike), "(", jsfunctionlikeMethod.m_strCppifiedParameters, ") noexcept {\n",
-									"		return _call<", MangleType(jtsTypeChecker, jsfunctionlikeMethod.m_jtsSignature->getReturnType()), ">(", rngchCallArguments, ");\n",
+									"		return _call<", MangleType(jtsTypeChecker, jsfunctionlikeMethod.m_jtsSignature->getReturnType()).m_strWithComments, ">(", rngchCallArguments, ");\n",
 									"	}\n"
 								));
 							} else if (ts::SymbolFlags::Constructor == jsfunctionlikeMethod.m_jsymFunctionLike->getFlags()) {
-								auto const rngchSelfType = MangleType(jtsTypeChecker, jtsTypeChecker->getDeclaredTypeOfSymbol(jsclassClass.m_jsymClass));
+								auto const rngchSelfType = MangleType(jtsTypeChecker, jtsTypeChecker->getDeclaredTypeOfSymbol(jsclassClass.m_jsymClass)).m_strWithComments;
 								auto const rngchCallArguments = tc::join_separated(rngstrArguments, ", ");
 								return tc::explicit_cast<std::string>(tc::concat(
 									"	inline auto ", strClassNamespace, "_construct(", jsfunctionlikeMethod.m_strCppifiedParameters, ") noexcept {\n",
@@ -579,7 +579,7 @@ int main(int argc, char* argv[]) {
 									ts::TypeFlags::Void == jsfunctionlikeFunction.m_jtsSignature->getReturnType()->flags()
 										? tc::explicit_cast<std::string>(tc::concat("		", rngchFunctionCall, ";\n"))
 										: tc::explicit_cast<std::string>(tc::concat(
-											"		return ", rngchFunctionCall, ".template as<", MangleType(jtsTypeChecker, jsfunctionlikeFunction.m_jtsSignature->getReturnType()), ">();\n"
+											"		return ", rngchFunctionCall, ".template as<", MangleType(jtsTypeChecker, jsfunctionlikeFunction.m_jtsSignature->getReturnType()).m_strWithComments, ">();\n"
 										)),
 									"	}\n"
 								));
