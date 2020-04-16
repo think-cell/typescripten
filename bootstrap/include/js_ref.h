@@ -52,7 +52,7 @@ protected:
 	}
 
 	// Make sure the class and its descendants are abstract.
-	virtual void __IObject_and_derived_are_abstract_Use_js_ref_instead() noexcept = 0;
+	virtual void _IObject_and_derived_are_abstract_Use_js_ref_instead() noexcept = 0;
 };
 
 template<typename> struct js_ref;
@@ -163,7 +163,7 @@ private:
 		explicit CArrowProxy(emscripten::val& m_emval) noexcept : IObject(m_emval) {}
 		T* operator->() && noexcept { return this; }
 	private:
-		void __IObject_and_derived_are_abstract_Use_js_ref_instead() noexcept override {
+		void _IObject_and_derived_are_abstract_Use_js_ref_instead() noexcept override {
 			// Should never be called.
 			_ASSERTFALSE;
 		}
