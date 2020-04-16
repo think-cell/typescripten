@@ -137,7 +137,7 @@ struct IJsFunction {};
 
 template<typename R, typename... Args>
 struct IJsFunction<R(Args...)> : virtual IObject {
-	struct _js_ref_definitions {
+	struct _tcjs_definitions {
 		using function_type = R(Args...);
 	};
 

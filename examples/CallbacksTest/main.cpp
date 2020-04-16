@@ -17,7 +17,7 @@ using tc::js::globals::Array;
 struct _js_SomeJsClass : virtual tc::js::IObject {
 	auto intValue() noexcept { return tc::explicit_cast<int>(_getProperty<double>("intValue")); }
 
-	static auto _construct(int v) noexcept {
+	static auto _tcjs_construct(int v) noexcept {
 		return emscripten::val::module_property("SomeJsClass").new_(v);
 	}
 };

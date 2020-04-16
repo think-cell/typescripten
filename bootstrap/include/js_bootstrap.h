@@ -26,7 +26,7 @@ template<typename T>
 struct _js_Array : virtual IObject {
 	static_assert(IsJsInteropable<T>::value);
 
-	struct _js_ref_definitions {
+	struct _tcjs_definitions {
 		using value_type = T;
 	};
 
@@ -50,7 +50,7 @@ struct _js_Array : virtual IObject {
 	}
 
 	template<typename Rng, typename = std::enable_if_t<tc::is_explicit_castable<T, tc::range_value_t<Rng>&&>::value>>
-	static Array<T> _construct(Rng&& rng) noexcept {
+	static Array<T> _tcjs_construct(Rng&& rng) noexcept {
 		Array<T> result(emscripten::val::array());
 		tc::for_each(rng, [&](auto&& value) noexcept {
 			result->push(tc::explicit_cast<T>(std::forward<decltype(value)>(value)));
@@ -63,7 +63,7 @@ template<typename T>
 struct _js_ReadonlyArray : virtual IObject {
 	static_assert(IsJsInteropable<T>::value);
 
-	struct _js_ref_definitions {
+	struct _tcjs_definitions {
 		using value_type = T;
 	};
 
@@ -83,7 +83,7 @@ struct _js_ReadonlyArray : virtual IObject {
 	}
 
 	template<typename Rng, typename = std::enable_if_t<tc::is_explicit_castable<T, tc::range_value_t<Rng>&&>::value>>
-	static ReadonlyArray<T> _construct(Rng&& rng) noexcept {
+	static ReadonlyArray<T> _tcjs_construct(Rng&& rng) noexcept {
 		return ReadonlyArray<T>(
 			tc::explicit_cast<Array<T>>(std::forward<Rng>(rng)).getEmval()
 		);

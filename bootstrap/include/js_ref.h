@@ -68,7 +68,7 @@ struct empty_base {};
 } // namespace no_adl
 using no_adl::empty_base;
 
-template<typename T> typename T::_js_ref_definitions base_detector(T*);
+template<typename T> typename T::_tcjs_definitions base_detector(T*);
 empty_base base_detector(...);
 
 template<typename T>
@@ -99,9 +99,9 @@ struct js_ref : js_ref_detail::base<T> {
 		 (!tc::is_instance_or_derived<js_union, Args>::value && ...) &&
 		 (!std::is_same<emscripten::val, tc::remove_cvref_t<Args>>::value && ...))
 	>, typename T2 = T, typename = tc::void_t<decltype(
-		T2::_construct(std::forward<Args>(std::declval<Args>())...)
+		T2::_tcjs_construct(std::forward<Args>(std::declval<Args>())...)
 	)>>
-	explicit js_ref(Args&&... args) noexcept : js_ref(T::_construct(std::forward<Args>(args)...)) {}
+	explicit js_ref(Args&&... args) noexcept : js_ref(T::_tcjs_construct(std::forward<Args>(args)...)) {}
 
 	/**
 	 * Basecasting.

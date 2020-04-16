@@ -928,7 +928,7 @@ struct _jsdefs_ts : _jsenums_ts {
 		auto target() noexcept { return _getProperty<js_optional<ScriptTarget>>("target"); }
 		void target(js_optional<ScriptTarget> v) noexcept { _setProperty("target", v); }
 
-		static auto _construct() noexcept { return emscripten::val::object(); }
+		static auto _tcjs_construct() noexcept { return emscripten::val::object(); }
 	};
 
 	struct _js_LineAndCharacter : virtual IObject {
@@ -1063,7 +1063,7 @@ struct _js_ts : virtual IObject, _jsdefs_ts {
 	    return _call<void>("forEachChild", node, func);
 	}
 
-	static emscripten::val _construct() noexcept { return emscripten::val::global("ts"); }
+	static emscripten::val _tcjs_construct() noexcept { return emscripten::val::global("ts"); }
 };
 
 struct ts : js_ref<_js_ts>, _jsdefs_ts {
