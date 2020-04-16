@@ -159,14 +159,12 @@ struct SJsFunctionLike {
 };
 
 template<typename Rng>
-auto MergeWithSameCppSignature(Rng&& rngjsfunctionlikeFuncs) noexcept {
-	auto vecjsfunctionlikeFuncs = tc::make_vector(rngjsfunctionlikeFuncs);
+void MergeWithSameCppSignatureInplace(Rng& rngjsfunctionlikeFuncs) noexcept {
 	tc::sort_unique_inplace(
-		vecjsfunctionlikeFuncs,
+		rngjsfunctionlikeFuncs,
 		&SJsFunctionLike::LessCppSignature
 	);
 	// TODO: add comments about skipped overloads;
-	return vecjsfunctionlikeFuncs;
 }
 
 struct SJsClass {
@@ -193,7 +191,7 @@ struct SJsClass {
 				return IsEnumInCpp(jsymExport) || IsClassInCpp(jsymExport);
 			}
 		)))
-		, m_vecjsfunctionlikeExportFunction(tc::make_vector(MergeWithSameCppSignature(tc::join(tc::transform(
+		, m_vecjsfunctionlikeExportFunction(tc::make_vector(tc::join(tc::transform(
 			tc::filter(
 				m_vecjsymExportOfModule,
 				[](ts::Symbol const jsymExport) noexcept {
@@ -208,7 +206,7 @@ struct SJsClass {
 					}
 				);
 			}
-		)))))
+		))))
 		, m_vecjsvariablelikeExportVariable(tc::make_vector(tc::transform(
 			tc::filter(
 				m_vecjsymExportOfModule,
@@ -229,7 +227,7 @@ struct SJsClass {
 				return std::vector<ts::Symbol>();
 			}
 		}())
-		, m_vecjsfunctionlikeMethod(tc::make_vector(MergeWithSameCppSignature(tc::join(tc::transform(
+		, m_vecjsfunctionlikeMethod(tc::make_vector(tc::join(tc::transform(
 			tc::filter(m_vecjsymMember, [](ts::Symbol const jsymMember) noexcept {
 				return ts::SymbolFlags::Method == jsymMember->getFlags() || ts::SymbolFlags::Constructor == jsymMember->getFlags();
 			}),
@@ -241,7 +239,7 @@ struct SJsClass {
 					}
 				);
 			}
-		)))))
+		))))
 		, m_vecjsvariablelikeProperty(tc::make_vector(tc::transform(
 			tc::filter(m_vecjsymMember, [](ts::Symbol const jsymMember) noexcept {
 				return ts::SymbolFlags::Property == jsymMember->getFlags();
@@ -252,6 +250,8 @@ struct SJsClass {
 		)))
 		, m_vecjsymBaseClass()
 	{
+		MergeWithSameCppSignatureInplace(m_vecjsfunctionlikeExportFunction);
+		MergeWithSameCppSignatureInplace(m_vecjsfunctionlikeMethod);
 		if (auto jointerfacetypeClass = jtsTypeChecker->getDeclaredTypeOfSymbol(jsymClass)->isClassOrInterface()) {
 			tc::for_each(jtsTypeChecker->getBaseTypes(*jointerfacetypeClass),
 				[&](ts::BaseType const jtsBaseType) noexcept {
