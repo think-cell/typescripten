@@ -149,7 +149,25 @@ struct SJsFunctionLike {
 			_ASSERTFALSE;
 		}
 	}
+
+	static bool LessCppSignature(SJsFunctionLike const& a, SJsFunctionLike const& b) {
+		if (a.m_strCppifiedName != b.m_strCppifiedName) {
+			return a.m_strCppifiedName < b.m_strCppifiedName;
+		}
+		return a.m_strCanonizedParameterCppTypes < b.m_strCanonizedParameterCppTypes;
+	}
 };
+
+template<typename Rng>
+auto JoinWithSameCppSignature(Rng&& rngjsfunctionlikeFuncs) {
+	auto vecjsfunctionlikeFuncs = tc::make_vector(rngjsfunctionlikeFuncs);
+	tc::sort_unique_inplace(
+		vecjsfunctionlikeFuncs,
+		&SJsFunctionLike::LessCppSignature
+	);
+	// TODO: add comments about skipped overloads;
+	return vecjsfunctionlikeFuncs;
+}
 
 struct SJsClass {
 	ts::Symbol m_jsymClass;
@@ -175,7 +193,7 @@ struct SJsClass {
 				return IsEnumInCpp(jsymExport) || IsClassInCpp(jsymExport);
 			}
 		)))
-		, m_vecjsfunctionlikeExportFunction(tc::make_vector(tc::join(tc::transform(
+		, m_vecjsfunctionlikeExportFunction(tc::make_vector(JoinWithSameCppSignature(tc::join(tc::transform(
 			tc::filter(
 				m_vecjsymExportOfModule,
 				[](ts::Symbol const jsymExport) noexcept {
@@ -190,7 +208,7 @@ struct SJsClass {
 					}
 				);
 			}
-		))))
+		)))))
 		, m_vecjsvariablelikeExportVariable(tc::make_vector(tc::transform(
 			tc::filter(
 				m_vecjsymExportOfModule,
@@ -211,7 +229,7 @@ struct SJsClass {
 				return std::vector<ts::Symbol>();
 			}
 		}())
-		, m_vecjsfunctionlikeMethod(tc::make_vector(tc::join(tc::transform(
+		, m_vecjsfunctionlikeMethod(tc::make_vector(JoinWithSameCppSignature(tc::join(tc::transform(
 			tc::filter(m_vecjsymMember, [](ts::Symbol const jsymMember) noexcept {
 				return ts::SymbolFlags::Method == jsymMember->getFlags() || ts::SymbolFlags::Constructor == jsymMember->getFlags();
 			}),
@@ -223,7 +241,7 @@ struct SJsClass {
 					}
 				);
 			}
-		))))
+		)))))
 		, m_vecjsvariablelikeProperty(tc::make_vector(tc::transform(
 			tc::filter(m_vecjsymMember, [](ts::Symbol const jsymMember) noexcept {
 				return ts::SymbolFlags::Property == jsymMember->getFlags();
