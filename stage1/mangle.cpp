@@ -51,6 +51,18 @@ SMangledType WrapType(std::string strPrefix, SMangledType mtType, std::string st
 	};
 }
 
+SMangledType CommentType(tc::js::globals::ts::TypeChecker jtsTypeChecker, std::string strCppType, tc::js::globals::ts::Type jtypeRoot) {
+	return {
+		tc::explicit_cast<std::string>(tc::concat(
+			strCppType,
+			" /*",
+			tc::explicit_cast<std::string>(jtsTypeChecker->typeToString(jtypeRoot)),
+			"*/"
+		)),
+		strCppType
+	};
+}
+
 SMangledType MangleType(tc::js::globals::ts::TypeChecker jtsTypeChecker, tc::js::globals::ts::Type jtypeRoot) noexcept {
 	// See checker.ts:typeToTypeNodeHelper
 	if (ts::TypeFlags::Any == jtypeRoot->flags() ||
@@ -64,8 +76,11 @@ SMangledType MangleType(tc::js::globals::ts::TypeChecker jtsTypeChecker, tc::js:
 	if (ts::TypeFlags::Number == jtypeRoot->flags()) {
 		return {mangled_no_comments, "double"};
 	}
-	if (ts::TypeFlags::Boolean == jtypeRoot->flags() || ts::TypeFlags::BooleanLiteral == jtypeRoot->flags()) {
+	if (ts::TypeFlags::Boolean == jtypeRoot->flags()) {
 		return {mangled_no_comments, "bool"}; // TODO: add comment for BooleanLiteral
+	}
+	if (ts::TypeFlags::BooleanLiteral == jtypeRoot->flags()) {
+		return CommentType(jtsTypeChecker, "bool", jtypeRoot);
 	}
 	if (ts::TypeFlags::Void == jtypeRoot->flags()) {
 		return {mangled_no_comments, "void"};
@@ -146,7 +161,7 @@ SMangledType MangleType(tc::js::globals::ts::TypeChecker jtsTypeChecker, tc::js:
 			ts::SymbolFlags::ConstEnum == jsymParentSymbol->getFlags());
 		auto strMangledType = MangleSymbolName(jtsTypeChecker, jsymParentSymbol);
 		if (0 < g_usstrAllowedMangledTypes.count(strMangledType)) {
-			return {mangled_no_comments, strMangledType};  // TODO: add comments about the original
+			return CommentType(jtsTypeChecker, tc_move(strMangledType), jtypeRoot);
 		} else {
 			tc::cont_emplace_back(vecstrExtraInfo, tc::concat("UnknownMangledEnum=", strMangledType));
 		}
