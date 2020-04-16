@@ -602,7 +602,7 @@ int main(int argc, char* argv[]) {
 								return tc::explicit_cast<std::string>(tc::concat(
 									"	inline auto ",
 										jsfunctionlikeFunction.m_strCppifiedName, "(", jsfunctionlikeFunction.m_strCppifiedParametersWithComments, ") noexcept {\n",
-									"	using namespace _jsall;\n",
+									"		using namespace _jsall;\n",
 									ts::TypeFlags::Void == jsfunctionlikeFunction.m_jtsSignature->getReturnType()->flags()
 										? tc::explicit_cast<std::string>(tc::concat("		", rngchFunctionCall, ";\n"))
 										: tc::explicit_cast<std::string>(tc::concat(
