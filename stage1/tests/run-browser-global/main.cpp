@@ -30,5 +30,11 @@ int main() {
 	_ASSERTEQUAL(0, obj2->arr()->length());
 	_ASSERT(tc::empty(obj2->arr()));
 
+	tc::js::globals::SomeObject obj3 = tc::js::globals::appendToObjectStr(obj2);
+	_ASSERT(obj3.getEmval().strictlyEquals(obj2.getEmval()));
+	_ASSERTEQUAL("foobarx", tc::explicit_cast<std::string>(obj3->str()));
+	_ASSERTEQUAL(0, obj3->arr()->length());
+	_ASSERT(tc::empty(obj3->arr()));
+
 	printf("Success!\n");
 }

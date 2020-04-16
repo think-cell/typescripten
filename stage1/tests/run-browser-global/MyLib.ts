@@ -33,3 +33,8 @@ function createObject(a: string): SomeObject {
     x.str = a;
     return x;
 }
+
+function appendToObjectStr(a: SomeObject): SomeObject {
+	a.str += "x";
+	return a;
+}
