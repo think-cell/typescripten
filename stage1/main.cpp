@@ -663,7 +663,6 @@ int main(int argc, char* argv[]) {
 					return tc::explicit_cast<std::string>(tc::concat(
 						"	inline auto ",
 							jsfunctionlikeFunction.m_strCppifiedName, "(", jsfunctionlikeFunction.m_strCppifiedParametersWithComments, ") noexcept {\n",
-						"		using namespace _jsall;\n",
 						ts::TypeFlags::Void == jsfunctionlikeFunction.m_jtsSignature->getReturnType()->flags()
 							? tc::explicit_cast<std::string>(tc::concat("		", rngchFunctionCall, ";\n"))
 							: tc::explicit_cast<std::string>(tc::concat(
@@ -679,12 +678,12 @@ int main(int argc, char* argv[]) {
 					// TODO: deduplicate following code into SJsVariableLike.
 					return tc::explicit_cast<std::string>(tc::concat(
 						"	inline auto ", jsvariablelikeVariable.m_strCppifiedName, "() noexcept ",
-						"{ using namespace _jsall; return emscripten::val::global(\"", jsvariablelikeVariable.m_strJsName, "\").template as<", jsvariablelikeVariable.m_mtType.m_strWithComments, ">(); }\n",
+						"{ return emscripten::val::global(\"", jsvariablelikeVariable.m_strJsName, "\").template as<", jsvariablelikeVariable.m_mtType.m_strWithComments, ">(); }\n",
 						jsvariablelikeVariable.m_bReadonly ?
 							"" :
 							tc::explicit_cast<std::string>(tc::concat(
 								"	inline void ", jsvariablelikeVariable.m_strCppifiedName, "(", jsvariablelikeVariable.m_mtType.m_strWithComments, " v) noexcept ",
-								"{ using namespace _jsall; emscripten::val::global().set(\"", jsvariablelikeVariable.m_strJsName, "\", v); }\n"
+								"{ emscripten::val::global().set(\"", jsvariablelikeVariable.m_strJsName, "\", v); }\n"
 							))
 					));
 				}
