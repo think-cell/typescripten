@@ -150,7 +150,7 @@ struct SJsFunctionLike {
 		}
 	}
 
-	static bool LessCppSignature(SJsFunctionLike const& a, SJsFunctionLike const& b) {
+	static bool LessCppSignature(SJsFunctionLike const& a, SJsFunctionLike const& b) noexcept {
 		if (a.m_strCppifiedName != b.m_strCppifiedName) {
 			return a.m_strCppifiedName < b.m_strCppifiedName;
 		}
@@ -159,7 +159,7 @@ struct SJsFunctionLike {
 };
 
 template<typename Rng>
-auto JoinWithSameCppSignature(Rng&& rngjsfunctionlikeFuncs) {
+auto JoinWithSameCppSignature(Rng&& rngjsfunctionlikeFuncs) noexcept {
 	auto vecjsfunctionlikeFuncs = tc::make_vector(rngjsfunctionlikeFuncs);
 	tc::sort_unique_inplace(
 		vecjsfunctionlikeFuncs,

@@ -44,14 +44,14 @@ bool IsTrivialType(ts::InterfaceType jinterfacetypeRoot) noexcept {
 	return true;
 }
 
-SMangledType WrapType(std::string const strPrefix, SMangledType const mtType, std::string const strSuffix) {
+SMangledType WrapType(std::string const strPrefix, SMangledType const mtType, std::string const strSuffix) noexcept {
 	return {
 		tc::explicit_cast<std::string>(tc::concat(strPrefix, mtType.m_strWithComments, strSuffix)),
 		tc::explicit_cast<std::string>(tc::concat(strPrefix, mtType.m_strCppCanonized, strSuffix)),
 	};
 }
 
-SMangledType CommentType(tc::js::globals::ts::TypeChecker const jtsTypeChecker, std::string const strCppType, tc::js::globals::ts::Type const jtypeRoot) {
+SMangledType CommentType(tc::js::globals::ts::TypeChecker const jtsTypeChecker, std::string const strCppType, tc::js::globals::ts::Type const jtypeRoot) noexcept {
 	return {
 		tc::explicit_cast<std::string>(tc::concat(
 			strCppType,
@@ -96,11 +96,11 @@ SMangledType MangleType(tc::js::globals::ts::TypeChecker jtsTypeChecker, tc::js:
 		auto vecmtType = tc::make_vector(tc::transform((*jouniontypeRoot)->types(), [&](ts::Type const jtypeUnionOption) noexcept {
 			return MangleType(jtsTypeChecker, jtypeUnionOption);
 		}));
-		auto isJsUnknown = [](const SMangledType &mt) { return mt.m_strCppCanonized == "js_unknown"; };
+		auto isJsUnknown = [](const SMangledType &mt) noexcept { return mt.m_strCppCanonized == "js_unknown"; };
 		if (std::find_if(vecmtType.begin(), vecmtType.end(), isJsUnknown) == vecmtType.end()) {
 			// NOTE: sort_unique works with final names which go to C++. It may potentially hide
 			// some errors in mangling (e.g. if two different types map to the same type in C++).
-			tc::sort_unique_inplace(vecmtType, [&](SMangledType const& a, SMangledType const& b) {
+			tc::sort_unique_inplace(vecmtType, [&](SMangledType const& a, SMangledType const& b) noexcept {
 				return a.m_strCppCanonized < b.m_strCppCanonized; // TODO: glue duplicates' m_strWithComments
 			});
 			_ASSERT(0 < vecmtType.size());
