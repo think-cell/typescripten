@@ -598,6 +598,8 @@ int main(int argc, char* argv[]) {
 			}
 		});
 
+		MergeWithSameCppSignatureInplace(vecjsfunctionlikeGlobalFunction);
+
 		tc::append(std::cout,
 			"namespace globals {\n",
 			tc::join(tc::transform(
