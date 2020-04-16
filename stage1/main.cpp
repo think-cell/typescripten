@@ -329,9 +329,39 @@ int main(int argc, char* argv[]) {
 			g_usstrAllowedMangledTypes.insert(MangleSymbolName(jtsTypeChecker, jsymEnum));
 		});
 
-		auto vecjsclassClass = tc::make_vector(tc::transform(g_vecjsymClass, [&jtsTypeChecker](ts::Symbol const jsymClass) noexcept {
+		auto SortClasses = [&jtsTypeChecker](std::vector<SJsClass> vecjsclassOriginal) {
+			std::map<std::string, SJsClass const*> mstrjsclassClasses;
+			for (auto const& jsclassClass : vecjsclassOriginal) {
+				mstrjsclassClasses.emplace(jsclassClass.m_strMangledName, &jsclassClass);
+			}
+
+			std::vector<SJsClass> vecjsclassResult;
+			std::unordered_set<std::string> usstrInResult;
+
+			auto dfs = [&](SJsClass const& jsclassClass, auto const &dfs) {
+				if (usstrInResult.count(jsclassClass.m_strMangledName)) {
+					return;
+				}
+				usstrInResult.insert(jsclassClass.m_strMangledName);
+				for (auto const& jsymBaseClass : jsclassClass.m_vecjsymBaseClass) {
+					auto strMangledBaseClass = MangleSymbolName(jtsTypeChecker, jsymBaseClass);
+					if (!mstrjsclassClasses.count(strMangledBaseClass)) {
+						tc::append(std::cerr, "Class '", jsclassClass.m_strMangledName, "' is inherited from an unknown class: ", strMangledBaseClass);
+						_ASSERTFALSE;
+					}
+					dfs(*mstrjsclassClasses[strMangledBaseClass], dfs);
+				}
+				vecjsclassResult.emplace_back(jsclassClass);
+			};
+			for (auto const& jsclassCls : vecjsclassOriginal) {
+				dfs(jsclassCls, dfs);
+			}
+			return vecjsclassResult;
+		};
+
+		auto vecjsclassClass = SortClasses(tc::make_vector(tc::transform(g_vecjsymClass, [&jtsTypeChecker](ts::Symbol const jsymClass) noexcept {
 			return SJsClass(jtsTypeChecker, jsymClass);
-		}));
+		})));
 
 		tc::for_each(vecjsclassClass, [](SJsClass const& jsclassClass) noexcept {
 			g_usstrAllowedMangledTypes.insert(jsclassClass.m_strMangledName);
