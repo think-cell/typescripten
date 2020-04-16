@@ -120,16 +120,18 @@ SMangledType MangleType(tc::js::globals::ts::TypeChecker jtsTypeChecker, tc::js:
 	}
 	std::vector<std::string> vecstrExtraInfo;
 	if (auto jotypereferenceRoot = IsTypeReference(jtypeRoot)) {
-		std::string strTarget = tc::explicit_cast<std::string>(jtsTypeChecker->getFullyQualifiedName(*(*jotypereferenceRoot)->target()->getSymbol()));
-		auto jrarrTypeArguments = (*jotypereferenceRoot)->typeArguments();
-		if ("Array" == strTarget) {
-			_ASSERTEQUAL(1, jrarrTypeArguments->length());
-			return WrapType("globals::Array<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">");
-		} else if ("ReadonlyArray" == strTarget) {
-			_ASSERTEQUAL(1, jrarrTypeArguments->length());
-			return WrapType("globals::ReadonlyArray<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">");
+		if (auto josymTargetSymbol = (*jotypereferenceRoot)->target()->getSymbol(); josymTargetSymbol) {
+			std::string strTarget = tc::explicit_cast<std::string>(jtsTypeChecker->getFullyQualifiedName(*josymTargetSymbol));
+			auto jrarrTypeArguments = (*jotypereferenceRoot)->typeArguments();
+			if ("Array" == strTarget) {
+				_ASSERTEQUAL(1, jrarrTypeArguments->length());
+				return WrapType("globals::Array<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">");
+			} else if ("ReadonlyArray" == strTarget) {
+				_ASSERTEQUAL(1, jrarrTypeArguments->length());
+				return WrapType("globals::ReadonlyArray<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">");
+			}
+			tc::cont_emplace_back(vecstrExtraInfo, "TypeReference");
 		}
-		tc::cont_emplace_back(vecstrExtraInfo, "TypeReference");
 	}
 	if (auto jointerfacetypeRoot = jtypeRoot->isClassOrInterface()) {
 		if (IsTrivialType(*jointerfacetypeRoot)) {
