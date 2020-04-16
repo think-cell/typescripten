@@ -87,6 +87,7 @@ struct SJsVariableLike {
 
 struct SJsFunctionLike {
 	ts::Symbol m_jsymFunctionLike;
+	std::string m_strCppifiedName;
 	ts::Declaration m_jdeclFunctionLike;
 	ts::SignatureDeclaration m_jtsSignatureDeclaration;
 	ts::Signature m_jtsSignature;
@@ -97,6 +98,7 @@ struct SJsFunctionLike {
 
 	SJsFunctionLike(ts::TypeChecker const jtsTypeChecker, ts::Symbol const jsymFunctionLike, ts::Declaration const jdeclFunctionLike) noexcept
 		: m_jsymFunctionLike(jsymFunctionLike)
+		, m_strCppifiedName(CppifyName(m_jsymFunctionLike))
 		, m_jdeclFunctionLike(jdeclFunctionLike)
 		, m_jtsSignatureDeclaration([&]() noexcept -> ts::SignatureDeclaration {
 			if (auto const jotsMethodSignature = ts()->isMethodSignature(jdeclFunctionLike)) { // In interfaces.
@@ -393,7 +395,7 @@ int main(int argc, char* argv[]) {
 						jsclassClass.m_vecjsfunctionlikeExportFunction,
 						[](SJsFunctionLike const& jsfunctionlikeFunction) noexcept {
 							return tc::explicit_cast<std::string>(tc::concat(
-								"			static auto ", CppifyName(jsfunctionlikeFunction.m_jsymFunctionLike), "(", jsfunctionlikeFunction.m_strCppifiedParametersWithComments, ") noexcept;\n"
+								"			static auto ", jsfunctionlikeFunction.m_strCppifiedName, "(", jsfunctionlikeFunction.m_strCppifiedParametersWithComments, ") noexcept;\n"
 							));
 						}
 					)),
@@ -429,7 +431,7 @@ int main(int argc, char* argv[]) {
 						[](SJsFunctionLike const& jsfunctionlikeMethod) noexcept {
 							if (ts::SymbolFlags::Method == jsfunctionlikeMethod.m_jsymFunctionLike->getFlags()) {
 								return tc::explicit_cast<std::string>(tc::concat(
-									"		auto ", CppifyName(jsfunctionlikeMethod.m_jsymFunctionLike), "(", jsfunctionlikeMethod.m_strCppifiedParametersWithComments, ") noexcept;\n"
+									"		auto ", jsfunctionlikeMethod.m_strCppifiedName, "(", jsfunctionlikeMethod.m_strCppifiedParametersWithComments, ") noexcept;\n"
 								));
 							} else if (ts::SymbolFlags::Constructor == jsfunctionlikeMethod.m_jsymFunctionLike->getFlags()) {
 								return tc::explicit_cast<std::string>(tc::concat(
@@ -466,7 +468,7 @@ int main(int argc, char* argv[]) {
 							);
 							return tc::explicit_cast<std::string>(tc::concat(
 								"	inline auto ", strClassNamespace, "_js_ref_definitions::",
-									CppifyName(jsfunctionlikeFunction.m_jsymFunctionLike), "(", jsfunctionlikeFunction.m_strCppifiedParametersWithComments, ") noexcept {\n",
+									jsfunctionlikeFunction.m_strCppifiedName, "(", jsfunctionlikeFunction.m_strCppifiedParametersWithComments, ") noexcept {\n",
 								ts::TypeFlags::Void == jsfunctionlikeFunction.m_jtsSignature->getReturnType()->flags()
 									? tc::explicit_cast<std::string>(tc::concat("		", rngchFunctionCall, ";\n"))
 									: tc::explicit_cast<std::string>(tc::concat(
@@ -524,7 +526,7 @@ int main(int argc, char* argv[]) {
 									", "
 								);
 								return tc::explicit_cast<std::string>(tc::concat(
-									"	inline auto ", strClassNamespace, CppifyName(jsfunctionlikeMethod.m_jsymFunctionLike), "(", jsfunctionlikeMethod.m_strCppifiedParametersWithComments, ") noexcept {\n",
+									"	inline auto ", strClassNamespace, jsfunctionlikeMethod.m_strCppifiedName, "(", jsfunctionlikeMethod.m_strCppifiedParametersWithComments, ") noexcept {\n",
 									"		return _call<", MangleType(jtsTypeChecker, jsfunctionlikeMethod.m_jtsSignature->getReturnType()).m_strWithComments, ">(", rngchCallArguments, ");\n",
 									"	}\n"
 								));
@@ -581,7 +583,7 @@ int main(int argc, char* argv[]) {
 								);
 								return tc::explicit_cast<std::string>(tc::concat(
 									"	inline auto ",
-										CppifyName(jsfunctionlikeFunction.m_jsymFunctionLike), "(", jsfunctionlikeFunction.m_strCppifiedParametersWithComments, ") noexcept {\n",
+										jsfunctionlikeFunction.m_strCppifiedName, "(", jsfunctionlikeFunction.m_strCppifiedParametersWithComments, ") noexcept {\n",
 									"	using namespace _jsall;\n",
 									ts::TypeFlags::Void == jsfunctionlikeFunction.m_jtsSignature->getReturnType()->flags()
 										? tc::explicit_cast<std::string>(tc::concat("		", rngchFunctionCall, ";\n"))
