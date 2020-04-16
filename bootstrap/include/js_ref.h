@@ -60,6 +60,8 @@ template<typename> struct js_ref;
 using no_adl::IObject;
 using no_adl::js_ref;
 
+using js_object = js_ref<IObject>;
+
 namespace js_ref_detail {
 namespace no_adl {
 struct empty_base {};

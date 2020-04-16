@@ -63,7 +63,7 @@ int main() {
 
 	{
 		// Test optional of object.
-		using OptionalUnknown = js_optional<tc::js::js_ref<tc::js::IObject>>;
+		using OptionalUnknown = js_optional<tc::js::js_object>;
 		static_assert(
 			std::is_same<
 				typename emscripten::internal::BindingType<OptionalUnknown>::WireType,
@@ -76,7 +76,7 @@ int main() {
 			_ASSERT(emval.isUndefined());
 		}
 		{
-			tc::js::js_ref<tc::js::IObject> const jsOrigin(emscripten::val::object());
+			tc::js::js_object const jsOrigin(emscripten::val::object());
 			emscripten::val emval{OptionalUnknown(jsOrigin)};
 			auto const ounkParsed = emval.template as<OptionalUnknown>();
 			_ASSERT(ounkParsed);

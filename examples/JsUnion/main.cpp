@@ -5,6 +5,7 @@
 #include "js_types.h"
 #include "js_ref.h"
 
+using tc::js::js_object;
 using tc::js::js_string;
 using tc::js::js_undefined;
 using tc::js::js_unknown;
@@ -104,7 +105,7 @@ int main() {
 		}
 	}
 	{
-		using ObjectOrBaseOrString = js_union<js_ref<tc::js::IObject>, MyJsBase, js_string>;
+		using ObjectOrBaseOrString = js_union<js_object, MyJsBase, js_string>;
 		MyJsBase const base(js_string(""), js_string(""));
 		MyJsDerived const derived(js_string(""), js_string(""));
 		js_string const str("");
@@ -142,8 +143,8 @@ int main() {
 		}
 
 		// Element extraction.
-		static_cast<void>(js_ref<tc::js::IObject>(ObjectOrBaseOrString(base)));
-		static_assert(!std::is_convertible<ObjectOrBaseOrString, js_ref<tc::js::IObject>>::value);
+		static_cast<void>(js_object(ObjectOrBaseOrString(base)));
+		static_assert(!std::is_convertible<ObjectOrBaseOrString, js_object>::value);
 
 		static_cast<void>(MyJsBase(ObjectOrBaseOrString(derived)));
 		static_assert(!std::is_convertible<ObjectOrBaseOrString, MyJsBase>::value);

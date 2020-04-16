@@ -6,22 +6,22 @@
 #include "js_types.h"
 #include "js_ref.h"
 
+using tc::js::js_object;
 using tc::js::js_string;
 using tc::js::js_undefined;
 using tc::js::js_unknown;
 using tc::js::js_null;
 using tc::js::js_union;
 using tc::js::js_ref;
-using tc::js::IObject;
 
 void derefUndefinedJsRefGet() noexcept {
-	js_union<js_undefined, js_ref<IObject>> const u;
-	static_cast<void>(u.get<js_ref<IObject>>());
+	js_union<js_undefined, js_object> const u;
+	static_cast<void>(u.get<js_object>());
 }
 
 void derefNullJsRefGet() noexcept {
-	js_union<js_null, js_ref<IObject>> const u;
-	static_cast<void>(u.get<js_ref<IObject>>());
+	js_union<js_null, js_object> const u;
+	static_cast<void>(u.get<js_object>());
 }
 
 void derefUndefinedStringGet() noexcept {
