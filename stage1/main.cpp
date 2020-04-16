@@ -345,11 +345,9 @@ int main(int argc, char* argv[]) {
 				usstrInResult.insert(jsclassClass.m_strMangledName);
 				for (auto const& jsymBaseClass : jsclassClass.m_vecjsymBaseClass) {
 					auto strMangledBaseClass = MangleSymbolName(jtsTypeChecker, jsymBaseClass);
-					if (!mstrjsclassClasses.count(strMangledBaseClass)) {
-						tc::append(std::cerr, "Class '", jsclassClass.m_strMangledName, "' is inherited from an unknown class: ", strMangledBaseClass);
-						_ASSERTFALSE;
+					if (mstrjsclassClasses.count(strMangledBaseClass)) {
+						dfs(*mstrjsclassClasses[strMangledBaseClass], dfs);
 					}
-					dfs(*mstrjsclassClasses[strMangledBaseClass], dfs);
 				}
 				vecjsclassResult.emplace_back(jsclassClass);
 			};
@@ -413,21 +411,39 @@ int main(int argc, char* argv[]) {
 				);
 			})),
 			tc::join(tc::transform(vecjsclassClass, [&jtsTypeChecker](SJsClass const& jsclassClass) noexcept {
+				std::vector<std::string> vecstrBaseClass, vecstrUnknownBaseClass;
+				 tc::for_each(
+					jsclassClass.m_vecjsymBaseClass,
+					[&jtsTypeChecker, &vecstrBaseClass, &vecstrUnknownBaseClass](ts::Symbol const jsymBaseClass) noexcept {
+						auto strMangledName = MangleSymbolName(jtsTypeChecker, jsymBaseClass);
+						if (g_usstrAllowedMangledTypes.count(strMangledName)) {
+							tc::cont_emplace_back(vecstrBaseClass, strMangledName);
+						} else {
+							tc::cont_emplace_back(vecstrUnknownBaseClass, strMangledName);
+						}
+					}
+				);
 				return tc::explicit_cast<std::string>(tc::concat(
 					"	struct _impl", jsclassClass.m_strMangledName,
 					" : ",
 					tc_conditional_range(
-						tc::empty(jsclassClass.m_vecjsymBaseClass),
+						tc::empty(vecstrBaseClass),
 						tc::explicit_cast<std::string>("virtual IObject"),
 						tc::explicit_cast<std::string>(tc::join_separated(
-							tc::transform(jsclassClass.m_vecjsymBaseClass,
-								[&jtsTypeChecker](ts::Symbol const jsymBaseClass) noexcept {
-									return tc::concat("virtual _impl", MangleSymbolName(jtsTypeChecker, jsymBaseClass));
+							tc::transform(vecstrBaseClass,
+								[](std::string const& strMangledName) noexcept {
+									return tc::concat("virtual _impl", strMangledName);
 								}
 							),
 							", "
 						))
 					),
+					tc::join(tc::transform(
+						vecstrUnknownBaseClass,
+						[](std::string const& strMangledName) noexcept {
+							return tc::concat("/* : ", strMangledName, " */");
+						}
+					)),
 					" {\n",
 					"		struct _js_ref_definitions {\n",
 					tc::join(tc::transform(
