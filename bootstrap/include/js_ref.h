@@ -60,7 +60,15 @@ template<typename> struct js_ref;
 using no_adl::IObject;
 using no_adl::js_ref;
 
-using js_object = js_ref<IObject>;
+namespace js_object_detail {
+namespace no_adl {
+struct _js_Object {
+	using _js_members = IObject;
+};
+}
+using no_adl::_js_Object;
+} // namespace js_object_detail
+using js_object = js_ref<js_object_detail::_js_Object>;
 
 namespace js_ref_detail {
 namespace no_adl {
@@ -68,7 +76,7 @@ struct empty_base {};
 } // namespace no_adl
 using no_adl::empty_base;
 
-template<typename T> typename T::_js_ref_definitions base_detector(T*);
+template<typename T> typename T::_js_definitions base_detector(T*);
 empty_base base_detector(...);
 
 template<typename T>
@@ -82,7 +90,7 @@ struct js_ref : js_ref_detail::base<T> {
 	static_assert(std::is_class<T>::value); // void is explicitly excluded as well, even though void* is base of all pointers.
 	static_assert(!std::is_volatile<T>::value);
 	static_assert(!std::is_const<T>::value, "We cannot guarantee constness of JS values");
-	static_assert(std::is_convertible<T*, IObject*>::value);
+	static_assert(std::is_convertible<typename T::_js_members*, IObject*>::value);
 
 	// js_ref is non-nullable.
 	explicit js_ref(emscripten::val const& _emval) noexcept : m_emval(_emval) {
@@ -99,9 +107,9 @@ struct js_ref : js_ref_detail::base<T> {
 		 (!tc::is_instance_or_derived<js_union, Args>::value && ...) &&
 		 (!std::is_same<emscripten::val, tc::remove_cvref_t<Args>>::value && ...))
 	>, typename T2 = T, typename = tc::void_t<decltype(
-		T2::_construct(std::forward<Args>(std::declval<Args>())...)
+		T2::_js_constructors::construct(std::forward<Args>(std::declval<Args>())...)
 	)>>
-	explicit js_ref(Args&&... args) noexcept : js_ref(T::_construct(std::forward<Args>(args)...)) {}
+	explicit js_ref(Args&&... args) noexcept : js_ref(T::_js_constructors::construct(std::forward<Args>(args)...)) {}
 
 	/**
 	 * Basecasting.
@@ -114,10 +122,10 @@ struct js_ref : js_ref_detail::base<T> {
 	 *
 	 * We do not allow arrays, so this sounds like std::is_convertible<> (although it's not defined via the word 'convertible').
 	 */
-	template<typename U, std::enable_if_t<std::is_convertible<U*, T*>::value>* = nullptr>
+	template<typename U, std::enable_if_t<std::is_convertible<typename U::_js_members*, typename T::_js_members*>::value>* = nullptr>
 	js_ref(js_ref<U> const& jsOther) noexcept : js_ref(jsOther.m_emval) {}
 
-	template<typename U, std::enable_if_t<std::is_convertible<U*, T*>::value>* = nullptr>
+	template<typename U, std::enable_if_t<std::is_convertible<typename U::_js_members*, typename T::_js_members*>::value>* = nullptr>
 	js_ref(js_ref<U>&& jsOther) noexcept : js_ref(tc_move(jsOther.m_emval)) {}
 
 	/**
@@ -128,26 +136,26 @@ struct js_ref : js_ref_detail::base<T> {
 	 *
 	 * No type checking is performed on JS side.
 	 */
-	template<typename U, std::enable_if_t<std::is_convertible<T*, U*>::value>* = nullptr>
+	template<typename U, std::enable_if_t<std::is_convertible<typename T::_js_members*, typename U::_js_members*>::value>* = nullptr>
 	explicit js_ref(js_ref<U> const& jsOther) noexcept : js_ref(jsOther.m_emval) {}
 
-	template<typename U, std::enable_if_t<std::is_convertible<T*, U*>::value>* = nullptr>
+	template<typename U, std::enable_if_t<std::is_convertible<typename T::_js_members*, typename U::_js_members*>::value>* = nullptr>
 	explicit js_ref(js_ref<U>&& jsOther) noexcept : js_ref(tc_move(jsOther.m_emval)) {}
 
 	emscripten::val const& getEmval() const& noexcept { return m_emval; }
 	emscripten::val&& getEmval() && noexcept { return tc_move(m_emval); }
 
-	template<typename... Args, typename = decltype(std::declval<T>()(std::forward<Args>(std::declval<Args>())...))>
+	template<typename... Args, typename = decltype(std::declval<typename T::_js_members>()(std::forward<Args>(std::declval<Args>())...))>
 	auto operator()(Args&&... args) const& noexcept {
 		return CArrowProxy(m_emval)(std::forward<Args>(args)...);
 	}
 
-	template<typename Index, typename = decltype(std::declval<T>()[std::forward<Index>(std::declval<Index>())])>
+	template<typename Index, typename = decltype(std::declval<typename T::_js_members>()[std::forward<Index>(std::declval<Index>())])>
 	auto operator[](Index&& index) const& noexcept {
 		return CArrowProxy(m_emval)[std::forward<Index>(index)];
 	}
 
-	template<typename U, typename T2 = T, typename = decltype(std::declval<T2>().operator U())>
+	template<typename U, typename T2 = T, typename = decltype(std::declval<typename T2::_js_members>().operator U())>
 	explicit operator U() const& noexcept {
 		return CArrowProxy(m_emval).operator U();
 	}
@@ -161,9 +169,9 @@ private:
 
 	template<typename> friend struct js_ref;
 
-	struct CArrowProxy final : T, private tc::nonmovable {
+	struct CArrowProxy final : T::_js_members, private tc::nonmovable {
 		explicit CArrowProxy(emscripten::val& m_emval) noexcept : IObject(m_emval) {}
-		T* operator->() && noexcept { return this; }
+		typename T::_js_members* operator->() && noexcept { return this; }
 	private:
 		void _IObject_and_derived_are_abstract_Use_js_ref_instead() noexcept override {
 			// Should never be called.

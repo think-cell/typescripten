@@ -689,381 +689,475 @@ struct _jsdefs_ts : _jsenums_ts {
 	using SignatureDeclaration = js_union<MethodSignature, MethodDeclaration, ConstructorDeclaration, CallSignatureDeclaration, FunctionDeclaration>;
 	using BaseType = js_union<ObjectType, IntersectionType>;
 
-	struct _js_TextRange : virtual IObject {
+	struct _js_TextRange {
+		struct _js_members : virtual IObject {};
 	};
 
-	struct _js_Node : virtual _js_TextRange {
-		auto kind() noexcept { return _getProperty<SyntaxKind>("kind"); }
-		void kind(SyntaxKind v) noexcept { _setProperty<SyntaxKind>("kind", v); }
+	struct _js_Node {
+		struct _js_members : virtual _js_TextRange::_js_members {
+			auto kind() noexcept { return _getProperty<SyntaxKind>("kind"); }
+			void kind(SyntaxKind v) noexcept { _setProperty<SyntaxKind>("kind", v); }
 
-		auto getChildren() noexcept { return _call<Array<SourceFile>>("getChildren"); }
+			auto getChildren() noexcept { return _call<Array<SourceFile>>("getChildren"); }
+		};
 	};
 
-	struct _js_Declaration : virtual _js_Node {
+	struct _js_Declaration {
+		struct _js_members : virtual _js_Node::_js_members {
+		};
 	};
 
-	struct _js_Identifier : virtual _js_Declaration {
-		js_string text() noexcept { return _getProperty<js_string>("text"); }
+	struct _js_Identifier {
+		struct _js_members : virtual _js_Declaration::_js_members {
+			js_string text() noexcept { return _getProperty<js_string>("text"); }
+		};
 	};
 
-	struct _js_NamedDeclaration : virtual _js_Declaration {
+	struct _js_NamedDeclaration {
+		struct _js_members : virtual _js_Declaration::_js_members {
+		};
 	};
 
-	struct _js_CallSignatureDeclaration : virtual _js_NamedDeclaration {
+	struct _js_CallSignatureDeclaration {
+		struct _js_members : virtual _js_NamedDeclaration::_js_members {
+		};
 	};
 
-	struct _js_MethodSignature : virtual _js_NamedDeclaration {
+	struct _js_MethodSignature {
+		struct _js_members : virtual _js_NamedDeclaration::_js_members {
+		};
 	};
 
-	struct _js_MethodDeclaration : virtual _js_NamedDeclaration {
+	struct _js_MethodDeclaration {
+		struct _js_members : virtual _js_NamedDeclaration::_js_members {
+		};
 	};
 
-	struct _js_ConstructorDeclaration : virtual _js_NamedDeclaration {
+	struct _js_ConstructorDeclaration {
+		struct _js_members : virtual _js_NamedDeclaration::_js_members {
+		};
 	};
 
-	struct _js_Signature : virtual IObject {
-		auto getTypeParameters() noexcept { return _call<js_optional<ReadonlyArray<js_unknown>>>("getTypeParameters"); }
-		auto getParameters() noexcept { return _call<ReadonlyArray<Symbol>>("getParameters"); }
-		auto getReturnType() noexcept { return _call<Type>("getReturnType"); }
+	struct _js_Signature {
+		struct _js_members : virtual IObject {
+			auto getTypeParameters() noexcept { return _call<js_optional<ReadonlyArray<js_unknown>>>("getTypeParameters"); }
+			auto getParameters() noexcept { return _call<ReadonlyArray<Symbol>>("getParameters"); }
+			auto getReturnType() noexcept { return _call<Type>("getReturnType"); }
+		};
 	};
 
-	struct _js_DeclarationStatement : virtual _js_NamedDeclaration {
-	    auto name() noexcept { return _getProperty<js_optional<Declaration>>("name"); }
+	struct _js_DeclarationStatement {
+		struct _js_members : virtual _js_NamedDeclaration::_js_members {
+			auto name() noexcept { return _getProperty<js_optional<Declaration>>("name"); }
+		};
 	};
 
-	struct _js_FunctionDeclaration : virtual _js_DeclarationStatement {
+	struct _js_FunctionDeclaration {
+		struct _js_members : virtual _js_DeclarationStatement::_js_members {
+		};
 	};
 
-	struct _js_ClassDeclaration : virtual _js_DeclarationStatement {
+	struct _js_ClassDeclaration {
+		struct _js_members : virtual _js_DeclarationStatement::_js_members {
+		};
 	};
 
-	struct _js_EnumDeclaration : virtual _js_DeclarationStatement {
+	struct _js_EnumDeclaration {
+		struct _js_members : virtual _js_DeclarationStatement::_js_members {
+		};
 	};
 
-	struct _js_VariableDeclaration : virtual _js_NamedDeclaration {
-		auto name() noexcept { return _getProperty<Node>("name"); }
+	struct _js_VariableDeclaration {
+		struct _js_members : virtual _js_NamedDeclaration::_js_members {
+			auto name() noexcept { return _getProperty<Node>("name"); }
+		};
 	};
 
-	struct _js_VariableDeclarationList : virtual _js_Node {
-		auto declarations() noexcept { return _getProperty<ReadonlyArray<VariableDeclaration>>("declarations"); }
+	struct _js_VariableDeclarationList {
+		struct _js_members : virtual _js_Node::_js_members {
+			auto declarations() noexcept { return _getProperty<ReadonlyArray<VariableDeclaration>>("declarations"); }
+		};
 	};
 
-	struct _js_VariableStatement : virtual _js_Node {
-		auto declarationList() noexcept { return _getProperty<VariableDeclarationList>("declarationList"); }
+	struct _js_VariableStatement {
+		struct _js_members : virtual _js_Node::_js_members {
+			auto declarationList() noexcept { return _getProperty<VariableDeclarationList>("declarationList"); }
+		};
 	};
 
-	struct _js_InterfaceDeclaration : virtual _js_DeclarationStatement {
+	struct _js_InterfaceDeclaration {
+		struct _js_members : virtual _js_DeclarationStatement::_js_members {
+		};
 	};
 
-	struct _js_TypeAliasDeclaration : virtual _js_DeclarationStatement {
+	struct _js_TypeAliasDeclaration {
+		struct _js_members : virtual _js_DeclarationStatement::_js_members {
+		};
 	};
 
-	struct _js_ModuleDeclaration : virtual _js_DeclarationStatement {
-		auto name() noexcept { return _getProperty<Identifier>("name"); }
+	struct _js_ModuleDeclaration {
+		struct _js_members : virtual _js_DeclarationStatement::_js_members {
+			auto name() noexcept { return _getProperty<Identifier>("name"); }
+		};
 	};
 
-	struct _js_PropertyDeclaration : virtual _js_NamedDeclaration {
-		auto name() noexcept { return _getProperty<Identifier /* | StringLiteral | NumericLiteral | ComputedPropertyName */>("name"); }
+	struct _js_PropertyDeclaration {
+		struct _js_members : virtual _js_NamedDeclaration::_js_members {
+			auto name() noexcept { return _getProperty<Identifier /* | StringLiteral | NumericLiteral | ComputedPropertyName */>("name"); }
+		};
 	};
 
-	struct _js_EnumMember : virtual _js_Declaration {
+	struct _js_EnumMember {
+		struct _js_members : virtual _js_Declaration::_js_members {
+		};
 	};
 
-	struct _js_SourceFileLike : virtual IObject {
-		auto getLineAndCharacterOfPosition(int pos) noexcept {
-			return _call<LineAndCharacter>("getLineAndCharacterOfPosition", tc::explicit_cast<double>(pos));
-		}
+	struct _js_SourceFileLike {
+		struct _js_members : virtual IObject {
+			auto getLineAndCharacterOfPosition(int pos) noexcept {
+				return _call<LineAndCharacter>("getLineAndCharacterOfPosition", tc::explicit_cast<double>(pos));
+			}
+		};
 	};
 
-	struct _js_SourceFile : virtual _js_Declaration, /* deduced */ virtual _js_SourceFileLike {
-		auto fileName() noexcept { return _getProperty<js_string>("fileName"); }
-		void fileName(js_string v) noexcept { _setProperty("fileName", v); }
+	struct _js_SourceFile {
+		struct _js_members : virtual _js_Declaration::_js_members, /* deduced */ virtual _js_SourceFileLike::_js_members {
+			auto fileName() noexcept { return _getProperty<js_string>("fileName"); }
+			void fileName(js_string v) noexcept { _setProperty("fileName", v); }
+		};
 	};
 
-	struct _js_Program : virtual IObject {
-		auto getSourceFiles() noexcept { return _call<ReadonlyArray<SourceFile>>("getSourceFiles"); }
+	struct _js_Program {
+		struct _js_members : virtual IObject {
+			auto getSourceFiles() noexcept { return _call<ReadonlyArray<SourceFile>>("getSourceFiles"); }
 
-		auto emit() noexcept { return _call<EmitResult>("emit"); }
+			auto emit() noexcept { return _call<EmitResult>("emit"); }
 
-		auto getTypeChecker() noexcept { return _call<TypeChecker>("getTypeChecker"); }
+			auto getTypeChecker() noexcept { return _call<TypeChecker>("getTypeChecker"); }
+		};
 	};
 
-	struct _js_EmitResult : virtual IObject {
-		auto emitSkipped() noexcept { return _getProperty<bool>("emitSkipped"); }
-		void emitSkipped(bool v) noexcept { _setProperty("emitSkipped", v); }
+	struct _js_EmitResult {
+		struct _js_members : virtual IObject {
+			auto emitSkipped() noexcept { return _getProperty<bool>("emitSkipped"); }
+			void emitSkipped(bool v) noexcept { _setProperty("emitSkipped", v); }
 
-		auto diagnostics() noexcept { return _getProperty<ReadonlyArray<Diagnostic>>("diagnostics"); }
-		void diagnostics(ReadonlyArray<Diagnostic> v) noexcept { _setProperty("diagnostics", v); }
+			auto diagnostics() noexcept { return _getProperty<ReadonlyArray<Diagnostic>>("diagnostics"); }
+			void diagnostics(ReadonlyArray<Diagnostic> v) noexcept { _setProperty("diagnostics", v); }
+		};
 	};
 
-	struct _js_TypeChecker : virtual IObject {
-		auto getDeclaredTypeOfSymbol(Symbol symbol) noexcept { return _call<Type>("getDeclaredTypeOfSymbol", symbol); }
-		auto getTypeOfSymbolAtLocation(Symbol symbol, Node node) noexcept { return _call<Type>("getTypeOfSymbolAtLocation", symbol, node); }
-		auto getPropertiesOfType(Type type) noexcept { return _call<Array<Symbol>>("getPropertiesOfType", type); }
-		auto getRootSymbols(Symbol type) noexcept { return _call<ReadonlyArray<Symbol>>("getRootSymbols", type); }
-		auto getAugmentedPropertiesOfType(Type type) noexcept { return _call<Array<Symbol>>("getAugmentedPropertiesOfType", type); }
-		auto getSymbolsInScope(Node location, SymbolFlags meaning) noexcept { return _call<Array<Symbol>>("getSymbolsInScope", location, meaning); }
-		auto getSymbolAtLocation(Node node) noexcept { return _call<js_optional<Symbol>>("getSymbolAtLocation", node); }
-		auto getExportsOfModule(Symbol moduleSymbol) noexcept { return _call<Array<Symbol>>("getExportsOfModule", moduleSymbol); }
-		auto getExportSymbolOfSymbol(Symbol symbol) noexcept { return _call<Symbol>("getExportSymbolOfSymbol", symbol); }
-		auto getSignaturesOfType(Type type, SignatureKind kind) noexcept { return _call<ReadonlyArray<Signature>>("getSignaturesOfType", type, kind); }
-		auto getSignatureFromDeclaration(SignatureDeclaration declaration) noexcept { return _call<js_optional<Signature>>("getSignatureFromDeclaration", declaration); }
-		auto signatureToString(Signature signature) noexcept { return _call<js_string>("signatureToString", signature); }
-		auto getFullyQualifiedName(Symbol symbol) noexcept { return _call<js_string>("getFullyQualifiedName", symbol); }
-		auto getConstantValue(EnumMember node) noexcept { return _call<js_union<js_string, double, js_undefined>>("getConstantValue", node); }
-		auto typeToString(Type type) noexcept { return _call<js_string>("typeToString", type); }
-		auto getBaseTypes(InterfaceType type) noexcept { return _call<Array<BaseType>>("getBaseTypes", type); }
+	struct _js_TypeChecker {
+		struct _js_members : virtual IObject {
+			auto getDeclaredTypeOfSymbol(Symbol symbol) noexcept { return _call<Type>("getDeclaredTypeOfSymbol", symbol); }
+			auto getTypeOfSymbolAtLocation(Symbol symbol, Node node) noexcept { return _call<Type>("getTypeOfSymbolAtLocation", symbol, node); }
+			auto getPropertiesOfType(Type type) noexcept { return _call<Array<Symbol>>("getPropertiesOfType", type); }
+			auto getRootSymbols(Symbol type) noexcept { return _call<ReadonlyArray<Symbol>>("getRootSymbols", type); }
+			auto getAugmentedPropertiesOfType(Type type) noexcept { return _call<Array<Symbol>>("getAugmentedPropertiesOfType", type); }
+			auto getSymbolsInScope(Node location, SymbolFlags meaning) noexcept { return _call<Array<Symbol>>("getSymbolsInScope", location, meaning); }
+			auto getSymbolAtLocation(Node node) noexcept { return _call<js_optional<Symbol>>("getSymbolAtLocation", node); }
+			auto getExportsOfModule(Symbol moduleSymbol) noexcept { return _call<Array<Symbol>>("getExportsOfModule", moduleSymbol); }
+			auto getExportSymbolOfSymbol(Symbol symbol) noexcept { return _call<Symbol>("getExportSymbolOfSymbol", symbol); }
+			auto getSignaturesOfType(Type type, SignatureKind kind) noexcept { return _call<ReadonlyArray<Signature>>("getSignaturesOfType", type, kind); }
+			auto getSignatureFromDeclaration(SignatureDeclaration declaration) noexcept { return _call<js_optional<Signature>>("getSignatureFromDeclaration", declaration); }
+			auto signatureToString(Signature signature) noexcept { return _call<js_string>("signatureToString", signature); }
+			auto getFullyQualifiedName(Symbol symbol) noexcept { return _call<js_string>("getFullyQualifiedName", symbol); }
+			auto getConstantValue(EnumMember node) noexcept { return _call<js_union<js_string, double, js_undefined>>("getConstantValue", node); }
+			auto typeToString(Type type) noexcept { return _call<js_string>("typeToString", type); }
+			auto getBaseTypes(InterfaceType type) noexcept { return _call<Array<BaseType>>("getBaseTypes", type); }
+		};
 	};
 
-	struct _js_Symbol : virtual IObject {
-		auto getName() noexcept { return _call<js_string>("getName"); }
+	struct _js_Symbol {
+		struct _js_members : virtual IObject {
+			auto getName() noexcept { return _call<js_string>("getName"); }
 
-		auto getFlags() noexcept { return _call<SymbolFlags>("getFlags"); }
+			auto getFlags() noexcept { return _call<SymbolFlags>("getFlags"); }
 
-		auto members() noexcept { return _getProperty<js_optional<SymbolTable>>("members"); }
+			auto members() noexcept { return _getProperty<js_optional<SymbolTable>>("members"); }
 
-		auto exports() noexcept { return _getProperty<js_optional<SymbolTable>>("exports"); }
+			auto exports() noexcept { return _getProperty<js_optional<SymbolTable>>("exports"); }
 
-		auto globalExports() noexcept { return _getProperty<js_optional<SymbolTable>>("globalExports"); }
+			auto globalExports() noexcept { return _getProperty<js_optional<SymbolTable>>("globalExports"); }
 
-		auto valueDeclaration() noexcept { return _getProperty<js_optional<Declaration>>("valueDeclaration"); }
+			auto valueDeclaration() noexcept { return _getProperty<js_optional<Declaration>>("valueDeclaration"); }
 
-		auto declarations() noexcept { return _getProperty<Array<Declaration>>("declarations"); }
+			auto declarations() noexcept { return _getProperty<Array<Declaration>>("declarations"); }
 
-		auto parent() noexcept { return _getProperty<js_optional<Symbol>>("parent"); } // @internal
+			auto parent() noexcept { return _getProperty<js_optional<Symbol>>("parent"); } // @internal
+		};
 	};
 
 
-	struct _js_Type : virtual IObject {
-		auto flags() noexcept { return _getProperty<TypeFlags>("flags"); }
+	struct _js_Type {
+		struct _js_members : virtual IObject {
+			auto flags() noexcept { return _getProperty<TypeFlags>("flags"); }
 
-		auto getSymbol() noexcept { return _call<js_union<js_undefined, Symbol>>("getSymbol"); }
+			auto getSymbol() noexcept { return _call<js_union<js_undefined, Symbol>>("getSymbol"); }
 
-		auto getProperties() noexcept { return _call<Array<Symbol>>("getProperties"); }
+			auto getProperties() noexcept { return _call<Array<Symbol>>("getProperties"); }
 
-		auto constraint() noexcept { return _getProperty<js_union<js_undefined, Type>>("constraint"); }
+			auto constraint() noexcept { return _getProperty<js_union<js_undefined, Type>>("constraint"); }
 
-		auto isUnion() noexcept {
-			std::optional<UnionType> result;
-			if (_call<bool>("isUnion"))
-				result.emplace(_this<UnionType>());
-			return result;
-		}
+			auto isUnion() noexcept {
+				std::optional<UnionType> result;
+				if (_call<bool>("isUnion"))
+					result.emplace(_this<UnionType>());
+				return result;
+			}
 
-		auto isClassOrInterface() noexcept {
-			std::optional<InterfaceType> result;
-			if (_call<bool>("isClassOrInterface"))
-				result.emplace(_this<InterfaceType>());
-			return result;
-		}
+			auto isClassOrInterface() noexcept {
+				std::optional<InterfaceType> result;
+				if (_call<bool>("isClassOrInterface"))
+					result.emplace(_this<InterfaceType>());
+				return result;
+			}
+		};
 	};
 
-	struct _js_TypeParameter : virtual _js_Type {
+	struct _js_TypeParameter {
+		struct _js_members : virtual _js_Type::_js_members {
+		};
 	};
 
-	struct _js_UnionOrIntersectionType : virtual _js_Type {
-		auto types() noexcept { return _getProperty<Array<Type>>("types"); }
+	struct _js_UnionOrIntersectionType {
+		struct _js_members : virtual _js_Type::_js_members {
+			auto types() noexcept { return _getProperty<Array<Type>>("types"); }
+		};
 	};
 
-	struct _js_UnionType : virtual _js_UnionOrIntersectionType {
-		auto types() noexcept { return _getProperty<Array<Type>>("types"); }
+	struct _js_UnionType {
+		struct _js_members : virtual _js_UnionOrIntersectionType::_js_members {
+			auto types() noexcept { return _getProperty<Array<Type>>("types"); }
+		};
 	};
 
-	struct _js_IntersectionType : virtual _js_UnionOrIntersectionType {
+	struct _js_IntersectionType {
+		struct _js_members : virtual _js_UnionOrIntersectionType::_js_members {
+		};
 	};
 
-	struct _js_ObjectType : virtual _js_Type {
-		auto objectFlags() noexcept { return _getProperty<ObjectFlags>("objectFlags"); }
+	struct _js_ObjectType {
+		struct _js_members : virtual _js_Type::_js_members {
+			auto objectFlags() noexcept { return _getProperty<ObjectFlags>("objectFlags"); }
+		};
 	};
 
-	struct _js_InterfaceType : virtual _js_ObjectType {
-		auto typeParameters() noexcept { return _getProperty<js_union<js_undefined, Array<TypeParameter>>>("typeParameters"); }
-		auto outerTypeParameters() noexcept { return _getProperty<js_union<js_undefined, Array<TypeParameter>>>("outerTypeParameters"); }
-		auto localTypeParameters() noexcept { return _getProperty<js_union<js_undefined, Array<TypeParameter>>>("localTypeParameters"); }
-		auto thisType() noexcept { return _getProperty<js_union<js_undefined, TypeParameter>>("thisType"); }
+	struct _js_InterfaceType {
+		struct _js_members : virtual _js_ObjectType::_js_members {
+			auto typeParameters() noexcept { return _getProperty<js_union<js_undefined, Array<TypeParameter>>>("typeParameters"); }
+			auto outerTypeParameters() noexcept { return _getProperty<js_union<js_undefined, Array<TypeParameter>>>("outerTypeParameters"); }
+			auto localTypeParameters() noexcept { return _getProperty<js_union<js_undefined, Array<TypeParameter>>>("localTypeParameters"); }
+			auto thisType() noexcept { return _getProperty<js_union<js_undefined, TypeParameter>>("thisType"); }
+		};
 	};
 
-	struct _js_TypeReference : virtual _js_ObjectType {
-		auto target() noexcept { return _getProperty<GenericType>("target"); }
-		auto typeArguments() noexcept { return _getProperty<ReadonlyArray<Type>>("typeArguments"); }
+	struct _js_TypeReference {
+		struct _js_members : virtual _js_ObjectType::_js_members {
+			auto target() noexcept { return _getProperty<GenericType>("target"); }
+			auto typeArguments() noexcept { return _getProperty<ReadonlyArray<Type>>("typeArguments"); }
+		};
 	};
 
-	struct 	_js_GenericType : virtual _js_InterfaceType, virtual _js_TypeReference {
+	struct 	_js_GenericType {
+		struct _js_members : virtual _js_InterfaceType::_js_members, virtual _js_TypeReference::_js_members {
+		};
 	};
 
-	struct _js_DiagnosticRelatedInformation : virtual IObject {
-		auto file() noexcept { return _getProperty<js_optional<SourceFile>>("file"); }
-		void file(js_optional<SourceFile> v) noexcept { _setProperty("file", v); }
+	struct _js_DiagnosticRelatedInformation {
+		struct _js_members : virtual IObject {
+			auto file() noexcept { return _getProperty<js_optional<SourceFile>>("file"); }
+			void file(js_optional<SourceFile> v) noexcept { _setProperty("file", v); }
 
-		auto start() noexcept { return _getProperty<js_optional<double>>("start"); }
-		void start(js_optional<double> v) noexcept { _setProperty("start", v); }
+			auto start() noexcept { return _getProperty<js_optional<double>>("start"); }
+			void start(js_optional<double> v) noexcept { _setProperty("start", v); }
 
-		/* string | DiagnosticMessageChain; */
-		auto messageText() noexcept { return _getProperty<js_unknown>("messageText"); }
-		void messageText(js_unknown v) noexcept { _setProperty("messageText", v); }
+			/* string | DiagnosticMessageChain; */
+			auto messageText() noexcept { return _getProperty<js_unknown>("messageText"); }
+			void messageText(js_unknown v) noexcept { _setProperty("messageText", v); }
+		};
 	};
 
-	struct _js_SymbolTable : virtual IObject {
-		template<typename Fn>
-		auto operator()(Fn fn) noexcept {
-			return _call<void>("forEach", js_lambda_wrap([&](Symbol value, js_unknown, js_unknown) noexcept {
-				fn(tc_move(value));
-			}));
-		}
+	struct _js_SymbolTable {
+		struct _js_members : virtual IObject {
+			template<typename Fn>
+			auto operator()(Fn fn) noexcept {
+				return _call<void>("forEach", js_lambda_wrap([&](Symbol value, js_unknown, js_unknown) noexcept {
+					fn(tc_move(value));
+				}));
+			}
+		};
 	};
 
-	struct _js_Diagnostic : virtual _js_DiagnosticRelatedInformation {
+	struct _js_Diagnostic {
+		struct _js_members : virtual _js_DiagnosticRelatedInformation::_js_members {
+		};
 	};
 
-	struct _js_CompilerOptions : virtual IObject {
-		auto noEmitOnError() noexcept { return _getProperty<js_optional<bool>>("noEmitOnError"); }
-		void noEmitOnError(js_optional<bool> v) noexcept { _setProperty("noEmitOnError", v); }
+	struct _js_CompilerOptions {
+		struct _js_members : virtual IObject {
+			auto noEmitOnError() noexcept { return _getProperty<js_optional<bool>>("noEmitOnError"); }
+			void noEmitOnError(js_optional<bool> v) noexcept { _setProperty("noEmitOnError", v); }
 
-		auto module() noexcept { return _getProperty<js_optional<bool>>("module"); }
-		void module(js_optional<ModuleKind> v) noexcept { _setProperty("module", v); }
+			auto module() noexcept { return _getProperty<js_optional<bool>>("module"); }
+			void module(js_optional<ModuleKind> v) noexcept { _setProperty("module", v); }
 
-		auto strict() noexcept { return _getProperty<js_optional<bool>>("strict"); }
-		void strict(js_optional<bool> v) noexcept { _setProperty("strict", v); }
+			auto strict() noexcept { return _getProperty<js_optional<bool>>("strict"); }
+			void strict(js_optional<bool> v) noexcept { _setProperty("strict", v); }
 
-		auto target() noexcept { return _getProperty<js_optional<ScriptTarget>>("target"); }
-		void target(js_optional<ScriptTarget> v) noexcept { _setProperty("target", v); }
+			auto target() noexcept { return _getProperty<js_optional<ScriptTarget>>("target"); }
+			void target(js_optional<ScriptTarget> v) noexcept { _setProperty("target", v); }
+		};
 
-		static auto _construct() noexcept { return emscripten::val::object(); }
+		struct _js_constructors {
+			static auto construct() noexcept { return emscripten::val::object(); }
+		};
 	};
 
-	struct _js_LineAndCharacter : virtual IObject {
-		auto line() noexcept { return tc::explicit_cast<int>(_getProperty<double>("line")); }
-		void line(int v) noexcept { _setProperty("line", tc::explicit_cast<double>(v)); }
+	struct _js_LineAndCharacter {
+		struct _js_members : virtual IObject {
+			auto line() noexcept { return tc::explicit_cast<int>(_getProperty<double>("line")); }
+			void line(int v) noexcept { _setProperty("line", tc::explicit_cast<double>(v)); }
 
-		auto character() noexcept { return tc::explicit_cast<int>(_getProperty<double>("character")); }
-		void character(int v) noexcept { _setProperty("character", tc::explicit_cast<double>(v)); }
+			auto character() noexcept { return tc::explicit_cast<int>(_getProperty<double>("character")); }
+			void character(int v) noexcept { _setProperty("character", tc::explicit_cast<double>(v)); }
+		};
 	};
 
-	struct _js_FormatDiagnosticsHost : virtual IObject {
+	struct _js_FormatDiagnosticsHost {
+		struct _js_members : virtual IObject {
+		};
 	};
 
-	struct _js_CompilerHost : virtual /*derived*/ _js_FormatDiagnosticsHost {
+	struct _js_CompilerHost {
+		struct _js_members : virtual /*derived*/ _js_FormatDiagnosticsHost::_js_members {
+		};
 	};
 };
 
-struct _js_ts : virtual IObject, _jsdefs_ts {
-	auto isVariableStatement(Node node) noexcept {
-		std::optional<VariableStatement> result;
-		if (_call<bool>("isVariableStatement", node))
-			result.emplace(node);
-		return result;
-	}
+struct _js_ts {
+	struct _js_members : virtual IObject, _jsdefs_ts {
+		auto isVariableStatement(Node node) noexcept {
+			std::optional<VariableStatement> result;
+			if (_call<bool>("isVariableStatement", node))
+				result.emplace(node);
+			return result;
+		}
 
-	auto isInterfaceDeclaration(Node node) noexcept {
-		std::optional<InterfaceDeclaration> result;
-		if (_call<bool>("isInterfaceDeclaration", node))
-			result.emplace(node);
-		return result;
-	}
+		auto isInterfaceDeclaration(Node node) noexcept {
+			std::optional<InterfaceDeclaration> result;
+			if (_call<bool>("isInterfaceDeclaration", node))
+				result.emplace(node);
+			return result;
+		}
 
-	auto isFunctionDeclaration(Node node) noexcept {
-		std::optional<FunctionDeclaration> result;
-		if (_call<bool>("isFunctionDeclaration", node))
-			result.emplace(node);
-		return result;
-	}
+		auto isFunctionDeclaration(Node node) noexcept {
+			std::optional<FunctionDeclaration> result;
+			if (_call<bool>("isFunctionDeclaration", node))
+				result.emplace(node);
+			return result;
+		}
 
-	auto isClassDeclaration(Node node) noexcept {
-		std::optional<ClassDeclaration> result;
-		if (_call<bool>("isClassDeclaration", node))
-			result.emplace(node);
-		return result;
-	}
+		auto isClassDeclaration(Node node) noexcept {
+			std::optional<ClassDeclaration> result;
+			if (_call<bool>("isClassDeclaration", node))
+				result.emplace(node);
+			return result;
+		}
 
-	auto isEnumDeclaration(Node node) noexcept {
-		std::optional<EnumDeclaration> result;
-		if (_call<bool>("isEnumDeclaration", node))
-			result.emplace(node);
-		return result;
-	}
+		auto isEnumDeclaration(Node node) noexcept {
+			std::optional<EnumDeclaration> result;
+			if (_call<bool>("isEnumDeclaration", node))
+				result.emplace(node);
+			return result;
+		}
 
-	auto isTypeAliasDeclaration(Node node) noexcept {
-		std::optional<TypeAliasDeclaration> result;
-		if (_call<bool>("isTypeAliasDeclaration", node))
-			result.emplace(node);
-		return result;
-	}
+		auto isTypeAliasDeclaration(Node node) noexcept {
+			std::optional<TypeAliasDeclaration> result;
+			if (_call<bool>("isTypeAliasDeclaration", node))
+				result.emplace(node);
+			return result;
+		}
 
-	auto isModuleDeclaration(Node node) noexcept {
-		std::optional<ModuleDeclaration> result;
-		if (_call<bool>("isModuleDeclaration", node))
-			result.emplace(node);
-		return result;
-	}
+		auto isModuleDeclaration(Node node) noexcept {
+			std::optional<ModuleDeclaration> result;
+			if (_call<bool>("isModuleDeclaration", node))
+				result.emplace(node);
+			return result;
+		}
 
-	auto isPropertyDeclaration(Node node) noexcept {
-		std::optional<PropertyDeclaration> result;
-		if (_call<bool>("isPropertyDeclaration", node))
-			result.emplace(node);
-		return result;
-	}
+		auto isPropertyDeclaration(Node node) noexcept {
+			std::optional<PropertyDeclaration> result;
+			if (_call<bool>("isPropertyDeclaration", node))
+				result.emplace(node);
+			return result;
+		}
 
-	auto isMethodSignature(Node node) noexcept {
-		std::optional<MethodSignature> result;
-		if (_call<bool>("isMethodSignature", node))
-			result.emplace(node);
-		return result;
-	}
+		auto isMethodSignature(Node node) noexcept {
+			std::optional<MethodSignature> result;
+			if (_call<bool>("isMethodSignature", node))
+				result.emplace(node);
+			return result;
+		}
 
-	auto isMethodDeclaration(Node node) noexcept {
-		std::optional<MethodDeclaration> result;
-		if (_call<bool>("isMethodDeclaration", node))
-			result.emplace(node);
-		return result;
-	}
+		auto isMethodDeclaration(Node node) noexcept {
+			std::optional<MethodDeclaration> result;
+			if (_call<bool>("isMethodDeclaration", node))
+				result.emplace(node);
+			return result;
+		}
 
-	auto isConstructorDeclaration(Node node) noexcept {
-		std::optional<ConstructorDeclaration> result;
-		if (_call<bool>("isConstructorDeclaration", node))
-			result.emplace(node);
-		return result;
-	}
+		auto isConstructorDeclaration(Node node) noexcept {
+			std::optional<ConstructorDeclaration> result;
+			if (_call<bool>("isConstructorDeclaration", node))
+				result.emplace(node);
+			return result;
+		}
 
-	auto isEnumMember(Node node) noexcept {
-		std::optional<EnumMember> result;
-		if (_call<bool>("isEnumMember", node))
-			result.emplace(node);
-		return result;
-	}
+		auto isEnumMember(Node node) noexcept {
+			std::optional<EnumMember> result;
+			if (_call<bool>("isEnumMember", node))
+				result.emplace(node);
+			return result;
+		}
 
-	auto getLineAndCharacterOfPosition(SourceFileLike sourceFile, int position) noexcept {
-		return _call<LineAndCharacter>("getLineAndCharacterOfPosition", sourceFile, tc::explicit_cast<double>(position));
-	}
+		auto getLineAndCharacterOfPosition(SourceFileLike sourceFile, int position) noexcept {
+			return _call<LineAndCharacter>("getLineAndCharacterOfPosition", sourceFile, tc::explicit_cast<double>(position));
+		}
 
-	auto createProgram(ReadonlyArray<js_string> rootNames, CompilerOptions compilerOptions) noexcept {
-		return _call<Program>("createProgram", rootNames, compilerOptions);
-	}
+		auto createProgram(ReadonlyArray<js_string> rootNames, CompilerOptions compilerOptions) noexcept {
+			return _call<Program>("createProgram", rootNames, compilerOptions);
+		}
 
-	auto getPreEmitDiagnostics(Program program) noexcept {
-		return _call<ReadonlyArray<Diagnostic>>("getPreEmitDiagnostics", program);
-	}
+		auto getPreEmitDiagnostics(Program program) noexcept {
+			return _call<ReadonlyArray<Diagnostic>>("getPreEmitDiagnostics", program);
+		}
 
-	auto createCompilerHost(CompilerOptions options) noexcept {
-		return _call<CompilerHost>("createCompilerHost", options);
-	}
+		auto createCompilerHost(CompilerOptions options) noexcept {
+			return _call<CompilerHost>("createCompilerHost", options);
+		}
 
-	auto formatDiagnosticsWithColorAndContext(ReadonlyArray<Diagnostic> diagnostics, FormatDiagnosticsHost host) noexcept {
-		return _call<js_string>("formatDiagnosticsWithColorAndContext", diagnostics, host);
-	}
+		auto formatDiagnosticsWithColorAndContext(ReadonlyArray<Diagnostic> diagnostics, FormatDiagnosticsHost host) noexcept {
+			return _call<js_string>("formatDiagnosticsWithColorAndContext", diagnostics, host);
+		}
 
-	auto flattenDiagnosticMessageText(js_unknown messageText, js_string newLine) noexcept {
-		return _call<js_string>("flattenDiagnosticMessageText", messageText, newLine);
-	}
+		auto flattenDiagnosticMessageText(js_unknown messageText, js_string newLine) noexcept {
+			return _call<js_string>("flattenDiagnosticMessageText", messageText, newLine);
+		}
 
-	auto getCombinedModifierFlags(js_ref<_js_Declaration> node) noexcept {
-		return _call<ModifierFlags>("getCombinedModifierFlags", node);
-	}
+		auto getCombinedModifierFlags(js_ref<_js_Declaration> node) noexcept {
+			return _call<ModifierFlags>("getCombinedModifierFlags", node);
+		}
 
-	auto forEachChild(Node node, js_function<void(Node)> func) noexcept {
-	    return _call<void>("forEachChild", node, func);
-	}
+		auto forEachChild(Node node, js_function<void(Node)> func) noexcept {
+			return _call<void>("forEachChild", node, func);
+		}
 
-	static emscripten::val _construct() noexcept { return emscripten::val::global("ts"); }
+	};
+
+	struct _js_constructors {
+		static emscripten::val construct() noexcept { return emscripten::val::global("ts"); }
+	};
 };
 
 struct ts : js_ref<_js_ts>, _jsdefs_ts {

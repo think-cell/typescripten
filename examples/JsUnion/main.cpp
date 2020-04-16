@@ -13,11 +13,19 @@ using tc::js::js_null;
 using tc::js::js_union;
 using tc::js::js_ref;
 
-struct _js_MyJsBase : virtual tc::js::IObject {
-	static auto _construct(js_string, js_string) noexcept { return emscripten::val::object(); }
+struct _js_MyJsBase {
+	struct _js_members : virtual tc::js::IObject {
+	};
+	struct _js_constructors {
+		static auto construct(js_string, js_string) noexcept { return emscripten::val::object(); }
+	};
 };
-struct _js_MyJsDerived : virtual _js_MyJsBase {
-	static auto _construct(js_string, js_string) noexcept { return emscripten::val::object(); }
+struct _js_MyJsDerived {
+	struct _js_members : virtual _js_MyJsBase::_js_members {
+	};
+	struct _js_constructors {
+		static auto construct(js_string, js_string) noexcept { return emscripten::val::object(); }
+	};
 };
 using MyJsBase = tc::js::js_ref<_js_MyJsBase>;
 using MyJsDerived = tc::js::js_ref<_js_MyJsDerived>;

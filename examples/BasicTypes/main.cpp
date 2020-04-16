@@ -10,14 +10,16 @@ using tc::js::js_string;
 using tc::js::js_unknown;
 using tc::js::js_optional;
 
-struct ISomeObject : virtual tc::js::IObject {
-	struct _js_ref_definitions { // Optional
+struct ISomeObject {
+	struct _js_definitions { // Optional
 		using Foo = int;
 	};
 
-	auto foo() {
-		return _call<js_string>("foo");
-	}
+	struct _js_members : virtual tc::js::IObject {
+		auto foo() {
+			return _call<js_string>("foo");
+		}
+	};
 };
 
 using SomeObject = tc::js::js_ref<ISomeObject>;

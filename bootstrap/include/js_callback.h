@@ -136,21 +136,23 @@ template<typename>
 struct IJsFunction {};
 
 template<typename R, typename... Args>
-struct IJsFunction<R(Args...)> : virtual IObject {
-	struct _js_ref_definitions {
-		using function_type = R(Args...);
-	};
-
+struct IJsFunction<R(Args...)> {
 	static_assert(IsJsInteropable<R>::value);
 	// Implicit instantiation of CCallableWrapper to ensure Args are correct.
 	static_assert(callback_detail::CCallableWrapper<tc::type::list<Args...>>::c_bInstantiated);
 
-	R operator()(Args... args) noexcept {
-		// These are limitations of emscripten::val, can be worked around.
-		static_assert(std::is_same<tc::type::find_unique_if_result::type_not_found, tc::type::find_unique<tc::type::list<Args...>, pass_this_t>>::value, "Cannot call a JS function which needs 'this'");
-		static_assert(std::is_same<tc::type::find_unique_if_result::type_not_found, tc::type::find_unique<tc::type::list<Args...>, pass_all_arguments_t>>::value, "Cannot call a JS function which takes an array of arguments");
-		return _call_this<R>(tc_move(args)...);
-	}
+	struct _js_definitions {
+		using function_type = R(Args...);
+	};
+
+	struct _js_members : virtual IObject {
+		R operator()(Args... args) noexcept {
+			// These are limitations of emscripten::val, can be worked around.
+			static_assert(std::is_same<tc::type::find_unique_if_result::type_not_found, tc::type::find_unique<tc::type::list<Args...>, pass_this_t>>::value, "Cannot call a JS function which needs 'this'");
+			static_assert(std::is_same<tc::type::find_unique_if_result::type_not_found, tc::type::find_unique<tc::type::list<Args...>, pass_all_arguments_t>>::value, "Cannot call a JS function which takes an array of arguments");
+			return _call_this<R>(tc_move(args)...);
+		}
+	};
 };
 } // namespace no_adl
 using no_adl::IJsFunction;

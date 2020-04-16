@@ -14,12 +14,16 @@ using tc::js::pass_this_t;
 using tc::js::pass_all_arguments_t;
 using tc::js::globals::Array;
 
-struct _js_SomeJsClass : virtual tc::js::IObject {
-	auto intValue() noexcept { return tc::explicit_cast<int>(_getProperty<double>("intValue")); }
+struct _js_SomeJsClass {
+	struct _js_members : virtual tc::js::IObject {
+		auto intValue() noexcept { return tc::explicit_cast<int>(_getProperty<double>("intValue")); }
+	};
 
-	static auto _construct(int v) noexcept {
-		return emscripten::val::module_property("SomeJsClass").new_(v);
-	}
+	struct _js_constructors {
+		static auto construct(int v) noexcept {
+			return emscripten::val::module_property("SomeJsClass").new_(v);
+		}
+	};
 };
 using SomeJsClass = tc::js::js_ref<_js_SomeJsClass>;
 
