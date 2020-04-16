@@ -47,63 +47,6 @@ std::string CppifyName(ts::Symbol jsymSymbol) noexcept {
 	return strResult;
 }
 
-struct SJsFunctionLike {
-	ts::Symbol m_jsymFunctionLike;
-	ts::Declaration m_jdeclFunctionLike;
-	ts::SignatureDeclaration m_jtsSignatureDeclaration;
-	ts::Signature m_jtsSignature;
-	js_optional<ReadonlyArray<js_unknown>> m_joptarrunkTypeParameter;
-	std::string m_strCppifiedParameters;
-
-	SJsFunctionLike(ts::TypeChecker const jtsTypeChecker, ts::Symbol const jsymFunctionLike, ts::Declaration const jdeclFunctionLike) noexcept
-		: m_jsymFunctionLike(jsymFunctionLike)
-		, m_jdeclFunctionLike(jdeclFunctionLike)
-		, m_jtsSignatureDeclaration([&]() noexcept -> ts::SignatureDeclaration {
-			if (auto const jotsMethodSignature = ts()->isMethodSignature(jdeclFunctionLike)) { // In interfaces.
-				return *jotsMethodSignature;
-			}
-			if (auto const jotsMethodDeclaration = ts()->isMethodDeclaration(jdeclFunctionLike)) { // In classes.
-				return *jotsMethodDeclaration;
-			}
-			if (auto const jotsConstructorDeclaration = ts()->isConstructorDeclaration(jdeclFunctionLike)) {
-				return *jotsConstructorDeclaration;
-			}
-			if (auto const jotsFunctionDeclaration = ts()->isFunctionDeclaration(jdeclFunctionLike)) {
-				return *jotsFunctionDeclaration;
-			}
-			_ASSERTFALSE;
-		}())
-		, m_jtsSignature(*jtsTypeChecker->getSignatureFromDeclaration(m_jtsSignatureDeclaration))
-		, m_joptarrunkTypeParameter(m_jtsSignature->getTypeParameters())
-		, m_strCppifiedParameters(tc::explicit_cast<std::string>(tc::join_separated(
-			tc::transform(
-				m_jtsSignature->getParameters(),
-				[&jtsTypeChecker, &jdeclFunctionLike](ts::Symbol const jsymParameter) noexcept {
-					return tc::concat(
-						MangleType(jtsTypeChecker, jtsTypeChecker->getTypeOfSymbolAtLocation(jsymParameter, jdeclFunctionLike)).m_strWithComments,
-						" ",
-						CppifyName(jsymParameter)
-					);
-				}
-			),
-			", "
-		)))
-	{
-		if (ts::ModifierFlags::None != ts()->getCombinedModifierFlags(jdeclFunctionLike) &&
-			ts::ModifierFlags::Export != ts()->getCombinedModifierFlags(jdeclFunctionLike) &&
-			ts::ModifierFlags::Ambient != ts()->getCombinedModifierFlags(jdeclFunctionLike)) {
-			tc::append(std::cerr,
-				"Unknown getCombinedModifierFlags for jdeclFunctionLike ",
-				tc::explicit_cast<std::string>(m_jsymFunctionLike->getName()),
-				": ",
-				tc::as_dec(static_cast<int>(ts()->getCombinedModifierFlags(jdeclFunctionLike))),
-				"\n"
-			);
-			_ASSERTFALSE;
-		}
-	}
-};
-
 struct SJsVariableLike {
 	ts::Symbol m_jsymName;
 	std::string m_strJsName;
@@ -135,6 +78,63 @@ struct SJsVariableLike {
 				m_strJsName,
 				": ",
 				tc::as_dec(static_cast<int>(nModifierFlags)),
+				"\n"
+			);
+			_ASSERTFALSE;
+		}
+	}
+};
+
+struct SJsFunctionLike {
+	ts::Symbol m_jsymFunctionLike;
+	ts::Declaration m_jdeclFunctionLike;
+	ts::SignatureDeclaration m_jtsSignatureDeclaration;
+	ts::Signature m_jtsSignature;
+	js_optional<ReadonlyArray<js_unknown>> m_joptarrunkTypeParameter;
+	std::vector<SJsVariableLike> m_vecjsvariablelikeParameters;
+	std::string m_strCppifiedParameters;
+
+	SJsFunctionLike(ts::TypeChecker const jtsTypeChecker, ts::Symbol const jsymFunctionLike, ts::Declaration const jdeclFunctionLike) noexcept
+		: m_jsymFunctionLike(jsymFunctionLike)
+		, m_jdeclFunctionLike(jdeclFunctionLike)
+		, m_jtsSignatureDeclaration([&]() noexcept -> ts::SignatureDeclaration {
+			if (auto const jotsMethodSignature = ts()->isMethodSignature(jdeclFunctionLike)) { // In interfaces.
+				return *jotsMethodSignature;
+			}
+			if (auto const jotsMethodDeclaration = ts()->isMethodDeclaration(jdeclFunctionLike)) { // In classes.
+				return *jotsMethodDeclaration;
+			}
+			if (auto const jotsConstructorDeclaration = ts()->isConstructorDeclaration(jdeclFunctionLike)) {
+				return *jotsConstructorDeclaration;
+			}
+			if (auto const jotsFunctionDeclaration = ts()->isFunctionDeclaration(jdeclFunctionLike)) {
+				return *jotsFunctionDeclaration;
+			}
+			_ASSERTFALSE;
+		}())
+		, m_jtsSignature(*jtsTypeChecker->getSignatureFromDeclaration(m_jtsSignatureDeclaration))
+		, m_joptarrunkTypeParameter(m_jtsSignature->getTypeParameters())
+		, m_vecjsvariablelikeParameters(tc::make_vector(tc::transform(
+			m_jtsSignature->getParameters(),
+			[&jtsTypeChecker](ts::Symbol const jsymParameter) noexcept {
+				return SJsVariableLike(jtsTypeChecker, jsymParameter);
+			}
+		)))
+		, m_strCppifiedParameters(tc::explicit_cast<std::string>(tc::join_separated(
+			tc::transform(m_vecjsvariablelikeParameters, [](SJsVariableLike const& jsvariablelikeParameter) noexcept {
+				return tc::concat(jsvariablelikeParameter.m_strMangledType, " ", jsvariablelikeParameter.m_strCppifiedName);
+			}),
+			", "
+		)))
+	{
+		if (ts::ModifierFlags::None != ts()->getCombinedModifierFlags(jdeclFunctionLike) &&
+			ts::ModifierFlags::Export != ts()->getCombinedModifierFlags(jdeclFunctionLike) &&
+			ts::ModifierFlags::Ambient != ts()->getCombinedModifierFlags(jdeclFunctionLike)) {
+			tc::append(std::cerr,
+				"Unknown getCombinedModifierFlags for jdeclFunctionLike ",
+				tc::explicit_cast<std::string>(m_jsymFunctionLike->getName()),
+				": ",
+				tc::as_dec(static_cast<int>(ts()->getCombinedModifierFlags(jdeclFunctionLike))),
 				"\n"
 			);
 			_ASSERTFALSE;
