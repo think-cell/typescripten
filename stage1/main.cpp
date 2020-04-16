@@ -159,7 +159,7 @@ struct SJsFunctionLike {
 };
 
 template<typename Rng>
-auto JoinWithSameCppSignature(Rng&& rngjsfunctionlikeFuncs) noexcept {
+auto MergeWithSameCppSignature(Rng&& rngjsfunctionlikeFuncs) noexcept {
 	auto vecjsfunctionlikeFuncs = tc::make_vector(rngjsfunctionlikeFuncs);
 	tc::sort_unique_inplace(
 		vecjsfunctionlikeFuncs,
@@ -193,7 +193,7 @@ struct SJsClass {
 				return IsEnumInCpp(jsymExport) || IsClassInCpp(jsymExport);
 			}
 		)))
-		, m_vecjsfunctionlikeExportFunction(tc::make_vector(JoinWithSameCppSignature(tc::join(tc::transform(
+		, m_vecjsfunctionlikeExportFunction(tc::make_vector(MergeWithSameCppSignature(tc::join(tc::transform(
 			tc::filter(
 				m_vecjsymExportOfModule,
 				[](ts::Symbol const jsymExport) noexcept {
@@ -229,7 +229,7 @@ struct SJsClass {
 				return std::vector<ts::Symbol>();
 			}
 		}())
-		, m_vecjsfunctionlikeMethod(tc::make_vector(JoinWithSameCppSignature(tc::join(tc::transform(
+		, m_vecjsfunctionlikeMethod(tc::make_vector(MergeWithSameCppSignature(tc::join(tc::transform(
 			tc::filter(m_vecjsymMember, [](ts::Symbol const jsymMember) noexcept {
 				return ts::SymbolFlags::Method == jsymMember->getFlags() || ts::SymbolFlags::Constructor == jsymMember->getFlags();
 			}),
