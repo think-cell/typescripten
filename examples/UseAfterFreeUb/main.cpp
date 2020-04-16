@@ -17,5 +17,5 @@ int main() {
 	//
 	// Of course, such behavior is undefined and one should not rely on it,
 	// but it's a great example of how things can get wrong.
-	_ASSERTEQUAL(6, o->length());
+	_ASSERTEQUAL(o->length(), 6);
 }

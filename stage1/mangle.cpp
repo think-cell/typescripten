@@ -38,7 +38,7 @@ bool IsTrivialType(ts::InterfaceType jinterfacetypeRoot) noexcept {
 	if (jinterfacetypeRoot->localTypeParameters()) return false;
 	if (jinterfacetypeRoot->thisType()) {
 		auto jtypeThis = *jinterfacetypeRoot->thisType();
-		_ASSERTEQUAL(ts::TypeFlags::TypeParameter, jtypeThis->flags());
+		_ASSERTEQUAL(jtypeThis->flags(), ts::TypeFlags::TypeParameter);
 		if (!jtypeThis->constraint().getEmval().strictlyEquals(jinterfacetypeRoot.getEmval())) return false;
 	}
 	return true;
@@ -124,10 +124,10 @@ SMangledType MangleType(tc::js::globals::ts::TypeChecker jtsTypeChecker, tc::js:
 			std::string strTarget = tc::explicit_cast<std::string>(jtsTypeChecker->getFullyQualifiedName(*josymTargetSymbol));
 			auto jrarrTypeArguments = (*jotypereferenceRoot)->typeArguments();
 			if ("Array" == strTarget) {
-				_ASSERTEQUAL(1, jrarrTypeArguments->length());
+				_ASSERTEQUAL(jrarrTypeArguments->length(), 1);
 				return WrapType("globals::Array<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">");
 			} else if ("ReadonlyArray" == strTarget) {
-				_ASSERTEQUAL(1, jrarrTypeArguments->length());
+				_ASSERTEQUAL(jrarrTypeArguments->length(), 1);
 				return WrapType("globals::ReadonlyArray<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">");
 			}
 			tc::cont_emplace_back(vecstrExtraInfo, "TypeReference");
@@ -135,7 +135,7 @@ SMangledType MangleType(tc::js::globals::ts::TypeChecker jtsTypeChecker, tc::js:
 	}
 	if (auto jointerfacetypeRoot = jtypeRoot->isClassOrInterface()) {
 		if (IsTrivialType(*jointerfacetypeRoot)) {
-			_ASSERTEQUAL(ts::TypeFlags::Object, (*jointerfacetypeRoot)->flags());
+			_ASSERTEQUAL((*jointerfacetypeRoot)->flags(), ts::TypeFlags::Object);
 			auto strMangledType = MangleSymbolName(jtsTypeChecker, *(*jointerfacetypeRoot)->getSymbol());
 			if (0 < g_usstrAllowedMangledTypes.count(strMangledType)) {
 				return {mangled_no_comments, strMangledType};

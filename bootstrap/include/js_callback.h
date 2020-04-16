@@ -36,7 +36,7 @@ struct CCallableWrapper final {
 		if constexpr (bPassedAllArguments) {
 			_ASSERT(tc::type::size<ListArgs>::value <= emvalArgs["length"].as<std::size_t>());
 		} else {
-			_ASSERTEQUAL(tc::type::size<ListArgs>::value, emvalArgs["length"].as<std::size_t>());
+			_ASSERTEQUAL(emvalArgs["length"].as<std::size_t>(), tc::type::size<ListArgs>::value);
 		}
 		return CCallHelper<ListArgs, std::make_index_sequence<tc::type::size<ListArgs>::value>>()(std::forward<Fn>(fn), emvalArgs);
 	}
