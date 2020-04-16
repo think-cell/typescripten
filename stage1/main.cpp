@@ -615,17 +615,7 @@ int main(int argc, char* argv[]) {
 						}
 					))
 				));
-			})),
-			"}; // namespace _jsall\n",
-			tc::join(tc::transform(
-				vecjsymExportedModule,
-				[&jtsTypeChecker](ts::Symbol const& jsymSourceFile) noexcept {
-					_ASSERT(IsClassInCpp(jsymSourceFile));
-					return tc::explicit_cast<std::string>(tc::concat(
-						"using ", CppifyName(jsymSourceFile), " = _jsall::", MangleSymbolName(jtsTypeChecker, jsymSourceFile), ";\n"
-					));
-				}
-			))
+			}))
 		);
 
 		std::vector<ts::Symbol> vecjsymGlobalType;
@@ -654,15 +644,6 @@ int main(int argc, char* argv[]) {
 		MergeWithSameCppSignatureInplace(vecjsfunctionlikeGlobalFunction);
 
 		tc::append(std::cout,
-			"namespace globals {\n",
-			tc::join(tc::transform(
-				vecjsymGlobalType,
-				[&jtsTypeChecker](ts::Symbol const& jsymType) noexcept {
-					return tc::explicit_cast<std::string>(tc::concat(
-						"	using ", CppifyName(jsymType), " = _jsall::", MangleSymbolName(jtsTypeChecker, jsymType), ";\n"
-					));
-				}
-			)),
 			tc::join(tc::transform(
 				vecjsfunctionlikeGlobalFunction,
 				[&jtsTypeChecker](SJsFunctionLike &jsfunctionlikeFunction) {
@@ -706,6 +687,40 @@ int main(int argc, char* argv[]) {
 								"{ using namespace _jsall; emscripten::val::global().set(\"", jsvariablelikeVariable.m_strJsName, "\", v); }\n"
 							))
 					));
+				}
+			)),
+			"}; // namespace _jsall\n",
+			tc::join(tc::transform(
+				vecjsymExportedModule,
+				[&jtsTypeChecker](ts::Symbol const& jsymSourceFile) noexcept {
+					_ASSERT(IsClassInCpp(jsymSourceFile));
+					return tc::explicit_cast<std::string>(tc::concat(
+						"using ", CppifyName(jsymSourceFile), " = _jsall::", MangleSymbolName(jtsTypeChecker, jsymSourceFile), ";\n"
+					));
+				}
+			))
+		);
+
+		tc::append(std::cout,
+			"namespace globals {\n",
+			tc::join(tc::transform(
+				vecjsymGlobalType,
+				[&jtsTypeChecker](ts::Symbol const& jsymType) noexcept {
+					return tc::explicit_cast<std::string>(tc::concat(
+						"	using ", CppifyName(jsymType), " = _jsall::", MangleSymbolName(jtsTypeChecker, jsymType), ";\n"
+					));
+				}
+			)),
+			tc::join(tc::transform(
+				vecjsfunctionlikeGlobalFunction,
+				[](SJsFunctionLike &jsfunctionlikeFunction) {
+					return tc::concat("	using _jsall::", jsfunctionlikeFunction.m_strCppifiedName, ";\n");
+				}
+			)),
+			tc::join(tc::transform(
+				vecjsvariablelikeGlobalVariable,
+				[](SJsVariableLike const& jsvariablelikeVariable) noexcept {
+					return tc::concat("	using _jsall::", jsvariablelikeVariable.m_strCppifiedName, ";\n");
 				}
 			)),
 			tc::join(tc::transform(
