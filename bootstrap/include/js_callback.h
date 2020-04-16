@@ -173,9 +173,14 @@ struct RequireRelaxedPointerSafety {
 // it is only stored as a by-value const field.
 template<typename T>
 struct CUniqueDetachableJsFunction : private tc::nonmovable, private RequireRelaxedPointerSafety, js_function<T> {
-	CUniqueDetachableJsFunction(FunctionPointer pfunc, FirstArgument arg0) noexcept : js_function<T>(
-		emscripten::val::module_property("tc_js_callback_detail_js_CreateJsFunction")(reinterpret_cast<PointerNumber>(pfunc), reinterpret_cast<PointerNumber>(arg0))
-	) {}
+	CUniqueDetachableJsFunction(FunctionPointer pfunc, FirstArgument arg0) noexcept : js_function<T>([&]() {
+		static auto creator = []() {
+			auto creator = emscripten::val::module_property("tc_js_callback_detail_js_CreateJsFunction");
+			_ASSERT(!creator.isUndefined() && "Unable to find a function from js_callback.js, did you pass '--pre-js js_callback.js' flags to em++?");
+			return creator;
+		}();
+		return creator(reinterpret_cast<PointerNumber>(pfunc), reinterpret_cast<PointerNumber>(arg0));
+	}()) {}
 
 	~CUniqueDetachableJsFunction() noexcept {
 		this->getEmval().template call<void>("detach");
