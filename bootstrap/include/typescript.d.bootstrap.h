@@ -728,7 +728,7 @@ struct _jsdefs_ts : _jsenums_ts {
 	};
 
 	struct _js_DeclarationStatement : virtual _js_NamedDeclaration {
-	    auto name() noexcept { return _getProperty<js_optional<Declaration>>("name"); }
+		auto name() noexcept { return _getProperty<js_optional<Declaration>>("name"); }
 	};
 
 	struct _js_FunctionDeclaration : virtual _js_DeclarationStatement {
@@ -1060,7 +1060,7 @@ struct _js_ts : virtual IObject, _jsdefs_ts {
 	}
 
 	auto forEachChild(Node node, js_function<void(Node)> func) noexcept {
-	    return _call<void>("forEachChild", node, func);
+		return _call<void>("forEachChild", node, func);
 	}
 
 	static emscripten::val _tcjs_construct() noexcept { return emscripten::val::global("ts"); }

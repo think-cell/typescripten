@@ -12,18 +12,18 @@ std::string MangleSymbolName(tc::js::globals::ts::TypeChecker const& jtsTypeChec
 DEFINE_ADL_TAG_TYPE(mangled_no_comments)
 
 struct SMangledType {
-    std::string m_strWithComments;
-    std::string m_strCppCanonized;
+	std::string m_strWithComments;
+	std::string m_strCppCanonized;
 
-    SMangledType(mangled_no_comments_t, std::string strWithComments) noexcept
-        : m_strWithComments(std::move(strWithComments))
-        , m_strCppCanonized(m_strWithComments)
-    {}
+	SMangledType(mangled_no_comments_t, std::string strWithComments) noexcept
+		: m_strWithComments(std::move(strWithComments))
+		, m_strCppCanonized(m_strWithComments)
+	{}
 
-    SMangledType(std::string strWithComments, std::string strCppCanonized) noexcept
-        : m_strWithComments(std::move(strWithComments))
-        , m_strCppCanonized(std::move(strCppCanonized))
-    {}
+	SMangledType(std::string strWithComments, std::string strCppCanonized) noexcept
+		: m_strWithComments(std::move(strWithComments))
+		, m_strCppCanonized(std::move(strCppCanonized))
+	{}
 };
 
 SMangledType MangleType(tc::js::globals::ts::TypeChecker jtsTypeChecker, tc::js::globals::ts::Type jtypeRoot) noexcept;
