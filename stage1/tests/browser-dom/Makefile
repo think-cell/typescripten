@@ -8,6 +8,9 @@ PRE_JS=
 
 all: $(TARGET)
 
+lib.dom.d.ts: ../../node_modules/typescript/lib/lib.dom.d.ts
+	cp $< $@
+
 lib.dom.d.h: lib.dom.d.ts ../../main.js
 	node ../../main.js $< >$@ 2>$(LOG)
 
