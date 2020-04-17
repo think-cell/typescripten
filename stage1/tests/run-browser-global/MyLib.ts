@@ -3,6 +3,7 @@ function sumOfTwo(a: number, b: number): number {
 }
 
 var initially10: number = 10;
+var initially10: number;  // Duplicated declarations are allowed.
 
 class SomeBaseClass {
     foo(x: number): string { return "base"; }

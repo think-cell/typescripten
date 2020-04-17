@@ -64,7 +64,9 @@ struct SJsVariableLike {
 	ts::Symbol m_jsymName;
 	std::string m_strJsName;
 	std::string m_strCppifiedName;
-	ts::Declaration m_jdeclVariableLike;
+private:
+	ts::Declaration m_jdeclVariableLike; // There may be multiple declarations, we ensure they do not conflict.
+public:
 	ts::Type m_jtypeDeclared;
 	SMangledType m_mtType;
 	bool m_bReadonly;
@@ -74,7 +76,22 @@ struct SJsVariableLike {
 		, m_strJsName(tc::explicit_cast<std::string>(jsymName->getName()))
 		, m_strCppifiedName(CppifyName(jsymName))
 		, m_jdeclVariableLike([&]() noexcept {
-			_ASSERTEQUAL(jsymName->declarations()->length(), 1);
+			_ASSERT(1 <= jsymName->declarations()->length());
+			if (1 < jsymName->declarations()->length()) {
+				// There may be multiple declarations, but they should have the same type (structurally).
+				// We strenghten this requirement even more for now.
+				auto const jdeclFirst = jsymName->declarations()[0];
+				auto const nModifierFlagsFirst = ts()->getCombinedModifierFlags(jdeclFirst);
+				auto const jtypeFirst = jtsTypeChecker->getTypeOfSymbolAtLocation(jsymName, jdeclFirst);
+				tc::for_each(jsymName->declarations(), [&](ts::Declaration const jdeclCurrent) {
+					auto const nModifierFlagsCurrent = ts()->getCombinedModifierFlags(jdeclCurrent);
+					auto const jtypeCurrent = jtsTypeChecker->getTypeOfSymbolAtLocation(jsymName, jdeclCurrent);
+					if (nModifierFlagsCurrent != nModifierFlagsFirst || !jtypeCurrent.getEmval().strictlyEquals(jtypeFirst.getEmval())) {
+						tc::append(std::cerr, "JSVariableLike of symbol '", m_strJsName, "' has ", tc::as_dec(jsymName->declarations()->length()), " conflicting declarations\n");
+						_ASSERTFALSE;
+					}
+				});
+			}
 			return jsymName->declarations()[0];
 		}())
 		, m_jtypeDeclared(jtsTypeChecker->getTypeOfSymbolAtLocation(jsymName, m_jdeclVariableLike))
@@ -180,6 +197,17 @@ void MergeWithSameCppSignatureInplace(Rng& rngjsfunctionlikeFuncs) noexcept {
 	// TODO: add comments about skipped overloads;
 }
 
+template<typename Rng>
+void MergeVariableRedeclarationsInplace(Rng& rngjsvariablelikeVars) noexcept {
+	tc::sort_accumulate_each_unique_range(
+		rngjsvariablelikeVars,
+		[](SJsVariableLike const& a, SJsVariableLike const& b) { return a.m_strJsName < b.m_strJsName; },
+		[](SJsVariableLike const& first, SJsVariableLike const& current) {
+			_ASSERT(current.m_jsymName.getEmval().strictlyEquals(first.m_jsymName.getEmval()));
+		}
+	);
+}
+
 struct SJsClass {
 	ts::Symbol m_jsymClass;
 	std::string m_strMangledName;
@@ -267,6 +295,8 @@ struct SJsClass {
 	{
 		MergeWithSameCppSignatureInplace(m_vecjsfunctionlikeExportFunction);
 		MergeWithSameCppSignatureInplace(m_vecjsfunctionlikeMethod);
+		MergeVariableRedeclarationsInplace(m_vecjsvariablelikeExportVariable);
+		// MergeVariableRedeclarationsInplace(m_vecjsvariablelikeProperty); // Properties cannot be redeclared.
 		if (auto jointerfacetypeClass = jtsTypeChecker->getDeclaredTypeOfSymbol(jsymClass)->isClassOrInterface()) {
 			tc::for_each(jtsTypeChecker->getBaseTypes(*jointerfacetypeClass),
 				[&](ts::BaseType const jtsBaseType) noexcept {
@@ -651,6 +681,7 @@ int main(int argc, char* argv[]) {
 		});
 
 		MergeWithSameCppSignatureInplace(vecjsfunctionlikeGlobalFunction);
+		MergeVariableRedeclarationsInplace(vecjsvariablelikeGlobalVariable);
 
 		tc::append(std::cout,
 			tc::join(tc::transform(

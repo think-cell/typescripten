@@ -31,6 +31,7 @@ declare namespace Foo {
         namespace Interface1 {
             var staticInterface1: string;
             function doSomethingStatic(): void;
+		    var staticInterface1: string; // Duplicated declarations are sometimes allowed.
         }
     }
     namespace NsInterface2 {
