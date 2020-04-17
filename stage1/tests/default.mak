@@ -5,12 +5,7 @@ PRE_JS=main-pre.js
 
 include ../../../build-flags.mak
 
-ifdef NO_NODE_RUN
 all: $(TARGET)
-else
-all: $(TARGET) MyLib.js
-	node $<
-endif
 
 ifndef NO_TYPESCRIPT_COMPILATION
 MyLib.js MyLib.d.ts: MyLib.ts

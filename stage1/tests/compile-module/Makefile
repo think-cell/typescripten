@@ -1,4 +1,3 @@
-NO_NODE_RUN=1
 NO_TYPESCRIPT_COMPILATION=1
 
 include ../default.mak
