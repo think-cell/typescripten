@@ -30,7 +30,7 @@ and limitations under the License.
 #include "js_bootstrap.h"
 
 namespace tc::js {
-namespace globals::no_adl {
+namespace globals::enums_adl {
 struct _jsenums_ts {
 	enum class SyntaxKind {
 		Unknown = 0,
@@ -581,21 +581,21 @@ inline bool operator&(_jsenums_ts::ObjectFlags a, _jsenums_ts::ObjectFlags b) { 
 
 inline _jsenums_ts::ModifierFlags operator|(_jsenums_ts::ModifierFlags a, _jsenums_ts::ModifierFlags b) { return static_cast<_jsenums_ts::ModifierFlags>(static_cast<int>(a) | static_cast<int>(b)); }
 inline bool operator&(_jsenums_ts::ModifierFlags a, _jsenums_ts::ModifierFlags b) { return static_cast<int>(a) & static_cast<int>(b); }
-} // namespace globals::no_adl
+} // namespace globals::enums_adl
 
 // We have to specialize IsJsIntegralEnum before these types are used below.
-template<> struct IsJsIntegralEnum<globals::no_adl::_jsenums_ts::SyntaxKind> : std::true_type {};
-template<> struct IsJsIntegralEnum<globals::no_adl::_jsenums_ts::ModuleKind> : std::true_type {};
-template<> struct IsJsIntegralEnum<globals::no_adl::_jsenums_ts::ScriptTarget> : std::true_type {};
-template<> struct IsJsIntegralEnum<globals::no_adl::_jsenums_ts::SignatureKind> : std::true_type {};
-template<> struct IsJsIntegralEnum<globals::no_adl::_jsenums_ts::SymbolFlags> : std::true_type {};
-template<> struct IsJsIntegralEnum<globals::no_adl::_jsenums_ts::TypeFlags> : std::true_type {};
-template<> struct IsJsIntegralEnum<globals::no_adl::_jsenums_ts::ObjectFlags> : std::true_type {};
-template<> struct IsJsIntegralEnum<globals::no_adl::_jsenums_ts::ModifierFlags> : std::true_type {};
+template<> struct IsJsIntegralEnum<globals::enums_adl::_jsenums_ts::SyntaxKind> : std::true_type {};
+template<> struct IsJsIntegralEnum<globals::enums_adl::_jsenums_ts::ModuleKind> : std::true_type {};
+template<> struct IsJsIntegralEnum<globals::enums_adl::_jsenums_ts::ScriptTarget> : std::true_type {};
+template<> struct IsJsIntegralEnum<globals::enums_adl::_jsenums_ts::SignatureKind> : std::true_type {};
+template<> struct IsJsIntegralEnum<globals::enums_adl::_jsenums_ts::SymbolFlags> : std::true_type {};
+template<> struct IsJsIntegralEnum<globals::enums_adl::_jsenums_ts::TypeFlags> : std::true_type {};
+template<> struct IsJsIntegralEnum<globals::enums_adl::_jsenums_ts::ObjectFlags> : std::true_type {};
+template<> struct IsJsIntegralEnum<globals::enums_adl::_jsenums_ts::ModifierFlags> : std::true_type {};
 
 namespace globals {
 namespace no_adl {
-struct _jsdefs_ts : _jsenums_ts {
+struct _jsdefs_ts : enums_adl::_jsenums_ts {
 	struct _js_TextRange;
 	struct _js_Node;
 	struct _js_Declaration;
