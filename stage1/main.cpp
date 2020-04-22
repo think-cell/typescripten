@@ -410,10 +410,9 @@ int main(int argc, char* argv[]) {
 		});
 
 		tc::append(std::cout,
-			"namespace tc::js {\n",
+			"namespace tc::js_defs {\n",
 			tc::join(tc::transform(g_vecjsymEnum, [&jtsTypeChecker](ts::Symbol const jsymEnum) noexcept {
-				// Enums are declared outside of the _jsall class because we have to mark them as IsJsIntegralEnum
-				// before using in js interop.
+				// We have to mark enums as IsJsIntegralEnum before using in js interop.
 				return tc::concat(
 					"enum class _enum", MangleSymbolName(jtsTypeChecker, jsymEnum), " {\n",
 					tc::join(
@@ -438,11 +437,21 @@ int main(int argc, char* argv[]) {
 							}
 						})
 					),
-					"};\n",
-					"template<> struct IsJsIntegralEnum<_enum", MangleSymbolName(jtsTypeChecker, jsymEnum), "> : std::true_type {};\n"
+					"};\n"
 				);
 			})),
-			"namespace _jsall {\n",
+			"} // namespace tc::js_defs\n",
+			"namespace tc::js_types {\n",
+			tc::join(tc::transform(g_vecjsymEnum, [&jtsTypeChecker](ts::Symbol const jsymEnum) noexcept {
+				// Enums are declared outside of the _jsall class because we have to mark them as IsJsIntegralEnum
+				// before using in js interop.
+				return tc::concat(
+					"template<> struct IsJsIntegralEnum<js_defs::_enum", MangleSymbolName(jtsTypeChecker, jsymEnum), "> : std::true_type {};\n"
+				);
+			})),
+			"} // namespace tc::js_types\n",
+			"namespace tc::js_defs {\n",
+			"	using namespace js_types; // no ADL\n",
 			tc::join(tc::transform(g_vecjsymEnum, [&jtsTypeChecker](ts::Symbol const jsymEnum) noexcept {
 				return tc::concat(
 					"	using ", MangleSymbolName(jtsTypeChecker, jsymEnum), " = _enum", MangleSymbolName(jtsTypeChecker, jsymEnum), ";\n"
@@ -729,38 +738,38 @@ int main(int argc, char* argv[]) {
 					));
 				}
 			)),
-			"}; // namespace _jsall\n",
+			"}; // namespace tc::js_defs\n",
+			"namespace tc::js {\n",
 			tc::join(tc::transform(
 				vecjsymExportedModule,
 				[&jtsTypeChecker](ts::Symbol const& jsymSourceFile) noexcept {
 					_ASSERT(IsClassInCpp(jsymSourceFile));
 					return tc::explicit_cast<std::string>(tc::concat(
-						"using ", CppifyName(jsymSourceFile), " = _jsall::", MangleSymbolName(jtsTypeChecker, jsymSourceFile), ";\n"
+						"using ", CppifyName(jsymSourceFile), " = js_defs::", MangleSymbolName(jtsTypeChecker, jsymSourceFile), ";\n"
 					));
 				}
 			))
 		);
 
 		tc::append(std::cout,
-			"namespace globals {\n",
 			tc::join(tc::transform(
 				vecjsymGlobalType,
 				[&jtsTypeChecker](ts::Symbol const& jsymType) noexcept {
 					return tc::explicit_cast<std::string>(tc::concat(
-						"	using ", CppifyName(jsymType), " = _jsall::", MangleSymbolName(jtsTypeChecker, jsymType), ";\n"
+						"	using ", CppifyName(jsymType), " = js_defs::", MangleSymbolName(jtsTypeChecker, jsymType), ";\n"
 					));
 				}
 			)),
 			tc::join(tc::transform(
 				vecjsfunctionlikeGlobalFunction,
 				[](SJsFunctionLike &jsfunctionlikeFunction) {
-					return tc::concat("	using _jsall::", jsfunctionlikeFunction.m_strCppifiedName, ";\n");
+					return tc::concat("	using js_defs::", jsfunctionlikeFunction.m_strCppifiedName, ";\n");
 				}
 			)),
 			tc::join(tc::transform(
 				vecjsvariablelikeGlobalVariable,
 				[](SJsVariableLike const& jsvariablelikeVariable) noexcept {
-					return tc::concat("	using _jsall::", jsvariablelikeVariable.m_strCppifiedName, ";\n");
+					return tc::concat("	using js_defs::", jsvariablelikeVariable.m_strCppifiedName, ";\n");
 				}
 			)),
 			tc::join(tc::transform(
@@ -771,7 +780,6 @@ int main(int argc, char* argv[]) {
 					));
 				}
 			)),
-			"} // namespace globals\n",
 			"} // namespace tc::js\n"
 		);
 	}

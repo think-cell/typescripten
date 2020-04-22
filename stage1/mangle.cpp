@@ -125,10 +125,10 @@ SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type
 			auto jrarrTypeArguments = (*jotypereferenceRoot)->typeArguments();
 			if ("Array" == strTarget) {
 				_ASSERTEQUAL(jrarrTypeArguments->length(), 1);
-				return WrapType("globals::Array<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">");
+				return WrapType("js::Array<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">");
 			} else if ("ReadonlyArray" == strTarget) {
 				_ASSERTEQUAL(jrarrTypeArguments->length(), 1);
-				return WrapType("globals::ReadonlyArray<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">");
+				return WrapType("js::ReadonlyArray<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">");
 			}
 			tc::cont_emplace_back(vecstrExtraInfo, "TypeReference");
 		}

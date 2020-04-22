@@ -2,6 +2,6 @@
 #include "lib.dom.d.h"
 
 int main() {
-	tc::js::globals::document()->title(tc::js::js_string("Hello World from C++!"));
+	tc::js::document()->title(tc::js_types::js_string("Hello World from C++!"));
 	printf("Success!\n");
 }

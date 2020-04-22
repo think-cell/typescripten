@@ -8,7 +8,7 @@ int main() {
 	tc::js::MyLib::initially10(12);
 	_ASSERTEQUAL(tc::js::MyLib::initially10(), 12);
 
-	tc::js::MyLib::SomeObject obj;
+	tc::js::MyLib::SomeObject obj(tc::js_types::create_js_object);
 	_ASSERTEQUAL(tc::explicit_cast<std::string>(obj->str()), "");
 	_ASSERTEQUAL(obj->arr()->length(), 0);
 	_ASSERT(tc::empty(obj->arr()));
@@ -25,7 +25,7 @@ int main() {
 
 	_ASSERTEQUAL(tc::js::MyLib::SomeModule::sumOfThree(10, 20, 30), 60);
 
-	tc::js::MyLib::SomeObject obj2 = tc::js::MyLib::createObject(tc::js::js_string("foobar"));
+	tc::js::MyLib::SomeObject obj2 = tc::js::MyLib::createObject(tc::js_types::js_string("foobar"));
 	_ASSERTEQUAL(tc::explicit_cast<std::string>(obj2->str()), "foobar");
 	_ASSERTEQUAL(obj2->arr()->length(), 0);
 	_ASSERT(tc::empty(obj2->arr()));
