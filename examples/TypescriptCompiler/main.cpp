@@ -5,11 +5,11 @@
 #include "range.h"
 #include "typescript.d.bootstrap.h"
 
-using tc::js::create_js_object;
-using tc::js::js_string;
-using tc::js::globals::ts;
-using tc::js::globals::Array;
-using tc::js::globals::ReadonlyArray;
+using tc::js_types::create_js_object;
+using tc::js_types::js_string;
+using tc::js::ts;
+using tc::js::Array;
+using tc::js::ReadonlyArray;
 
 int main(int argc, char* argv[]) {
 	_ASSERT(2 <= argc);

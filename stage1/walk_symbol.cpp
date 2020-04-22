@@ -2,7 +2,7 @@
 #include "typescript.d.bootstrap.h"
 #include "walk_symbol.h"
 
-using tc::js::globals::ts;
+using tc::js::ts;
 
 std::vector<ts::Symbol> g_vecjsymEnum, g_vecjsymClass;
 
@@ -96,7 +96,7 @@ void WalkSymbol(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Sy
 
 std::vector<ts::Symbol> ListSourceFileTopLevel(ts::TypeChecker const& jtsTypeChecker, ts::SourceFile const jtsSourceFile) noexcept {
 	std::vector<ts::Symbol> vecjsymTopLevel;
-	ts()->forEachChild(jtsSourceFile, tc::js::js_lambda_wrap([&](ts::Node jnodeChild) noexcept {
+	ts()->forEachChild(jtsSourceFile, tc::js_types::js_lambda_wrap([&](ts::Node jnodeChild) noexcept {
 		if (auto const jotsFunctionDeclaration = ts()->isFunctionDeclaration(jnodeChild)) {
 			tc::cont_emplace_back(vecjsymTopLevel, jtsTypeChecker->getSymbolAtLocation(*(*jotsFunctionDeclaration)->name()));
 		} else if (auto const jotsVariableStatement = ts()->isVariableStatement(jnodeChild)) {

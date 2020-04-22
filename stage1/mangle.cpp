@@ -2,7 +2,7 @@
 #include "typescript.d.bootstrap.h"
 #include "mangle.h"
 
-using tc::js::globals::ts;
+using tc::js::ts;
 
 std::unordered_set<std::string> g_usstrAllowedMangledTypes;
 
@@ -51,7 +51,7 @@ SMangledType WrapType(std::string const strPrefix, SMangledType const mtType, st
 	};
 }
 
-SMangledType CommentType(tc::js::globals::ts::TypeChecker const jtsTypeChecker, std::string const strCppType, tc::js::globals::ts::Type const jtypeRoot) noexcept {
+SMangledType CommentType(tc::js::ts::TypeChecker const jtsTypeChecker, std::string const strCppType, tc::js::ts::Type const jtypeRoot) noexcept {
 	return {
 		tc::explicit_cast<std::string>(tc::concat(
 			strCppType,
@@ -63,7 +63,7 @@ SMangledType CommentType(tc::js::globals::ts::TypeChecker const jtsTypeChecker, 
 	};
 }
 
-SMangledType MangleType(tc::js::globals::ts::TypeChecker jtsTypeChecker, tc::js::globals::ts::Type jtypeRoot) noexcept {
+SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type jtypeRoot) noexcept {
 	// See checker.ts:typeToTypeNodeHelper
 	if (ts::TypeFlags::Any == jtypeRoot->flags() ||
 		ts::TypeFlags::Unknown == jtypeRoot->flags()

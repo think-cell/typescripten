@@ -6,11 +6,11 @@
 #include "js_types.h"
 #include "js_ref.h"
 
-using tc::js::js_string;
-using tc::js::js_unknown;
-using tc::js::js_optional;
+using tc::js_types::js_string;
+using tc::js_types::js_unknown;
+using tc::js_types::js_optional;
 
-struct ISomeObject : virtual tc::js::IObject {
+struct ISomeObject : virtual tc::js_types::IObject {
 	struct _tcjs_definitions { // Optional
 		using Foo = int;
 	};
@@ -20,7 +20,7 @@ struct ISomeObject : virtual tc::js::IObject {
 	}
 };
 
-using SomeObject = tc::js::js_ref<ISomeObject>;
+using SomeObject = tc::js_types::js_ref<ISomeObject>;
 
 int main() {
 	{
@@ -50,20 +50,20 @@ int main() {
 	}
 
 	{
-		emscripten::val const emval{tc::js::js_undefined{}};
+		emscripten::val const emval{tc::js_types::js_undefined{}};
 		_ASSERTE(emval.isUndefined());
-		tc::js::js_undefined{emval};
+		tc::js_types::js_undefined{emval};
 	}
 
 	{
-		emscripten::val const emval{tc::js::js_null{}};
+		emscripten::val const emval{tc::js_types::js_null{}};
 		_ASSERTE(emval.isNull());
-		tc::js::js_null{emval};
+		tc::js_types::js_null{emval};
 	}
 
 	{
 		// Test optional of object.
-		using OptionalUnknown = js_optional<tc::js::js_object>;
+		using OptionalUnknown = js_optional<tc::js_types::js_object>;
 		static_assert(
 			std::is_same<
 				typename emscripten::internal::BindingType<OptionalUnknown>::WireType,
@@ -76,7 +76,7 @@ int main() {
 			_ASSERT(emval.isUndefined());
 		}
 		{
-			tc::js::js_object const jsOrigin(emscripten::val::object());
+			tc::js_types::js_object const jsOrigin(emscripten::val::object());
 			emscripten::val emval{OptionalUnknown(jsOrigin)};
 			auto const ounkParsed = emval.template as<OptionalUnknown>();
 			_ASSERT(ounkParsed);

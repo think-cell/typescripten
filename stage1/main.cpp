@@ -3,14 +3,14 @@
 #include "mangle.h"
 #include "walk_symbol.h"
 
-using tc::js::create_js_object;
-using tc::js::js_string;
-using tc::js::js_optional;
-using tc::js::js_unknown;
-using tc::js::globals::console;
-using tc::js::globals::ts;
-using tc::js::globals::Array;
-using tc::js::globals::ReadonlyArray;
+using tc::js_types::create_js_object;
+using tc::js_types::js_string;
+using tc::js_types::js_optional;
+using tc::js_types::js_unknown;
+using tc::js::console;
+using tc::js::ts;
+using tc::js::Array;
+using tc::js::ReadonlyArray;
 
 std::string RetrieveSymbolFromCpp(ts::Symbol jsymSymbol) noexcept {
 	std::string strSymbolName = tc::explicit_cast<std::string>(jsymSymbol->getName());

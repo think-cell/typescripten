@@ -10,7 +10,7 @@
 #include "noncopyable.h"
 #include "js_types.h"
 
-namespace tc::js {
+namespace tc::js_types {
 namespace no_adl {
 struct IObject {
 private:
@@ -185,4 +185,4 @@ template<typename T>
 struct IsEmvalWrapper<T, std::enable_if_t<tc::is_decayed<T>::value && tc::is_instance_or_derived<js_ref, T>::value>> : std::true_type {
 };
 } // namespace emscripten_interop_detail::no_adl
-} // namespace tc::js
+} // namespace tc::js_types

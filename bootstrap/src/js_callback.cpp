@@ -1,7 +1,7 @@
 #include <emscripten/bind.h>
 #include "js_callback.h"
 
-namespace tc::js {
+namespace tc::js_types {
 namespace callback_detail {
 /**
  * [basic.compound] 6.7.2
@@ -42,4 +42,4 @@ EMSCRIPTEN_BINDINGS(tc_js_callback_detail_bind) {
 }
 
 } // namespace callback_detail
-} // namespace tc::js
+} // namespace tc::js_types

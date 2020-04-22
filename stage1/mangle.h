@@ -7,7 +7,7 @@
 
 extern std::unordered_set<std::string> g_usstrAllowedMangledTypes;
 
-std::string MangleSymbolName(tc::js::globals::ts::TypeChecker const& jtsTypeChecker, tc::js::globals::ts::Symbol jsymType) noexcept;
+std::string MangleSymbolName(tc::js::ts::TypeChecker const& jtsTypeChecker, tc::js::ts::Symbol jsymType) noexcept;
 
 DEFINE_ADL_TAG_TYPE(mangled_no_comments)
 
@@ -26,6 +26,6 @@ struct SMangledType {
 	{}
 };
 
-SMangledType MangleType(tc::js::globals::ts::TypeChecker jtsTypeChecker, tc::js::globals::ts::Type jtypeRoot) noexcept;
+SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type jtypeRoot) noexcept;
 
 #endif // MANGLE_H_
