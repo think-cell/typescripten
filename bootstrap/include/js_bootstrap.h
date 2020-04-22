@@ -49,6 +49,10 @@ struct _js_Array : virtual IObject {
 			return tc::continue_;
 	}
 
+	static Array<T> _tcjs_construct() noexcept {
+		return Array<T>(emscripten::val::array());
+	}
+
 	template<typename Rng, typename = std::enable_if_t<tc::is_explicit_castable<T, tc::range_value_t<Rng>&&>::value>>
 	static Array<T> _tcjs_construct(Rng&& rng) noexcept {
 		Array<T> result(emscripten::val::array());
@@ -82,10 +86,14 @@ struct _js_ReadonlyArray : virtual IObject {
 			return tc::continue_;
 	}
 
+	static ReadonlyArray<T> _tcjs_construct() noexcept {
+		return ReadonlyArray<T>(emscripten::val::array());
+	}
+
 	template<typename Rng, typename = std::enable_if_t<tc::is_explicit_castable<T, tc::range_value_t<Rng>&&>::value>>
 	static ReadonlyArray<T> _tcjs_construct(Rng&& rng) noexcept {
 		return ReadonlyArray<T>(
-			tc::explicit_cast<Array<T>>(std::forward<Rng>(rng)).getEmval()
+			Array<T>(create_js_object, std::forward<Rng>(rng)).getEmval()
 		);
 	}
 };

@@ -1067,8 +1067,13 @@ struct _js_ts : virtual IObject, _jsdefs_ts {
 };
 
 struct ts : js_ref<_js_ts>, _jsdefs_ts {
+    using js_ref<_js_ts>::js_ref;
 };
 } // namespace no_adl
 using no_adl::ts;
+inline const ts& ts() {
+    static struct ts module(create_js_object);
+    return module;
+}
 } // namespace globals
 } // namespace tc::js

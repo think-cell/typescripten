@@ -3,6 +3,7 @@
 #include "mangle.h"
 #include "walk_symbol.h"
 
+using tc::js::create_js_object;
 using tc::js::js_string;
 using tc::js::js_optional;
 using tc::js::js_unknown;
@@ -314,13 +315,13 @@ struct SJsClass {
 int main(int argc, char* argv[]) {
 	_ASSERT(2 <= argc);
 
-	ts::CompilerOptions const jtsCompilerOptions;
+	ts::CompilerOptions const jtsCompilerOptions(create_js_object);
 	jtsCompilerOptions->strict(true);
 	jtsCompilerOptions->target(ts::ScriptTarget::ES5);
 	jtsCompilerOptions->module(ts::ModuleKind::CommonJS);
 
 	auto const rngstrFileNames = tc::make_iterator_range(argv + 1, argv + argc);
-	ts::Program const jtsProgram = ts()->createProgram(ReadonlyArray<js_string>(rngstrFileNames), jtsCompilerOptions);
+	ts::Program const jtsProgram = ts()->createProgram(ReadonlyArray<js_string>(create_js_object, rngstrFileNames), jtsCompilerOptions);
 
 	ts::TypeChecker const jtsTypeChecker = jtsProgram->getTypeChecker();
 

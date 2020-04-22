@@ -5,6 +5,7 @@
 #include "js_types.h"
 #include "js_ref.h"
 
+using tc::js::create_js_object;
 using tc::js::js_object;
 using tc::js::js_string;
 using tc::js::js_undefined;
@@ -56,14 +57,14 @@ int main() {
 			_ASSERTEQUAL(double{u}, 123.5);
 		}
 		{
-			MyJsBase const base(js_string("foo"), js_string("bar"));
+			MyJsBase const base(create_js_object, js_string("foo"), js_string("bar"));
 			static_cast<void>(BigUnion(base));
 			BigUnion const u = base;
 			_ASSERT(u.getEmval().strictlyEquals(base.getEmval()));
 			_ASSERT(MyJsBase{u}.getEmval().strictlyEquals(base.getEmval()));
 		}
 		{
-			MyJsDerived const derived(js_string("foo"), js_string("bar"));
+			MyJsDerived const derived(create_js_object, js_string("foo"), js_string("bar"));
 			static_cast<void>(BigUnion(derived));
 			BigUnion const u = derived;
 			_ASSERT(u.getEmval().strictlyEquals(derived.getEmval()));
@@ -106,8 +107,8 @@ int main() {
 	}
 	{
 		using ObjectOrBaseOrString = js_union<js_object, MyJsBase, js_string>;
-		MyJsBase const base(js_string(""), js_string(""));
-		MyJsDerived const derived(js_string(""), js_string(""));
+		MyJsBase const base(create_js_object, js_string(""), js_string(""));
+		MyJsDerived const derived(create_js_object, js_string(""), js_string(""));
 		js_string const str("");
 
 		// Test implicit construction.
@@ -160,7 +161,7 @@ int main() {
 		// Corner case: all options are subtypes of an option.
 		using BaseOrDerived = js_union<MyJsBase, MyJsDerived>;
 		static_assert(std::is_convertible<MyJsDerived, MyJsBase>::value);
-		BaseOrDerived const bod(MyJsDerived(js_string(""), js_string("")));
+		BaseOrDerived const bod(MyJsDerived(create_js_object, js_string(""), js_string("")));
 
 		// Basecast.
 		{
@@ -205,7 +206,7 @@ int main() {
 		_ASSERT(!u);
 	}
 	{
-		js_union<js_undefined, MyJsBase, MyJsDerived> const u(MyJsBase(js_string(""), js_string("")));
+		js_union<js_undefined, MyJsBase, MyJsDerived> const u(MyJsBase(create_js_object, js_string(""), js_string("")));
 		static_cast<void>(u.get<MyJsBase>());
 		static_cast<void>(MyJsBase{u});
 		_ASSERT(u);

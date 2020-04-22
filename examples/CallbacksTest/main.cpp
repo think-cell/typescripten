@@ -7,6 +7,7 @@
 #include "js_callback.h"
 #include "js_bootstrap.h"
 
+using tc::js::create_js_object;
 using tc::js::js_string;
 using tc::js::js_unknown;
 using tc::js::js_function;
@@ -54,21 +55,21 @@ using SomeJsClass = tc::js::js_ref<_js_SomeJsClass>;
 		_ASSERTEQUAL(a, 1.0); \
 		_ASSERTEQUAL(tc::explicit_cast<std::string>(js_string(jsarrunkArgs[1])), "message"); \
 		_ASSERTEQUAL(jsarrunkArgs->length(), 3); \
-		return SomeJsClass(123); \
+		return SomeJsClass(create_js_object, 123); \
 	}) \
 	CreateCallback(TestPassThisAndReturn, SomeJsClass, (pass_this_t, SomeJsClass const jssjcThis, double a, js_string const b, js_unknown const c), { \
 		_ASSERTEQUAL(jssjcThis->intValue(), 10); \
 		_ASSERTEQUAL(a, 1.0); \
 		_ASSERTEQUAL(tc::explicit_cast<std::string>(b), "message"); \
 		_ASSERT(c.getEmval().isUndefined()); \
-		return SomeJsClass(123); \
+		return SomeJsClass(create_js_object, 123); \
 	}) \
 	CreateCallback(TestPassThisPassAllArgumentsAndReturn, SomeJsClass, (pass_this_t, SomeJsClass const jssjcThis, pass_all_arguments_t, Array<js_unknown> const jsarrunkArgs, double a), { \
 		_ASSERTEQUAL(jssjcThis->intValue(), 10); \
 		_ASSERTEQUAL(a, 1.0); \
 		_ASSERTEQUAL(tc::explicit_cast<std::string>(js_string(jsarrunkArgs[1])), "message"); \
 		_ASSERTEQUAL(jsarrunkArgs->length(), 3); \
-		return SomeJsClass(123); \
+		return SomeJsClass(create_js_object, 123); \
 	})
 
 // Macro so callback creation is performed between "start" and "end".

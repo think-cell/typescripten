@@ -5,6 +5,7 @@
 #include "range.h"
 #include "typescript.d.bootstrap.h"
 
+using tc::js::create_js_object;
 using tc::js::js_string;
 using tc::js::globals::ts;
 using tc::js::globals::Array;
@@ -13,7 +14,7 @@ using tc::js::globals::ReadonlyArray;
 int main(int argc, char* argv[]) {
 	_ASSERT(2 <= argc);
 
-	ts::CompilerOptions const jsCompilerOptions;
+	ts::CompilerOptions const jsCompilerOptions(create_js_object);
 	jsCompilerOptions->noEmitOnError(true);
 	jsCompilerOptions->strict(true);
 	jsCompilerOptions->target(ts::ScriptTarget::ES5);
@@ -21,6 +22,7 @@ int main(int argc, char* argv[]) {
 
 	ts::Program const jsProgram = ts()->createProgram(
 		ReadonlyArray<js_string>(
+		    create_js_object,
 			tc::make_iterator_range(argv + 1, argv + argc)
 		),
 		jsCompilerOptions
