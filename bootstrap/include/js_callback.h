@@ -254,7 +254,7 @@ struct IsJsInteropable<T, std::enable_if_t<
 
 namespace emscripten_interop_detail::no_adl {
 template<typename T>
-struct IsEmvalWrapper<T, std::enable_if_t<tc::is_instance_or_derived<tc::js::js_lambda_wrap, T>::value>> : std::true_type {
+struct IsEmvalWrapper<T, std::enable_if_t<tc::is_instance_or_derived<js_lambda_wrap, T>::value>> : std::true_type {
 };
 } // namespace emscripten_interop_detail::no_adl
 } // namespace tc::js
