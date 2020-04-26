@@ -30,5 +30,10 @@ int main() {
 	_ASSERTEQUAL(obj2->arr()->length(), 0);
 	_ASSERT(tc::empty(obj2->arr()));
 
+	tc::js::MyLib::SomeObject obj3 = tc::js::MyLib::ForwardReferencingNamespace::createSomeObject();
+	_ASSERTEQUAL(tc::explicit_cast<std::string>(obj3->str()), "foobar");
+	_ASSERTEQUAL(obj3->arr()->length(), 0);
+	_ASSERT(tc::empty(obj3->arr()));
+
 	tc::js::MyLib::double_u_uunderscore();
 }

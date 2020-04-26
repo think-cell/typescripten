@@ -5,6 +5,12 @@ namespace MyLib {
 
     export var initially10: number = 10;
 
+    export namespace ForwardReferencingNamespace {
+        export function createSomeObject(): SomeObject {
+            return createObject("foobar");
+        }
+    }
+
     export class SomeBaseClass {
         foo(x: number): string { return "base"; }
     }

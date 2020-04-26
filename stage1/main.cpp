@@ -373,6 +373,10 @@ int main(int argc, char* argv[]) {
 			g_usstrAllowedMangledTypes.insert(MangleSymbolName(jtsTypeChecker, jsymEnum));
 		});
 
+		tc::for_each(g_vecjsymClass, [&jtsTypeChecker](ts::Symbol const jsymClass) noexcept {
+			g_usstrAllowedMangledTypes.insert(MangleSymbolName(jtsTypeChecker, jsymClass));
+		});
+
 		auto SortClasses = [&jtsTypeChecker](std::vector<SJsClass> vecjsclassOriginal) {
 			std::map<std::string, SJsClass const*> mstrjsclassClasses;
 			for (auto const& jsclassClass : vecjsclassOriginal) {
@@ -404,10 +408,6 @@ int main(int argc, char* argv[]) {
 		auto vecjsclassClass = SortClasses(tc::make_vector(tc::transform(g_vecjsymClass, [&jtsTypeChecker](ts::Symbol const jsymClass) noexcept {
 			return SJsClass(jtsTypeChecker, jsymClass);
 		})));
-
-		tc::for_each(vecjsclassClass, [](SJsClass const& jsclassClass) noexcept {
-			g_usstrAllowedMangledTypes.insert(jsclassClass.m_strMangledName);
-		});
 
 		tc::append(std::cout,
 			"namespace tc::js_defs {\n",
