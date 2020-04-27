@@ -908,6 +908,10 @@ struct _jsdefs_ts : enums_adl::_jsenums_ts {
 	};
 
 	struct _js_SymbolTable : virtual IObject {
+		struct _tcjs_definitions {
+			using value_type = Symbol;
+		};
+
 		template<typename Fn>
 		auto operator()(Fn fn) noexcept {
 			return _call<void>("forEach", js_lambda_wrap([&](Symbol value, js_unknown, js_unknown) noexcept {
