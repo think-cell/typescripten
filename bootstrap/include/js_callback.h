@@ -68,7 +68,7 @@ public:
 	template<typename Fn>
 	emscripten::val operator()(Fn&& fn, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) const& noexcept {
 		return TailCCallableWrapper()(
-			[&](auto&&... args) noexcept {
+			[&](auto&&... args) noexcept -> decltype(auto) {
 				return fn(pass_this, emvalThis.template as<TThis>(), std::forward<decltype(args)>(args)...);
 			},
 			emvalThis,
@@ -93,7 +93,7 @@ public:
 	template<typename Fn>
 	emscripten::val operator()(Fn&& fn, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) const& noexcept {
 		return TailCCallableWrapper()(
-			[&](auto&&... args) noexcept {
+			[&](auto&&... args) noexcept -> decltype(auto) {
 				return fn(pass_all_arguments, emvalArgs.template as<TArgs>(), std::forward<decltype(args)>(args)...);
 			},
 			emvalThis,
@@ -116,7 +116,7 @@ emscripten::val MemberFunctionWrapper(T pmfMember, void* pvThis, emscripten::val
 	static_assert(!std::is_move_constructible<ThisType>::value, "The struct with JS-exported member functions should not have move constructors");
 
 	return CCallableWrapper<MemberFunctionExpectedArgs_t<T>>()(
-		[&](auto&&... args) noexcept {
+		[&](auto&&... args) noexcept -> decltype(auto) {
 			return (tc::void_cast<ThisType>(pvThis)->*pmfMember)(std::forward<decltype(args)>(args)...);
 		}, emvalThis, emvalArgs
 	);
