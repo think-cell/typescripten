@@ -3,10 +3,10 @@
 #include "mangle.h"
 #include "walk_symbol.h"
 
-using tc::js_types::create_js_object;
-using tc::js_types::js_string;
-using tc::js_types::js_optional;
-using tc::js_types::js_unknown;
+using tc::jst::create_js_object;
+using tc::jst::js_string;
+using tc::jst::js_optional;
+using tc::jst::js_unknown;
 using tc::js::console;
 using tc::js::ts;
 using tc::js::Array;
@@ -441,7 +441,7 @@ int main(int argc, char* argv[]) {
 				);
 			})),
 			"} // namespace tc::js_defs\n",
-			"namespace tc::js_types {\n",
+			"namespace tc::jst {\n",
 			tc::join(tc::transform(g_vecjsymEnum, [&jtsTypeChecker](ts::Symbol const jsymEnum) noexcept {
 				// Enums are declared outside of the _jsall class because we have to mark them as IsJsIntegralEnum
 				// before using in js interop.
@@ -449,9 +449,9 @@ int main(int argc, char* argv[]) {
 					"template<> struct IsJsIntegralEnum<js_defs::_enum", MangleSymbolName(jtsTypeChecker, jsymEnum), "> : std::true_type {};\n"
 				);
 			})),
-			"} // namespace tc::js_types\n",
+			"} // namespace tc::jst\n",
 			"namespace tc::js_defs {\n",
-			"	using namespace js_types; // no ADL\n",
+			"	using namespace jst; // no ADL\n",
 			tc::join(tc::transform(g_vecjsymEnum, [&jtsTypeChecker](ts::Symbol const jsymEnum) noexcept {
 				return tc::concat(
 					"	using ", MangleSymbolName(jtsTypeChecker, jsymEnum), " = _enum", MangleSymbolName(jtsTypeChecker, jsymEnum), ";\n"

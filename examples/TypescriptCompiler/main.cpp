@@ -5,8 +5,8 @@
 #include "range.h"
 #include "typescript.d.bootstrap.h"
 
-using tc::js_types::create_js_object;
-using tc::js_types::js_string;
+using tc::jst::create_js_object;
+using tc::jst::js_string;
 using tc::js::ts;
 using tc::js::Array;
 using tc::js::ReadonlyArray;

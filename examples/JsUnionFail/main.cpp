@@ -6,13 +6,13 @@
 #include "js_types.h"
 #include "js_ref.h"
 
-using tc::js_types::js_object;
-using tc::js_types::js_string;
-using tc::js_types::js_undefined;
-using tc::js_types::js_unknown;
-using tc::js_types::js_null;
-using tc::js_types::js_union;
-using tc::js_types::js_ref;
+using tc::jst::js_object;
+using tc::jst::js_string;
+using tc::jst::js_undefined;
+using tc::jst::js_unknown;
+using tc::jst::js_null;
+using tc::jst::js_union;
+using tc::jst::js_ref;
 
 void derefUndefinedJsRefGet() noexcept {
 	js_union<js_undefined, js_object> const u;

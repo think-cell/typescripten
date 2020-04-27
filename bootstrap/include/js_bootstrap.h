@@ -18,13 +18,13 @@ template<typename> struct _js_Array;
 template<typename> struct _js_ReadonlyArray;
 struct _js_Console;
 
-template<typename T> using Array = js_types::js_ref<_js_Array<T>>;
-template<typename T> using ReadonlyArray = js_types::js_ref<_js_ReadonlyArray<T>>;
-using Console = js_types::js_ref<_js_Console>;
+template<typename T> using Array = jst::js_ref<_js_Array<T>>;
+template<typename T> using ReadonlyArray = jst::js_ref<_js_ReadonlyArray<T>>;
+using Console = jst::js_ref<_js_Console>;
 
 template<typename T>
-struct _js_Array : virtual js_types::IObject {
-	static_assert(js_types::IsJsInteropable<T>::value);
+struct _js_Array : virtual jst::IObject {
+	static_assert(jst::IsJsInteropable<T>::value);
 
 	struct _tcjs_definitions {
 		using value_type = T;
@@ -41,7 +41,7 @@ struct _js_Array : virtual js_types::IObject {
 	// Generator range. This adds operator() to array interface (which did not exist before), but it's ok.
 	template<typename Fn>
 	auto operator()(Fn fn) noexcept {
-		if (_call<bool>("some", js_types::js_lambda_wrap([&](T value, js_types::js_unknown, js_types::js_unknown) noexcept {
+		if (_call<bool>("some", jst::js_lambda_wrap([&](T value, jst::js_unknown, jst::js_unknown) noexcept {
 			return tc::break_ == tc::continue_if_not_break(fn, tc_move(value));
 		})))
 			return tc::break_;
@@ -64,8 +64,8 @@ struct _js_Array : virtual js_types::IObject {
 };
 
 template<typename T>
-struct _js_ReadonlyArray : virtual js_types::IObject {
-	static_assert(js_types::IsJsInteropable<T>::value);
+struct _js_ReadonlyArray : virtual jst::IObject {
+	static_assert(jst::IsJsInteropable<T>::value);
 
 	struct _tcjs_definitions {
 		using value_type = T;
@@ -78,7 +78,7 @@ struct _js_ReadonlyArray : virtual js_types::IObject {
 	// Generator range. This adds operator() to array interface (which did not exist before), but it's ok.
 	template<typename Fn>
 	auto operator()(Fn fn) noexcept {
-		if (_call<bool>("some", js_types::js_lambda_wrap([&](T value, js_types::js_unknown, js_types::js_unknown) noexcept {
+		if (_call<bool>("some", jst::js_lambda_wrap([&](T value, jst::js_unknown, jst::js_unknown) noexcept {
 			return tc::break_ == tc::continue_if_not_break(fn, tc_move(value));
 		})))
 			return tc::break_;
@@ -93,15 +93,15 @@ struct _js_ReadonlyArray : virtual js_types::IObject {
 	template<typename Rng, typename = std::enable_if_t<tc::is_explicit_castable<T, tc::range_value_t<Rng>&&>::value>>
 	static ReadonlyArray<T> _tcjs_construct(Rng&& rng) noexcept {
 		return ReadonlyArray<T>(
-			Array<T>(js_types::create_js_object, std::forward<Rng>(rng)).getEmval()
+			Array<T>(jst::create_js_object, std::forward<Rng>(rng)).getEmval()
 		);
 	}
 };
 
-struct _js_Console : virtual js_types::IObject {
+struct _js_Console : virtual jst::IObject {
 	template<typename... Args>
 	auto log(Args&&... args) noexcept {
-		static_assert((js_types::IsJsInteropable<tc::remove_cvref_t<Args>>::value && ...));
+		static_assert((jst::IsJsInteropable<tc::remove_cvref_t<Args>>::value && ...));
 		return _call<void>("log", std::forward<Args>(args)...);
 	}
 };

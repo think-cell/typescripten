@@ -11,7 +11,7 @@
 #include "type_traits.h"
 #include "tc_move.h"
 
-namespace tc::js_types {
+namespace tc::jst {
 namespace no_adl {
 template<typename, typename = void>
 struct IsJsInteropable : std::false_type {};
@@ -335,19 +335,19 @@ struct IsEmvalWrapper<js_union<Ts...>, std::enable_if_t<IsJsInteropable<js_union
 }
 using no_adl::IsEmvalWrapper;
 } // namespace emscripten_interop_detail
-} // namespace tc::js_types
+} // namespace tc::jst
 
 // Custom marshalling
 namespace emscripten::internal {
 	template<typename T>
-	struct TypeID<T, std::enable_if_t<tc::js_types::emscripten_interop_detail::IsEmvalWrapper<tc::remove_cvref_t<T>>::value>> {
+	struct TypeID<T, std::enable_if_t<tc::jst::emscripten_interop_detail::IsEmvalWrapper<tc::remove_cvref_t<T>>::value>> {
 		static constexpr TYPEID get() {
 			return TypeID<val>::get();
 		}
 	};
 
 	template<typename T>
-	struct BindingType<T, std::enable_if_t<tc::js_types::emscripten_interop_detail::IsEmvalWrapper<T>::value>> {
+	struct BindingType<T, std::enable_if_t<tc::jst::emscripten_interop_detail::IsEmvalWrapper<T>::value>> {
 		typedef typename BindingType<emscripten::val>::WireType WireType;
 
 		static WireType toWireType(T const& js) {
@@ -360,14 +360,14 @@ namespace emscripten::internal {
 	};
 
 	template<typename T>
-	struct TypeID<T, std::enable_if_t<tc::js_types::IsJsIntegralEnum<tc::remove_cvref_t<T>>::value>> {
+	struct TypeID<T, std::enable_if_t<tc::jst::IsJsIntegralEnum<tc::remove_cvref_t<T>>::value>> {
 		static constexpr TYPEID get() {
 			return TypeID<double>::get();
 		}
 	};
 
 	template<typename T>
-	struct BindingType<T, std::enable_if_t<tc::js_types::IsJsIntegralEnum<T>::value>> {
+	struct BindingType<T, std::enable_if_t<tc::jst::IsJsIntegralEnum<T>::value>> {
 		using UnderlyingType = std::underlying_type_t<T>;
 		static_assert(std::is_integral<UnderlyingType>::value);
 

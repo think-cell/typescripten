@@ -7,20 +7,20 @@
 #include "range_defines.h"
 #include "js_bootstrap.h"
 
-using tc::js_types::js_string;
+using tc::jst::js_string;
 using tc::js::Array;
 using tc::js::ReadonlyArray;
 using tc::js::console;
 
 enum class MyIntEnum { Foo = 10 };
 
-namespace tc::js_types {
+namespace tc::jst {
 template<> struct IsJsIntegralEnum<MyIntEnum> : std::true_type {};
-} // namespace tc::js_types
+} // namespace tc::jst
 
 int main() {
 	{
-		auto const arr = tc::explicit_cast<ReadonlyArray<double>>(tc::js_types::create_js_object, std::initializer_list<double>{1, 2, 3});
+		auto const arr = tc::explicit_cast<ReadonlyArray<double>>(tc::jst::create_js_object, std::initializer_list<double>{1, 2, 3});
 		static_assert(!tc::is_explicit_castable<ReadonlyArray<double>, double>::value);
 		static_assert(std::is_same_v<tc::range_value_t<ReadonlyArray<double>>, double>);
 		console()->log(arr);
@@ -31,7 +31,7 @@ int main() {
 	}
 
 	{
-		Array<double> const arr(tc::js_types::create_js_object);
+		Array<double> const arr(tc::jst::create_js_object);
 		_ASSERT(tc::empty(arr));
 		_ASSERTEQUAL(arr->length(), 0);
 		arr->push(10);
@@ -41,7 +41,7 @@ int main() {
 	}
 
 	{
-		Array<js_string> const arr(tc::js_types::create_js_object, std::initializer_list<char const*>{"Hello", "Hi!"});
+		Array<js_string> const arr(tc::jst::create_js_object, std::initializer_list<char const*>{"Hello", "Hi!"});
 		static_assert(std::is_same_v<tc::range_value_t<decltype(arr)>, js_string>);
 		_ASSERTEQUAL(arr->length(), 2);
 		_ASSERTEQUAL(arr[0].length(), 5);
@@ -49,7 +49,7 @@ int main() {
 		_ASSERT(!tc::empty(arr));
 	}
 
-	auto const arr = tc::explicit_cast<Array<double>>(tc::js_types::create_js_object, std::initializer_list<double>{1, 2, 3});
+	auto const arr = tc::explicit_cast<Array<double>>(tc::jst::create_js_object, std::initializer_list<double>{1, 2, 3});
 	static_assert(!tc::is_explicit_castable<Array<double>, double>::value);
 	static_assert(std::is_same_v<tc::range_value_t<Array<double>>, double>);
 	console()->log(arr);

@@ -16,7 +16,7 @@
 #include <boost/callable_traits.hpp>
 #include "js_ref.h"
 
-namespace tc::js_types {
+namespace tc::jst {
 // ---------------------------------------- Passing member functions to JS ----------------------------------------
 DEFINE_TAG_TYPE(pass_this)
 DEFINE_TAG_TYPE(pass_all_arguments)
@@ -190,9 +190,9 @@ using no_adl::CUniqueDetachableJsFunction;
 		STATICASSERTSAME(ClassName&, decltype(*this), "ClassName specified in TC_JS_MEMBER_FUNCTION is incorrect"); \
 	} \
 	static emscripten::val FieldName##_tc_js_wrapper(void* pvThis, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) noexcept { \
-		return ::tc::js_types::callback_detail::MemberFunctionWrapper(&ClassName::FieldName##_tc_js_impl, pvThis, emvalThis, emvalArgs); \
+		return ::tc::jst::callback_detail::MemberFunctionWrapper(&ClassName::FieldName##_tc_js_impl, pvThis, emvalThis, emvalArgs); \
 	} \
-	::tc::js_types::callback_detail::CUniqueDetachableJsFunction<ReturnType Arguments> const FieldName{&FieldName##_tc_js_wrapper, this}; \
+	::tc::jst::callback_detail::CUniqueDetachableJsFunction<ReturnType Arguments> const FieldName{&FieldName##_tc_js_wrapper, this}; \
 	ReturnType FieldName##_tc_js_impl Arguments noexcept
 
 // ---------------------------------------- Lambda wrapper callback ----------------------------------------
@@ -252,4 +252,4 @@ template<typename T>
 struct IsEmvalWrapper<T, std::enable_if_t<tc::is_instance_or_derived<js_lambda_wrap, T>::value>> : std::true_type {
 };
 } // namespace emscripten_interop_detail::no_adl
-} // namespace tc::js_types
+} // namespace tc::jst

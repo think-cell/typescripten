@@ -7,22 +7,22 @@
 #include "js_callback.h"
 #include "js_bootstrap.h"
 
-using tc::js_types::create_js_object;
-using tc::js_types::js_string;
-using tc::js_types::js_unknown;
-using tc::js_types::js_function;
-using tc::js_types::pass_this_t;
-using tc::js_types::pass_all_arguments_t;
+using tc::jst::create_js_object;
+using tc::jst::js_string;
+using tc::jst::js_unknown;
+using tc::jst::js_function;
+using tc::jst::pass_this_t;
+using tc::jst::pass_all_arguments_t;
 using tc::js::Array;
 
-struct _js_SomeJsClass : virtual tc::js_types::IObject {
+struct _js_SomeJsClass : virtual tc::jst::IObject {
 	auto intValue() noexcept { return tc::explicit_cast<int>(_getProperty<double>("intValue")); }
 
 	static auto _tcjs_construct(int v) noexcept {
 		return emscripten::val::module_property("SomeJsClass").new_(v);
 	}
 };
-using SomeJsClass = tc::js_types::js_ref<_js_SomeJsClass>;
+using SomeJsClass = tc::jst::js_ref<_js_SomeJsClass>;
 
 #define FOR_ALL_CALLBACKS(CreateCallback) \
 	CreateCallback(TestSum, double, (double a, double b), { \
@@ -94,7 +94,7 @@ int main() {
 	{
 		printf("===== js_lambda_wrap =====\n");
 		#define CALL_SCOPED_CALLBACK(Name, ReturnType, Arguments, Body) \
-			RUN_TEST(Name, js_function<ReturnType Arguments>, tc::js_types::js_lambda_wrap([]Arguments noexcept -> ReturnType Body));
+			RUN_TEST(Name, js_function<ReturnType Arguments>, tc::jst::js_lambda_wrap([]Arguments noexcept -> ReturnType Body));
 		FOR_ALL_CALLBACKS(CALL_SCOPED_CALLBACK)
 		#undef CALL_SCOPED_CALLBACK
 	}
@@ -112,7 +112,7 @@ int main() {
 	}
 	{
 		printf("Calling callbacks through js_function\n");
-		tc::js_types::js_lambda_wrap cbStorage([](js_string const str) noexcept {
+		tc::jst::js_lambda_wrap cbStorage([](js_string const str) noexcept {
 			return js_string(tc::concat("hello ", tc::explicit_cast<std::string>(str)));
 		});
 		js_function<js_string(js_string const)> cb = cbStorage;
@@ -123,7 +123,7 @@ int main() {
 		auto test = [](js_function<js_string(js_string)> cb) {
 			_ASSERTEQUAL(tc::explicit_cast<std::string>(cb(js_string("world"))), "hello world");
 		};
-		test(tc::js_types::js_lambda_wrap([](js_string const str) noexcept {
+		test(tc::jst::js_lambda_wrap([](js_string const str) noexcept {
 			return js_string(tc::concat("hello ", tc::explicit_cast<std::string>(str)));
 		}));
 	}

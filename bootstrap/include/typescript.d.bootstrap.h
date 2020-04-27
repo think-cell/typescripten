@@ -582,7 +582,7 @@ inline _jsenums_ts::ModifierFlags operator|(_jsenums_ts::ModifierFlags a, _jsenu
 inline bool operator&(_jsenums_ts::ModifierFlags a, _jsenums_ts::ModifierFlags b) { return static_cast<int>(a) & static_cast<int>(b); }
 } // namespace tc::js_defs::enums_adl
 
-namespace tc::js_types {
+namespace tc::jst {
 // We have to specialize IsJsIntegralEnum before these types are used below.
 template<> struct IsJsIntegralEnum<js_defs::enums_adl::_jsenums_ts::SyntaxKind> : std::true_type {};
 template<> struct IsJsIntegralEnum<js_defs::enums_adl::_jsenums_ts::ModuleKind> : std::true_type {};
@@ -592,12 +592,12 @@ template<> struct IsJsIntegralEnum<js_defs::enums_adl::_jsenums_ts::SymbolFlags>
 template<> struct IsJsIntegralEnum<js_defs::enums_adl::_jsenums_ts::TypeFlags> : std::true_type {};
 template<> struct IsJsIntegralEnum<js_defs::enums_adl::_jsenums_ts::ObjectFlags> : std::true_type {};
 template<> struct IsJsIntegralEnum<js_defs::enums_adl::_jsenums_ts::ModifierFlags> : std::true_type {};
-} // namespace tc::js_types
+} // namespace tc::jst
 
 namespace tc::js_defs::no_adl {
 using js::Array;
 using js::ReadonlyArray;
-using namespace js_types;  // no ADL.
+using namespace jst;  // no ADL.
 
 struct _jsdefs_ts : enums_adl::_jsenums_ts {
 	struct _js_TextRange;
@@ -1082,7 +1082,7 @@ struct ts : js_ref<_js_ts>, _jsdefs_ts {
 namespace tc::js {
 using js_defs::no_adl::ts;
 inline const ts& ts() {
-    static struct ts module(js_types::create_js_object);
+    static struct ts module(jst::create_js_object);
     return module;
 }
 } // namespace tc::js

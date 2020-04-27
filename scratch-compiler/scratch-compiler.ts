@@ -39,6 +39,20 @@ syms.forEach(sym => {
     console.log(sym);
     const decls = sym.getDeclarations();
     console.log(decls);
+    const ty = tc.getTypeOfSymbolAtLocation(sym, decls[0]);
+    console.log(ty);
+    if (sym.getName() == "foo") {
+        const signature = tc.getSignatureFromDeclaration(<ts.SignatureDeclaration>decls[0]);
+        const param0 = signature.parameters[0];
+        const tyParam = tc.getTypeOfSymbolAtLocation(param0, param0.declarations[0]);
+        const tyParamSym = tyParam.symbol;
+        const tyParamSig = tc.getSignatureFromDeclaration(<ts.SignatureDeclaration>(tyParamSym.declarations[0]));
+        console.log(signature);
+        console.log(param0);
+        console.log(tyParam);
+        console.log(tyParamSym);
+        console.log(tyParamSig);
+    }
 });
 
 // Make sure symbols are not garbage collected.

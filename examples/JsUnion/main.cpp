@@ -5,23 +5,23 @@
 #include "js_types.h"
 #include "js_ref.h"
 
-using tc::js_types::create_js_object;
-using tc::js_types::js_object;
-using tc::js_types::js_string;
-using tc::js_types::js_undefined;
-using tc::js_types::js_unknown;
-using tc::js_types::js_null;
-using tc::js_types::js_union;
-using tc::js_types::js_ref;
+using tc::jst::create_js_object;
+using tc::jst::js_object;
+using tc::jst::js_string;
+using tc::jst::js_undefined;
+using tc::jst::js_unknown;
+using tc::jst::js_null;
+using tc::jst::js_union;
+using tc::jst::js_ref;
 
-struct _js_MyJsBase : virtual tc::js_types::IObject {
+struct _js_MyJsBase : virtual tc::jst::IObject {
 	static auto _tcjs_construct(js_string, js_string) noexcept { return emscripten::val::object(); }
 };
 struct _js_MyJsDerived : virtual _js_MyJsBase {
 	static auto _tcjs_construct(js_string, js_string) noexcept { return emscripten::val::object(); }
 };
-using MyJsBase = tc::js_types::js_ref<_js_MyJsBase>;
-using MyJsDerived = tc::js_types::js_ref<_js_MyJsDerived>;
+using MyJsBase = tc::jst::js_ref<_js_MyJsBase>;
+using MyJsDerived = tc::jst::js_ref<_js_MyJsDerived>;
 
 int main() {
 	{

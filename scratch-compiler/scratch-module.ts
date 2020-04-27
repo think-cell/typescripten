@@ -1,11 +1,7 @@
 namespace MyModule {
-    export class Foo {  // Class | ValueModule
-        someMethod() { }  // Method
-        a: number;  // Property
-    }
-    export namespace Foo {
-        export function someFunction() { }  // Function
-        export var a: number;  // FunctionScopedVariable
+    export namespace Ns {
+        export var a: (number, b: number) => number;
+        export function foo(func: (a: number, b: number) => number) { }
     }
 }
 

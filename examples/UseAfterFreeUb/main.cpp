@@ -3,7 +3,7 @@
 #include "range_defines.h"
 #include "js_types.h"
 
-using tc::js_types::js_string;
+using tc::jst::js_string;
 
 int main() {
 	js_string *o = new js_string("foo");

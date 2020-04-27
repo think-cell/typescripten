@@ -1,7 +1,7 @@
 #include <emscripten/bind.h>
 #include "js_callback.h"
 
-namespace tc::js_types {
+namespace tc::jst {
 namespace callback_detail {
 void EnsureJsCallbackCppIsLinked() {}
 
@@ -44,4 +44,4 @@ EMSCRIPTEN_BINDINGS(tc_js_callback_detail_bind) {
 }
 
 } // namespace callback_detail
-} // namespace tc::js_types
+} // namespace tc::jst
