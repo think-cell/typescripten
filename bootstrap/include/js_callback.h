@@ -38,18 +38,10 @@ struct CCallableWrapper final {
 		} else {
 			_ASSERTEQUAL(emvalArgs["length"].as<std::size_t>(), tc::type::size<ListArgs>::value);
 		}
-		return CCallHelper<ListArgs, std::make_index_sequence<tc::type::size<ListArgs>::value>>()(std::forward<Fn>(fn), emvalArgs);
-	}
-
-private:
-	template<typename, typename>
-	struct CCallHelper final {};
-
-	template<typename... Args, std::size_t... Indices>
-	struct CCallHelper<tc::type::list<Args...>, std::index_sequence<Indices...>> final {
-		template<typename Fn>
-		emscripten::val operator()(Fn&& fn, emscripten::val const& emvalArgs) const& noexcept {
-			auto fnWithArgs = [&]() noexcept { return fn(emvalArgs[Indices].template as<Args>()...); };
+		return [&]<typename... Args, std::size_t... Indices>(tc::type::list<Args...>, std::index_sequence<Indices...>) {
+			auto fnWithArgs = [&]() noexcept -> decltype(auto) {
+			    return std::forward<Fn>(fn)(emvalArgs[Indices].template as<Args>()...);
+			};
 			using ReturnType = decltype(fnWithArgs());
 			static_assert(IsJsInteropable<ReturnType>::value);
 			if constexpr (std::is_same<void, ReturnType>::value) {
@@ -58,8 +50,8 @@ private:
 			} else {
 				return emscripten::val(fnWithArgs());
 			}
-		}
-	};
+		}(ListArgs{}, std::make_index_sequence<tc::type::size<ListArgs>::value>{});
+	}
 };
 
 template<typename TThis, typename... ArgsTail, bool bPassedAllArguments>
