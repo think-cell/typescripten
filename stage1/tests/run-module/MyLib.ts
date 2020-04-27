@@ -43,6 +43,10 @@ namespace MyLib {
 
     export function double__underscore() {
     }
+
+    export function runCallback(func: (a: number, b: number) => number, a: number, b: number): number {
+        return func(a, b);
+    }
 }
 
 export = MyLib;

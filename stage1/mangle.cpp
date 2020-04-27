@@ -35,6 +35,22 @@ std::optional<ts::TypeReference> IsTypeReference(ts::Type jtypeRoot) noexcept {
 	return ts::TypeReference(tc_move(jobjecttypeRoot));
 }
 
+std::optional<ts::Symbol> IsAnonymousTypeWithTypeLiteral(ts::Type jtypeRoot) noexcept {
+	if (ts::TypeFlags::Object != jtypeRoot->flags()) {
+		return std::nullopt;
+	}
+	ts::ObjectType jobjecttypeRoot(tc_move(jtypeRoot));
+	if (ts::ObjectFlags::Anonymous != jobjecttypeRoot->objectFlags()) {
+		return std::nullopt;
+	}
+	auto josymTypeSymbol = jobjecttypeRoot->getSymbol();
+	if (!josymTypeSymbol) {
+		return std::nullopt;
+	}
+	_ASSERTEQUAL((*josymTypeSymbol)->getFlags(), ts::SymbolFlags::TypeLiteral);
+	return tc_move(*josymTypeSymbol);
+}
+
 bool IsTrivialType(ts::InterfaceType jinterfacetypeRoot) noexcept {
 	if (jinterfacetypeRoot->typeParameters()) return false;
 	if (jinterfacetypeRoot->outerTypeParameters()) return false;
@@ -134,6 +150,43 @@ SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type
 				return WrapType("js::ReadonlyArray<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">");
 			}
 			tc::cont_emplace_back(vecstrExtraInfo, "TypeReference");
+		}
+	}
+	if (auto josymTypeLiteral = IsAnonymousTypeWithTypeLiteral(jtypeRoot)) {
+		auto jsymTypeLiteral = std::move(*josymTypeLiteral);
+		std::vector<ts::Symbol> vecjsymMember = tc::make_vector(*jsymTypeLiteral->members());
+		std::vector<std::string> vecstrMemberName = tc::make_vector(tc::transform(vecjsymMember, [](ts::Symbol const& jsymMember) {
+			return tc::explicit_cast<std::string>(jsymMember->getName());
+		}));
+		tc::cont_emplace_back(vecstrExtraInfo, tc::explicit_cast<std::string>(tc::concat(
+			"AnonymousTypeWithTypeLiteral(members:[",
+			tc::join_separated(vecstrMemberName, ", "),
+			"])"
+		)));
+		if (vecstrMemberName == std::vector<std::string>{"__call"}) {
+			ts::Symbol const& jsymSignature = vecjsymMember[0];
+			_ASSERTEQUAL(jsymSignature->getFlags(), ts::SymbolFlags::Signature);
+			_ASSERTEQUAL(jsymSignature->declarations()->length(), 1);
+			ts::Signature const jtsSignature = *jtsTypeChecker->getSignatureFromDeclaration(
+				ts::CallSignatureDeclaration(jsymSignature->declarations()[0])
+			);
+			auto mtReturnType = MangleType(jtsTypeChecker, jtsSignature->getReturnType());
+			auto vecmtParameters = tc::make_vector(tc::transform(jtsSignature->getParameters(),
+				[&](ts::Symbol const jsymParameter) noexcept {
+					// TODO: deduplicate with SJsVariableLike.
+					_ASSERTEQUAL(jsymParameter->declarations()->length(), 1);
+					// TODO: add parameter name to the type.
+					return MangleType(jtsTypeChecker, jtsTypeChecker->getTypeOfSymbolAtLocation(jsymParameter, jsymParameter->declarations()[0]));
+				}
+			));
+			return {
+				tc::explicit_cast<std::string>(tc::concat(
+					"js_function<", mtReturnType.m_strWithComments, "(", tc::join_separated(tc::transform(vecmtParameters, TC_MEMBER(.m_strWithComments)), ", "), ")>"
+				)),
+				tc::explicit_cast<std::string>(tc::concat(
+					"js_function<", mtReturnType.m_strCppCanonized, tc::join_separated(tc::transform(vecmtParameters, TC_MEMBER(.m_strCppCanonized)), ", "), ">"
+				))
+			};
 		}
 	}
 	if (auto jointerfacetypeRoot = jtypeRoot->isClassOrInterface()) {

@@ -36,4 +36,10 @@ int main() {
 	_ASSERT(tc::empty(obj3->arr()));
 
 	tc::js::MyLib::double_u_uunderscore();
+
+	_ASSERTEQUAL(tc::js::MyLib::runCallback(tc::js_types::js_lambda_wrap([](double a, double b) noexcept {
+		_ASSERTEQUAL(a, 20);
+		_ASSERTEQUAL(b, 30);
+		return a + b;
+	}), 20, 30), 50);
 }
