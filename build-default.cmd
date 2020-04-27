@@ -1,6 +1,6 @@
 @call %~dp0\build-config.cmd
 %EMCXX% ^
-    %EMCXXFLAGS% -std=c++17 ^
+    %EMCXXFLAGS% -std=c++20 ^
     -isystem %THINK_CELL_PUBLIC_PATH% ^
     -isystem %BOOST_PATH% ^
     %EMLDFLAGS% --bind ^
