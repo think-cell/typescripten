@@ -42,4 +42,5 @@ int main() {
 		_ASSERTEQUAL(b, 30);
 		return a + b;
 	}), 20, 30), 50);
+	printf("Success!\n");
 }
