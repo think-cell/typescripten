@@ -3,6 +3,8 @@
 
 namespace tc::js_types {
 namespace callback_detail {
+void EnsureJsCallbackCppIsLinked() {}
+
 /**
  * [basic.compound] 6.7.2
  * (3) The type of a pointer to cv void or a pointer to an object type is called an object pointer type. ...

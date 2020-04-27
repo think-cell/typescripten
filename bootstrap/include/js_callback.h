@@ -22,6 +22,8 @@ DEFINE_TAG_TYPE(pass_this)
 DEFINE_TAG_TYPE(pass_all_arguments)
 
 namespace callback_detail {
+void EnsureJsCallbackCppIsLinked();
+
 namespace no_adl {
 template<typename ListArgs, bool bPassedAllArguments = false>
 struct CCallableWrapper final {
@@ -167,6 +169,7 @@ template<typename T>
 struct CUniqueDetachableJsFunction : private tc::nonmovable, private RequireRelaxedPointerSafety, js_function<T> {
 	CUniqueDetachableJsFunction(FunctionPointer pfunc, FirstArgument arg0) noexcept : js_function<T>([&]() {
 		static auto creator = []() {
+			EnsureJsCallbackCppIsLinked();
 			auto creator = emscripten::val::module_property("tc_js_callback_detail_js_CreateJsFunction");
 			_ASSERT(!creator.isUndefined() && "Unable to find a function from js_callback.js, did you pass '--pre-js js_callback.js' flags to em++?");
 			return creator;
