@@ -379,9 +379,9 @@ int main(int argc, char* argv[]) {
 
 		auto SortClasses = [&jtsTypeChecker](std::vector<SJsClass> vecjsclassOriginal) {
 			std::map<std::string, SJsClass const*> mstrjsclassClasses;
-			for (auto const& jsclassClass : vecjsclassOriginal) {
+			tc::for_each(vecjsclassOriginal, [&](SJsClass const &jsclassClass) {
 				mstrjsclassClasses.emplace(jsclassClass.m_strMangledName, &jsclassClass);
-			}
+			});
 
 			std::vector<SJsClass> vecjsclassResult;
 			std::unordered_set<std::string> usstrInResult;
@@ -391,17 +391,17 @@ int main(int argc, char* argv[]) {
 					return;
 				}
 				usstrInResult.insert(jsclassClass.m_strMangledName);
-				for (auto const& jsymBaseClass : jsclassClass.m_vecjsymBaseClass) {
+				tc::for_each(jsclassClass.m_vecjsymBaseClass, [&](ts::Symbol const& jsymBaseClass) {
 					auto strMangledBaseClass = MangleSymbolName(jtsTypeChecker, jsymBaseClass);
 					if (mstrjsclassClasses.count(strMangledBaseClass)) {
 						dfs(*mstrjsclassClasses[strMangledBaseClass], dfs);
 					}
-				}
+				});
 				vecjsclassResult.emplace_back(jsclassClass);
 			};
-			for (auto const& jsclassCls : vecjsclassOriginal) {
+			tc::for_each(vecjsclassOriginal, [&](SJsClass const& jsclassCls) {
 				dfs(jsclassCls, dfs);
-			}
+			});
 			return vecjsclassResult;
 		};
 
