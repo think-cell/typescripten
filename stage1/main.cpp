@@ -35,7 +35,7 @@ std::string CppifyName(ts::Symbol jsymSymbol) noexcept {
 	std::string strResult;
 	bool bLastIsUnderscore = false;
 	tc::for_each(
-		tc::transform(strSourceName, [&strSourceName](char c) noexcept {
+		tc::transform(strSourceName, [&](char c) noexcept {
 			if ('-' == c) return '_';
 			if ('_' == c) return c;
 			if ('a' <= c && c <= 'z') return c;
@@ -44,7 +44,7 @@ std::string CppifyName(ts::Symbol jsymSymbol) noexcept {
 			tc::append(std::cerr, "Cannot convert JS name to C++ name: '", strSourceName, "'\n");
 			_ASSERTFALSE;
 		}),
-		[&strResult, &bLastIsUnderscore](char c) noexcept {
+		[&](char c) noexcept {
 			if (bLastIsUnderscore && c == '_') {
 				tc::append(strResult, "u_u"); // ABC__DEF --> ABC_u_uDEF
 				return;
@@ -150,7 +150,7 @@ struct SJsFunctionLike {
 		, m_joptarrunkTypeParameter(m_jtsSignature->getTypeParameters())
 		, m_vecjsvariablelikeParameters(tc::make_vector(tc::transform(
 			m_jtsSignature->getParameters(),
-			[&jtsTypeChecker](ts::Symbol const jsymParameter) noexcept {
+			[&](ts::Symbol const jsymParameter) noexcept {
 				return SJsVariableLike(jtsTypeChecker, jsymParameter);
 			}
 		)))
@@ -242,7 +242,7 @@ struct SJsClass {
 					return ts::SymbolFlags::Function == jsymExport->getFlags();
 				}
 			),
-			[&jtsTypeChecker](ts::Symbol const jsymFunction) noexcept {
+			[&](ts::Symbol const jsymFunction) noexcept {
 				return tc::transform(
 					jsymFunction->declarations(),
 					[&jtsTypeChecker, jsymFunction](ts::Declaration const jdeclFunction) noexcept {
@@ -260,7 +260,7 @@ struct SJsClass {
 						ts::SymbolFlags::BlockScopedVariable == jsymExport->getFlags();
 				}
 			),
-			[&jtsTypeChecker](ts::Symbol const jsymVariable) noexcept {
+			[&](ts::Symbol const jsymVariable) noexcept {
 				return SJsVariableLike(jtsTypeChecker, jsymVariable);
 			}
 		)))
@@ -275,7 +275,7 @@ struct SJsClass {
 			tc::filter(m_vecjsymMember, [](ts::Symbol const jsymMember) noexcept {
 				return ts::SymbolFlags::Method == jsymMember->getFlags() || ts::SymbolFlags::Constructor == jsymMember->getFlags();
 			}),
-			[&jtsTypeChecker](ts::Symbol const jsymMethod) noexcept {
+			[&](ts::Symbol const jsymMethod) noexcept {
 				return tc::transform(
 					jsymMethod->declarations(),
 					[&jtsTypeChecker, jsymMethod](ts::Declaration const jdeclMethod) noexcept {
@@ -369,11 +369,11 @@ int main(int argc, char* argv[]) {
 	tc::append(std::cerr, "\n========== GENERATED CODE ==========\n");
 
 	{
-		tc::for_each(g_vecjsymEnum, [&jtsTypeChecker](ts::Symbol const jsymEnum) noexcept {
+		tc::for_each(g_vecjsymEnum, [&](ts::Symbol const jsymEnum) noexcept {
 			g_usstrAllowedMangledTypes.insert(MangleSymbolName(jtsTypeChecker, jsymEnum));
 		});
 
-		tc::for_each(g_vecjsymClass, [&jtsTypeChecker](ts::Symbol const jsymClass) noexcept {
+		tc::for_each(g_vecjsymClass, [&](ts::Symbol const jsymClass) noexcept {
 			g_usstrAllowedMangledTypes.insert(MangleSymbolName(jtsTypeChecker, jsymClass));
 		});
 
@@ -405,7 +405,7 @@ int main(int argc, char* argv[]) {
 			return vecjsclassResult;
 		};
 
-		auto vecjsclassClass = SortClasses(tc::make_vector(tc::transform(g_vecjsymClass, [&jtsTypeChecker](ts::Symbol const jsymClass) noexcept {
+		auto vecjsclassClass = SortClasses(tc::make_vector(tc::transform(g_vecjsymClass, [&](ts::Symbol const jsymClass) noexcept {
 			return SJsClass(jtsTypeChecker, jsymClass);
 		})));
 
@@ -467,7 +467,7 @@ int main(int argc, char* argv[]) {
 				std::vector<std::string> vecstrBaseClass, vecstrUnknownBaseClass;
 				 tc::for_each(
 					jsclassClass.m_vecjsymBaseClass,
-					[&jtsTypeChecker, &vecstrBaseClass, &vecstrUnknownBaseClass](ts::Symbol const jsymBaseClass) noexcept {
+					[&](ts::Symbol const jsymBaseClass) noexcept {
 						auto strMangledName = MangleSymbolName(jtsTypeChecker, jsymBaseClass);
 						if (g_usstrAllowedMangledTypes.count(strMangledName)) {
 							tc::cont_emplace_back(vecstrBaseClass, strMangledName);
@@ -678,7 +678,7 @@ int main(int argc, char* argv[]) {
 			} else if (ts::SymbolFlags::Function == jsymExported->getFlags()) {
 				tc::append(vecjsfunctionlikeGlobalFunction, tc::transform(
 					jsymExported->declarations(),
-					[&jtsTypeChecker, &jsymExported](ts::Declaration const jdeclFunction) {
+					[&](ts::Declaration const jdeclFunction) {
 						return SJsFunctionLike(jtsTypeChecker, jsymExported, jdeclFunction);
 					}
 				));
