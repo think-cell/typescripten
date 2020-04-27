@@ -77,7 +77,7 @@ SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type
 		return {mangled_no_comments, "double"};
 	}
 	if (ts::TypeFlags::Boolean == jtypeRoot->flags()) {
-		return {mangled_no_comments, "bool"}; // TODO: add comment for BooleanLiteral
+		return {mangled_no_comments, "bool"};
 	}
 	if (ts::TypeFlags::BooleanLiteral == jtypeRoot->flags()) {
 		return CommentType(jtsTypeChecker, "bool", jtypeRoot);
