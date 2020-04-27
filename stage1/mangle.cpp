@@ -44,10 +44,9 @@ std::optional<ts::Symbol> IsAnonymousTypeWithTypeLiteral(ts::Type jtypeRoot) noe
 		return std::nullopt;
 	}
 	auto josymTypeSymbol = jobjecttypeRoot->getSymbol();
-	if (!josymTypeSymbol) {
+	if (!josymTypeSymbol || ts::SymbolFlags::TypeLiteral != (*josymTypeSymbol)->getFlags()) {
 		return std::nullopt;
 	}
-	_ASSERTEQUAL((*josymTypeSymbol)->getFlags(), ts::SymbolFlags::TypeLiteral);
 	return tc_move(*josymTypeSymbol);
 }
 
