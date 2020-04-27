@@ -2,6 +2,9 @@
 #include "typescript.d.bootstrap.h"
 #include "mangle.h"
 
+#define TC_MEMBER(...) \
+       [](auto&& _) return_decltype_xvalue_by_ref_noexcept(tc_move_if_owned(_)__VA_ARGS__)
+
 using tc::js::ts;
 
 std::unordered_set<std::string> g_usstrAllowedMangledTypes;
@@ -109,10 +112,10 @@ SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type
 			} else {
 				return {
 					tc::explicit_cast<std::string>(tc::concat(
-						"js_union<", tc::join_separated(tc::transform(vecmtType, [&](SMangledType const& mt) { return mt.m_strWithComments; }), ", "), ">"
+						"js_union<", tc::join_separated(tc::transform(vecmtType, TC_MEMBER(.m_strWithComments)), ", "), ">"
 					)),
 					tc::explicit_cast<std::string>(tc::concat(
-						"js_union<", tc::join_separated(tc::transform(vecmtType, [&](SMangledType const& mt) { return mt.m_strCppCanonized; }), ", "), ">"
+						"js_union<", tc::join_separated(tc::transform(vecmtType, TC_MEMBER(.m_strCppCanonized)), ", "), ">"
 					))
 				};
 			}
