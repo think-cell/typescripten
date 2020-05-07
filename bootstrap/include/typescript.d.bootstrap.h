@@ -711,6 +711,7 @@ struct _jsdefs_ts : enums_adl::_jsenums_ts {
 	};
 
 	struct _js_NamedDeclaration : virtual _js_Declaration {
+		auto name() noexcept { return _getProperty<js_optional<Node>>("name"); }
 	};
 
 	struct _js_CallSignatureDeclaration : virtual _js_NamedDeclaration {
@@ -732,7 +733,6 @@ struct _jsdefs_ts : enums_adl::_jsenums_ts {
 	};
 
 	struct _js_DeclarationStatement : virtual _js_NamedDeclaration {
-		auto name() noexcept { return _getProperty<js_optional<Declaration>>("name"); }
 	};
 
 	struct _js_FunctionDeclaration : virtual _js_DeclarationStatement {
@@ -1075,14 +1075,14 @@ struct _js_ts : virtual IObject, _jsdefs_ts {
 };
 
 struct ts : js_ref<_js_ts>, _jsdefs_ts {
-    using js_ref<_js_ts>::js_ref;
+	using js_ref<_js_ts>::js_ref;
 };
 } // namespace tc::js_defs::no_adl
 
 namespace tc::js {
 using js_defs::no_adl::ts;
 inline const ts& ts() {
-    static struct ts module(jst::create_js_object);
-    return module;
+	static struct ts module(jst::create_js_object);
+	return module;
 }
 } // namespace tc::js

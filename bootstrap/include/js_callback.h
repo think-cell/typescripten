@@ -42,7 +42,7 @@ struct CCallableWrapper final {
 		}
 		return [&]<typename... Args, std::size_t... Indices>(tc::type::list<Args...>, std::index_sequence<Indices...>) {
 			auto fnWithArgs = [&]() noexcept -> decltype(auto) {
-			    return std::forward<Fn>(fn)(emvalArgs[Indices].template as<Args>()...);
+				return std::forward<Fn>(fn)(emvalArgs[Indices].template as<Args>()...);
 			};
 			using ReturnType = decltype(fnWithArgs());
 			static_assert(IsJsInteropable<ReturnType>::value);
