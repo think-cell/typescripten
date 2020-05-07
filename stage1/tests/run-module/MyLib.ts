@@ -47,6 +47,36 @@ namespace MyLib {
     export function runCallback(func: (a: number, b: number) => number, a: number, b: number): number {
         return func(a, b);
     }
+
+    export interface MyInterface1 {
+        func1(): string;
+    }
+    export interface MyInterface2 {
+        func2(): string;
+    }
+    export interface MyInterface3 extends MyInterface1, MyInterface2 {
+        func3(): string;
+    }
+    export interface MyInterface4 {
+        func4(): string;
+    }
+    export interface MyInterface5 {
+        func5(): string;
+    }
+    export interface MyInterface6 {
+        func6(): string;
+    }
+    export class MyInterfaceImpl1 implements MyInterface3, MyInterface4 {
+        func1(): string { return "func1"; }
+        func2(): string { return "func2"; }
+        func3(): string { return "func3"; }
+        func4(): string { return "func4"; }
+    }
+    export class MyInterfaceImpl2 extends MyInterfaceImpl1 implements MyInterface5, MyInterface6 {
+        constructor() { super(); }
+        func5(): string { return "func5"; }
+        func6(): string { return "func6"; }
+    }
 }
 
 export = MyLib;

@@ -42,5 +42,22 @@ int main() {
 		_ASSERTEQUAL(b, 30);
 		return a + b;
 	}), 20, 30), 50);
+
+	{
+		auto impl = tc::js::MyLib::MyInterfaceImpl2(tc::jst::create_js_object);
+		tc::js::MyLib::MyInterface1 int1 = impl;
+		tc::js::MyLib::MyInterface2 int2 = impl;
+		tc::js::MyLib::MyInterface3 int3 = impl;
+		tc::js::MyLib::MyInterface4 int4 = impl;
+		tc::js::MyLib::MyInterface5 int5 = impl;
+		tc::js::MyLib::MyInterface6 int6 = impl;
+		_ASSERTEQUAL(tc::explicit_cast<std::string>(int1->func1()), "func1");
+		_ASSERTEQUAL(tc::explicit_cast<std::string>(int2->func2()), "func2");
+		_ASSERTEQUAL(tc::explicit_cast<std::string>(int3->func3()), "func3");
+		_ASSERTEQUAL(tc::explicit_cast<std::string>(int4->func4()), "func4");
+		_ASSERTEQUAL(tc::explicit_cast<std::string>(int5->func5()), "func5");
+		_ASSERTEQUAL(tc::explicit_cast<std::string>(int6->func6()), "func6");
+	}
+
 	printf("Success!\n");
 }

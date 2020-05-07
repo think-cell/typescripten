@@ -306,6 +306,34 @@ struct SJsClass {
 					}
 				}
 			);
+			// See `utilities.ts:getAllSuperTypeNodes`. `extends` clause for classes is already covered by `getBaseTypes()`, as well as `implements` clause for interfaces.
+			// The only missing part is `implements` for classes.
+			tc::for_each(jsymClass->declarations(), [&](ts::Declaration jdeclClass) {
+				if (auto joclassdeclarationClass = ts()->isClassDeclaration(jdeclClass)) {
+					auto jorarrHeritageClause = (*joclassdeclarationClass)->heritageClauses();
+					if (jorarrHeritageClause) {
+						tc::for_each(*jorarrHeritageClause, [&](ts::HeritageClause jtsHeritageClause) {
+							if (jtsHeritageClause->token() == ts::SyntaxKind::ImplementsKeyword) {
+								tc::for_each(jtsHeritageClause->types(), [&](ts::Node jnodeImplementsType) {
+									auto jtypeImplements = jtsTypeChecker->getTypeAtLocation(jnodeImplementsType);
+									auto josymImplements = jtypeImplements->getSymbol();
+									if (!josymImplements) {
+										tc::append(std::cerr,
+											"Unable to determine 'implements' symbol for class '",
+											tc::explicit_cast<std::string>(jsymClass->getName()),
+											"' for type '",
+											tc::explicit_cast<std::string>(jtsTypeChecker->typeToString(jtypeImplements)),
+											"'\n"
+										);
+										_ASSERTFALSE;
+									}
+									tc::cont_emplace_back(m_vecjsymBaseClass, *josymImplements);
+								});
+							}
+						});
+					}
+				}
+			});
 		} else {
 			// Do nothing: e.g. namespaces.
 		}

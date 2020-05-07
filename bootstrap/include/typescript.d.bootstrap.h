@@ -612,7 +612,9 @@ struct _jsdefs_ts : enums_adl::_jsenums_ts {
 	struct _js_Signature;
 	struct _js_DeclarationStatement;
 	struct _js_FunctionDeclaration;
+	struct _js_ClassLikeDeclarationBase;
 	struct _js_ClassDeclaration;
+	struct _js_HeritageClause;
 	struct _js_EnumDeclaration;
 	struct _js_VariableDeclaration;
 	struct _js_VariableDeclarationList;
@@ -657,7 +659,9 @@ struct _jsdefs_ts : enums_adl::_jsenums_ts {
 	using Signature = js_ref<_js_Signature>;
 	using DeclarationStatement = js_ref<_js_DeclarationStatement>;
 	using FunctionDeclaration = js_ref<_js_FunctionDeclaration>;
+	using ClassLikeDeclarationBase = js_ref<_js_ClassLikeDeclarationBase>;
 	using ClassDeclaration = js_ref<_js_ClassDeclaration>;
+	using HeritageClause = js_ref<_js_HeritageClause>;
 	using EnumDeclaration = js_ref<_js_EnumDeclaration>;
 	using VariableDeclaration = js_ref<_js_VariableDeclaration>;
 	using VariableDeclarationList = js_ref<_js_VariableDeclarationList>;
@@ -738,7 +742,16 @@ struct _jsdefs_ts : enums_adl::_jsenums_ts {
 	struct _js_FunctionDeclaration : virtual _js_DeclarationStatement {
 	};
 
-	struct _js_ClassDeclaration : virtual _js_DeclarationStatement {
+	struct _js_ClassLikeDeclarationBase : virtual _js_NamedDeclaration {
+		auto heritageClauses() noexcept { return _getProperty<js_optional<ReadonlyArray<HeritageClause>>>("heritageClauses"); }
+	};
+
+	struct _js_ClassDeclaration : virtual _js_ClassLikeDeclarationBase, _js_DeclarationStatement {
+	};
+
+	struct _js_HeritageClause : virtual _js_Node {
+		auto token() noexcept { return _getProperty<SyntaxKind /* SyntaxKind.ExtendsKeyword | SyntaxKind.ImplementsKeyword */>("token"); }
+		auto types() noexcept { return _getProperty<ReadonlyArray<Node>>("types"); }
 	};
 
 	struct _js_EnumDeclaration : virtual _js_DeclarationStatement {
@@ -808,6 +821,7 @@ struct _jsdefs_ts : enums_adl::_jsenums_ts {
 		auto getAugmentedPropertiesOfType(Type type) noexcept { return _call<Array<Symbol>>("getAugmentedPropertiesOfType", type); }
 		auto getSymbolsInScope(Node location, SymbolFlags meaning) noexcept { return _call<Array<Symbol>>("getSymbolsInScope", location, meaning); }
 		auto getSymbolAtLocation(Node node) noexcept { return _call<js_optional<Symbol>>("getSymbolAtLocation", node); }
+		auto getTypeAtLocation(Node node) noexcept { return _call<Type>("getTypeAtLocation", node); }
 		auto getExportsOfModule(Symbol moduleSymbol) noexcept { return _call<Array<Symbol>>("getExportsOfModule", moduleSymbol); }
 		auto getExportSymbolOfSymbol(Symbol symbol) noexcept { return _call<Symbol>("getExportSymbolOfSymbol", symbol); }
 		auto getSignaturesOfType(Type type, SignatureKind kind) noexcept { return _call<ReadonlyArray<Signature>>("getSignaturesOfType", type, kind); }
