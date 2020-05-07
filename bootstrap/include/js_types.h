@@ -268,7 +268,8 @@ private:
 	}
 };
 
-struct js_string final {
+struct js_string final {  // Immutable.
+	// Reference semantics instead of value semantics (like in JS) is allowed because strings are immutable.
 	explicit js_string(emscripten::val const& _emval) noexcept : m_emval(_emval) {
 		_ASSERT(m_emval.isString());
 	}
