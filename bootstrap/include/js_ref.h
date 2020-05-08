@@ -27,12 +27,14 @@ protected:
 
 	template<typename T, typename Name>
 	T _getProperty(Name&& name) noexcept {
+		static_assert(std::is_constructible<js_string, Name&&>::value);
 		static_assert(IsJsInteropable<T>::value);
 		return m_emval[std::forward<Name>(name)].template as<T>();
 	}
 
 	template<typename T, typename Name>
 	void _setProperty(Name&& name, T const& value) noexcept {
+		static_assert(std::is_constructible<js_string, Name&&>::value);
 		static_assert(IsJsInteropable<T>::value);
 		m_emval.set(std::forward<Name>(name), value);
 	}

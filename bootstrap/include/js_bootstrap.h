@@ -34,9 +34,9 @@ struct _js_Array : virtual jst::IObject {
 
 	auto push(T const& item) noexcept { return _call<void>("push", item); }
 
-	auto operator[](int i) && noexcept { return _getProperty<T>(i); }
+	auto operator[](int i) && noexcept { return _getProperty<T>(tc::as_dec(i)); }
 
-	void _setIndex(int i, T value) noexcept { _setProperty(i, tc_move(value)); }
+	void _setIndex(int i, T value) noexcept { _setProperty(tc::as_dec(i), tc_move(value)); }
 
 	// Generator range. This adds operator() to array interface (which did not exist before), but it's ok.
 	template<typename Fn>
@@ -73,7 +73,7 @@ struct _js_ReadonlyArray : virtual jst::IObject {
 
 	auto length() noexcept { return tc::explicit_cast<int>(_getProperty<double>("length")); }
 
-	auto operator[](int i) noexcept { return _getProperty<T>(i); }
+	auto operator[](int i) noexcept { return _getProperty<T>(tc::as_dec(i)); }
 
 	// Generator range. This adds operator() to array interface (which did not exist before), but it's ok.
 	template<typename Fn>
