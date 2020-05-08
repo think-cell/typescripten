@@ -356,7 +356,7 @@ int main(int argc, char* argv[]) {
 	{
 		auto const jtsReadOnlyArrayDiagnostics = ts()->getPreEmitDiagnostics(jtsProgram);
 		if (jtsReadOnlyArrayDiagnostics->length()) {
-			console()->log(ts()->formatDiagnosticsWithColorAndContext(jtsReadOnlyArrayDiagnostics, ts()->createCompilerHost(jtsCompilerOptions)));
+			console::log(ts()->formatDiagnosticsWithColorAndContext(jtsReadOnlyArrayDiagnostics, ts()->createCompilerHost(jtsCompilerOptions)));
 			return 1;
 		}
 	}

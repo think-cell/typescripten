@@ -16,11 +16,11 @@ namespace tc::js {
 namespace no_adl {
 template<typename> struct _js_Array;
 template<typename> struct _js_ReadonlyArray;
-struct _js_Console;
+struct _js_console;
 
 template<typename T> using Array = jst::js_ref<_js_Array<T>>;
 template<typename T> using ReadonlyArray = jst::js_ref<_js_ReadonlyArray<T>>;
-using Console = jst::js_ref<_js_Console>;
+using console = jst::js_ref<_js_console>;
 
 template<typename T>
 struct _js_Array : virtual jst::IObject {
@@ -98,19 +98,19 @@ struct _js_ReadonlyArray : virtual jst::IObject {
 	}
 };
 
-struct _js_Console : virtual jst::IObject {
-	template<typename... Args>
-	auto log(Args&&... args) noexcept {
-		static_assert((jst::IsJsInteropable<tc::remove_cvref_t<Args>>::value && ...));
-		return _call<void>("log", std::forward<Args>(args)...);
-	}
+struct _js_console : virtual jst::IObject {
+	struct _tcjs_definitions {
+		template<typename... Args>
+		static void log(Args&&... args) noexcept {
+			static_assert((jst::IsJsInteropable<tc::remove_cvref_t<Args>>::value && ...));
+			emscripten::val::global("console")["log"](std::forward<Args>(args)...);
+		}
+	};
 };
 } // namespace no_adl
 
 using no_adl::Array;
 using no_adl::ReadonlyArray;
-using no_adl::Console;
-
-inline auto console() noexcept { return Console(emscripten::val::global("console")); }
+using no_adl::console;
 
 } // namespace tc::js
