@@ -110,17 +110,17 @@ struct _js_Promise : virtual jst::IObject {
 
 	template<typename R>
 	auto then(jst::js_function<R(T)> onfulfilled, jst::js_function<R(jst::js_unknown)> onrejected) noexcept {
-	    return _call<Promise<RemovePromise_t<R>>>("then", onfulfilled, onrejected);
+		return _call<Promise<RemovePromise_t<R>>>("then", onfulfilled, onrejected);
 	}
 
 	template<typename R1>
 	auto then(jst::js_function<R1(T)> onfulfilled) noexcept {
-	    return _call<Promise<RemovePromise_t<R1>>>("then", onfulfilled);
+		return _call<Promise<RemovePromise_t<R1>>>("then", onfulfilled);
 	}
 
 	template<typename R1, typename R2>
 	auto then(jst::js_function<R1(T)> onfulfilled, jst::js_function<R2(jst::js_unknown)> onrejected) noexcept {
-	    return _call<Promise<jst::js_union<RemovePromise_t<R1>, RemovePromise_t<R2>>>>("then", onfulfilled, onrejected);
+		return _call<Promise<jst::js_union<RemovePromise_t<R1>, RemovePromise_t<R2>>>>("then", onfulfilled, onrejected);
 	}
 };
 

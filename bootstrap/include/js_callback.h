@@ -239,7 +239,7 @@ using no_adl::js_lambda_wrap_impl;
 template<typename Fn>
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wignored-qualifiers"  // https://bugs.llvm.org/show_bug.cgi?id=43709 and https://github.com/emscripten-core/emscripten/issues/11123
-const auto js_lambda_wrap(Fn &&fn) {
+auto const js_lambda_wrap(Fn &&fn) {  // Returning const is important to avoid moving from the temporary.
 #pragma clang diagnostic pop
 	return callback_detail::js_lambda_wrap_impl(std::forward<Fn>(fn));
 }

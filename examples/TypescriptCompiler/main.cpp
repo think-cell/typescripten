@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
 
 	ts::Program const jsProgram = ts()->createProgram(
 		ReadonlyArray<js_string>(
-		    create_js_object,
+			create_js_object,
 			tc::make_iterator_range(argv + 1, argv + argc)
 		),
 		jsCompilerOptions
