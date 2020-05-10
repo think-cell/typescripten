@@ -29,4 +29,7 @@ private:
 };
 }; // namespace tc
 
+#define TC_MEMBER(...) \
+	[](auto&& _) return_decltype_xvalue_by_ref_noexcept(tc_move_if_owned(_)__VA_ARGS__)
+
 #endif // PRECOMPILED_H_
