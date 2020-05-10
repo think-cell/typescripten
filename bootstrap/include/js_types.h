@@ -396,7 +396,7 @@ namespace emscripten::internal {
 
 	template<typename T>
 	struct TypeID<T, std::enable_if_t<tc::jst::IsJsHeterogeneousEnum<tc::remove_cvref_t<T>>::value>> {
-		using UnderlyingType = typename std::remove_reference_t<decltype(tc::jst::IsJsHeterogeneousEnum<T>::Values())>::mapped_type;
+		using UnderlyingType = typename std::remove_reference_t<decltype(tc::jst::IsJsHeterogeneousEnum<tc::remove_cvref_t<T>>::Values())>::mapped_type;
 
 		static constexpr TYPEID get() {
 			return TypeID<UnderlyingType>::get();

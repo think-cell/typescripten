@@ -102,6 +102,12 @@ int main() {
 		_ASSERT(unk.getEmval().isNumber());
 		_ASSERTEQUAL(unk.getEmval().template as<double>(), 10.0);
 	}
+	{
+		// Check that BindingType<> removes cv-refs.
+		const auto e = MyIntEnum::Foo;
+		emscripten::val const emval(e);
+		js_unknown const unk(e);
+	}
 
 	{
 		emscripten::val const emval(MyHeterogeneousEnum::Foo);
@@ -125,6 +131,12 @@ int main() {
 		_ASSERTEQUAL(static_cast<MyHeterogeneousEnum>(unk), MyHeterogeneousEnum::Bar);
 		_ASSERT(unk.getEmval().isString());
 		_ASSERTEQUAL(unk.getEmval().template as<std::string>(), "bar");
+	}
+	{
+		// Check that BindingType<> removes cv-refs.
+		auto e = MyHeterogeneousEnum::Foo;
+		emscripten::val const emval(e);
+		js_unknown const unk(e);
 	}
 	return 0;
 }
