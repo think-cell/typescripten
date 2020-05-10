@@ -1,4 +1,5 @@
 #include <emscripten/val.h>
+#include <iostream>
 #include <type_traits>
 #include "explicit_cast.h"
 #include "type_traits.h"
@@ -75,7 +76,7 @@ using SomeJsClass = tc::jst::js_ref<_js_SomeJsClass>;
 // Macro so callback creation is performed between "start" and "end".
 #define RUN_TEST(Name, ExpectedType, Callback) \
 	{ \
-		printf(#Name " start\n"); \
+		std::cout << #Name " start\n"; \
 		auto&& cb = Callback; \
 		using Fn = decltype(cb); \
 		static_assert(std::is_same< \
@@ -87,19 +88,19 @@ using SomeJsClass = tc::jst::js_ref<_js_SomeJsClass>;
 			ExpectedType \
 		>::value, #Name); \
 		emscripten::val::module_property(#Name)(std::forward<Fn>(cb)); \
-		printf(#Name " end\n"); \
+		std::cout << #Name " end\n"; \
 	}
 
 int main() {
 	{
-		printf("===== js_lambda_wrap =====\n");
+		std::cout << "===== js_lambda_wrap =====\n";
 		#define CALL_SCOPED_CALLBACK(Name, ReturnType, Arguments, Body) \
 			RUN_TEST(Name, js_function<ReturnType Arguments>, tc::jst::js_lambda_wrap([]Arguments noexcept -> ReturnType Body));
 		FOR_ALL_CALLBACKS(CALL_SCOPED_CALLBACK)
 		#undef CALL_SCOPED_CALLBACK
 	}
 	{
-		printf("===== TC_JS_MEMBER_FUNCTION =====\n");
+		std::cout << "===== TC_JS_MEMBER_FUNCTION =====\n";
 		#define DEFINE_MEMBER(Name, ReturnType, Arguments, Body) TC_JS_MEMBER_FUNCTION(TestClass, m_jsfn##Name, ReturnType, Arguments) Body
 		struct TestClass {
 			FOR_ALL_CALLBACKS(DEFINE_MEMBER)
@@ -111,7 +112,7 @@ int main() {
 		#undef CALL_MEMBER
 	}
 	{
-		printf("Calling callbacks through js_function\n");
+		std::cout << "Calling callbacks through js_function\n";
 		auto cbStorage = tc::jst::js_lambda_wrap([](js_string const str) noexcept {
 			return js_string(tc::concat("hello ", tc::explicit_cast<std::string>(str)));
 		});
@@ -119,7 +120,7 @@ int main() {
 		_ASSERTEQUAL(tc::explicit_cast<std::string>(cb(js_string("world"))), "hello world");
 	}
 	{
-		printf("Passing callbacks as js_function parameter with temporary js_lambda_wrap\n");
+		std::cout << "Passing callbacks as js_function parameter with temporary js_lambda_wrap\n";
 		auto test = [](js_function<js_string(js_string)> cb) {
 			_ASSERTEQUAL(tc::explicit_cast<std::string>(cb(js_string("world"))), "hello world");
 		};
