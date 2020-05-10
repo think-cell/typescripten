@@ -151,7 +151,7 @@ SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type
 				_ASSERTEQUAL(jrarrTypeArguments->length(), 1);
 				return WrapType("js::ReadonlyArray<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">");
 			}
-			tc::cont_emplace_back(vecstrExtraInfo, "TypeReference");
+			tc::cont_emplace_back(vecstrExtraInfo, tc::concat("TypeReference=", strTarget));
 		}
 	}
 	if (auto josymTypeLiteral = IsAnonymousTypeWithTypeLiteral(jtypeRoot)) {
