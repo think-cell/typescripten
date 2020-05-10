@@ -16,10 +16,12 @@ namespace tc::js {
 namespace no_adl {
 template<typename> struct _js_Array;
 template<typename> struct _js_ReadonlyArray;
+template<typename> struct _js_Promise;
 struct _js_console;
 
 template<typename T> using Array = jst::js_ref<_js_Array<T>>;
 template<typename T> using ReadonlyArray = jst::js_ref<_js_ReadonlyArray<T>>;
+template<typename T> using Promise = jst::js_ref<_js_Promise<T>>;
 using console = jst::js_ref<_js_console>;
 
 template<typename T>
@@ -98,6 +100,35 @@ struct _js_ReadonlyArray : virtual jst::IObject {
 	}
 };
 
+template<typename T> struct RemovePromise { using type = T; };
+template<typename T> struct RemovePromise<Promise<T>> { using type = T; };
+template<typename T> using RemovePromise_t = typename RemovePromise<T>::type;
+
+template<typename T>
+struct _js_Promise : virtual jst::IObject {
+	static_assert(jst::IsJsInteropable<T>::value);
+
+	template<typename R>
+	auto then(jst::js_function<R(T)> onfulfilled, jst::js_function<R(jst::js_unknown)> onrejected) noexcept {
+	    return _call<Promise<RemovePromise_t<R>>>("then", onfulfilled, onrejected);
+	}
+
+	template<typename R1>
+	auto then(jst::js_function<R1(T)> onfulfilled) noexcept {
+	    return _call<Promise<RemovePromise_t<R1>>>("then", onfulfilled);
+	}
+
+	template<typename R1, typename R2>
+	auto then(jst::js_function<R1(T)> onfulfilled, jst::js_function<R2(jst::js_unknown)> onrejected) noexcept {
+	    return _call<Promise<jst::js_union<RemovePromise_t<R1>, RemovePromise_t<R2>>>>("then", onfulfilled, onrejected);
+	}
+};
+
+template<>
+struct _js_Promise<void> : virtual _js_Promise<jst::js_undefined> {
+	// JavaScript passes 'undefined' to what TypeScript calls 'void' promise.
+};
+
 struct _js_console : virtual jst::IObject {
 	struct _tcjs_definitions {
 		template<typename... Args>
@@ -111,6 +142,7 @@ struct _js_console : virtual jst::IObject {
 
 using no_adl::Array;
 using no_adl::ReadonlyArray;
+using no_adl::Promise;
 using no_adl::console;
 
 } // namespace tc::js
