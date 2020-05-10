@@ -502,7 +502,7 @@ int main(int argc, char* argv[]) {
 					"enum class _enum", jsenumEnum.m_strMangledName, " {\n",
 					tc::join(
 						tc::transform(jsenumEnum.m_vecjsenumoption, [](SJsEnumOption const &jsenumoption) noexcept {
-							return tc::explicit_cast<std::string>(tc_conditional_range(
+							return tc_conditional_range(
 								jsenumoption.m_odblValue,
 								tc::concat(
 									"	", jsenumoption.m_strCppifiedName, " = ",
@@ -512,7 +512,7 @@ int main(int argc, char* argv[]) {
 								tc::concat(
 									"	/*", jsenumoption.m_strJsName, " = ??? */\n"
 								)
-							));
+							);
 						})
 					),
 					"};\n"
@@ -557,7 +557,7 @@ int main(int argc, char* argv[]) {
 				return tc::explicit_cast<std::string>(tc::concat(
 					"	struct _impl", jsclassClass.m_strMangledName,
 					" : ",
-					tc::explicit_cast<std::string>(tc_conditional_range(
+					tc_conditional_range(
 						tc::empty(vecstrBaseClass),
 						"virtual IObject",
 						tc::join_separated(
@@ -568,7 +568,7 @@ int main(int argc, char* argv[]) {
 							),
 							", "
 						)
-					)),
+					),
 					tc::join(tc::transform(
 						vecstrUnknownBaseClass,
 						[](std::string const& strMangledName) noexcept {
@@ -592,9 +592,9 @@ int main(int argc, char* argv[]) {
 					tc::join(tc::transform(
 						jsclassClass.m_vecjsfunctionlikeExportFunction,
 						[](SJsFunctionLike const& jsfunctionlikeFunction) noexcept {
-							return tc::explicit_cast<std::string>(tc::concat(
+							return tc::concat(
 								"			static auto ", jsfunctionlikeFunction.m_strCppifiedName, "(", jsfunctionlikeFunction.m_strCppifiedParametersWithComments, ") noexcept;\n"
-							));
+							);
 						}
 					)),
 					tc::join(tc::transform(
@@ -602,13 +602,13 @@ int main(int argc, char* argv[]) {
 						[](SJsVariableLike const &jsvariablelikeVariable) noexcept {
 							return tc::concat(
 								"			static auto ", jsvariablelikeVariable.m_strCppifiedName, "() noexcept;\n",
-								tc::explicit_cast<std::string>(tc_conditional_range(
+								tc_conditional_range(
 									jsvariablelikeVariable.m_bReadonly,
 									"",
 									tc::concat(
 										"			static void ", jsvariablelikeVariable.m_strCppifiedName, "(", jsvariablelikeVariable.m_mtType.m_strWithComments, " v) noexcept;\n"
 									)
-								))
+								)
 							);
 						}
 					)),
@@ -618,13 +618,13 @@ int main(int argc, char* argv[]) {
 						[](SJsVariableLike const &jsvariablelikeProperty) noexcept {
 							return tc::concat(
 								"		auto ", jsvariablelikeProperty.m_strCppifiedName, "() noexcept;\n",
-								tc::explicit_cast<std::string>(tc_conditional_range(
+								tc_conditional_range(
 									jsvariablelikeProperty.m_bReadonly,
 									"",
 									tc::concat(
 										"		void ", jsvariablelikeProperty.m_strCppifiedName, "(", jsvariablelikeProperty.m_mtType.m_strWithComments, " v) noexcept;\n"
 									)
-								))
+								)
 							);
 						}
 					)),
@@ -671,13 +671,13 @@ int main(int argc, char* argv[]) {
 							return tc::explicit_cast<std::string>(tc::concat(
 								"	inline auto ", strClassNamespace, "_tcjs_definitions::",
 									jsfunctionlikeFunction.m_strCppifiedName, "(", jsfunctionlikeFunction.m_strCppifiedParametersWithComments, ") noexcept {\n",
-								tc::explicit_cast<std::string>(tc_conditional_range(
+								tc_conditional_range(
 									ts::TypeFlags::Void == jsfunctionlikeFunction.m_jtsSignature->getReturnType()->flags(),
 									tc::concat("		", rngchFunctionCall, ";\n"),
 									tc::concat(
 										"		return ", rngchFunctionCall, ".template as<", MangleType(jtsTypeChecker, jsfunctionlikeFunction.m_jtsSignature->getReturnType()).m_strWithComments, ">();\n"
 									)
-								)),
+								),
 								"	}\n"
 							));
 						}
@@ -688,14 +688,14 @@ int main(int argc, char* argv[]) {
 							return tc::concat(
 								"	inline auto ", strClassNamespace, "_tcjs_definitions::", jsvariablelikeVariable.m_strCppifiedName, "() noexcept ",
 								"{ return ", strClassInstanceRetrieve, "[\"", jsvariablelikeVariable.m_strJsName, "\"].template as<", jsvariablelikeVariable.m_mtType.m_strWithComments, ">(); }\n",
-								tc::explicit_cast<std::string>(tc_conditional_range(
+								tc_conditional_range(
 									jsvariablelikeVariable.m_bReadonly,
 									"",
 									tc::concat(
 										"	inline void ", strClassNamespace, "_tcjs_definitions::", jsvariablelikeVariable.m_strCppifiedName, "(", jsvariablelikeVariable.m_mtType.m_strWithComments, " v) noexcept ",
 										"{ ", strClassInstanceRetrieve, ".set(\"", jsvariablelikeVariable.m_strJsName, "\", v); }\n"
 									)
-								))
+								)
 							);
 						}
 					)),
@@ -705,14 +705,14 @@ int main(int argc, char* argv[]) {
 							return tc::concat(
 								"	inline auto ", strClassNamespace, jsvariablelikeProperty.m_strCppifiedName, "() noexcept ",
 								"{ return _getProperty<", jsvariablelikeProperty.m_mtType.m_strWithComments, ">(\"", jsvariablelikeProperty.m_strJsName, "\"); }\n",
-								tc::explicit_cast<std::string>(tc_conditional_range(
+								tc_conditional_range(
 									jsvariablelikeProperty.m_bReadonly,
 									"",
 									tc::concat(
 										"	inline void ", strClassNamespace, jsvariablelikeProperty.m_strCppifiedName, "(", jsvariablelikeProperty.m_mtType.m_strWithComments, " v) noexcept ",
 										"{ _setProperty(\"", jsvariablelikeProperty.m_strJsName, "\", v); }\n"
 									)
-								))
+								)
 							);
 						}
 					)),
@@ -801,13 +801,13 @@ int main(int argc, char* argv[]) {
 					return tc::explicit_cast<std::string>(tc::concat(
 						"	inline auto ",
 							jsfunctionlikeFunction.m_strCppifiedName, "(", jsfunctionlikeFunction.m_strCppifiedParametersWithComments, ") noexcept {\n",
-						tc::explicit_cast<std::string>(tc_conditional_range(
+						tc_conditional_range(
 							ts::TypeFlags::Void == jsfunctionlikeFunction.m_jtsSignature->getReturnType()->flags(),
 							tc::concat("		", rngchFunctionCall, ";\n"),
 							tc::concat(
 								"		return ", rngchFunctionCall, ".template as<", MangleType(jtsTypeChecker, jsfunctionlikeFunction.m_jtsSignature->getReturnType()).m_strWithComments, ">();\n"
 							)
-						)),
+						),
 						"	}\n"
 					));
 				}
@@ -819,14 +819,14 @@ int main(int argc, char* argv[]) {
 					return tc::explicit_cast<std::string>(tc::concat(
 						"	inline auto ", jsvariablelikeVariable.m_strCppifiedName, "() noexcept ",
 						"{ return emscripten::val::global(\"", jsvariablelikeVariable.m_strJsName, "\").template as<", jsvariablelikeVariable.m_mtType.m_strWithComments, ">(); }\n",
-						tc::explicit_cast<std::string>(tc_conditional_range(
+						tc_conditional_range(
 							jsvariablelikeVariable.m_bReadonly,
 							"",
 							tc::concat(
 								"	inline void ", jsvariablelikeVariable.m_strCppifiedName, "(", jsvariablelikeVariable.m_mtType.m_strWithComments, " v) noexcept ",
 								"{ emscripten::val::global().set(\"", jsvariablelikeVariable.m_strJsName, "\", v); }\n"
 							)
-						))
+						)
 					));
 				}
 			)),
@@ -836,9 +836,9 @@ int main(int argc, char* argv[]) {
 				vecjsymExportedModule,
 				[&jtsTypeChecker](ts::Symbol const& jsymSourceFile) noexcept {
 					_ASSERT(IsClassInCpp(jsymSourceFile));
-					return tc::explicit_cast<std::string>(tc::concat(
+					return tc::concat(
 						"using ", CppifyName(jsymSourceFile), " = js_defs::", MangleSymbolName(jtsTypeChecker, jsymSourceFile), ";\n"
-					));
+					);
 				}
 			))
 		);
