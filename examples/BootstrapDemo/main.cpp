@@ -8,6 +8,7 @@
 #include "js_bootstrap.h"
 
 using tc::jst::js_string;
+using tc::jst::js_unknown;
 using tc::js::Array;
 using tc::js::ReadonlyArray;
 using tc::js::console;
@@ -83,6 +84,11 @@ int main() {
 		_ASSERT(emval.isNumber());
 		_ASSERTEQUAL(emval.template as<double>(), 10.0);
 		_ASSERTEQUAL(emval.template as<MyIntEnum>(), MyIntEnum::Foo);
+
+		js_unknown const unk(MyIntEnum::Foo);
+		_ASSERTEQUAL(static_cast<MyIntEnum>(unk), MyIntEnum::Foo);
+		_ASSERT(unk.getEmval().isNumber());
+		_ASSERTEQUAL(unk.getEmval().template as<double>(), 10.0);
 	}
 	return 0;
 }
