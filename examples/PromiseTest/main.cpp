@@ -23,6 +23,11 @@ auto FailingPromise(js_string x) {
 	return static_cast<Promise<double>>(emscripten::val::module_property("failingPromise")(x));
 }
 
+void CompletePromiseTest() {
+	// We should ensure that all callbacks are correctly called.
+	emscripten::val::module_property("completePromiseTest")();
+}
+
 int main() {
 	std::cout << "Should call 3 tests (order is arbitrary)\n";
 	{
@@ -57,6 +62,7 @@ int main() {
 
 		static auto l5 = js_lambda_wrap([](js_undefined) noexcept {
 			std::cout << "Promise 1/3 success\n";
+			CompletePromiseTest();
 		});
 		p5->then(l5);
 	}
@@ -76,6 +82,7 @@ int main() {
 		static auto l2 = js_lambda_wrap([](js_union<js_string, js_null> x) noexcept {
 			_ASSERTEQUAL(tc::explicit_cast<std::string>(tc::explicit_cast<js_string>(x)), "ok");
 			std::cout << "Promise 2/3 success\n";
+			CompletePromiseTest();
 		});
 		p2->then(l2);
 	}
@@ -95,6 +102,7 @@ int main() {
 		static auto l2 = js_lambda_wrap([](js_union<js_string, js_null> x) noexcept {
 			static_cast<void>(static_cast<js_null>(x));
 			std::cout << "Promise 3/3 success\n";
+			CompletePromiseTest();
 		});
 		p2->then(l2);
 	}
