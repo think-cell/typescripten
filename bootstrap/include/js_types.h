@@ -112,6 +112,20 @@ struct CDetectOptionLike<std::enable_if_t<
 	using option_like_type = T;
 };
 
+template<typename T>
+struct CDetectOptionLike<std::enable_if_t<
+	!std::is_same<js_null, T>::value
+>, T, js_undefined> {
+	using option_like_type = T;
+};
+
+template<typename T>
+struct CDetectOptionLike<std::enable_if_t<
+	!std::is_same<js_undefined, T>::value
+>, T, js_null> {
+	using option_like_type = T;
+};
+
 template<typename> struct IsExplicitCastableFrom {};
 
 template<typename... From>
