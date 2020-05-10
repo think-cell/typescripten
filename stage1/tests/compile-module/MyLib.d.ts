@@ -4,6 +4,7 @@ declare namespace Foo {
 
     enum MyEnum { A = 10, B = 15, C = 20 }
     const enum NonAmbientEnum { A = 10, B, C }
+    enum MyEnumMissingValues { A, B, C }
 
     namespace NsInterface1 {
         let foo: number;
