@@ -88,8 +88,14 @@ SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type
 	if (ts::TypeFlags::String == jtypeRoot->flags()) {
 		return {mangled_no_comments, "js_string"};
 	}
+	if (ts::TypeFlags::StringLiteral == jtypeRoot->flags()) {
+		return CommentType(jtsTypeChecker, "js_string", jtypeRoot);
+	}
 	if (ts::TypeFlags::Number == jtypeRoot->flags()) {
 		return {mangled_no_comments, "double"};
+	}
+	if (ts::TypeFlags::NumberLiteral == jtypeRoot->flags()) {
+		return CommentType(jtsTypeChecker, "double", jtypeRoot);
 	}
 	if (ts::TypeFlags::Boolean == jtypeRoot->flags()) {
 		return {mangled_no_comments, "bool"};

@@ -93,6 +93,10 @@ namespace MyLib {
         func5(): string { return "func5"; }
         func6(): string { return "func6"; }
     }
+
+    export function literalTypesFunction(a: 10, b: "str"): 20 {
+        return 20;
+    }
 }
 
 export = MyLib;

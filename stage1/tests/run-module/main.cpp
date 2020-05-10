@@ -69,5 +69,7 @@ int main() {
 		_ASSERTEQUAL(tc::explicit_cast<std::string>(int6->func6()), "func6");
 	}
 
+	_ASSERTEQUAL(tc::js::MyLib::literalTypesFunction(10, tc::jst::js_string("str")), 20);
+
 	printf("Success!\n");
 }
