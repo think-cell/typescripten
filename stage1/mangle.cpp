@@ -150,6 +150,9 @@ SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type
 			} else if ("ReadonlyArray" == strTarget) {
 				_ASSERTEQUAL(jrarrTypeArguments->length(), 1);
 				return WrapType("js::ReadonlyArray<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">");
+			} else if ("Promise" == strTarget) {
+				_ASSERTEQUAL(jrarrTypeArguments->length(), 1);
+				return WrapType("js::Promise<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">");
 			}
 			tc::cont_emplace_back(vecstrExtraInfo, tc::concat("TypeReference=", strTarget));
 		}

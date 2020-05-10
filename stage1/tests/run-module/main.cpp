@@ -71,5 +71,16 @@ int main() {
 
 	_ASSERTEQUAL(tc::js::MyLib::literalTypesFunction(10, tc::jst::js_string("str")), 20);
 
-	printf("Success!\n");
+	{
+		tc::js::Promise<double> p1 = tc::js::MyLib::createPromise10();
+		tc::js::Promise<double> p2 = tc::js::MyLib::increasePromiseValue(p1);
+
+		static auto l2 = tc::jst::js_lambda_wrap([](double x) noexcept {
+			_ASSERTEQUAL(x, 11);
+			tc::js::MyLib::completePromiseTest();
+		});
+		tc::js::Promise<void> p3 = p2->then(l2);
+	}
+
+	printf("Success! But promise test may still fail.\n");
 }

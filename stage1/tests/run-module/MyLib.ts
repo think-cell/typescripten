@@ -97,6 +97,22 @@ namespace MyLib {
     export function literalTypesFunction(a: 10, b: "str"): 20 {
         return 20;
     }
+
+    export function createPromise10(): Promise<number> {
+        return new Promise(function(resolve) { resolve(10); });
+    }
+
+    export function increasePromiseValue(p: Promise<number>): Promise<number> {
+        return p.then((x) => x + 1);
+    }
+
+    var promiseCompleted = false;
+    export function completePromiseTest() {
+        promiseCompleted = true;
+    }
+    process.on("exit", () => {
+        if (!promiseCompleted) throw new Error("Promise test did not complete");
+    });
 }
 
 export = MyLib;
