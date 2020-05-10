@@ -82,5 +82,5 @@ int main() {
 		tc::js::Promise<void> p3 = p2->then(l2);
 	}
 
-	printf("Success! But promise test may still fail.\n");
+	printf("Success! But promise test may still fail. If no exception follows, everything is ok.\n");
 }
