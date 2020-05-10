@@ -61,6 +61,55 @@ std::string CppifyName(ts::Symbol jsymSymbol) noexcept {
 	return strResult;
 }
 
+struct SJsEnumOption {
+	ts::Symbol m_jsymOption;
+	std::string m_strJsName;
+	std::string m_strCppifiedName;
+	ts::EnumMember m_jtsEnumMember;
+	std::optional<double> m_odblValue;
+
+	SJsEnumOption(ts::TypeChecker const jtsTypeChecker, ts::Symbol const jsymOption) noexcept
+		: m_jsymOption([&]() noexcept {
+			_ASSERTEQUAL(jsymOption->getFlags(), ts::SymbolFlags::EnumMember);
+			return jsymOption;
+		}())
+		, m_strJsName(tc::explicit_cast<std::string>(jsymOption->getName()))
+		, m_strCppifiedName(CppifyName(jsymOption))
+		, m_jtsEnumMember([&]() noexcept {
+			auto const jarrDeclaration = jsymOption->declarations();
+			_ASSERTEQUAL(jarrDeclaration->length(), 1);
+			return *ts()->isEnumMember(jarrDeclaration[0]);
+		}())
+		, m_odblValue([&]() noexcept -> decltype(m_odblValue) {
+			_ASSERTEQUAL(ts()->getCombinedModifierFlags(m_jtsEnumMember), ts::ModifierFlags::None);
+			auto const junionOptionValue = jtsTypeChecker->getConstantValue(m_jtsEnumMember);
+			if (junionOptionValue.getEmval().isNumber()) {
+				return static_cast<double>(junionOptionValue);
+			} else {
+				return std::nullopt;  // Uncomputed value or string.
+			}
+		}())
+	{}
+};
+
+struct SJsEnum {
+	ts::Symbol m_jsymEnum;
+	std::string m_strMangledName;
+	std::vector<SJsEnumOption> m_vecjsenumoption;
+
+	SJsEnum(ts::TypeChecker const jtsTypeChecker, ts::Symbol const jsymEnum) noexcept
+		: m_jsymEnum(jsymEnum)
+		, m_strMangledName(MangleSymbolName(jtsTypeChecker, jsymEnum))
+		, m_vecjsenumoption(tc::make_vector(tc::transform(
+			*jsymEnum->exports(),
+			[&jtsTypeChecker](ts::Symbol const jsymOption) noexcept {
+				return SJsEnumOption(jtsTypeChecker, jsymOption);
+			}
+		)))
+	{
+	}
+};
+
 struct SJsVariableLike {
 	ts::Symbol m_jsymName;
 	std::string m_strJsName;
@@ -433,34 +482,31 @@ int main(int argc, char* argv[]) {
 			return vecjsclassResult;
 		};
 
+		auto vecjsenumEnum = tc::make_vector(tc::transform(g_vecjsymEnum, [&](ts::Symbol const jsymEnum) noexcept {
+			return SJsEnum(jtsTypeChecker, jsymEnum);
+		}));
+
 		auto vecjsclassClass = SortClasses(tc::make_vector(tc::transform(g_vecjsymClass, [&](ts::Symbol const jsymClass) noexcept {
 			return SJsClass(jtsTypeChecker, jsymClass);
 		})));
 
 		tc::append(std::cout,
 			"namespace tc::js_defs {\n",
-			tc::join(tc::transform(g_vecjsymEnum, [&jtsTypeChecker](ts::Symbol const jsymEnum) noexcept {
+			tc::join(tc::transform(vecjsenumEnum, [](SJsEnum const &jsenumEnum) noexcept {
 				// We have to mark enums as IsJsIntegralEnum before using in js interop.
 				return tc::concat(
-					"enum class _enum", MangleSymbolName(jtsTypeChecker, jsymEnum), " {\n",
+					"enum class _enum", jsenumEnum.m_strMangledName, " {\n",
 					tc::join(
-						tc::transform(*jsymEnum->exports(), [&jtsTypeChecker](ts::Symbol const jsymOption) noexcept {
-							_ASSERTEQUAL(jsymOption->getFlags(), ts::SymbolFlags::EnumMember);
-							auto const jarrDeclaration = jsymOption->declarations();
-							_ASSERTEQUAL(jarrDeclaration->length(), 1);
-							auto const jtsEnumMember = *ts()->isEnumMember(jarrDeclaration[0]);
-							_ASSERTEQUAL(ts()->getCombinedModifierFlags(jtsEnumMember), ts::ModifierFlags::None);
-							auto const junionOptionValue = jtsTypeChecker->getConstantValue(jtsEnumMember);
-							if (!junionOptionValue.getEmval().isNumber()) {
-								// Uncomputed value.
+						tc::transform(jsenumEnum.m_vecjsenumoption, [](SJsEnumOption const &jsenumoption) noexcept {
+							if (jsenumoption.m_odblValue) {
 								return tc::explicit_cast<std::string>(tc::concat(
-									"	/*", tc::explicit_cast<std::string>(jsymOption->getName()), " = ??? */\n"
+									"	", jsenumoption.m_strCppifiedName, " = ",
+									tc::as_dec(tc::explicit_cast<int>(*jsenumoption.m_odblValue)),
+									",\n"
 								));
 							} else {
 								return tc::explicit_cast<std::string>(tc::concat(
-									"	", CppifyName(jsymOption), " = ",
-									tc::as_dec(tc::explicit_cast<int>(double(junionOptionValue))),
-									",\n"
+									"	/*", jsenumoption.m_strJsName, " = ??? */\n"
 								));
 							}
 						})
@@ -470,19 +516,19 @@ int main(int argc, char* argv[]) {
 			})),
 			"} // namespace tc::js_defs\n",
 			"namespace tc::jst {\n",
-			tc::join(tc::transform(g_vecjsymEnum, [&jtsTypeChecker](ts::Symbol const jsymEnum) noexcept {
+			tc::join(tc::transform(vecjsenumEnum, [](SJsEnum const &jsenumEnum) noexcept {
 				// Enums are declared outside of the _jsall class because we have to mark them as IsJsIntegralEnum
 				// before using in js interop.
 				return tc::concat(
-					"template<> struct IsJsIntegralEnum<js_defs::_enum", MangleSymbolName(jtsTypeChecker, jsymEnum), "> : std::true_type {};\n"
+					"template<> struct IsJsIntegralEnum<js_defs::_enum", jsenumEnum.m_strMangledName, "> : std::true_type {};\n"
 				);
 			})),
 			"} // namespace tc::jst\n",
 			"namespace tc::js_defs {\n",
 			"	using namespace jst; // no ADL\n",
-			tc::join(tc::transform(g_vecjsymEnum, [&jtsTypeChecker](ts::Symbol const jsymEnum) noexcept {
+			tc::join(tc::transform(vecjsenumEnum, [](SJsEnum const &jsenumEnum) noexcept {
 				return tc::concat(
-					"	using ", MangleSymbolName(jtsTypeChecker, jsymEnum), " = _enum", MangleSymbolName(jtsTypeChecker, jsymEnum), ";\n"
+					"	using ", jsenumEnum.m_strMangledName, " = _enum", jsenumEnum.m_strMangledName, ";\n"
 				);
 			})),
 			tc::join(tc::transform(vecjsclassClass, [](SJsClass const& jsclassClass) noexcept {
