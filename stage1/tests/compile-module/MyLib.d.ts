@@ -5,6 +5,11 @@ declare namespace Foo {
     enum MyEnum { A = 10, B = 15, C = 20 }
     const enum NonAmbientEnum { A = 10, B, C }
     enum MyEnumMissingValues { A, B, C }
+    enum MyDoubleEnum { A = 20.5, B, C }
+    enum MyStringEnum { A = "Foo", B = "Bar" }
+    enum MyStringEnumMissingValues { A = "Foo", B, C, D }
+    enum MyHeterogeneousEnum { A = "Foo", B = 20.0, C = "Bar" }
+    enum MyHeterogeneousEnumMissingValues { A = "Foo", B = 20, C, D }
 
     namespace NsInterface1 {
         let foo: number;

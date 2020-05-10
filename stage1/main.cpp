@@ -68,7 +68,7 @@ struct SJsEnumOption {
 	std::string m_strJsName;
 	std::string m_strCppifiedName;
 	ts::EnumMember m_jtsEnumMember;
-	std::optional<double> m_odblValue;
+	std::optional<std::variant<double, std::string>> m_ovardblstrValue;
 
 	SJsEnumOption(ts::TypeChecker const jtsTypeChecker, ts::Symbol const jsymOption) noexcept
 		: m_jsymOption([&]() noexcept {
@@ -82,13 +82,17 @@ struct SJsEnumOption {
 			_ASSERTEQUAL(jarrDeclaration->length(), 1);
 			return *ts()->isEnumMember(jarrDeclaration[0]);
 		}())
-		, m_odblValue([&]() noexcept -> decltype(m_odblValue) {
+		, m_ovardblstrValue([&]() noexcept -> decltype(m_ovardblstrValue) {
 			_ASSERTEQUAL(ts()->getCombinedModifierFlags(m_jtsEnumMember), ts::ModifierFlags::None);
 			auto const junionOptionValue = jtsTypeChecker->getConstantValue(m_jtsEnumMember);
 			if (junionOptionValue.getEmval().isNumber()) {
-				return static_cast<double>(junionOptionValue);
+				return junionOptionValue.get<double>();
+			} else if (junionOptionValue.getEmval().isString()) {
+				return tc::explicit_cast<std::string>(junionOptionValue.get<js_string>());
+			} else if (junionOptionValue.getEmval().isUndefined()) {
+				return std::nullopt;  // Uncomputed value.
 			} else {
-				return std::nullopt;  // Uncomputed value or string.
+				_ASSERTFALSE;
 			}
 		}())
 	{}
@@ -98,6 +102,7 @@ struct SJsEnum {
 	ts::Symbol m_jsymEnum;
 	std::string m_strMangledName;
 	std::vector<SJsEnumOption> m_vecjsenumoption;
+	bool m_bIsIntegral;
 
 	SJsEnum(ts::TypeChecker const jtsTypeChecker, ts::Symbol const jsymEnum) noexcept
 		: m_jsymEnum(jsymEnum)
@@ -108,6 +113,16 @@ struct SJsEnum {
 				return SJsEnumOption(jtsTypeChecker, jsymOption);
 			}
 		)))
+		, m_bIsIntegral(!tc::find_first_if<tc::return_bool>(
+			m_vecjsenumoption,
+			[](SJsEnumOption const &opt) noexcept {
+				return opt.m_ovardblstrValue &&
+					tc::visit(*opt.m_ovardblstrValue,
+						[](double dblValue) { return static_cast<int>(dblValue) != dblValue; },
+						[](std::string const&) { return true; }
+					);
+			}
+		))
 	{
 	}
 };
@@ -501,12 +516,15 @@ int main(int argc, char* argv[]) {
 				return tc::concat(
 					"enum class _enum", jsenumEnum.m_strMangledName, " {\n",
 					tc::join(
-						tc::transform(jsenumEnum.m_vecjsenumoption, [](SJsEnumOption const &jsenumoption) noexcept {
+						tc::transform(jsenumEnum.m_vecjsenumoption, [&jsenumEnum](SJsEnumOption const &jsenumoption) noexcept {
 							return tc_conditional_range(
-								jsenumoption.m_odblValue,
+								jsenumoption.m_ovardblstrValue,
 								tc::concat(
-									"	", jsenumoption.m_strCppifiedName, " = ",
-									tc::as_dec(tc::explicit_cast<int>(*jsenumoption.m_odblValue)),
+									"	", jsenumoption.m_strCppifiedName,
+									tc_conditional_range(
+										jsenumEnum.m_bIsIntegral,
+										tc::concat(" = ", tc::as_dec(tc::explicit_cast<int>(std::get<double>(*jsenumoption.m_ovardblstrValue))))
+									),
 									",\n"
 								),
 								tc::concat(
@@ -523,8 +541,44 @@ int main(int argc, char* argv[]) {
 			tc::join(tc::transform(vecjsenumEnum, [](SJsEnum const &jsenumEnum) noexcept {
 				// Enums are declared outside of the _jsall class because we have to mark them as IsJsIntegralEnum
 				// before using in js interop.
-				return tc::concat(
-					"template<> struct IsJsIntegralEnum<js_defs::_enum", jsenumEnum.m_strMangledName, "> : std::true_type {};\n"
+				return tc_conditional_range(
+					jsenumEnum.m_bIsIntegral,
+					tc::concat(
+						"template<> struct IsJsIntegralEnum<js_defs::_enum", jsenumEnum.m_strMangledName, "> : std::true_type {};\n"
+					),
+					tc::concat(
+						"template<> struct IsJsHeterogeneousEnum<js_defs::_enum", jsenumEnum.m_strMangledName, "> : std::true_type {\n",
+						"	static inline const auto& Values() {\n",
+						"		using E = js_defs::_enum", jsenumEnum.m_strMangledName, ";\n",
+						"		static tc::unordered_map<E, jst::js_unknown> vals{\n",
+						tc::join_separated(
+							tc::transform(
+								tc::filter(jsenumEnum.m_vecjsenumoption, TC_MEMBER(.m_ovardblstrValue)),
+								[](SJsEnumOption const &jsenumoption) noexcept {
+									_ASSERT(jsenumoption.m_ovardblstrValue);
+									return tc::concat(
+										"			{E::", jsenumoption.m_strCppifiedName, ", ",
+										tc::visit(*jsenumoption.m_ovardblstrValue,
+											[](double dblValue) {
+												// TODO: std::to_string because of floating-point numbers. May be not enough precision.
+												return tc::explicit_cast<std::string>(tc::concat("js_unknown(", std::to_string(dblValue), ")"));
+											},
+											[](std::string const& strValue) {
+												return tc::explicit_cast<std::string>(tc::concat("js_string(\"", strValue, "\")"));
+											}
+										),
+										"}"
+									);
+								}
+							),
+							",\n"
+						),
+						"\n",
+						"		};\n",
+						"		return vals;\n",
+						"	}\n",
+						"};\n"
+					)
 				);
 			})),
 			"} // namespace tc::jst\n",

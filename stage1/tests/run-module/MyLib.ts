@@ -29,6 +29,22 @@ namespace MyLib {
         ENUM21
     }
 
+    export enum SomeHeterogeneousEnum {
+        ENUM30 = 30,
+        ENUMFoo = "Foo",
+        ENUM40 = 40
+    }
+
+    export function checkHeterogeneousEnum(a: SomeHeterogeneousEnum, b: SomeHeterogeneousEnum, c: SomeHeterogeneousEnum) {
+        if (a != SomeHeterogeneousEnum.ENUM30) throw new Error("Invalid ENUM30");
+        if (b != SomeHeterogeneousEnum.ENUMFoo) throw new Error("Invalid ENUMFoo");
+        if (c != SomeHeterogeneousEnum.ENUM40) throw new Error("Invalid ENUM40");
+    }
+
+    export function getEnum30() { return SomeHeterogeneousEnum.ENUM30; }
+    export function getEnumFoo() { return SomeHeterogeneousEnum.ENUMFoo; }
+    export function getEnum40() { return SomeHeterogeneousEnum.ENUM40; }
+
     export namespace SomeModule {
         export function sumOfThree(a: number, b:number, c: number): number {
             return a + b + c;

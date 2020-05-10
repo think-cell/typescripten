@@ -23,6 +23,16 @@ int main() {
 	static_assert(20 == static_cast<int>(tc::js::MyLib::SomeEnum::ENUM20));
 	static_assert(21 == static_cast<int>(tc::js::MyLib::SomeEnum::ENUM21));
 
+	static_assert(std::is_enum<tc::js::MyLib::SomeHeterogeneousEnum>::value);
+	tc::js::MyLib::checkHeterogeneousEnum(
+		tc::js::MyLib::SomeHeterogeneousEnum::ENUM30,
+		tc::js::MyLib::SomeHeterogeneousEnum::ENUMFoo,
+		tc::js::MyLib::SomeHeterogeneousEnum::ENUM40
+	);
+	_ASSERTEQUAL(tc::js::MyLib::getEnum30(), tc::js::MyLib::SomeHeterogeneousEnum::ENUM30);
+	_ASSERTEQUAL(tc::js::MyLib::getEnumFoo(), tc::js::MyLib::SomeHeterogeneousEnum::ENUMFoo);
+	_ASSERTEQUAL(tc::js::MyLib::getEnum40(), tc::js::MyLib::SomeHeterogeneousEnum::ENUM40);
+
 	_ASSERTEQUAL(tc::js::MyLib::SomeModule::sumOfThree(10, 20, 30), 60);
 
 	tc::js::MyLib::SomeObject obj2 = tc::js::MyLib::createObject(tc::jst::js_string("foobar"));
