@@ -4,8 +4,10 @@
 #include <string>
 #include <type_traits>
 #include <utility>
+#include "algorithm.h"
 #include "explicit_cast.h"
 #include "range_defines.h"
+#include "subrange.h"
 #include "tag_type.h"
 #include "type_list.h"
 #include "type_traits.h"
@@ -31,6 +33,9 @@ struct IsJsInteropable<
 
 template<typename T>
 struct IsJsIntegralEnum : std::false_type {};
+
+template<typename T>
+struct IsJsHeterogeneousEnum : std::false_type {};
 
 template<typename T>
 struct js_ref;
@@ -81,6 +86,7 @@ struct js_string;
 } // namespace no_adl
 using no_adl::IsJsInteropable;
 using no_adl::IsJsIntegralEnum;
+using no_adl::IsJsHeterogeneousEnum;
 using no_adl::js_unknown;
 using no_adl::js_undefined;
 using no_adl::js_null;
@@ -323,6 +329,9 @@ struct IsJsInteropable<js_string> : std::true_type {};
 template<typename T>
 struct IsJsInteropable<T, std::enable_if_t<IsJsIntegralEnum<T>::value>> : std::true_type {};
 
+template<typename T>
+struct IsJsInteropable<T, std::enable_if_t<IsJsHeterogeneousEnum<T>::value>> : std::true_type {};
+
 namespace emscripten_interop_detail {
 namespace no_adl {
 template<typename T, typename = void>
@@ -381,6 +390,36 @@ namespace emscripten::internal {
 
 		static auto fromWireType(WireType wire) {
 			return static_cast<T>(tc::explicit_cast<UnderlyingType>(BindingType<double>::fromWireType(wire)));
+		}
+	};
+
+
+	template<typename T>
+	struct TypeID<T, std::enable_if_t<tc::jst::IsJsHeterogeneousEnum<tc::remove_cvref_t<T>>::value>> {
+		using UnderlyingType = typename std::remove_reference_t<decltype(tc::jst::IsJsHeterogeneousEnum<T>::Values())>::mapped_type;
+
+		static constexpr TYPEID get() {
+			return TypeID<UnderlyingType>::get();
+		}
+	};
+
+	template<typename T>
+	struct BindingType<T, std::enable_if_t<tc::jst::IsJsHeterogeneousEnum<T>::value>> {
+		using UnderlyingType = typename TypeID<T>::UnderlyingType;
+
+		typedef typename BindingType<UnderlyingType>::WireType WireType;
+
+		static WireType toWireType(T const& en) {
+			auto const& umValueToUnderlying = tc::jst::IsJsHeterogeneousEnum<T>::Values();
+			return BindingType<UnderlyingType>::toWireType(tc::cont_find<tc::return_element>(umValueToUnderlying, en)->second);
+		}
+
+		static auto fromWireType(WireType wire) {
+			auto const& umValueToUnderlying = tc::jst::IsJsHeterogeneousEnum<T>::Values();
+			auto const underlying = BindingType<UnderlyingType>::fromWireType(wire);
+			return tc::find_first_if<tc::return_element>(umValueToUnderlying, [&](auto const &kv) {
+				return kv.second.getEmval().strictlyEquals(underlying.getEmval());
+			})->first;
 		}
 	};
 }

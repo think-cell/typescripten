@@ -1,6 +1,7 @@
 #include <emscripten/val.h>
 #include <vector>
 #include <initializer_list>
+#include <string>
 #include <type_traits>
 #include "explicit_cast.h"
 #include "range.h"
@@ -15,8 +16,19 @@ using tc::js::console;
 
 enum class MyIntEnum { Foo = 10 };
 
+enum class MyHeterogeneousEnum { Foo, Bar };
+
 namespace tc::jst {
 template<> struct IsJsIntegralEnum<MyIntEnum> : std::true_type {};
+template<> struct IsJsHeterogeneousEnum<MyHeterogeneousEnum> : std::true_type {
+	static inline const auto& Values() {
+		static tc::unordered_map<MyHeterogeneousEnum, js_unknown> vals{
+			{MyHeterogeneousEnum::Foo, 23.0},
+			{MyHeterogeneousEnum::Bar, js_string("bar")}
+		};
+		return vals;
+	}
+};
 } // namespace tc::jst
 
 int main() {
@@ -89,6 +101,30 @@ int main() {
 		_ASSERTEQUAL(static_cast<MyIntEnum>(unk), MyIntEnum::Foo);
 		_ASSERT(unk.getEmval().isNumber());
 		_ASSERTEQUAL(unk.getEmval().template as<double>(), 10.0);
+	}
+
+	{
+		emscripten::val const emval(MyHeterogeneousEnum::Foo);
+		_ASSERT(emval.isNumber());
+		_ASSERTEQUAL(emval.template as<double>(), 23.0);
+		_ASSERTEQUAL(emval.template as<MyHeterogeneousEnum>(), MyHeterogeneousEnum::Foo);
+
+		js_unknown const unk(MyHeterogeneousEnum::Foo);
+		_ASSERTEQUAL(static_cast<MyHeterogeneousEnum>(unk), MyHeterogeneousEnum::Foo);
+		_ASSERT(unk.getEmval().isNumber());
+		_ASSERTEQUAL(unk.getEmval().template as<double>(), 23.0);
+	}
+
+	{
+		emscripten::val const emval(MyHeterogeneousEnum::Bar);
+		_ASSERT(emval.isString());
+		_ASSERTEQUAL(emval.template as<std::string>(), "bar");
+		_ASSERTEQUAL(emval.template as<MyHeterogeneousEnum>(), MyHeterogeneousEnum::Bar);
+
+		js_unknown const unk(MyHeterogeneousEnum::Bar);
+		_ASSERTEQUAL(static_cast<MyHeterogeneousEnum>(unk), MyHeterogeneousEnum::Bar);
+		_ASSERT(unk.getEmval().isString());
+		_ASSERTEQUAL(unk.getEmval().template as<std::string>(), "bar");
 	}
 	return 0;
 }
