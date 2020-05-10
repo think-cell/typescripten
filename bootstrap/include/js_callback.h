@@ -203,53 +203,44 @@ using no_adl::CUniqueDetachableJsFunction;
 // Heap-allocated "fire-and-forget" callbacks are explicitly out of scope for the library: there are typically
 // no guarantees on when they're called and we want the user to think about that carefully and make sure all
 // proper cancellations are in place (e.g. by using member callback tied to the object which initiates the request).
+namespace callback_detail {
 namespace no_adl {
+// Helper class, should always be passed as a const value to avoid
+// js_function(js_function&&) binding to it and moving out.
 template<typename Fn>
-struct js_lambda_wrap final : private tc::nonmovable {
+struct js_lambda_wrap_impl final : CUniqueDetachableJsFunction<boost::callable_traits::function_type_t<Fn>> {
 	using function_type = boost::callable_traits::function_type_t<Fn>;
 
 	static_assert(!std::is_reference<Fn>::value);
 	static_assert(boost::callable_traits::is_noexcept<Fn>::value, "Callbacks for JS should be noexcept");
 
 	template<typename FnSrc>
-	js_lambda_wrap(FnSrc&& fn) noexcept : m_fn(std::forward<FnSrc>(fn)), m_jsFunction(&FnWrapper, this) {}
+	js_lambda_wrap_impl(FnSrc&& fn) noexcept : CUniqueDetachableJsFunction<function_type>(&FnWrapper, this), m_fn(std::forward<FnSrc>(fn)) {}
 
 	// Explicitly disable two-way conversion enabled by IsEmvalWrapper below.
-	js_lambda_wrap(emscripten::val) = delete;
-
-	// Always return a copy of `m_emval` and keep ownership even if we're rvalue.
-	operator js_function<function_type>() const { return m_jsFunction; }
-
-	emscripten::val getEmval() const {
-		return m_jsFunction.getEmval();
-	}
+	js_lambda_wrap_impl(emscripten::val) = delete;
 
 private:
 	Fn m_fn;
-	callback_detail::CUniqueDetachableJsFunction<function_type> const m_jsFunction;
 
 	static emscripten::val FnWrapper(void* pThis, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) noexcept {
 		return callback_detail::CCallableWrapper<boost::callable_traits::args_t<Fn, tc::type::list>>()(
-			tc::void_cast<js_lambda_wrap>(pThis)->m_fn,
+			tc::void_cast<js_lambda_wrap_impl>(pThis)->m_fn,
 			emvalThis,
 			emvalArgs
 		);
 	}
 };
-template<typename Fn> js_lambda_wrap(Fn) -> js_lambda_wrap<Fn>;
+template<typename Fn> js_lambda_wrap_impl(Fn) -> js_lambda_wrap_impl<Fn>;
 } // namespace no_adl
-using no_adl::js_lambda_wrap;
+using no_adl::js_lambda_wrap_impl;
+} // namespace callback_detail
 
-namespace no_adl {
-template<typename T>
-struct IsJsInteropable<T, std::enable_if_t<
-	tc::is_instance_or_derived<js_lambda_wrap, T>::value
->> : std::true_type {};
-} // namespace no_adl
-
-namespace emscripten_interop_detail::no_adl {
-template<typename T>
-struct IsEmvalWrapper<T, std::enable_if_t<tc::is_instance_or_derived<js_lambda_wrap, T>::value>> : std::true_type {
-};
-} // namespace emscripten_interop_detail::no_adl
+template<typename Fn>
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wignored-qualifiers"  // https://bugs.llvm.org/show_bug.cgi?id=43709 and https://github.com/emscripten-core/emscripten/issues/11123
+const auto js_lambda_wrap(Fn &&fn) {
+#pragma clang diagnostic pop
+	return callback_detail::js_lambda_wrap_impl(std::forward<Fn>(fn));
+}
 } // namespace tc::jst

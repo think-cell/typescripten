@@ -112,7 +112,7 @@ int main() {
 	}
 	{
 		printf("Calling callbacks through js_function\n");
-		tc::jst::js_lambda_wrap cbStorage([](js_string const str) noexcept {
+		auto cbStorage = tc::jst::js_lambda_wrap([](js_string const str) noexcept {
 			return js_string(tc::concat("hello ", tc::explicit_cast<std::string>(str)));
 		});
 		js_function<js_string(js_string const)> cb = cbStorage;
