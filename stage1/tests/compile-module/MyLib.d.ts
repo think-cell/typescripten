@@ -29,7 +29,7 @@ declare namespace Foo {
     }
     namespace NsInterface1 {
         interface Interface1 {
-            getInstance2(): NsInterface2.Interface2;
+            getInstance2(a: NsInterface2.Interface2): NsInterface2.Interface2;
             (a: string): undefined | string;
             prop: number;
             readonly readonlyProp: number;
@@ -42,7 +42,7 @@ declare namespace Foo {
     }
     namespace NsInterface2 {
         interface Interface2 {
-            getInstance1(): NsInterface1.Interface1;
+            getInstance1(a: NsInterface1.Interface1): NsInterface1.Interface1;
         }
     }
 
