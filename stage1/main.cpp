@@ -115,7 +115,7 @@ struct SJsEnum {
 		)))
 		, m_bIsIntegral(!tc::find_first_if<tc::return_bool>(
 			m_vecjsenumoption,
-			[](SJsEnumOption const &opt) noexcept {
+			[](SJsEnumOption const& opt) noexcept {
 				return opt.m_ovardblstrValue &&
 					tc::visit(*opt.m_ovardblstrValue,
 						[](double dblValue) { return static_cast<int>(dblValue) != dblValue; },
@@ -475,14 +475,14 @@ int main(int argc, char* argv[]) {
 
 		auto SortClasses = [&jtsTypeChecker](std::vector<SJsClass> vecjsclassOriginal) {
 			std::map<std::string, SJsClass const*> mstrjsclassClasses;
-			tc::for_each(vecjsclassOriginal, [&](SJsClass const &jsclassClass) {
+			tc::for_each(vecjsclassOriginal, [&](SJsClass const& jsclassClass) {
 				mstrjsclassClasses.emplace(jsclassClass.m_strMangledName, &jsclassClass);
 			});
 
 			std::vector<SJsClass> vecjsclassResult;
 			std::unordered_set<std::string> usstrInResult;
 
-			auto dfs = [&](SJsClass const& jsclassClass, auto const &dfs) {
+			auto dfs = [&](SJsClass const& jsclassClass, auto const& dfs) {
 				if (usstrInResult.count(jsclassClass.m_strMangledName)) {
 					return;
 				}
@@ -511,12 +511,12 @@ int main(int argc, char* argv[]) {
 
 		tc::append(std::cout,
 			"namespace tc::js_defs {\n",
-			tc::join(tc::transform(vecjsenumEnum, [](SJsEnum const &jsenumEnum) noexcept {
+			tc::join(tc::transform(vecjsenumEnum, [](SJsEnum const& jsenumEnum) noexcept {
 				// We have to mark enums as IsJsIntegralEnum before using in js interop.
 				return tc::concat(
 					"enum class _enum", jsenumEnum.m_strMangledName, " {\n",
 					tc::join(
-						tc::transform(jsenumEnum.m_vecjsenumoption, [&jsenumEnum](SJsEnumOption const &jsenumoption) noexcept {
+						tc::transform(jsenumEnum.m_vecjsenumoption, [&jsenumEnum](SJsEnumOption const& jsenumoption) noexcept {
 							return tc_conditional_range(
 								jsenumoption.m_ovardblstrValue,
 								tc::concat(
@@ -538,7 +538,7 @@ int main(int argc, char* argv[]) {
 			})),
 			"} // namespace tc::js_defs\n",
 			"namespace tc::jst {\n",
-			tc::join(tc::transform(vecjsenumEnum, [](SJsEnum const &jsenumEnum) noexcept {
+			tc::join(tc::transform(vecjsenumEnum, [](SJsEnum const& jsenumEnum) noexcept {
 				// Enums are declared outside of the _jsall class because we have to mark them as IsJsIntegralEnum
 				// before using in js interop.
 				return tc_conditional_range(
@@ -548,13 +548,13 @@ int main(int argc, char* argv[]) {
 					),
 					tc::concat(
 						"template<> struct IsJsHeterogeneousEnum<js_defs::_enum", jsenumEnum.m_strMangledName, "> : std::true_type {\n",
-						"	static inline const auto& Values() {\n",
+						"	static inline auto const& Values() {\n",
 						"		using E = js_defs::_enum", jsenumEnum.m_strMangledName, ";\n",
 						"		static tc::unordered_map<E, jst::js_unknown> vals{\n",
 						tc::join_separated(
 							tc::transform(
 								tc::filter(jsenumEnum.m_vecjsenumoption, TC_MEMBER(.m_ovardblstrValue)),
-								[](SJsEnumOption const &jsenumoption) noexcept {
+								[](SJsEnumOption const& jsenumoption) noexcept {
 									_ASSERT(jsenumoption.m_ovardblstrValue);
 									return tc::concat(
 										"			{E::", jsenumoption.m_strCppifiedName, ", ",
@@ -584,7 +584,7 @@ int main(int argc, char* argv[]) {
 			"} // namespace tc::jst\n",
 			"namespace tc::js_defs {\n",
 			"	using namespace jst; // no ADL\n",
-			tc::join(tc::transform(vecjsenumEnum, [](SJsEnum const &jsenumEnum) noexcept {
+			tc::join(tc::transform(vecjsenumEnum, [](SJsEnum const& jsenumEnum) noexcept {
 				return tc::concat(
 					"	using ", jsenumEnum.m_strMangledName, " = _enum", jsenumEnum.m_strMangledName, ";\n"
 				);
@@ -653,7 +653,7 @@ int main(int argc, char* argv[]) {
 					)),
 					tc::join(tc::transform(
 						jsclassClass.m_vecjsvariablelikeExportVariable,
-						[](SJsVariableLike const &jsvariablelikeVariable) noexcept {
+						[](SJsVariableLike const& jsvariablelikeVariable) noexcept {
 							return tc::concat(
 								"			static auto ", jsvariablelikeVariable.m_strCppifiedName, "() noexcept;\n",
 								tc_conditional_range(
@@ -669,7 +669,7 @@ int main(int argc, char* argv[]) {
 					"		};\n",
 					tc::join(tc::transform(
 						jsclassClass.m_vecjsvariablelikeProperty,
-						[](SJsVariableLike const &jsvariablelikeProperty) noexcept {
+						[](SJsVariableLike const& jsvariablelikeProperty) noexcept {
 							return tc::concat(
 								"		auto ", jsvariablelikeProperty.m_strCppifiedName, "() noexcept;\n",
 								tc_conditional_range(
@@ -738,7 +738,7 @@ int main(int argc, char* argv[]) {
 					)),
 					tc::join(tc::transform(
 						jsclassClass.m_vecjsvariablelikeExportVariable,
-						[&strClassNamespace, &strClassInstanceRetrieve](SJsVariableLike const &jsvariablelikeVariable) noexcept {
+						[&strClassNamespace, &strClassInstanceRetrieve](SJsVariableLike const& jsvariablelikeVariable) noexcept {
 							return tc::concat(
 								"	inline auto ", strClassNamespace, "_tcjs_definitions::", jsvariablelikeVariable.m_strCppifiedName, "() noexcept ",
 								"{ return ", strClassInstanceRetrieve, "[\"", jsvariablelikeVariable.m_strJsName, "\"].template as<", jsvariablelikeVariable.m_mtType.m_strWithComments, ">(); }\n",
@@ -755,7 +755,7 @@ int main(int argc, char* argv[]) {
 					)),
 					tc::join(tc::transform(
 						jsclassClass.m_vecjsvariablelikeProperty,
-						[&strClassNamespace](SJsVariableLike const &jsvariablelikeProperty) noexcept {
+						[&strClassNamespace](SJsVariableLike const& jsvariablelikeProperty) noexcept {
 							return tc::concat(
 								"	inline auto ", strClassNamespace, jsvariablelikeProperty.m_strCppifiedName, "() noexcept ",
 								"{ return _getProperty<", jsvariablelikeProperty.m_mtType.m_strWithComments, ">(\"", jsvariablelikeProperty.m_strJsName, "\"); }\n",
@@ -838,7 +838,7 @@ int main(int argc, char* argv[]) {
 		tc::append(std::cout,
 			tc::join(tc::transform(
 				vecjsfunctionlikeGlobalFunction,
-				[&jtsTypeChecker](SJsFunctionLike &jsfunctionlikeFunction) {
+				[&jtsTypeChecker](SJsFunctionLike& jsfunctionlikeFunction) {
 					// TODO: deduplicate following code into SJsFunctionLike.
 					auto const rngchCallArguments = tc::join_separated(
 						tc::transform(
@@ -908,7 +908,7 @@ int main(int argc, char* argv[]) {
 			)),
 			tc::join(tc::transform(
 				vecjsfunctionlikeGlobalFunction,
-				[](SJsFunctionLike &jsfunctionlikeFunction) {
+				[](SJsFunctionLike& jsfunctionlikeFunction) {
 					return tc::concat("	using js_defs::", jsfunctionlikeFunction.m_strCppifiedName, ";\n");
 				}
 			)),

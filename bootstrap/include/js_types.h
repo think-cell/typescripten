@@ -431,7 +431,7 @@ namespace emscripten::internal {
 		static auto fromWireType(WireType wire) {
 			auto const& umValueToUnderlying = tc::jst::IsJsHeterogeneousEnum<T>::Values();
 			auto const underlying = BindingType<UnderlyingType>::fromWireType(wire);
-			return tc::find_first_if<tc::return_element>(umValueToUnderlying, [&](auto const &kv) {
+			return tc::find_first_if<tc::return_element>(umValueToUnderlying, [&](auto const& kv) {
 				return kv.second.getEmval().strictlyEquals(underlying.getEmval());
 			})->first;
 		}

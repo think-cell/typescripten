@@ -117,7 +117,7 @@ SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type
 		auto vecmtType = tc::make_vector(tc::transform((*jouniontypeRoot)->types(), [&](ts::Type const jtypeUnionOption) noexcept {
 			return MangleType(jtsTypeChecker, jtypeUnionOption);
 		}));
-		auto isJsUnknown = [](const SMangledType &mt) noexcept { return mt.m_strCppCanonized == "js_unknown"; };
+		auto isJsUnknown = [](SMangledType const& mt) noexcept { return mt.m_strCppCanonized == "js_unknown"; };
 		if (std::find_if(vecmtType.begin(), vecmtType.end(), isJsUnknown) == vecmtType.end()) {
 			// NOTE: sort_unique works with final names which go to C++. It may potentially hide
 			// some errors in mangling (e.g. if two different types map to the same type in C++).

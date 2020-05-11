@@ -21,7 +21,7 @@ enum class MyHeterogeneousEnum { Foo, Bar };
 namespace tc::jst {
 template<> struct IsJsIntegralEnum<MyIntEnum> : std::true_type {};
 template<> struct IsJsHeterogeneousEnum<MyHeterogeneousEnum> : std::true_type {
-	static inline const auto& Values() {
+	static inline auto const& Values() {
 		static tc::unordered_map<MyHeterogeneousEnum, js_unknown> vals{
 			{MyHeterogeneousEnum::Foo, 23.0},
 			{MyHeterogeneousEnum::Bar, js_string("bar")}
@@ -104,7 +104,7 @@ int main() {
 	}
 	{
 		// Check that BindingType<> removes cv-refs.
-		const auto e = MyIntEnum::Foo;
+		auto const e = MyIntEnum::Foo;
 		emscripten::val const emval(e);
 		js_unknown const unk(e);
 	}

@@ -6,7 +6,7 @@
 using tc::jst::js_string;
 
 int main() {
-	js_string *o = new js_string("foo");
+	js_string* o = new js_string("foo");
 	delete o;
 	// `o` is now dead, but it still keeps an emscripten::val's handle.
 	// In my test it was 5. Embind clears corresponding entry of the objects table.
