@@ -288,8 +288,9 @@ private:
 	}
 };
 
-struct js_string final {  // Immutable.
-	// Reference semantics instead of value semantics (like in JS) is allowed because strings are immutable.
+struct js_string final {
+	// There only way to change the underlying value (both in C++ and JS) is to reassign.
+	// There are no in-place modification methods in either C++ or JS.
 	explicit js_string(emscripten::val const& _emval) noexcept : m_emval(_emval) {
 		_ASSERT(m_emval.isString());
 	}
