@@ -83,6 +83,11 @@ int callback_counter;
 		return SomeJsClass(create_js_object, 123); \
 	})
 
+template<typename T, typename U>
+void ensureJsFunctionDeduction(js_function<U>) {
+	static_assert(std::is_same<T, js_function<U>>::value);
+}
+
 // Macro so callback creation is performed between "start" and "end".
 #define RUN_TEST(Name, ExpectedType, Callback) \
 	{ \
@@ -97,6 +102,7 @@ int callback_counter;
 			tc::remove_cvref_t<Fn>, \
 			ExpectedType \
 		>::value, #Name); \
+		ensureJsFunctionDeduction<ExpectedType>(cb); \
 		int callback_counter_before = callback_counter; \
 		emscripten::val::module_property(#Name)(std::forward<Fn>(cb)); \
 		_ASSERTEQUAL(callback_counter, callback_counter_before + 1); \
@@ -128,6 +134,7 @@ int main() {
 		auto cbStorage = tc::jst::js_lambda_wrap([](js_string const str) noexcept {
 			return js_string(tc::concat("hello ", tc::explicit_cast<std::string>(str)));
 		});
+		ensureJsFunctionDeduction<js_function<js_string(js_string const)>>(cbStorage);
 		js_function<js_string(js_string const)> cb = cbStorage;
 		_ASSERTEQUAL(tc::explicit_cast<std::string>(cb(js_string("world"))), "hello world");
 	}
