@@ -133,8 +133,26 @@ struct _js_console : virtual jst::IObject {
 	struct _tcjs_definitions {
 		template<typename... Args>
 		static void log(Args&&... args) noexcept {
-			static_assert((jst::IsJsInteropable<tc::remove_cvref_t<Args>>::value && ...));
+			static_assert((jst::IsJsInteropable<::tc::remove_cvref_t<Args>>::value && ...));
 			emscripten::val::global("console")["log"](std::forward<Args>(args)...);
+		}
+
+		template<typename... Args>
+		static void error(Args&&... args) noexcept {
+			static_assert((jst::IsJsInteropable<::tc::remove_cvref_t<Args>>::value && ...));
+			emscripten::val::global("console")["error"](std::forward<Args>(args)...);
+		}
+
+		template<typename... Args>
+		static void warn(Args&&... args) noexcept {
+			static_assert((jst::IsJsInteropable<::tc::remove_cvref_t<Args>>::value && ...));
+			emscripten::val::global("console")["warn"](std::forward<Args>(args)...);
+		}
+
+		template<typename... Args>
+		static void debug(Args&&... args) noexcept {
+			static_assert((jst::IsJsInteropable<::tc::remove_cvref_t<Args>>::value && ...));
+			emscripten::val::global("console")["debug"](std::forward<Args>(args)...);
 		}
 	};
 };
