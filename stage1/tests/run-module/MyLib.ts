@@ -16,11 +16,19 @@ namespace MyLib {
     }
 
     export class SomeObject extends SomeBaseClass {
-        constructor() { super(); } // TODO: is it implicitly defined?
         str: string = "";
         arr: Array<SomeObject> = [];
 
         foo(x: number) { return "foo() retval " + (typeof x) + " " + x; }
+    }
+
+    export class SomeObjectWithConstructor {
+        str: string;
+        constructor(a: number, b: number) { this.str = "" + (a + b); }
+    }
+
+    export class SomeObjectWithPropertyInConstructor {
+        constructor(public num: number) {}
     }
 
     export enum SomeEnum {
@@ -89,7 +97,6 @@ namespace MyLib {
         func4(): string { return "func4"; }
     }
     export class MyInterfaceImpl2 extends MyInterfaceImpl1 implements MyInterface5, MyInterface6 {
-        constructor() { super(); }
         func5(): string { return "func5"; }
         func6(): string { return "func6"; }
     }

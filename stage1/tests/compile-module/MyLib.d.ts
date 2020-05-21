@@ -78,6 +78,10 @@ declare namespace Foo {
         foo(): this is InterfaceWithThisType; // Trigger 'thisType != undefined' inside TypeScript compiler.
         bar(): InterfaceWithThisType; // Ensure that type is mangled correctly.
     }
+
+    class ClassWithDefaultConstructor {
+        a: ConstructibleClass;
+    }
 }
 
 export = Foo;

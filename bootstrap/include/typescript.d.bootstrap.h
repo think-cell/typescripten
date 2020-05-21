@@ -874,6 +874,13 @@ struct _jsdefs_ts : enums_adl::_jsenums_ts {
 				result.emplace(_this<InterfaceType>());
 			return result;
 		}
+
+		auto isClass() noexcept {
+			std::optional<InterfaceType> result;
+			if (_call<bool>("isClass"))
+				result.emplace(_this<InterfaceType>());
+			return result;
+		}
 	};
 
 	struct _js_TypeParameter : virtual _js_Type {

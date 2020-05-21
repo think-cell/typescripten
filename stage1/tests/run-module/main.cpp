@@ -18,6 +18,12 @@ int main() {
 	_ASSERT(objBase.getEmval().strictlyEquals(obj.getEmval()));
 	_ASSERTEQUAL(tc::explicit_cast<std::string>(objBase->foo(10)), "foo() retval number 10");
 
+	tc::js::MyLib::SomeObjectWithConstructor objConstr(tc::jst::create_js_object, 10, 20);
+	_ASSERTEQUAL(tc::explicit_cast<std::string>(objConstr->str()), "30");
+
+	tc::js::MyLib::SomeObjectWithPropertyInConstructor objConstrProp(tc::jst::create_js_object, 123);
+	_ASSERTEQUAL(objConstrProp->num(), 123);
+
 	static_assert(std::is_enum<tc::js::MyLib::SomeEnum>::value);
 	static_assert(10 == static_cast<int>(tc::js::MyLib::SomeEnum::ENUM10));
 	static_assert(20 == static_cast<int>(tc::js::MyLib::SomeEnum::ENUM20));

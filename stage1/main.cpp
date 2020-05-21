@@ -286,6 +286,7 @@ struct SJsClass {
 	std::vector<SJsFunctionLike> m_vecjsfunctionlikeMethod;
 	std::vector<SJsVariableLike> m_vecjsvariablelikeProperty;
 	std::vector<ts::Symbol> m_vecjsymBaseClass;
+	bool m_bHasImplicitDefaultConstructor;
 
 	SJsClass(ts::TypeChecker const jtsTypeChecker, ts::Symbol const jsymClass) noexcept
 		: m_jsymClass(jsymClass)
@@ -361,6 +362,7 @@ struct SJsClass {
 			}
 		)))
 		, m_vecjsymBaseClass()
+		, m_bHasImplicitDefaultConstructor(false)
 	{
 		MergeWithSameCppSignatureInplace(m_vecjsfunctionlikeExportFunction);
 		MergeWithSameCppSignatureInplace(m_vecjsfunctionlikeMethod);
@@ -402,6 +404,17 @@ struct SJsClass {
 					}
 				}
 			});
+
+			if ((*jointerfacetypeClass)->isClass()) {
+				// See logic at `src/compiler/transformers/es2015.ts`, `addConstructor`, `transformConstructorBody` and `createDefaultConstructorBody`:
+				// if no constructrs are defined, we add a "default" constructor with no parameters.
+				m_bHasImplicitDefaultConstructor = !tc::find_first_if<tc::return_bool>(
+					m_vecjsfunctionlikeMethod,
+					[](SJsFunctionLike const& jsfunctionlikeMethod) noexcept {
+						return ts::SymbolFlags::Constructor == jsfunctionlikeMethod.m_jsymFunctionLike->getFlags();
+					}
+				);
+			}
 		} else {
 			// Do nothing: e.g. namespaces.
 		}
@@ -698,6 +711,10 @@ int main(int argc, char* argv[]) {
 							}
 						}
 					)),
+					tc_conditional_range(
+						jsclassClass.m_bHasImplicitDefaultConstructor,
+						"		static auto _tcjs_construct() noexcept;\n"
+					),
 					"	};\n"
 				));
 			})),
@@ -803,7 +820,15 @@ int main(int argc, char* argv[]) {
 								_ASSERTFALSE;
 							}
 						}
-					))
+					)),
+					tc_conditional_range(
+						jsclassClass.m_bHasImplicitDefaultConstructor,
+						tc::concat(
+							"	inline auto ", strClassNamespace, "_tcjs_construct() noexcept {\n",
+							"		return ", jsclassClass.m_strMangledName, "(", RetrieveSymbolFromCpp(jsclassClass.m_jsymClass), ".new_());\n",
+							"	}\n"
+						)
+					)
 				));
 			}))
 		);
