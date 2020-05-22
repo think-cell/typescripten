@@ -82,6 +82,11 @@ declare namespace Foo {
     class ClassWithDefaultConstructor {
         a: ConstructibleClass;
     }
+
+    class WeirdNames {
+        default: number;
+        "$foo": number;
+    }
 }
 
 export = Foo;

@@ -39,6 +39,7 @@ std::string CppifyName(ts::Symbol jsymSymbol) noexcept {
 	tc::for_each(
 		tc::transform(strSourceName, [&](char c) noexcept {
 			if ('-' == c) return '_';
+			if ('$' == c) return '_';
 			if ('_' == c) return c;
 			if ('a' <= c && c <= 'z') return c;
 			if ('A' <= c && c <= 'Z') return c;
