@@ -55,11 +55,11 @@ struct _js_Array : virtual jst::IObject {
 		return Array<T>(emscripten::val::array());
 	}
 
-	template<typename Rng, typename = std::enable_if_t<tc::is_explicit_castable<T, tc::range_value_t<Rng>&&>::value>>
+	template<typename Rng, typename = std::enable_if_t<tc::is_safely_constructible<T, tc::range_reference_t<Rng>>::value>>
 	static Array<T> _tcjs_construct(Rng&& rng) noexcept {
 		Array<T> result(emscripten::val::array());
-		tc::for_each(rng, [&](auto&& value) noexcept {
-			result->push(tc::explicit_cast<T>(std::forward<decltype(value)>(value)));
+		::tc::for_each(rng, [&](auto&& value) noexcept {
+			result->push(T(std::forward<decltype(value)>(value)));
 		});
 		return result;
 	}
