@@ -187,6 +187,7 @@ struct CUniqueDetachableJsFunction : private tc::nonmovable, private RequireRela
 using no_adl::CUniqueDetachableJsFunction;
 } // namespace callback_detail
 
+// Can be used inline or to create a forward declaration
 #define TC_JS_MEMBER_FUNCTION(ClassName, FieldName, ReturnType, Arguments) \
 	void FieldName##_tc_js_type_check() noexcept { \
 		STATICASSERTSAME(ClassName&, decltype(*this), "ClassName specified in TC_JS_MEMBER_FUNCTION is incorrect"); \
@@ -196,6 +197,11 @@ using no_adl::CUniqueDetachableJsFunction;
 	} \
 	::tc::jst::callback_detail::CUniqueDetachableJsFunction<ReturnType Arguments> const FieldName{&FieldName##_tc_js_wrapper, this}; \
 	ReturnType FieldName##_tc_js_impl Arguments noexcept
+
+// Use if member function has been forward declared with TC_JS_MEMBER_FUNCTION
+#define TC_JS_MEMBER_FUNCTION_DEF(ClassName, FieldName, ReturnType, Arguments) \
+	ReturnType ClassName::FieldName##_tc_js_impl Arguments noexcept
+
 
 // ---------------------------------------- Lambda wrapper callback ----------------------------------------
 // This callback wraps lambda (or any callable) so it can be immediately passed as js_function<...>.
