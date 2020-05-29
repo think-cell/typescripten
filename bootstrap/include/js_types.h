@@ -68,7 +68,7 @@ private:
 
 struct js_undefined {
 	js_undefined() noexcept {}
-	explicit js_undefined(emscripten::val const& IF_TC_CHECKS(IF_TC_DEBUG(emval))) noexcept {
+	explicit js_undefined(emscripten::val const& IF_TC_CHECKS(emval)) noexcept {
 		_ASSERT(emval.isUndefined());
 	}
 	emscripten::val getEmval() const& noexcept { return emscripten::val::undefined(); }
@@ -76,7 +76,7 @@ struct js_undefined {
 
 struct js_null {
 	js_null() noexcept {}
-	explicit js_null(emscripten::val const& IF_TC_CHECKS(IF_TC_DEBUG(emval))) noexcept {
+	explicit js_null(emscripten::val const& IF_TC_CHECKS(emval)) noexcept {
 		_ASSERT(emval.isNull());
 	}
 	emscripten::val getEmval() const& noexcept { return emscripten::val::null(); }
