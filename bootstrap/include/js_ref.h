@@ -50,7 +50,11 @@ protected:
 	R _call_this(Args&&... args) noexcept {
 		static_assert(IsJsInteropable<R>::value);
 		static_assert(std::conjunction<IsJsInteropable<tc::remove_cvref_t<Args>>...>::value);
-		return m_emval(std::forward<Args>(args)...).template as<R>();
+		if constexpr(std::is_void<R>::value) {
+			m_emval(std::forward<Args>(args)...);
+		} else {
+			return m_emval(std::forward<Args>(args)...).template as<R>();
+		}
 	}
 
 	// Make sure the class and its descendants are abstract.
