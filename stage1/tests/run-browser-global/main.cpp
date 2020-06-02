@@ -36,5 +36,7 @@ int main() {
 	_ASSERTEQUAL(obj3->arr()->length(), 0);
 	_ASSERT(tc::empty(obj3->arr()));
 
+	tc::js::MyInterface iface = obj3;
+
 	printf("Success!\n");
 }

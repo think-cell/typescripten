@@ -105,7 +105,9 @@ std::vector<ts::Symbol> ListSourceFileTopLevel(ts::TypeChecker const& jtsTypeChe
 			});
 		} else if (auto const jotsClassDeclaration = ts()->isClassDeclaration(jnodeChild)) {
 			tc::cont_emplace_back(vecjsymTopLevel, jtsTypeChecker->getSymbolAtLocation(*(*jotsClassDeclaration)->name()));
-		} else /* TODO: InterfaceDeclaration, TypeAliasDeclaration */ if (auto const jotsEnumDeclaration = ts()->isEnumDeclaration(jnodeChild)) {
+		} else if (auto const jotsInterfaceDeclaration = ts()->isInterfaceDeclaration(jnodeChild)) {
+			tc::cont_emplace_back(vecjsymTopLevel, jtsTypeChecker->getSymbolAtLocation(*(*jotsInterfaceDeclaration)->name()));
+		} else /* TODO: TypeAliasDeclaration */ if (auto const jotsEnumDeclaration = ts()->isEnumDeclaration(jnodeChild)) {
 			tc::cont_emplace_back(vecjsymTopLevel, jtsTypeChecker->getSymbolAtLocation(*(*jotsEnumDeclaration)->name()));
 		} else if (auto const jotsModuleDeclaration = ts()->isModuleDeclaration(jnodeChild)) {
 			tc::cont_emplace_back(vecjsymTopLevel, jtsTypeChecker->getSymbolAtLocation((*jotsModuleDeclaration)->name()));

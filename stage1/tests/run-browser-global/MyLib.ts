@@ -5,7 +5,10 @@ function sumOfTwo(a: number, b: number): number {
 var initially10: number = 10;
 var initially10: number;  // Duplicated declarations are allowed.
 
-class SomeBaseClass {
+interface MyInterface {
+}
+
+class SomeBaseClass implements MyInterface {
     foo(x: number): string { return "base"; }
 }
 
