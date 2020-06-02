@@ -1,12 +1,6 @@
 #pragma once
-#include <emscripten/val.h>
-#include <emscripten/wire.h>
-#include <cstdint>
-#include <memory>
-#include <utility>
-#include <type_traits>
-
 #include "casts.h"
+
 #include "range_defines.h"
 #include "type_traits.h"
 #include "noncopyable.h"
@@ -14,6 +8,14 @@
 #include "tc_move.h"
 #include "type_list.h"
 #include <boost/callable_traits.hpp>
+
+#include <emscripten/val.h>
+#include <emscripten/wire.h>
+#include <cstdint>
+#include <memory>
+#include <utility>
+#include <type_traits>
+
 #include "js_ref.h"
 
 namespace tc::jst {

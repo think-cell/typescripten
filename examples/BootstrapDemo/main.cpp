@@ -62,6 +62,19 @@ int main() {
 		_ASSERT(!tc::empty(arr));
 	}
 
+	{
+	    constexpr char str[] = "Test";
+        Array<js_string> const arr(tc::jst::create_js_object, tc::single(str));
+        _ASSERTEQUAL(arr->length(), 1);
+        _ASSERTEQUAL(arr[0].length(), 4);
+	}
+	{
+	    constexpr char str[] = "Test";
+        ReadonlyArray<js_string> const arr(tc::jst::create_js_object, tc::single(str));
+        _ASSERTEQUAL(arr->length(), 1);
+        _ASSERTEQUAL(arr[0].length(), 4);
+	}
+
 	auto const arr = tc::explicit_cast<Array<double>>(tc::jst::create_js_object, std::initializer_list<double>{1, 2, 3});
 	static_assert(!tc::is_explicit_castable<Array<double>, double>::value);
 	static_assert(std::is_same_v<tc::range_value_t<Array<double>>, double>);
