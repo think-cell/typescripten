@@ -93,7 +93,7 @@ struct _js_ReadonlyArray : virtual ::tc::jst::IObject {
 		return ReadonlyArray<T>(::emscripten::val::array());
 	}
 
-	template<typename Rng, typename = ::std::enable_if_t<::tc::is_explicit_castable<T, ::tc::range_value_t<Rng>&&>::value>>
+	template<typename Rng, typename = ::std::enable_if_t<::tc::is_explicit_castable<T, ::tc::range_reference_t<Rng>>::value>>
 	static ReadonlyArray<T> _tcjs_construct(Rng&& rng) noexcept {
 		return ReadonlyArray<T>(
 			Array<T>(::tc::jst::create_js_object, ::std::forward<Rng>(rng)).getEmval()
