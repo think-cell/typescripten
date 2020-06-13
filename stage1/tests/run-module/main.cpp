@@ -88,5 +88,8 @@ int main() {
 		tc::js::Promise<void> p3 = p2->then(l2);
 	}
 
+	tc::jst::js_optional<tc::js::MyLib::AmbientTest>{};
+	tc::jst::js_optional<tc::js::MyLib::AmbientTest::AmbientNested>{};
+
 	printf("Success! But promise test may still fail. If no exception follows, everything is ok.\n");
 }

@@ -19,6 +19,7 @@ bool IsClassInCpp(ts::Symbol const jsymType) noexcept {
 		(ts::SymbolFlags::Interface | ts::SymbolFlags::FunctionScopedVariable) == jsymType->getFlags() ||
 		ts::SymbolFlags::ValueModule == jsymType->getFlags() ||
 		(ts::SymbolFlags::ValueModule | ts::SymbolFlags::Interface) == jsymType->getFlags() ||
+		(ts::SymbolFlags::NamespaceModule | ts::SymbolFlags::Interface) == jsymType->getFlags() ||
 		ts::SymbolFlags::NamespaceModule == jsymType->getFlags();
 }
 
