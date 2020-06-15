@@ -1,6 +1,8 @@
 #ifndef PRECOMPILED_H_
 #define PRECOMPILED_H_
 
+#include <chrono>
+#include <cmath>
 #include <string>
 #include <iostream>
 #include <variant>

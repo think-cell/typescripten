@@ -1,0 +1,1 @@
+global.MyLib = require('./MyLib');
