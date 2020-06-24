@@ -164,4 +164,8 @@ using no_adl::ReadonlyArray;
 using no_adl::Promise;
 using no_adl::console;
 
+static tc::jst::js_string stackTrace() noexcept {
+	return tc::jst::js_string(::emscripten::val::global("stackTrace")());
+}
+
 } // namespace tc::js
