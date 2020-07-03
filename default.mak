@@ -17,9 +17,9 @@ endif
 
 all: $(TARGETS)
 
-$(TARGETS) &: $(OBJS)
+$(TARGETS) &: $(OBJS) $(PRE_JS)
 	test -n "$(EMCXX)"  # Expect $$EMCXX
-	$(EMCXX) $(EMLDFLAGS) $(^:%="%") -o "$@"
+	$(EMCXX) $(EMLDFLAGS) $(OBJS:%="%") -o "$@"
 
 $(OBJDIR)/%.o: %.cpp $(PRECOMPILED_OBJ) | $(OBJDIR)
 	test -n "$(EMCXX)"  # Expect $$EMCXX
