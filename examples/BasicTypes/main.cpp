@@ -18,6 +18,14 @@ struct ISomeObject : virtual tc::jst::IObject {
 	auto foo() {
 		return _call<js_string>("foo");
 	}
+
+	auto operator()(double) {
+	    return _call_this<void>();
+	}
+
+	auto operator()(js_string) {
+	    return _call_this<double>();
+	}
 };
 
 using SomeObject = tc::jst::js_ref<ISomeObject>;
@@ -26,6 +34,8 @@ int main() {
 	{
 		static_assert(std::is_same<int, SomeObject::Foo>::value);
 		static_assert(std::is_same<js_string, decltype(std::declval<SomeObject>()->foo())>::value);
+		static_assert(std::is_same<void, decltype(std::declval<SomeObject>()(10.0))>::value);
+		static_assert(std::is_same<double, decltype(std::declval<SomeObject>()(js_string("hi")))>::value);
 	}
 
 	{
