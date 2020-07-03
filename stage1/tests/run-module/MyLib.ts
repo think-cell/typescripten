@@ -120,6 +120,13 @@ namespace MyLib {
     process.on("exit", () => {
         if (!promiseCompleted) throw new Error("Promise test did not complete");
     });
+
+    export interface AmbientTest {
+    }
+    export namespace AmbientTest {
+        export interface AmbientNested {
+        }
+    }
 }
 
 export = MyLib;
