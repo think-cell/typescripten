@@ -60,6 +60,13 @@ int main() {
 	}
 
 	{
+	    auto const message = tc::jst::make_js_string("Hello", tc::as_dec(10), "world");
+	    static_assert(std::is_same<const js_string, decltype(message)>::value);
+	    _ASSERTEQUAL(message.length(), 12);
+	    _ASSERTEQUAL(tc::explicit_cast<std::string>(message), "Hello10world");
+	}
+
+	{
 		emscripten::val const emval{tc::jst::js_undefined{}};
 		_ASSERTE(emval.isUndefined());
 		tc::jst::js_undefined{emval};

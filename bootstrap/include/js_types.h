@@ -92,6 +92,11 @@ using no_adl::js_undefined;
 using no_adl::js_null;
 using no_adl::js_string;
 
+template<typename... Rng>
+[[nodiscard]] auto make_js_string(Rng&&...rng) MAYTHROW {
+	return js_string(::tc::make_str(std::forward<Rng>(rng)...));
+}
+
 namespace js_union_detail {
 namespace no_adl {
 template<typename, typename... Ts>
