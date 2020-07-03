@@ -48,7 +48,7 @@ struct CCallableWrapper final {
 			};
 			using ReturnType = decltype(fnWithArgs());
 			static_assert(IsJsInteropable<ReturnType>::value);
-			if constexpr (std::is_same<void, ReturnType>::value) {
+			if constexpr (std::is_void<ReturnType>::value) {
 				fnWithArgs();
 				return emscripten::val::undefined();
 			} else {

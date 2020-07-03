@@ -150,7 +150,7 @@ struct js_union : js_union_detail::CDetectOptionLike<void, Ts...> {
 	static_assert(1 < sizeof...(Ts));
 	static_assert((IsJsInteropable<Ts>::value && ...));
 	static_assert((!std::is_same<Ts, js_unknown>::value && ...));
-	static_assert((!std::is_same<Ts, void>::value && ...));
+	static_assert((!std::is_void<Ts>::value && ...));
 
 	using ListTs = tc::type::list<Ts...>;
 
