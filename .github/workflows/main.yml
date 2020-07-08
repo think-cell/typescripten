@@ -6,13 +6,6 @@ on:
   push:
   pull_request:
 
-env:
-  BOOTSTRAP_PATH: ${{github.workspace}}/bootstrap
-  EMCXXFLAGS: |
-      -D_DEBUG -Wall -Wextra -Werror
-      -g4 -s SAFE_HEAP=1 -s ASSERTIONS=2 -s DEMANGLE_SUPPORT=1
-  EMLDFLAGS: -g4 --source-map-base http://localhost:8080/
-
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
