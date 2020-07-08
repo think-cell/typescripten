@@ -1,0 +1,66 @@
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events.
+on:
+  push
+  pull_request
+
+env:
+  BOOTSTRAP_PATH: ${{github.workspace}}/bootstrap
+  EMCXXFLAGS: |
+      -D_DEBUG -Wall -Wextra -Werror
+      -g4 -s SAFE_HEAP=1 -s ASSERTIONS=2 -s DEMANGLE_SUPPORT=1
+  EMLDFLAGS: -g4 --source-map-base http://localhost:8080/
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # Build on multiple systems: https://docs.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow#configuring-a-build-matrix
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, windows-2019]
+    # The type of runner that the job will run on
+    runs-on: ${{ matrix.os }}
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+    - name: Setup think-cell/range
+      shell: bash
+      run: |
+        wget https://github.com/think-cell/range/archive/master.zip -O range.zip
+        unzip range.zip
+        echo "::set-env name=THINK_CELL_PUBLIC_PATH::$(abspath range/tc)"
+    - name: Setup Boost 1.68.0 (Windows)
+      if: ${{ contains('runner.os', 'windows') }}
+      shell: bash
+      run: |
+        wget https://dl.bintray.com/boostorg/release/1.73.0/source/boost_1_68_0.zip -O boost_1_68_0.zip
+        unzip boost_1_68_0.zip
+        echo "::set-env name=THINK_CELL_PUBLIC_PATH::$(abspath boost_1_68_0)"
+    - name: Setup Boost 1.68.0 (Unix)
+      if: ${{ !contains('runner.os', 'windows') }}
+      shell: bash
+      run: |
+        wget https://dl.bintray.com/boostorg/release/1.73.0/source/boost_1_73_0.tar.gz -O boost_1_68_0.tgz
+        tar xf boost_1_68_0.tgz
+        echo "::set-env name=THINK_CELL_PUBLIC_PATH::$(abspath boost_1_68_0)"
+    - name: Install Emscripten
+      uses: mymindstorm/setup-emsdk@v5
+      with:
+        version: 1.39.19
+        actions-cache-folder: 'emsdk-cache'
+    - name: Verify Emscripten
+      shell: bash
+      run: |
+        em++ -v
+        echo "::set-env name=EMCXX::em++"
+    - name: Run all library examples (Windows)
+      if: ${{ contains('runner.os', 'windows') }}
+      run: cd examples && testall.cmd
+    - name: Run all library examples (Unix)
+      if: ${{ !contains('runner.os', 'windows') }}
+      run: cd examples && ./testall.sh
