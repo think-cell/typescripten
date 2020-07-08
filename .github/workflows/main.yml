@@ -38,14 +38,14 @@ jobs:
       if: ${{ contains(runner.os, 'windows') }}
       shell: bash
       run: |
-        curl -L https://dl.bintray.com/boostorg/release/1.73.0/source/boost_1_68_0.zip --output boost_1_68_0.zip
+        curl -L https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.zip --output boost_1_68_0.zip
         unzip boost_1_68_0.zip
         echo "::set-env name=THINK_CELL_PUBLIC_PATH::$(realpath boost_1_68_0)"
     - name: Setup Boost 1.68.0 (Unix)
       if: ${{ !contains(runner.os, 'windows') }}
       shell: bash
       run: |
-        curl -L https://dl.bintray.com/boostorg/release/1.73.0/source/boost_1_73_0.tar.gz --output boost_1_68_0.tgz
+        curl -L https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.tar.gz --output boost_1_68_0.tgz
         tar xvf boost_1_68_0.tgz
         echo "::set-env name=THINK_CELL_PUBLIC_PATH::$(realpath boost_1_68_0)"
     - name: Install Emscripten
