@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ue
+set -ueo pipefail
 source ../../build-config.sh
 make "$@"
 
