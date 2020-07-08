@@ -53,7 +53,7 @@ jobs:
       run: |
         for ext in cmd sh; do
           sed build-config-example.$ext \
-            -e "/<path-to-emsdk_env.bat>/d" \
+            -e "/path-to-emsdk_env/d" \
             -e "s:<path-to-boost-includes>:$(realpath boost_1_68_0):g" \
             -e "s:<path-to-think-cell-public-library-includes>:$(realpath range-master/tc):g" \
             > build-config.$ext
