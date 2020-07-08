@@ -1,4 +1,4 @@
-@call %~dp0\build-config.cmd
+@call %~dp0\build-config.cmd || exit /b 1
 %EMCXX% ^
     %EMCXXFLAGS% -std=c++20 ^
     -isystem %THINK_CELL_PUBLIC_PATH% ^

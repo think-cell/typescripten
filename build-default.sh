@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ue
+set -ueo pipefail
 source "$(dirname ${BASH_SOURCE[0]})/build-config.sh"
 $EMCXX \
     $EMCXXFLAGS -std=c++20\
