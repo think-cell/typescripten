@@ -431,6 +431,11 @@ int main(int argc, char* argv[]) {
 	jtsCompilerOptions->module(ts::ModuleKind::CommonJS);
 
 	auto const rngstrFileNames = tc::make_iterator_range(argv + 1, argv + argc);
+	tc::for_each(rngstrFileNames, [](tc::ptr_range<char> rngch) noexcept {
+		tc::for_each(rngch, [](auto& ch) noexcept { 
+			if('\\'==ch) ch = '/'; // typescript createProgram does not support backslashes 
+		});
+	});
 	ts::Program const jtsProgram = ts()->createProgram(ReadonlyArray<js_string>(create_js_object, rngstrFileNames), jtsCompilerOptions);
 
 	ts::TypeChecker const jtsTypeChecker = jtsProgram->getTypeChecker();
