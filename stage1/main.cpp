@@ -380,7 +380,8 @@ struct SJsClass {
 		))))
 		, m_vecjsvariablelikeProperty(tc::make_vector(tc::transform(
 			tc::filter(m_vecjsymMember, [](ts::Symbol const jsymMember) noexcept {
-				return ts::SymbolFlags::Property == jsymMember->getFlags();
+				_ASSERT(!(ts::SymbolFlags::Property & jsymMember->getFlags()) || !(~(ts::SymbolFlags::Property|ts::SymbolFlags::Optional) & jsymMember->getFlags()));
+				return ts::SymbolFlags::Property & jsymMember->getFlags();
 			}),
 			[&](ts::Symbol const jsymProperty) noexcept {
 				return SJsVariableLike(jtsTypeChecker, jsymProperty);

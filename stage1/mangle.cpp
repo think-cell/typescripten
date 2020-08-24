@@ -143,16 +143,18 @@ SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type
 	if (auto jotypereferenceRoot = IsTypeReference(jtypeRoot)) {
 		if (auto josymTargetSymbol = (*jotypereferenceRoot)->target()->getSymbol(); josymTargetSymbol) {
 			std::string strTarget = tc::explicit_cast<std::string>(jtsTypeChecker->getFullyQualifiedName(*josymTargetSymbol));
-			auto jrarrTypeArguments = tc::js::ts_ext::TypeReference(*jotypereferenceRoot)->typeArguments();
-			if ("Array" == strTarget) {
-				_ASSERTEQUAL(jrarrTypeArguments->length(), 1);
-				return WrapType("js::Array<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">");
-			} else if ("ReadonlyArray" == strTarget) {
-				_ASSERTEQUAL(jrarrTypeArguments->length(), 1);
-				return WrapType("js::ReadonlyArray<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">");
-			} else if ("Promise" == strTarget) {
-				_ASSERTEQUAL(jrarrTypeArguments->length(), 1);
-				return WrapType("js::Promise<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">");
+			if(auto jorarrTypeArguments = (*jotypereferenceRoot)->typeArguments()) {
+				auto const jrarrTypeArguments = *jorarrTypeArguments;
+				if ("Array" == strTarget) {
+					_ASSERTEQUAL(jrarrTypeArguments->length(), 1);
+					return WrapType("js::Array<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">");
+				} else if ("ReadonlyArray" == strTarget) {
+					_ASSERTEQUAL(jrarrTypeArguments->length(), 1);
+					return WrapType("js::ReadonlyArray<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">");
+				} else if ("Promise" == strTarget) {
+					_ASSERTEQUAL(jrarrTypeArguments->length(), 1);
+					return WrapType("js::Promise<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">");
+				}
 			}
 			tc::cont_emplace_back(vecstrExtraInfo, tc::concat("TypeReference=", strTarget));
 		}
