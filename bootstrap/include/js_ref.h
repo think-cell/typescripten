@@ -90,7 +90,7 @@ struct js_ref : js_ref_detail::base<T> {
 	static_assert(std::is_class<T>::value); // void is explicitly excluded as well, even though void* is base of all pointers.
 	static_assert(!std::is_volatile<T>::value);
 	static_assert(!std::is_const<T>::value, "We cannot guarantee constness of JS values");
-	static_assert(std::is_convertible<T*, IObject*>::value);
+	// static_assert(std::is_convertible<T*, IObject*>::value);
 
 	// js_ref is non-nullable.
 	explicit js_ref(emscripten::val const& _emval) noexcept : m_emval(_emval) {

@@ -64,7 +64,7 @@ void WalkSymbol(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Sy
 		[&](ts::Signature const jtsSignature) noexcept {
 			tc::append(std::cerr,
 				tc::repeat_n(' ', nOffset + 4),
-				tc::explicit_cast<std::string>(jtsTypeChecker->signatureToString(jtsSignature, OPTIONAL_ARGUMENT, OPTIONAL_ARGUMENT, OPTIONAL_ARGUMENT)),
+				tc::explicit_cast<std::string>(jtsTypeChecker->signatureToString(jtsSignature)),
 				"\n"
 			);
 		}
@@ -75,7 +75,7 @@ void WalkSymbol(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Sy
 		[&](ts::Signature const jtsSignature) noexcept {
 			tc::append(std::cerr,
 				tc::repeat_n(' ', nOffset + 4),
-				tc::explicit_cast<std::string>(jtsTypeChecker->signatureToString(jtsSignature, OPTIONAL_ARGUMENT, OPTIONAL_ARGUMENT, OPTIONAL_ARGUMENT)),
+				tc::explicit_cast<std::string>(jtsTypeChecker->signatureToString(jtsSignature)),
 				"\n"
 			);
 		}
@@ -87,7 +87,7 @@ void WalkSymbol(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Sy
 			[&](tc::js::ts_ext::BaseType const jtsBaseType) noexcept {
 				tc::append(std::cerr,
 					tc::repeat_n(' ', nOffset + 4),
-					tc::explicit_cast<std::string>(jtsTypeChecker->typeToString(jtsBaseType, OPTIONAL_ARGUMENT, OPTIONAL_ARGUMENT)),
+					tc::explicit_cast<std::string>(jtsTypeChecker->typeToString(jtsBaseType)),
 					"\n"
 				);
 			}
@@ -118,6 +118,6 @@ std::vector<ts::Symbol> ListSourceFileTopLevel(ts::TypeChecker const& jtsTypeChe
 			tc::append(std::cerr, "Unknown source file-level child kind: ", tc::as_dec(static_cast<int>(jnodeChild->kind())), "\n");
 		}
 		return tc::jst::js_undefined();
-	}), OPTIONAL_ARGUMENT);
+	}));
 	return vecjsymTopLevel;
 }

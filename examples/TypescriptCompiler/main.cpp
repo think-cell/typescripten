@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
 	ts::EmitResult const jsEmitresult = jsProgram->emit();
 
 	tc::for_each(
-		tc::concat(ts::getPreEmitDiagnostics(jsProgram, OPTIONAL_ARGUMENT, OPTIONAL_ARGUMENT), jsEmitresult->diagnostics()),
+		tc::concat(ts::getPreEmitDiagnostics(jsProgram), jsEmitresult->diagnostics()),
 		[](ts::Diagnostic const jsDiagnostic) noexcept {
 			if (jsDiagnostic->file()) {
 				ts::LineAndCharacter const jsLineAndCharacter = (*jsDiagnostic->file())->getLineAndCharacterOfPosition(*jsDiagnostic->start());

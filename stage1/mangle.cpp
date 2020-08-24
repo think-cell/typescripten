@@ -71,7 +71,7 @@ SMangledType CommentType(tc::js::ts::TypeChecker const jtsTypeChecker, std::stri
 		tc::explicit_cast<std::string>(tc::concat(
 			strCppType,
 			" /*",
-			tc::explicit_cast<std::string>(jtsTypeChecker->typeToString(jtypeRoot, OPTIONAL_ARGUMENT, OPTIONAL_ARGUMENT)),
+			tc::explicit_cast<std::string>(jtsTypeChecker->typeToString(jtypeRoot)),
 			"*/"
 		)),
 		strCppType
@@ -234,7 +234,7 @@ SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type
 			"js_unknown /*flags=",
 			tc::as_dec(static_cast<int>(jtypeRoot->flags())),
 			": ",
-			tc::explicit_cast<std::string>(jtsTypeChecker->typeToString(jtypeRoot, OPTIONAL_ARGUMENT, OPTIONAL_ARGUMENT)),
+			tc::explicit_cast<std::string>(jtsTypeChecker->typeToString(jtypeRoot)),
 			" (", tc::join_separated(vecstrExtraInfo, ","), ")",
 			"*/"
 		)),

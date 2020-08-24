@@ -192,7 +192,8 @@ struct SJsFunctionLike {
 	ts::Signature m_jtsSignature;
 	tc::jst::js_union<Array<ts::TypeParameter>, tc::jst::js_undefined> m_joptarrunkTypeParameter;
 	std::vector<SJsVariableLike> m_vecjsvariablelikeParameters;
-	std::string m_strCppifiedParametersWithComments;
+	std::string m_strCppifiedParametersWithCommentsDecl;
+	std::string m_strCppifiedParametersWithCommentsDef;
 	std::string m_strCanonizedParameterCppTypes;
 
 	SJsFunctionLike(ts::TypeChecker const jtsTypeChecker, ts::Symbol const jsymFunctionLike, ts::Declaration const jdeclFunctionLike) noexcept
@@ -222,7 +223,29 @@ struct SJsFunctionLike {
 				return SJsVariableLike(jtsTypeChecker, jsymParameter);
 			}
 		)))
-		, m_strCppifiedParametersWithComments(tc::explicit_cast<std::string>(tc::join_separated(
+		, m_strCppifiedParametersWithCommentsDecl([&]() noexcept {
+			// Trailing function arguments of type 'x | undefined' can be defaulted to undefined
+			auto const itjsvariablelike = tc::find_last_if<tc::return_border_after_or_begin>(m_vecjsvariablelikeParameters, [](auto const& jsvariablelike) noexcept {
+				if(auto ounion = tc::js::ts_ext::isUnion(jsvariablelike.m_jtypeDeclared)) {
+					return !tc::find_first_if<tc::return_bool>((*ounion)->types(), [](auto const& type) noexcept {
+						return ts::TypeFlags::Undefined==type->flags();
+					});
+				}
+				return true;
+			});
+			return tc::explicit_cast<std::string>(tc::join_separated(
+				tc::concat(
+					tc::transform(tc::take(m_vecjsvariablelikeParameters, itjsvariablelike), [](SJsVariableLike const& jsvariablelikeParameter) noexcept {
+						return tc::concat(jsvariablelikeParameter.m_mtType.m_strWithComments, " ", jsvariablelikeParameter.m_strCppifiedName);
+					}),
+					tc::transform(tc::drop(m_vecjsvariablelikeParameters, itjsvariablelike), [](SJsVariableLike const& jsvariablelikeParameter) noexcept {
+						return tc::concat(jsvariablelikeParameter.m_mtType.m_strWithComments, " ", jsvariablelikeParameter.m_strCppifiedName, " = js_undefined()");
+					})
+				),
+				", "
+			));
+		}())
+		, m_strCppifiedParametersWithCommentsDef(tc::explicit_cast<std::string>(tc::join_separated(
 			tc::transform(m_vecjsvariablelikeParameters, [](SJsVariableLike const& jsvariablelikeParameter) noexcept {
 				return tc::concat(jsvariablelikeParameter.m_mtType.m_strWithComments, " ", jsvariablelikeParameter.m_strCppifiedName);
 			}),
@@ -394,7 +417,7 @@ struct SJsClass {
 											"Unable to determine 'implements' symbol for class '",
 											tc::explicit_cast<std::string>(jsymClass->getName()),
 											"' for type '",
-											tc::explicit_cast<std::string>(jtsTypeChecker->typeToString(jtypeImplements, OPTIONAL_ARGUMENT, OPTIONAL_ARGUMENT)),
+											tc::explicit_cast<std::string>(jtsTypeChecker->typeToString(jtypeImplements)),
 											"'\n"
 										);
 										_ASSERTFALSE;
@@ -437,14 +460,14 @@ int main(int argc, char* argv[]) {
 			if('\\'==ch) ch = '/'; // typescript createProgram does not support backslashes 
 		});
 	});
-	ts::Program const jtsProgram = ts::createProgram(ReadonlyArray<js_string>(create_js_object, rngstrFileNames), jtsCompilerOptions, OPTIONAL_ARGUMENT, OPTIONAL_ARGUMENT, OPTIONAL_ARGUMENT);
+	ts::Program const jtsProgram = ts::createProgram(ReadonlyArray<js_string>(create_js_object, rngstrFileNames), jtsCompilerOptions);
 
 	ts::TypeChecker const jtsTypeChecker = jtsProgram->getTypeChecker();
 
 	{
-		auto const jtsReadOnlyArrayDiagnostics = ts::getPreEmitDiagnostics(jtsProgram, OPTIONAL_ARGUMENT, OPTIONAL_ARGUMENT);
+		auto const jtsReadOnlyArrayDiagnostics = ts::getPreEmitDiagnostics(jtsProgram);
 		if (jtsReadOnlyArrayDiagnostics->length()) {
-			console::log(ts::formatDiagnosticsWithColorAndContext(jtsReadOnlyArrayDiagnostics, ts::FormatDiagnosticsHost(ts::createCompilerHost(jtsCompilerOptions, OPTIONAL_ARGUMENT).getEmval())));
+			console::log(ts::formatDiagnosticsWithColorAndContext(jtsReadOnlyArrayDiagnostics, ts::FormatDiagnosticsHost(ts::createCompilerHost(jtsCompilerOptions).getEmval())));
 			return 1;
 		}
 	}
@@ -493,6 +516,7 @@ int main(int argc, char* argv[]) {
 			g_usstrAllowedMangledTypes.insert(MangleSymbolName(jtsTypeChecker, jsymClass));
 		});
 
+		// Find correct declaration order by going depth-first over class hierarchy
 		auto SortClasses = [&jtsTypeChecker](std::vector<SJsClass> vecjsclassOriginal) {
 			std::map<std::string, SJsClass const*> mstrjsclassClasses;
 			tc::for_each(vecjsclassOriginal, [&](SJsClass const& jsclassClass) {
@@ -509,7 +533,7 @@ int main(int argc, char* argv[]) {
 				usstrInResult.insert(jsclassClass.m_strMangledName);
 				tc::for_each(jsclassClass.m_vecjsymBaseClass, [&](ts::Symbol const& jsymBaseClass) {
 					auto strMangledBaseClass = MangleSymbolName(jtsTypeChecker, jsymBaseClass);
-					if (mstrjsclassClasses.count(strMangledBaseClass)) {
+					if (mstrjsclassClasses.count(strMangledBaseClass)) { // stop dfs when the base class is not part of our source files
 						dfs(*mstrjsclassClasses[strMangledBaseClass], dfs);
 					}
 				});
@@ -667,7 +691,7 @@ int main(int argc, char* argv[]) {
 						jsclassClass.m_vecjsfunctionlikeExportFunction,
 						[](SJsFunctionLike const& jsfunctionlikeFunction) noexcept {
 							return tc::concat(
-								"			static auto ", jsfunctionlikeFunction.m_strCppifiedName, "(", jsfunctionlikeFunction.m_strCppifiedParametersWithComments, ") noexcept;\n"
+								"			static auto ", jsfunctionlikeFunction.m_strCppifiedName, "(", jsfunctionlikeFunction.m_strCppifiedParametersWithCommentsDecl, ") noexcept;\n"
 							);
 						}
 					)),
@@ -707,11 +731,11 @@ int main(int argc, char* argv[]) {
 						[](SJsFunctionLike const& jsfunctionlikeMethod) noexcept {
 							if (ts::SymbolFlags::Method == jsfunctionlikeMethod.m_jsymFunctionLike->getFlags()) {
 								return tc::explicit_cast<std::string>(tc::concat(
-									"		auto ", jsfunctionlikeMethod.m_strCppifiedName, "(", jsfunctionlikeMethod.m_strCppifiedParametersWithComments, ") noexcept;\n"
+									"		auto ", jsfunctionlikeMethod.m_strCppifiedName, "(", jsfunctionlikeMethod.m_strCppifiedParametersWithCommentsDecl, ") noexcept;\n"
 								));
 							} else if (ts::SymbolFlags::Constructor == jsfunctionlikeMethod.m_jsymFunctionLike->getFlags()) {
 								return tc::explicit_cast<std::string>(tc::concat(
-									"		static auto _tcjs_construct(", jsfunctionlikeMethod.m_strCppifiedParametersWithComments, ") noexcept;\n"
+									"		static auto _tcjs_construct(", jsfunctionlikeMethod.m_strCppifiedParametersWithCommentsDecl, ") noexcept;\n"
 								));
 							} else {
 								_ASSERTFALSE;
@@ -748,7 +772,7 @@ int main(int argc, char* argv[]) {
 							);
 							return tc::explicit_cast<std::string>(tc::concat(
 								"	inline auto ", strClassNamespace, "_tcjs_definitions::",
-									jsfunctionlikeFunction.m_strCppifiedName, "(", jsfunctionlikeFunction.m_strCppifiedParametersWithComments, ") noexcept {\n",
+									jsfunctionlikeFunction.m_strCppifiedName, "(", jsfunctionlikeFunction.m_strCppifiedParametersWithCommentsDef, ") noexcept {\n",
 								tc_conditional_range(
 									ts::TypeFlags::Void == jsfunctionlikeFunction.m_jtsSignature->getReturnType()->flags(),
 									tc::concat("		", rngchFunctionCall, ";\n"),
@@ -812,14 +836,14 @@ int main(int argc, char* argv[]) {
 									", "
 								);
 								return tc::explicit_cast<std::string>(tc::concat(
-									"	inline auto ", strClassNamespace, jsfunctionlikeMethod.m_strCppifiedName, "(", jsfunctionlikeMethod.m_strCppifiedParametersWithComments, ") noexcept {\n",
+									"	inline auto ", strClassNamespace, jsfunctionlikeMethod.m_strCppifiedName, "(", jsfunctionlikeMethod.m_strCppifiedParametersWithCommentsDef, ") noexcept {\n",
 									"		return _call<", MangleType(jtsTypeChecker, jsfunctionlikeMethod.m_jtsSignature->getReturnType()).m_strWithComments, ">(", rngchCallArguments, ");\n",
 									"	}\n"
 								));
 							} else if (ts::SymbolFlags::Constructor == jsfunctionlikeMethod.m_jsymFunctionLike->getFlags()) {
 								auto const rngchCallArguments = tc::join_separated(rngstrArguments, ", ");
 								return tc::explicit_cast<std::string>(tc::concat(
-									"	inline auto ", strClassNamespace, "_tcjs_construct(", jsfunctionlikeMethod.m_strCppifiedParametersWithComments, ") noexcept {\n",
+									"	inline auto ", strClassNamespace, "_tcjs_construct(", jsfunctionlikeMethod.m_strCppifiedParametersWithCommentsDef, ") noexcept {\n",
 									"		return ", jsclassClass.m_strMangledName, "(", RetrieveSymbolFromCpp(jsclassClass.m_jsymClass), ".new_(", rngchCallArguments, "));\n",
 									"	}\n"
 								));
@@ -885,7 +909,7 @@ int main(int argc, char* argv[]) {
 					);
 					return tc::explicit_cast<std::string>(tc::concat(
 						"	inline auto ",
-							jsfunctionlikeFunction.m_strCppifiedName, "(", jsfunctionlikeFunction.m_strCppifiedParametersWithComments, ") noexcept {\n",
+							jsfunctionlikeFunction.m_strCppifiedName, "(", jsfunctionlikeFunction.m_strCppifiedParametersWithCommentsDef, ") noexcept {\n",
 						tc_conditional_range(
 							ts::TypeFlags::Void == jsfunctionlikeFunction.m_jtsSignature->getReturnType()->flags(),
 							tc::concat("		", rngchFunctionCall, ";\n"),

@@ -171,6 +171,12 @@ struct js_union : js_union_detail::CDetectOptionLike<void, Ts...> {
 	emscripten::val const& getEmval() const& noexcept { return m_emval; }
 	emscripten::val&& getEmval() && noexcept { return tc_move(m_emval); }
 
+	template<typename T = js_union, std::enable_if_t<T::has_undefined && !T::has_null>* = nullptr>
+	js_union() noexcept : js_union(emscripten::val::undefined()) {}
+
+	template<typename T = js_union, std::enable_if_t<!T::has_undefined && T::has_null>* = nullptr>
+	js_union() noexcept : js_union(emscripten::val::null()) {}
+
 	// Constructing from a subtype. Assumption: the underlying representation does not depend on what element of ListTs is chosen.
 	template<typename T, std::enable_if_t<
 		IsJsInteropable<tc::remove_cvref_t<T>>::value &&
@@ -194,12 +200,6 @@ struct js_union : js_union_detail::CDetectOptionLike<void, Ts...> {
 			std::forward<Args>(args)...
 		)
 	) {}
-
-	template<typename T = js_union, std::enable_if_t<T::has_undefined && !T::has_null>* = nullptr>
-	js_union() noexcept : js_union(emscripten::val::undefined()) {}
-
-	template<typename T = js_union, std::enable_if_t<!T::has_undefined && T::has_null>* = nullptr>
-	js_union() noexcept : js_union(emscripten::val::null()) {}
 
 	// Basecast to a common type. Assumption: the underlying representation does not depend on what element of ListTs is chosen.
 	template<typename T, std::enable_if_t<
