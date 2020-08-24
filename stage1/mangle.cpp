@@ -54,7 +54,7 @@ bool IsTrivialType(ts::InterfaceType jinterfacetypeRoot) noexcept {
 	if (jinterfacetypeRoot->thisType()) {
 		auto jtypeThis = *jinterfacetypeRoot->thisType();
 		_ASSERTEQUAL(jtypeThis->flags(), ts::TypeFlags::TypeParameter);
-		if (!jtypeThis->constraint().getEmval().strictlyEquals(jinterfacetypeRoot.getEmval())) return false;
+		if (!tc::js::ts_ext::TypeParameter(jtypeThis)->constraint().getEmval().strictlyEquals(jinterfacetypeRoot.getEmval())) return false;
 	}
 	return true;
 }
@@ -71,7 +71,7 @@ SMangledType CommentType(tc::js::ts::TypeChecker const jtsTypeChecker, std::stri
 		tc::explicit_cast<std::string>(tc::concat(
 			strCppType,
 			" /*",
-			tc::explicit_cast<std::string>(jtsTypeChecker->typeToString(jtypeRoot)),
+			tc::explicit_cast<std::string>(jtsTypeChecker->typeToString(jtypeRoot, OPTIONAL_ARGUMENT, OPTIONAL_ARGUMENT)),
 			"*/"
 		)),
 		strCppType
@@ -112,7 +112,7 @@ SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type
 	if (ts::TypeFlags::Null == jtypeRoot->flags()) {
 		return {mangled_no_comments, "js_null"};
 	}
-	if (auto jouniontypeRoot = jtypeRoot->isUnion()) {
+	if (auto jouniontypeRoot = tc::js::ts_ext::isUnion(jtypeRoot)) {
 		_ASSERT(1 < (*jouniontypeRoot)->types()->length());
 		auto vecmtType = tc::make_vector(tc::transform((*jouniontypeRoot)->types(), [&](ts::Type const jtypeUnionOption) noexcept {
 			return MangleType(jtsTypeChecker, jtypeUnionOption);
@@ -143,7 +143,7 @@ SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type
 	if (auto jotypereferenceRoot = IsTypeReference(jtypeRoot)) {
 		if (auto josymTargetSymbol = (*jotypereferenceRoot)->target()->getSymbol(); josymTargetSymbol) {
 			std::string strTarget = tc::explicit_cast<std::string>(jtsTypeChecker->getFullyQualifiedName(*josymTargetSymbol));
-			auto jrarrTypeArguments = (*jotypereferenceRoot)->typeArguments();
+			auto jrarrTypeArguments = tc::js::ts_ext::TypeReference(*jotypereferenceRoot)->typeArguments();
 			if ("Array" == strTarget) {
 				_ASSERTEQUAL(jrarrTypeArguments->length(), 1);
 				return WrapType("js::Array<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">");
@@ -159,7 +159,7 @@ SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type
 	}
 	if (auto josymTypeLiteral = IsAnonymousTypeWithTypeLiteral(jtypeRoot)) {
 		auto jsymTypeLiteral = std::move(*josymTypeLiteral);
-		std::vector<ts::Symbol> vecjsymMember = tc::make_vector(*jsymTypeLiteral->members());
+		std::vector<ts::Symbol> vecjsymMember = tc::make_vector(*tc::js::ts_ext::Symbol(jsymTypeLiteral)->members());
 		std::vector<std::string> vecstrMemberName = tc::make_vector(tc::transform(vecjsymMember, [](ts::Symbol const& jsymMember) {
 			return tc::explicit_cast<std::string>(jsymMember->getName());
 		}));
@@ -194,7 +194,7 @@ SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type
 			};
 		}
 	}
-	if (auto jointerfacetypeRoot = jtypeRoot->isClassOrInterface()) {
+	if (auto jointerfacetypeRoot = tc::js::ts_ext::isClassOrInterface(jtypeRoot)) {
 		if (IsTrivialType(*jointerfacetypeRoot)) {
 			_ASSERTEQUAL((*jointerfacetypeRoot)->flags(), ts::TypeFlags::Object);
 			auto strMangledType = MangleSymbolName(jtsTypeChecker, *(*jointerfacetypeRoot)->getSymbol());
@@ -219,7 +219,7 @@ SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type
 	}
 	if ((ts::TypeFlags::NumberLiteral | ts::TypeFlags::EnumLiteral) == jtypeRoot->flags() ||
 			(ts::TypeFlags::StringLiteral | ts::TypeFlags::EnumLiteral) == jtypeRoot->flags()) {
-		auto jsymParentSymbol = *(*jtypeRoot->getSymbol())->parent();
+		auto jsymParentSymbol = *tc::js::ts_ext::Symbol(*jtypeRoot->getSymbol())->parent();
 		_ASSERT(ts::SymbolFlags::RegularEnum == jsymParentSymbol->getFlags() ||
 			ts::SymbolFlags::ConstEnum == jsymParentSymbol->getFlags());
 		auto strMangledType = MangleSymbolName(jtsTypeChecker, jsymParentSymbol);
@@ -234,7 +234,7 @@ SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type
 			"js_unknown /*flags=",
 			tc::as_dec(static_cast<int>(jtypeRoot->flags())),
 			": ",
-			tc::explicit_cast<std::string>(jtsTypeChecker->typeToString(jtypeRoot)),
+			tc::explicit_cast<std::string>(jtsTypeChecker->typeToString(jtypeRoot, OPTIONAL_ARGUMENT, OPTIONAL_ARGUMENT)),
 			" (", tc::join_separated(vecstrExtraInfo, ","), ")",
 			"*/"
 		)),

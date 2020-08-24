@@ -14,13 +14,13 @@ using tc::js::ReadonlyArray;
 int main(int argc, char* argv[]) {
 	_ASSERT(2 <= argc);
 
-	ts::CompilerOptions const jsCompilerOptions(create_js_object);
+	tc::js::ts_ext::CompilerOptions const jsCompilerOptions(create_js_object);
 	jsCompilerOptions->noEmitOnError(true);
 	jsCompilerOptions->strict(true);
 	jsCompilerOptions->target(ts::ScriptTarget::ES5);
 	jsCompilerOptions->module(ts::ModuleKind::CommonJS);
 
-	ts::Program const jsProgram = ts()->createProgram(
+	ts::Program const jsProgram = ts::createProgram(
 		ReadonlyArray<js_string>(
 			create_js_object,
 			tc::make_iterator_range(argv + 1, argv + argc)
@@ -30,11 +30,11 @@ int main(int argc, char* argv[]) {
 	ts::EmitResult const jsEmitresult = jsProgram->emit();
 
 	tc::for_each(
-		tc::concat(ts()->getPreEmitDiagnostics(jsProgram), jsEmitresult->diagnostics()),
+		tc::concat(ts::getPreEmitDiagnostics(jsProgram, OPTIONAL_ARGUMENT, OPTIONAL_ARGUMENT), jsEmitresult->diagnostics()),
 		[](ts::Diagnostic const jsDiagnostic) noexcept {
 			if (jsDiagnostic->file()) {
 				ts::LineAndCharacter const jsLineAndCharacter = (*jsDiagnostic->file())->getLineAndCharacterOfPosition(*jsDiagnostic->start());
-				js_string const jsMessage = ts()->flattenDiagnosticMessageText(jsDiagnostic->messageText(), js_string("\n"));
+				js_string const jsMessage = ts::flattenDiagnosticMessageText(jsDiagnostic->messageText(), js_string("\n"));
 				printf("%s (%d,%d): %s\n",
 					tc::explicit_cast<std::string>((*jsDiagnostic->file())->fileName()).c_str(),
 					jsLineAndCharacter->line() + 1,
@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
 					tc::explicit_cast<std::string>(jsMessage).c_str()
 				);
 			} else {
-				printf("%s\n", tc::explicit_cast<std::string>(ts()->flattenDiagnosticMessageText(jsDiagnostic->messageText(), js_string("\n"))).c_str());
+				printf("%s\n", tc::explicit_cast<std::string>(ts::flattenDiagnosticMessageText(jsDiagnostic->messageText(), js_string("\n"))).c_str());
 			}
 		}
 	);

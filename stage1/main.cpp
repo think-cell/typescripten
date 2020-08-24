@@ -19,10 +19,10 @@ std::string RetrieveSymbolFromCpp(ts::Symbol jsymSymbol) noexcept {
 	}
 	return tc::explicit_cast<std::string>(
 		tc_conditional_range(
-			!jsymSymbol->parent(),
+			!tc::js::ts_ext::Symbol(jsymSymbol)->parent(),
 			tc::concat("emscripten::val::global(\"", strSymbolName, "\")"),
 			tc::concat(
-				RetrieveSymbolFromCpp(*jsymSymbol->parent()),
+				RetrieveSymbolFromCpp(*tc::js::ts_ext::Symbol(jsymSymbol)->parent()),
 				"[\"", strSymbolName, "\"]"
 			)
 		)
@@ -34,18 +34,19 @@ std::string CppifyName(ts::Symbol jsymSymbol) noexcept {
 	if ('"' == strSourceName.front() && '"' == strSourceName.back()) {
 		strSourceName = strSourceName.substr(1, strSourceName.length() - 2);
 	}
+	// TODO: https://en.cppreference.com/w/cpp/language/identifiers
 	std::string strResult;
 	bool bLastIsUnderscore = false;
 	tc::for_each(
 		tc::transform(strSourceName, [&](char c) noexcept {
-			if ('-' == c) return '_';
-			if ('$' == c) return '_';
-			if ('_' == c) return c;
-			if ('a' <= c && c <= 'z') return c;
-			if ('A' <= c && c <= 'Z') return c;
-			if ('0' <= c && c <= '9') return c;
-			tc::append(std::cerr, "Cannot convert JS name to C++ name: '", strSourceName, "'\n");
-			_ASSERTFALSE;
+			if(('a' <= c && c <= 'z')
+			|| ('A' <= c && c <= 'Z')
+			|| ('0' <= c && c <= '9')
+			|| '_' == c) {
+				return c;
+			} else {
+				return '_';
+			}
 		}),
 		[&](char c) noexcept {
 			if (bLastIsUnderscore && c == '_') {
@@ -81,10 +82,10 @@ struct SJsEnumOption {
 		, m_jtsEnumMember([&]() noexcept {
 			auto const jarrDeclaration = jsymOption->declarations();
 			_ASSERTEQUAL(jarrDeclaration->length(), 1);
-			return *ts()->isEnumMember(jarrDeclaration[0]);
+			return ts::EnumMember(jarrDeclaration[0]);
 		}())
 		, m_ovardblstrValue([&]() noexcept -> decltype(m_ovardblstrValue) {
-			_ASSERTEQUAL(ts()->getCombinedModifierFlags(m_jtsEnumMember), ts::ModifierFlags::None);
+			_ASSERTEQUAL(ts::getCombinedModifierFlags(m_jtsEnumMember), ts::ModifierFlags::None);
 			auto const junionOptionValue = jtsTypeChecker->getConstantValue(m_jtsEnumMember);
 			if (junionOptionValue.getEmval().isNumber()) {
 				return junionOptionValue.get<double>();
@@ -109,7 +110,7 @@ struct SJsEnum {
 		: m_jsymEnum(jsymEnum)
 		, m_strMangledName(MangleSymbolName(jtsTypeChecker, jsymEnum))
 		, m_vecjsenumoption(tc::make_vector(tc::transform(
-			*jsymEnum->exports(),
+			*tc::js::ts_ext::Symbol(jsymEnum)->exports(),
 			[&jtsTypeChecker](ts::Symbol const jsymOption) noexcept {
 				return SJsEnumOption(jtsTypeChecker, jsymOption);
 			}
@@ -149,10 +150,10 @@ public:
 				// There may be multiple declarations, but they should have the same type (structurally).
 				// We strenghten this requirement even more for now.
 				auto const jdeclFirst = jsymName->declarations()[0];
-				auto const nModifierFlagsFirst = ts()->getCombinedModifierFlags(jdeclFirst);
+				auto const nModifierFlagsFirst = ts::getCombinedModifierFlags(jdeclFirst);
 				auto const jtypeFirst = jtsTypeChecker->getTypeOfSymbolAtLocation(jsymName, jdeclFirst);
 				tc::for_each(jsymName->declarations(), [&](ts::Declaration const jdeclCurrent) {
-					auto const nModifierFlagsCurrent = ts()->getCombinedModifierFlags(jdeclCurrent);
+					auto const nModifierFlagsCurrent = ts::getCombinedModifierFlags(jdeclCurrent);
 					auto const jtypeCurrent = jtsTypeChecker->getTypeOfSymbolAtLocation(jsymName, jdeclCurrent);
 					if (nModifierFlagsCurrent != nModifierFlagsFirst || !jtypeCurrent.getEmval().strictlyEquals(jtypeFirst.getEmval())) {
 						tc::append(std::cerr, "JSVariableLike of symbol '", m_strJsName, "' has ", tc::as_dec(jsymName->declarations()->length()), " conflicting declarations\n");
@@ -164,13 +165,13 @@ public:
 		}())
 		, m_jtypeDeclared(jtsTypeChecker->getTypeOfSymbolAtLocation(jsymName, m_jdeclVariableLike))
 		, m_mtType(MangleType(jtsTypeChecker, m_jtypeDeclared))
-		, m_bReadonly(ts()->getCombinedModifierFlags(m_jdeclVariableLike) & ts::ModifierFlags::Readonly)
+		, m_bReadonly(ts::getCombinedModifierFlags(m_jdeclVariableLike) & ts::ModifierFlags::Readonly)
 	{
-		ts::ModifierFlags const nModifierFlags = ts()->getCombinedModifierFlags(m_jdeclVariableLike);
+		ts::ModifierFlags const nModifierFlags = ts::getCombinedModifierFlags(m_jdeclVariableLike);
 		if (ts::ModifierFlags::None != nModifierFlags &&
 			ts::ModifierFlags::Export != nModifierFlags &&
 			ts::ModifierFlags::Readonly != nModifierFlags &&
-			ts::ModifierFlags::Ambient != ts()->getCombinedModifierFlags(m_jdeclVariableLike)) {
+			ts::ModifierFlags::Ambient != ts::getCombinedModifierFlags(m_jdeclVariableLike)) {
 			tc::append(std::cerr,
 				"Unknown getCombinedModifierFlags for jdeclVariableLike ",
 				m_strJsName,
@@ -187,9 +188,9 @@ struct SJsFunctionLike {
 	ts::Symbol m_jsymFunctionLike;
 	std::string m_strCppifiedName;
 	ts::Declaration m_jdeclFunctionLike;
-	ts::SignatureDeclaration m_jtsSignatureDeclaration;
+	tc::js::ts_ext::SignatureDeclaration m_jtsSignatureDeclaration;
 	ts::Signature m_jtsSignature;
-	js_optional<ReadonlyArray<js_unknown>> m_joptarrunkTypeParameter;
+	tc::jst::js_union<Array<ts::TypeParameter>, tc::jst::js_undefined> m_joptarrunkTypeParameter;
 	std::vector<SJsVariableLike> m_vecjsvariablelikeParameters;
 	std::string m_strCppifiedParametersWithComments;
 	std::string m_strCanonizedParameterCppTypes;
@@ -198,17 +199,17 @@ struct SJsFunctionLike {
 		: m_jsymFunctionLike(jsymFunctionLike)
 		, m_strCppifiedName(CppifyName(m_jsymFunctionLike))
 		, m_jdeclFunctionLike(jdeclFunctionLike)
-		, m_jtsSignatureDeclaration([&]() noexcept -> ts::SignatureDeclaration {
-			if (auto const jotsMethodSignature = ts()->isMethodSignature(jdeclFunctionLike)) { // In interfaces.
+		, m_jtsSignatureDeclaration([&]() noexcept -> tc::js::ts_ext::SignatureDeclaration {
+			if (auto const jotsMethodSignature = tc::js::ts_ext::isMethodSignature(jdeclFunctionLike)) { // In interfaces.
 				return *jotsMethodSignature;
 			}
-			if (auto const jotsMethodDeclaration = ts()->isMethodDeclaration(jdeclFunctionLike)) { // In classes.
+			if (auto const jotsMethodDeclaration = tc::js::ts_ext::isMethodDeclaration(jdeclFunctionLike)) { // In classes.
 				return *jotsMethodDeclaration;
 			}
-			if (auto const jotsConstructorDeclaration = ts()->isConstructorDeclaration(jdeclFunctionLike)) {
+			if (auto const jotsConstructorDeclaration = tc::js::ts_ext::isConstructorDeclaration(jdeclFunctionLike)) {
 				return *jotsConstructorDeclaration;
 			}
-			if (auto const jotsFunctionDeclaration = ts()->isFunctionDeclaration(jdeclFunctionLike)) {
+			if (auto const jotsFunctionDeclaration = tc::js::ts_ext::isFunctionDeclaration(jdeclFunctionLike)) {
 				return *jotsFunctionDeclaration;
 			}
 			_ASSERTFALSE;
@@ -234,14 +235,14 @@ struct SJsFunctionLike {
 			", "
 		)))
 	{
-		if (ts::ModifierFlags::None != ts()->getCombinedModifierFlags(jdeclFunctionLike) &&
-			ts::ModifierFlags::Export != ts()->getCombinedModifierFlags(jdeclFunctionLike) &&
-			ts::ModifierFlags::Ambient != ts()->getCombinedModifierFlags(jdeclFunctionLike)) {
+		if (ts::ModifierFlags::None != ts::getCombinedModifierFlags(jdeclFunctionLike) &&
+			ts::ModifierFlags::Export != ts::getCombinedModifierFlags(jdeclFunctionLike) &&
+			ts::ModifierFlags::Ambient != ts::getCombinedModifierFlags(jdeclFunctionLike)) {
 			tc::append(std::cerr,
 				"Unknown getCombinedModifierFlags for jdeclFunctionLike ",
 				tc::explicit_cast<std::string>(m_jsymFunctionLike->getName()),
 				": ",
-				tc::as_dec(static_cast<int>(ts()->getCombinedModifierFlags(jdeclFunctionLike))),
+				tc::as_dec(static_cast<int>(ts::getCombinedModifierFlags(jdeclFunctionLike))),
 				"\n"
 			);
 			_ASSERTFALSE;
@@ -335,8 +336,8 @@ struct SJsClass {
 			}
 		)))
 		, m_vecjsymMember([&]() noexcept {
-			if (jsymClass->members()) {
-				return tc::explicit_cast<std::vector<ts::Symbol>>(*jsymClass->members());
+			if (tc::js::ts_ext::Symbol(jsymClass)->members()) {
+				return tc::explicit_cast<std::vector<ts::Symbol>>(*tc::js::ts_ext::Symbol(jsymClass)->members());
 			} else {
 				return std::vector<ts::Symbol>();
 			}
@@ -369,10 +370,10 @@ struct SJsClass {
 		MergeWithSameCppSignatureInplace(m_vecjsfunctionlikeMethod);
 		MergeVariableRedeclarationsInplace(m_vecjsvariablelikeExportVariable);
 		// MergeVariableRedeclarationsInplace(m_vecjsvariablelikeProperty); // Properties cannot be redeclared.
-		if (auto jointerfacetypeClass = jtsTypeChecker->getDeclaredTypeOfSymbol(jsymClass)->isClassOrInterface()) {
+		if (auto jointerfacetypeClass = tc::js::ts_ext::isClassOrInterface(jtsTypeChecker->getDeclaredTypeOfSymbol(jsymClass))) {
 			tc::for_each(jtsTypeChecker->getBaseTypes(*jointerfacetypeClass),
-				[&](ts::BaseType const jtsBaseType) noexcept {
-					if (auto const jointerfacetypeBase = tc::reluctant_implicit_cast<ts::Type>(jtsBaseType)->isClassOrInterface()) {
+				[&](tc::js::ts_ext::BaseType const jtsBaseType) noexcept {
+					if (auto const jointerfacetypeBase = tc::js::ts_ext::isClassOrInterface(tc::reluctant_implicit_cast<ts::Type>(jtsBaseType))) {
 						tc::cont_emplace_back(m_vecjsymBaseClass, *(*jointerfacetypeBase)->getSymbol());
 					}
 				}
@@ -380,12 +381,12 @@ struct SJsClass {
 			// See `utilities.ts:getAllSuperTypeNodes`. `extends` clause for classes is already covered by `getBaseTypes()`, as well as `implements` clause for interfaces.
 			// The only missing part is `implements` for classes.
 			tc::for_each(jsymClass->declarations(), [&](ts::Declaration jdeclClass) {
-				if (auto joclassdeclarationClass = ts()->isClassDeclaration(jdeclClass)) {
-					auto jorarrHeritageClause = (*joclassdeclarationClass)->heritageClauses();
+				if (auto joclassdeclarationClass = tc::js::ts_ext::isClassDeclaration(jdeclClass)) {
+					auto jorarrHeritageClause = tc::js::ts_ext::ClassLikeDeclaration(*joclassdeclarationClass)->heritageClauses();
 					if (jorarrHeritageClause) {
 						tc::for_each(*jorarrHeritageClause, [&](ts::HeritageClause jtsHeritageClause) {
 							if (jtsHeritageClause->token() == ts::SyntaxKind::ImplementsKeyword) {
-								tc::for_each(jtsHeritageClause->types(), [&](ts::Node jnodeImplementsType) {
+								tc::for_each(tc::js::ts_ext::HeritageClause(jtsHeritageClause)->types(), [&](ts::Node jnodeImplementsType) {
 									auto jtypeImplements = jtsTypeChecker->getTypeAtLocation(jnodeImplementsType);
 									auto josymImplements = jtypeImplements->getSymbol();
 									if (!josymImplements) {
@@ -393,7 +394,7 @@ struct SJsClass {
 											"Unable to determine 'implements' symbol for class '",
 											tc::explicit_cast<std::string>(jsymClass->getName()),
 											"' for type '",
-											tc::explicit_cast<std::string>(jtsTypeChecker->typeToString(jtypeImplements)),
+											tc::explicit_cast<std::string>(jtsTypeChecker->typeToString(jtypeImplements, OPTIONAL_ARGUMENT, OPTIONAL_ARGUMENT)),
 											"'\n"
 										);
 										_ASSERTFALSE;
@@ -425,7 +426,7 @@ struct SJsClass {
 int main(int argc, char* argv[]) {
 	_ASSERT(2 <= argc);
 
-	ts::CompilerOptions const jtsCompilerOptions(create_js_object);
+	tc::js::ts_ext::CompilerOptions const jtsCompilerOptions(create_js_object);
 	jtsCompilerOptions->strict(true);
 	jtsCompilerOptions->target(ts::ScriptTarget::ES5);
 	jtsCompilerOptions->module(ts::ModuleKind::CommonJS);
@@ -436,14 +437,14 @@ int main(int argc, char* argv[]) {
 			if('\\'==ch) ch = '/'; // typescript createProgram does not support backslashes 
 		});
 	});
-	ts::Program const jtsProgram = ts()->createProgram(ReadonlyArray<js_string>(create_js_object, rngstrFileNames), jtsCompilerOptions);
+	ts::Program const jtsProgram = ts::createProgram(ReadonlyArray<js_string>(create_js_object, rngstrFileNames), jtsCompilerOptions, OPTIONAL_ARGUMENT, OPTIONAL_ARGUMENT, OPTIONAL_ARGUMENT);
 
 	ts::TypeChecker const jtsTypeChecker = jtsProgram->getTypeChecker();
 
 	{
-		auto const jtsReadOnlyArrayDiagnostics = ts()->getPreEmitDiagnostics(jtsProgram);
+		auto const jtsReadOnlyArrayDiagnostics = ts::getPreEmitDiagnostics(jtsProgram, OPTIONAL_ARGUMENT, OPTIONAL_ARGUMENT);
 		if (jtsReadOnlyArrayDiagnostics->length()) {
-			console::log(ts()->formatDiagnosticsWithColorAndContext(jtsReadOnlyArrayDiagnostics, ts()->createCompilerHost(jtsCompilerOptions)));
+			console::log(ts::formatDiagnosticsWithColorAndContext(jtsReadOnlyArrayDiagnostics, ts::FormatDiagnosticsHost(ts::createCompilerHost(jtsCompilerOptions, OPTIONAL_ARGUMENT).getEmval())));
 			return 1;
 		}
 	}
