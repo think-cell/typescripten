@@ -118,7 +118,7 @@ void WalkSymbol(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Sy
 	if (auto jointerfacetype = tc::js::ts_ext::isClassOrInterface(jtsTypeChecker->getDeclaredTypeOfSymbol(jsymType))) {
 		tc::append(std::cerr, tc::repeat_n(' ', nOffset + 2), "base types\n");
 		tc::for_each(jtsTypeChecker->getBaseTypes(*jointerfacetype),
-			[&](tc::js::ts_ext::BaseType const jtsBaseType) noexcept {
+			[&](tc::js::ts::BaseType const jtsBaseType) noexcept {
 				tc::append(std::cerr,
 					tc::repeat_n(' ', nOffset + 4),
 					tc::explicit_cast<std::string>(jtsTypeChecker->typeToString(jtsBaseType)),

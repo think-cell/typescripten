@@ -188,7 +188,7 @@ namespace {
 		ts::Symbol m_jsymFunctionLike;
 		std::string m_strCppifiedName;
 		ts::Declaration m_jdeclFunctionLike;
-		tc::js::ts_ext::SignatureDeclaration m_jtsSignatureDeclaration;
+		ts::SignatureDeclaration m_jtsSignatureDeclaration;
 		ts::Signature m_jtsSignature;
 		tc::jst::js_union<Array<ts::TypeParameter>, tc::jst::js_undefined> m_joptarrunkTypeParameter;
 		std::vector<SJsVariableLike> m_vecjsvariablelikeParameters;
@@ -200,7 +200,7 @@ namespace {
 			: m_jsymFunctionLike(jsymFunctionLike)
 			, m_strCppifiedName(CppifyName(m_jsymFunctionLike))
 			, m_jdeclFunctionLike(jdeclFunctionLike)
-			, m_jtsSignatureDeclaration([&]() noexcept -> tc::js::ts_ext::SignatureDeclaration {
+			, m_jtsSignatureDeclaration([&]() noexcept -> ts::SignatureDeclaration {
 				if (auto const jotsMethodSignature = tc::js::ts_ext::isMethodSignature(jdeclFunctionLike)) { // In interfaces.
 					return *jotsMethodSignature;
 				}
@@ -396,7 +396,7 @@ namespace {
 			// MergeVariableRedeclarationsInplace(m_vecjsvariablelikeProperty); // Properties cannot be redeclared.
 			if (auto jointerfacetypeClass = tc::js::ts_ext::isClassOrInterface(jtsTypeChecker->getDeclaredTypeOfSymbol(jsymClass))) {
 				tc::for_each(jtsTypeChecker->getBaseTypes(*jointerfacetypeClass),
-					[&](tc::js::ts_ext::BaseType const jtsBaseType) noexcept {
+					[&](tc::js::ts::BaseType const jtsBaseType) noexcept {
 						if (auto const jointerfacetypeBase = tc::js::ts_ext::isClassOrInterface(tc::reluctant_implicit_cast<ts::Type>(jtsBaseType))) {
 							tc::cont_emplace_back(m_vecjsymBaseClass, *(*jointerfacetypeBase)->getSymbol());
 						}
