@@ -4,7 +4,7 @@
 
 using tc::js::ts;
 
-std::vector<ts::Symbol> g_vecjsymEnum, g_vecjsymClass;
+std::vector<ts::Symbol> g_vecjsymEnum, g_vecjsymClass, g_vecjsymTypeAlias;
 
 bool IsEnumInCpp(ts::Symbol const jsymType) noexcept {
 	return
@@ -21,6 +21,38 @@ bool IsClassInCpp(ts::Symbol const jsymType) noexcept {
 		(ts::SymbolFlags::ValueModule | ts::SymbolFlags::Interface) == jsymType->getFlags() ||
 		(ts::SymbolFlags::NamespaceModule | ts::SymbolFlags::Interface) == jsymType->getFlags() ||
 		ts::SymbolFlags::NamespaceModule == jsymType->getFlags();
+}
+
+bool IsTypeAliasInCpp(ts::TypeChecker const& jtsTypeChecker, ts::Symbol const jsymType) noexcept {
+	if(ts::SymbolFlags::TypeAlias==jsymType->getFlags()) {
+		// Emit type aliases as using declarations if the type alias only references types, not e.g. literals
+		// A type alias of a single or a union of literals should be transformed into tag structs in C++
+		auto IsObject = [](auto jtypeInternal) noexcept {
+			switch(jtypeInternal->flags()) {
+				case ts::TypeFlags::Any:
+				case ts::TypeFlags::Unknown:
+				case ts::TypeFlags::String:
+				case ts::TypeFlags::Number:
+				case ts::TypeFlags::Boolean:
+				case ts::TypeFlags::Enum:
+				case ts::TypeFlags::BigInt:
+				case ts::TypeFlags::Undefined:
+				case ts::TypeFlags::Object:
+					return true;
+				default:
+					;
+			}
+			return false;
+		};
+
+		auto const jtype = jtsTypeChecker->getTypeFromTypeNode(ts::TypeAliasDeclaration(jsymType->declarations()[0])->type());
+		if(auto const ojuniontype = tc::js::ts_ext::isUnion(jtype)) {
+			return tc::all_of((*ojuniontype)->types(), IsObject);
+		} else {
+			return IsObject(jtype);
+		}
+	}
+	return false;
 }
 
 void WalkSymbol(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Symbol const jsymType) noexcept {
@@ -40,6 +72,8 @@ void WalkSymbol(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Sy
 		tc::cont_emplace_back(g_vecjsymEnum, jsymType);
 	} else if (IsClassInCpp(jsymType)) {
 		tc::cont_emplace_back(g_vecjsymClass, jsymType);
+	} else if(IsTypeAliasInCpp(jtsTypeChecker, jsymType)) {
+		tc::cont_emplace_back(g_vecjsymTypeAlias, jsymType);
 	}
 
 	tc::append(std::cerr, tc::repeat_n(' ', nOffset + 2), "members\n");
@@ -112,6 +146,8 @@ std::vector<ts::Symbol> ListSourceFileTopLevel(ts::TypeChecker const& jtsTypeChe
 			tc::cont_emplace_back(vecjsymTopLevel, jtsTypeChecker->getSymbolAtLocation((*jotsEnumDeclaration)->name()));
 		} else if (auto const jotsModuleDeclaration = tc::js::ts_ext::isModuleDeclaration(jnodeChild)) {
 			tc::cont_emplace_back(vecjsymTopLevel, jtsTypeChecker->getSymbolAtLocation((*jotsModuleDeclaration)->name()));
+		} else if(auto const jotsTypeAliasDeclaration = tc::js::ts_ext::isTypeAliasDeclaration(jnodeChild)) {
+			tc::cont_emplace_back(vecjsymTopLevel, jtsTypeChecker->getSymbolAtLocation((*jotsTypeAliasDeclaration)->name()));
 		} else if (jnodeChild->kind() == ts::SyntaxKind::EndOfFileToken) {
 			// Do nothing
 		} else {

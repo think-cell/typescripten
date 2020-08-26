@@ -13462,6 +13462,20 @@ namespace tc::js::ts_ext {
 		return result;
 	}
 
+	inline auto isTypeAliasDeclaration(tc::js::ts::Node node) noexcept {
+		std::optional<tc::js::ts::TypeAliasDeclaration> result;
+		if (tc::js::ts::isTypeAliasDeclaration(node))
+			result.emplace(node);
+		return result;
+	}
+
+	inline auto isTypeNode(tc::js::ts::Node node) noexcept {
+		std::optional<tc::js::ts::TypeNode> result;
+		if (tc::js::ts::isTypeNode(node))
+			result.emplace(node);
+		return result;
+	}
+
 	inline auto isClassOrInterface(tc::js::ts::Type type) noexcept {
 		std::optional<tc::js::ts::InterfaceType> result;
 		if (type->isClassOrInterface())

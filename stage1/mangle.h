@@ -26,6 +26,6 @@ struct SMangledType {
 	{}
 };
 
-SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type jtypeRoot) noexcept;
+SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type jtypeRoot, bool bUseTypeAlias = true) noexcept;
 
 #endif // MANGLE_H_

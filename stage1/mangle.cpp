@@ -1,6 +1,7 @@
 #include "precompiled.h"
 #include "typescript.d.bootstrap.h"
 #include "mangle.h"
+#include "walk_symbol.h"
 
 using tc::js::ts;
 
@@ -78,7 +79,7 @@ SMangledType CommentType(tc::js::ts::TypeChecker const jtsTypeChecker, std::stri
 	};
 }
 
-SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type jtypeRoot) noexcept {
+SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept {
 	// See checker.ts:typeToTypeNodeHelper
 	if (ts::TypeFlags::Any == jtypeRoot->flags() ||
 		ts::TypeFlags::Unknown == jtypeRoot->flags()
@@ -111,6 +112,13 @@ SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type
 	}
 	if (ts::TypeFlags::Null == jtypeRoot->flags()) {
 		return {mangled_no_comments, "js_null"};
+	}
+	if(bUseTypeAlias) {
+		if(auto ojsymAlias = jtypeRoot->aliasSymbol()) {
+			if(IsTypeAliasInCpp(jtsTypeChecker, *ojsymAlias)) {
+				return {mangled_no_comments, MangleSymbolName(jtsTypeChecker, *ojsymAlias)};
+			}
+		}	
 	}
 	if (auto jouniontypeRoot = tc::js::ts_ext::isUnion(jtypeRoot)) {
 		_ASSERT(1 < (*jouniontypeRoot)->types()->length());
