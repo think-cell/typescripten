@@ -39,7 +39,7 @@ jobs:
         curl -L https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.tar.gz --output boost_1_68_0.tgz
         tar xf boost_1_68_0.tgz
     - name: Install Emscripten
-      uses: mymindstorm/setup-emsdk@v5
+      uses: mymindstorm/setup-emsdk@v6
       with:
         version: 1.39.19
         actions-cache-folder: 'emsdk-cache'
