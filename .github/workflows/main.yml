@@ -63,6 +63,7 @@ jobs:
     - name: Run all library examples (Windows)
       if: ${{ contains(runner.os, 'windows') }}
       run: cd examples && testall.cmd
+      shell: cmd
     - name: Run all library examples (Unix)
       if: ${{ !contains(runner.os, 'windows') }}
       run: cd examples && ./testall.sh
