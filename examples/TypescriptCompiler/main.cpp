@@ -37,8 +37,8 @@ int main(int argc, char* argv[]) {
 				js_string const jsMessage = ts::flattenDiagnosticMessageText(jsDiagnostic->messageText(), js_string("\n"));
 				printf("%s (%d,%d): %s\n",
 					tc::explicit_cast<std::string>((*jsDiagnostic->file())->fileName()).c_str(),
-					jsLineAndCharacter->line() + 1,
-					jsLineAndCharacter->character() + 1,
+					tc::explicit_cast<int>(jsLineAndCharacter->line()) + 1,
+					tc::explicit_cast<int>(jsLineAndCharacter->character()) + 1,
 					tc::explicit_cast<std::string>(jsMessage).c_str()
 				);
 			} else {
