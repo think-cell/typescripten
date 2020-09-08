@@ -1,0 +1,8 @@
+{
+	"prejs": [
+		"main-pre.js"
+	],
+	"cpp": [
+		"main.cpp"
+	]
+}

@@ -1,0 +1,10 @@
+{
+	"prejs": [
+		"main-pre.js"
+	],
+	"cpp": [
+		"main.cpp",
+		"mangle.cpp",
+		"walk_symbol.cpp"
+	]
+}

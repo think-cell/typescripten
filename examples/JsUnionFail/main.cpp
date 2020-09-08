@@ -64,3 +64,5 @@ EMSCRIPTEN_BINDINGS(js_union_fail) {
 	emscripten::function("derefUndefinedBoolGet", &derefUndefinedBoolGet);
 	emscripten::function("derefNullBoolGet", &derefNullBoolGet);
 }
+
+int main() { return 0; }

@@ -1,3 +1,4 @@
 #!/bin/bash
 set -ueo pipefail
-../../build-default.sh -o main.js main.cpp
+source ../../build-config.sh
+../../ninja.py main.emscripten debug
