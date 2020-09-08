@@ -43,17 +43,18 @@ jobs:
       run: |
         em++ -v
     - name: Setup build config
+      if: ${{ !contains(runner.os, 'windows') }}
       shell: bash
-      run: |
-        for ext in ninja sh; do
-          sed build-config-example.$ext \
-            -e "/path-to-emsdk_env/d" \
-            -e "s:<path-to-boost-includes>:$(realpath boost_1_68_0):g" \
-            -e "s:<path-to-think-cell-public-library-includes>:$(realpath range-master/tc):g" \
-            > build-config.$ext
-          echo "========== build-config.$ext =========="
-          cat build-config.$ext
-        done
+      run: ./github_action_configure.py range-master/tc boost_1_68_0
+    - name: Setup build config
+      if: ${{ contains(runner.os, 'windows') }}
+      shell: cmd
+      run: python ./github_action_configure.py range-master/tc boost_1_68_0
     - name: Run all library examples
-      run: cd examples && ./testall.sh
+      if: ${{ !contains(runner.os, 'windows') }}
       shell: bash
+      run: examples/testall.py 
+    - name: Run all library examples
+      if: ${{ contains(runner.os, 'windows') }}
+      shell: cmd
+      run: python examples/testall.py 
