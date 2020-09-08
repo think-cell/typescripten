@@ -1,0 +1,59 @@
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events.
+on:
+  push:
+  pull_request:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # Build on multiple systems: https://docs.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow#configuring-a-build-matrix
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, windows-2019]
+    # The type of runner that the job will run on
+    runs-on: ${{ matrix.os }}
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+    - name: Setup think-cell/range
+      shell: bash
+      run: |
+        curl -L https://github.com/think-cell/range/archive/master.zip --output range.zip
+        unzip range.zip
+    - name: Setup Boost 1.68.0
+      shell: bash
+      run: |
+        curl -L https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.zip --output boost_1_68_0.zip
+        unzip -q boost_1_68_0.zip
+    - name: Install Emscripten
+      uses: mymindstorm/setup-emsdk@v6
+      with:
+        version: 1.39.19
+        actions-cache-folder: 'emsdk-cache'
+    - name: Install ninja-build tool
+      uses: seanmiddleditch/gha-setup-ninja@v2
+    - name: Verify Emscripten
+      shell: bash
+      run: |
+        em++ -v
+    - name: Setup build config
+      shell: bash
+      run: |
+        for ext in cmd sh; do
+          sed build-config-example.$ext \
+            -e "/path-to-emsdk_env/d" \
+            -e "s:<path-to-boost-includes>:$(realpath boost_1_68_0):g" \
+            -e "s:<path-to-think-cell-public-library-includes>:$(realpath range-master/tc):g" \
+            > build-config.$ext
+          echo "========== build-config.$ext =========="
+          cat build-config.$ext
+        done
+    - name: Run all library examples
+      run: cd examples && ./testall.sh
+      shell: bash
