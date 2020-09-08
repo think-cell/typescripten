@@ -44,6 +44,8 @@ which lets us use `MyLib` from C++ in a type-safe way
         ) << std::endl;
     }
 
+See `stage1/tests` for more examples. Many TypeScript constructs are not yet supported. 
+
 Close analogues are Rust's [stdweb](https://github.com/koute/stdweb) and [wasm-bindgen](https://github.com/rustwasm/wasm-bindgen).
 
 # Dependencies
