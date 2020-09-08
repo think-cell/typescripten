@@ -6,7 +6,7 @@ import subprocess
 if __name__ == "__main__":
     strScriptPath = os.path.dirname(os.path.abspath(__file__))
 
-    for strSubdir in os.listdir(strScriptPath):
+    for strSubdir in sorted(os.listdir(strScriptPath)):
         strDir = os.path.join(strScriptPath, strSubdir)
         if os.path.isdir(strDir):
             os.chdir(strDir)

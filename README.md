@@ -1,15 +1,64 @@
+![CI](https://github.com/think-cell/tcjs/workflows/CI/badge.svg)
+
 # tcjs
 
-The goal is to write web front-end completely in C++ instead of JavaScript.
-The mean is to create type-safe JavaScript bindings for C++/Emscripten from TypeScript declaration files.
+Generate type-safe JavaScript bindings for C++/Emscripten from TypeScript declaration files. 
+
+If you have a typescript module `MyLib.d.ts`
+
+    declare namespace MyLib {
+        function appendNumber(a: string, b: number): string;
+    }
+
+Running the **tcjs** compiler on this file will produce the C++ header `MyLib.d.h`
+
+    namespace tc::js_defs {
+        using namespace jst; // no ADL
+        struct _impl_js_jMyLib;
+        using _js_jMyLib = js_ref<_impl_js_jMyLib>;
+        struct _impl_js_jMyLib : virtual IObject {
+            struct _tcjs_definitions {
+                static auto appendNumber(js_string a, double b) noexcept;
+            };
+        };
+        inline auto _impl_js_jMyLib::_tcjs_definitions::appendNumber(js_string a, double b) noexcept {
+            return emscripten::val::global("MyLib")["appendNumber"](a, b).template as<js_string>();
+        }
+    }; // namespace tc::js_defs
+    namespace tc::js {
+        using MyLib = js_defs::_js_jMyLib;
+    } // namespace tc::js
+
+
+which lets us use `MyLib` from C++ in a type-safe way
+
+    #include "MyLib.d.h"
+    #include <iostream>
+
+    int main() {
+        std::cout << tc::explicit_cast<std::string>( // Unpack the JavaScript string 
+            tc::js::MyLib::appendNumber(
+                tc::jst::js_string("foobar"), // Create a JavaScript string
+                20 // JavaScript number type maps to double
+            )
+        ) << std::endl;
+    }
 
 Close analogues are Rust's [stdweb](https://github.com/koute/stdweb) and [wasm-bindgen](https://github.com/rustwasm/wasm-bindgen).
 
 # Dependencies
 
+* [Python 3](https://www.python.org/downloads/)
 * [Emscripten](https://emscripten.org/) 1.38.41 or newer (Node.js and NPM are included)
 * [think-cell public library](https://github.com/think-cell/range)
-* Boost 1.68.0 (exactly)
+* [boost 1.68.0](https://dl.bintray.com/boostorg/release/1.68.0/source/) (later versions are probably fine)
+* [ninja](https://ninja-build.org)
+
+# Setup
+
+* Copy `build-config-example.*` to `build-config.*` and edit the files to set the correct paths to emscripten, boost and the think-cell library
+* Run `examples/testall.py` to execute some test cases for the elementary **tcjs** C++/JavaScript interop classes in `bootstrap`
+* Run `cd stage1` and `./build.sh` or `build.cmd` to build the **tcjs** compiler for typescript interface definition files.  
 
 # Misc thoughts
 * C++ callbacks passed to JS are always `noexpect` because exceptions cannot be passed between JS and C++ at the moment.
