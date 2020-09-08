@@ -45,7 +45,7 @@ jobs:
     - name: Setup build config
       shell: bash
       run: |
-        for ext in cmd sh; do
+        for ext in ninja sh; do
           sed build-config-example.$ext \
             -e "/path-to-emsdk_env/d" \
             -e "s:<path-to-boost-includes>:$(realpath boost_1_68_0):g" \
