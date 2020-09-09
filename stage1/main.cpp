@@ -65,7 +65,7 @@ namespace {
 		_ASSERT(!strResult.empty());
 		return strResult;
 	}
-	
+
 	struct SJsEnumOption {
 		ts::Symbol m_jsymOption;
 		std::string m_strJsName;
@@ -290,49 +290,30 @@ namespace {
 		// TODO: add comments about skipped overloads;
 	}
 
-	template<typename Rng>
-	void MergeVariableRedeclarationsInplace(Rng& rngjsvariablelikeVars) noexcept {
-		tc::sort_accumulate_each_unique_range(
-			rngjsvariablelikeVars,
-			[](SJsVariableLike const& a, SJsVariableLike const& b) { return a.m_strJsName < b.m_strJsName; },
-			[](SJsVariableLike const& first, SJsVariableLike const& current) {
-				_ASSERT(current.m_jsymName.getEmval().strictlyEquals(first.m_jsymName.getEmval()));
-			}
-		);
-	}
-
-	struct SJsClass {
-		ts::Symbol m_jsymClass;
-		std::string m_strMangledName;
-		std::vector<ts::Symbol> m_vecjsymExportOfModule;
+	struct SJsScope {
 		std::vector<ts::Symbol> m_vecjsymExportType;
 		std::vector<SJsFunctionLike> m_vecjsfunctionlikeExportFunction;
 		std::vector<SJsVariableLike> m_vecjsvariablelikeExportVariable;
-		std::vector<ts::Symbol> m_vecjsymMember;
-		std::vector<SJsFunctionLike> m_vecjsfunctionlikeMethod;
-		std::vector<SJsVariableLike> m_vecjsvariablelikeProperty;
-		std::vector<ts::Symbol> m_vecjsymBaseClass;
-		bool m_bHasImplicitDefaultConstructor;
 
-		SJsClass(ts::TypeChecker const jtsTypeChecker, ts::Symbol const jsymClass) noexcept
-			: m_jsymClass(jsymClass)
-			, m_strMangledName(MangleSymbolName(jtsTypeChecker, jsymClass))
-			, m_vecjsymExportOfModule(tc::make_vector(
-				tc_conditional_range(
-					jsymClass->getFlags() & ts::SymbolFlags::Module,
-					jtsTypeChecker->getExportsOfModule(jsymClass),
-					tc::make_empty_range<ts::Symbol>()
-				)
-			))
-			, m_vecjsymExportType(tc::make_vector(tc::filter(
-				m_vecjsymExportOfModule,
+		template<typename Rng>
+		SJsScope(ts::TypeChecker const jtsTypeChecker, Rng&& rngjsym) noexcept {
+			Initialize(jtsTypeChecker, std::forward<Rng>(rngjsym));
+		}
+
+	protected:
+		SJsScope() noexcept = default;
+		template<typename Rng>
+		void Initialize(ts::TypeChecker const jtsTypeChecker, Rng&& rngjsym) noexcept {
+			m_vecjsymExportType = tc::make_vector(tc::filter(
+				rngjsym,
 				[&](ts::Symbol const jsymExport) noexcept {
 					return IsEnumInCpp(jsymExport) || IsClassInCpp(jsymExport) || IsTypeAliasInCpp(jtsTypeChecker, jsymExport);
 				}
-			)))
-			, m_vecjsfunctionlikeExportFunction(tc::make_vector(tc::join(tc::transform(
+			));
+
+			m_vecjsfunctionlikeExportFunction = tc::make_vector(tc::join(tc::transform(
 				tc::filter(
-					m_vecjsymExportOfModule,
+					rngjsym,
 					[](ts::Symbol const jsymExport) noexcept {
 						return ts::SymbolFlags::Function == jsymExport->getFlags();
 					}
@@ -345,10 +326,12 @@ namespace {
 						}
 					);
 				}
-			))))
-			, m_vecjsvariablelikeExportVariable(tc::make_vector(tc::transform(
+			)));
+			MergeWithSameCppSignatureInplace(m_vecjsfunctionlikeExportFunction);
+
+			m_vecjsvariablelikeExportVariable = tc::make_vector(tc::transform(
 				tc::filter(
-					m_vecjsymExportOfModule,
+					rngjsym,
 					[](ts::Symbol const jsymExport) noexcept {
 						return
 							ts::SymbolFlags::FunctionScopedVariable == jsymExport->getFlags() ||
@@ -358,43 +341,72 @@ namespace {
 				[&](ts::Symbol const jsymVariable) noexcept {
 					return SJsVariableLike(jtsTypeChecker, jsymVariable);
 				}
-			)))
-			, m_vecjsymMember([&]() noexcept {
-				if (tc::js::ts_ext::Symbol(jsymClass)->members()) {
-					return tc::explicit_cast<std::vector<ts::Symbol>>(*tc::js::ts_ext::Symbol(jsymClass)->members());
-				} else {
-					return std::vector<ts::Symbol>();
+			));
+
+			// Merge variable redeclarations inplace 
+			tc::sort_accumulate_each_unique_range(
+				m_vecjsvariablelikeExportVariable,
+				[](SJsVariableLike const& a, SJsVariableLike const& b) { return a.m_strJsName < b.m_strJsName; },
+				[](SJsVariableLike const& first, SJsVariableLike const& current) {
+					_ASSERT(current.m_jsymName.getEmval().strictlyEquals(first.m_jsymName.getEmval()));
 				}
-			}())
-			, m_vecjsfunctionlikeMethod(tc::make_vector(tc::join(tc::transform(
-				tc::filter(m_vecjsymMember, [](ts::Symbol const jsymMember) noexcept {
-					return ts::SymbolFlags::Method == jsymMember->getFlags() || ts::SymbolFlags::Constructor == jsymMember->getFlags();
-				}),
-				[&](ts::Symbol const jsymMethod) noexcept {
-					return tc::transform(
-						jsymMethod->declarations(),
-						[&jtsTypeChecker, jsymMethod](ts::Declaration const jdeclMethod) noexcept {
-							return SJsFunctionLike(jtsTypeChecker, jsymMethod, jdeclMethod);
-						}
-					);
-				}
-			))))
-			, m_vecjsvariablelikeProperty(tc::make_vector(tc::transform(
-				tc::filter(m_vecjsymMember, [](ts::Symbol const jsymMember) noexcept {
-					_ASSERT(!(ts::SymbolFlags::Property & jsymMember->getFlags()) || !(~(ts::SymbolFlags::Property|ts::SymbolFlags::Optional) & jsymMember->getFlags()));
-					return ts::SymbolFlags::Property & jsymMember->getFlags();
-				}),
-				[&](ts::Symbol const jsymProperty) noexcept {
-					return SJsVariableLike(jtsTypeChecker, jsymProperty);
-				}
-			)))
+			);
+		}
+	};
+
+	struct SJsClass final : SJsScope { 
+		ts::Symbol m_jsymClass;
+		std::string m_strMangledName;
+		std::vector<SJsFunctionLike> m_vecjsfunctionlikeMethod;
+		std::vector<SJsVariableLike> m_vecjsvariablelikeProperty;
+		std::vector<ts::Symbol> m_vecjsymBaseClass;
+		bool m_bHasImplicitDefaultConstructor;
+
+		SJsClass(ts::TypeChecker const jtsTypeChecker, ts::Symbol const jsymClass) noexcept
+			: m_jsymClass(jsymClass)
+			, m_strMangledName(MangleSymbolName(jtsTypeChecker, jsymClass))
 			, m_vecjsymBaseClass()
 			, m_bHasImplicitDefaultConstructor(false)
 		{
-			MergeWithSameCppSignatureInplace(m_vecjsfunctionlikeExportFunction);
+			Initialize(
+				jtsTypeChecker,
+				tc_conditional_range(
+					jsymClass->getFlags() & ts::SymbolFlags::Module,
+					jtsTypeChecker->getExportsOfModule(jsymClass),
+					tc::make_empty_range<ts::Symbol>()
+				)
+			);
+
+			if(auto ojarrsymMembers = tc::js::ts_ext::Symbol(jsymClass)->members()) { 
+				auto vecjsymMembers = tc::explicit_cast<std::vector<ts::Symbol>>(*ojarrsymMembers);
+				m_vecjsfunctionlikeMethod = tc::make_vector(tc::join(tc::transform(
+					tc::filter(vecjsymMembers, [](ts::Symbol const jsymMember) noexcept {
+						return ts::SymbolFlags::Method == jsymMember->getFlags() || ts::SymbolFlags::Constructor == jsymMember->getFlags();
+					}),
+					[&](ts::Symbol const jsymMethod) noexcept {
+						return tc::transform(
+							jsymMethod->declarations(),
+							[&jtsTypeChecker, jsymMethod](ts::Declaration const jdeclMethod) noexcept {
+								return SJsFunctionLike(jtsTypeChecker, jsymMethod, jdeclMethod);
+							}
+						);
+					}
+				)));
+
+				m_vecjsvariablelikeProperty = tc::make_vector(tc::transform(
+					tc::filter(vecjsymMembers, [](ts::Symbol const jsymMember) noexcept {
+						_ASSERT(!(ts::SymbolFlags::Property & jsymMember->getFlags()) || !(~(ts::SymbolFlags::Property|ts::SymbolFlags::Optional) & jsymMember->getFlags()));
+						return ts::SymbolFlags::Property & jsymMember->getFlags();
+					}),
+					[&](ts::Symbol const jsymProperty) noexcept {
+						return SJsVariableLike(jtsTypeChecker, jsymProperty);
+					}
+				));
+			}
+
 			MergeWithSameCppSignatureInplace(m_vecjsfunctionlikeMethod);
-			MergeVariableRedeclarationsInplace(m_vecjsvariablelikeExportVariable);
 			// MergeVariableRedeclarationsInplace(m_vecjsvariablelikeProperty); // Properties cannot be redeclared.
+			
 			if (auto jointerfacetypeClass = tc::js::ts_ext::isClassOrInterface(jtsTypeChecker->getDeclaredTypeOfSymbol(jsymClass))) {
 				tc::for_each(jtsTypeChecker->getBaseTypes(*jointerfacetypeClass),
 					[&](tc::js::ts::BaseType const jtsBaseType) noexcept {
@@ -510,86 +522,85 @@ int main(int argc, char* argv[]) {
 	}
 
 	// Iterate over source files, enumerate global symbols and then walk the tree of child symbols
-	std::vector<ts::Symbol> vecjsymExportedModule;
-	std::vector<ts::Symbol> vecjsymExportedSymbol;
-	tc::for_each(jtsProgram->getSourceFiles(),
-		[&](ts::SourceFile const& jtsSourceFile) noexcept {
-			if (!tc::find_unique<tc::return_bool>(rngstrFileNames, tc::explicit_cast<std::string>(jtsSourceFile->fileName()))) {
-				return;
-			}
-			auto const josymSourceFile = jtsTypeChecker->getSymbolAtLocation(jtsSourceFile);
-			if (!josymSourceFile) {
-				tc::append(std::cerr, "Module not found for ", tc::explicit_cast<std::string>(jtsSourceFile->fileName()), ", treating at as a global library\n");
+	SJsScope scopeGlobal(
+		jtsTypeChecker,
+		[&]() noexcept {
+			std::vector<ts::Symbol> vecjsymExportedSymbol;
+			tc::for_each(jtsProgram->getSourceFiles(),
+				[&](ts::SourceFile const& jtsSourceFile) noexcept {
+					if (!tc::find_unique<tc::return_bool>(rngstrFileNames, tc::explicit_cast<std::string>(jtsSourceFile->fileName()))) {
+						return;
+					}
+					auto const josymSourceFile = jtsTypeChecker->getSymbolAtLocation(jtsSourceFile);
+					if (!josymSourceFile) {
+						tc::append(std::cerr, "Module not found for ", tc::explicit_cast<std::string>(jtsSourceFile->fileName()), ", treating at as a global library\n");
 
-				{
-					ts::forEachChild(jtsSourceFile, tc::jst::js_lambda_wrap([&](ts::Node jnodeChild) noexcept -> tc::jst::js_unknown {
-						if (auto const jotsFunctionDeclaration = tc::js::ts_ext::isFunctionDeclaration(jnodeChild)) {
-							tc::cont_emplace_back(vecjsymExportedSymbol, jtsTypeChecker->getSymbolAtLocation(*(*jotsFunctionDeclaration)->name()));
-						} else if (auto const jotsVariableStatement = tc::js::ts_ext::isVariableStatement(jnodeChild)) {
-							tc::for_each(tc::js::ts_ext::MakeReadOnlyArray<ts::VariableDeclaration>((*jotsVariableStatement)->declarationList()->declarations()), [&](ts::VariableDeclaration const jtsVariableDeclaration) {
-								tc::cont_emplace_back(vecjsymExportedSymbol, jtsTypeChecker->getSymbolAtLocation(jtsVariableDeclaration->name()));
-							});
-						} else if (auto const jotsClassDeclaration = tc::js::ts_ext::isClassDeclaration(jnodeChild)) {
-							tc::cont_emplace_back(vecjsymExportedSymbol, jtsTypeChecker->getSymbolAtLocation(*(*jotsClassDeclaration)->name()));
-						} else if (auto const jotsInterfaceDeclaration = tc::js::ts_ext::isInterfaceDeclaration(jnodeChild)) {
-							tc::cont_emplace_back(vecjsymExportedSymbol, jtsTypeChecker->getSymbolAtLocation((*jotsInterfaceDeclaration)->name()));
-						} else if (auto const jotsEnumDeclaration = tc::js::ts_ext::isEnumDeclaration(jnodeChild)) {
-							tc::cont_emplace_back(vecjsymExportedSymbol, jtsTypeChecker->getSymbolAtLocation((*jotsEnumDeclaration)->name()));
-						} else if (auto const jotsModuleDeclaration = tc::js::ts_ext::isModuleDeclaration(jnodeChild)) {
-							tc::cont_emplace_back(vecjsymExportedSymbol, jtsTypeChecker->getSymbolAtLocation((*jotsModuleDeclaration)->name()));
-						} else if(auto const jotsTypeAliasDeclaration = tc::js::ts_ext::isTypeAliasDeclaration(jnodeChild)) {
-							tc::cont_emplace_back(vecjsymExportedSymbol, jtsTypeChecker->getSymbolAtLocation((*jotsTypeAliasDeclaration)->name()));
-						} else if (jnodeChild->kind() == ts::SyntaxKind::EndOfFileToken) {
-							// Do nothing
-						} else {
-							tc::append(std::cerr, "Unknown source file-level child kind: ", tc::as_dec(static_cast<int>(jnodeChild->kind())), "\n");
+						{
+							ts::forEachChild(jtsSourceFile, tc::jst::js_lambda_wrap([&](ts::Node jnodeChild) noexcept -> tc::jst::js_unknown {
+								if (auto const jotsFunctionDeclaration = tc::js::ts_ext::isFunctionDeclaration(jnodeChild)) {
+									tc::cont_emplace_back(vecjsymExportedSymbol, jtsTypeChecker->getSymbolAtLocation(*(*jotsFunctionDeclaration)->name()));
+								} else if (auto const jotsVariableStatement = tc::js::ts_ext::isVariableStatement(jnodeChild)) {
+									tc::for_each(tc::js::ts_ext::MakeReadOnlyArray<ts::VariableDeclaration>((*jotsVariableStatement)->declarationList()->declarations()), [&](ts::VariableDeclaration const jtsVariableDeclaration) {
+										tc::cont_emplace_back(vecjsymExportedSymbol, jtsTypeChecker->getSymbolAtLocation(jtsVariableDeclaration->name()));
+									});
+								} else if (auto const jotsClassDeclaration = tc::js::ts_ext::isClassDeclaration(jnodeChild)) {
+									tc::cont_emplace_back(vecjsymExportedSymbol, jtsTypeChecker->getSymbolAtLocation(*(*jotsClassDeclaration)->name()));
+								} else if (auto const jotsInterfaceDeclaration = tc::js::ts_ext::isInterfaceDeclaration(jnodeChild)) {
+									tc::cont_emplace_back(vecjsymExportedSymbol, jtsTypeChecker->getSymbolAtLocation((*jotsInterfaceDeclaration)->name()));
+								} else if (auto const jotsEnumDeclaration = tc::js::ts_ext::isEnumDeclaration(jnodeChild)) {
+									tc::cont_emplace_back(vecjsymExportedSymbol, jtsTypeChecker->getSymbolAtLocation((*jotsEnumDeclaration)->name()));
+								} else if (auto const jotsModuleDeclaration = tc::js::ts_ext::isModuleDeclaration(jnodeChild)) {
+									tc::cont_emplace_back(vecjsymExportedSymbol, jtsTypeChecker->getSymbolAtLocation((*jotsModuleDeclaration)->name()));
+								} else if(auto const jotsTypeAliasDeclaration = tc::js::ts_ext::isTypeAliasDeclaration(jnodeChild)) {
+									tc::cont_emplace_back(vecjsymExportedSymbol, jtsTypeChecker->getSymbolAtLocation((*jotsTypeAliasDeclaration)->name()));
+								} else if (jnodeChild->kind() == ts::SyntaxKind::EndOfFileToken) {
+									// Do nothing
+								} else {
+									tc::append(std::cerr, "Unknown source file-level child kind: ", tc::as_dec(static_cast<int>(jnodeChild->kind())), "\n");
+								}
+								return tc::jst::js_undefined();
+							}));
+
+							// An interface declaration and a variable statement may introduce the same symbol, e.g., 
+							// interface EventTarget {
+							// }
+
+							// var EventTarget: {
+							// 	prototype: EventTarget;
+							// 	new(): EventTarget;
+							// };
+							//
+							// These define the same C++ class
+
+							// Overloaded functions also define the same symbol with two declarations:
+
+							// function test(a: number);
+							// function test(a: string);
+
+							// For more combinations see tests/duplicate_symbols and https://www.typescriptlang.org/docs/handbook/declaration-files/deep-dive.html#advanced-combinations
+							return;
 						}
-						return tc::jst::js_undefined();
-					}));
-
-					// An interface declaration and a variable statement may introduce the same symbol, e.g., 
-					// interface EventTarget {
-					// }
-
-					// var EventTarget: {
-					// 	prototype: EventTarget;
-					// 	new(): EventTarget;
-					// };
-					//
-					// These define the same C++ class
-
-					// Overloaded functions also define the same symbol with two declarations:
-
-					// function test(a: number);
-					// function test(a: string);
-
-					// For more combinations see tests/duplicate_symbols and https://www.typescriptlang.org/docs/handbook/declaration-files/deep-dive.html#advanced-combinations
-					return;
+					}
+					tc::cont_emplace_back(vecjsymExportedSymbol, *josymSourceFile);
 				}
-			}
-			tc::cont_emplace_back(vecjsymExportedModule, *josymSourceFile);
-		}
-	);
+			);
 
-	// Make list of exported symbols unique
-	tc::sort_unique_inplace(vecjsymExportedSymbol, tc::projected(tc::fn_less(), [&](ts::Symbol jsym) noexcept {
-		return jtsTypeChecker->getFullyQualifiedName(jsym);
-	}));
+			// Make list of exported symbols unique
+			tc::sort_unique_inplace(vecjsymExportedSymbol, tc::projected(tc::fn_less(), [&](ts::Symbol jsym) noexcept {
+				return static_cast<std::string>(jtsTypeChecker->getFullyQualifiedName(jsym));
+			}));
 
-	tc::for_each(
-		vecjsymExportedModule,
-		[&](ts::Symbol const& jsymSourceFile) noexcept {
-			tc::append(std::cerr, "Module name is ", tc::explicit_cast<std::string>(jsymSourceFile->getName()), "\n");
-			WalkSymbol(jtsTypeChecker, 0, jsymSourceFile);
-		}
-	);
-
-	tc::for_each(
-		vecjsymExportedSymbol,
-		[&](ts::Symbol const& jsymSymbol) noexcept {
-			tc::append(std::cerr, "Global exported symbol is ", tc::explicit_cast<std::string>(jsymSymbol->getName()), "\n");
-			WalkSymbol(jtsTypeChecker, 0, jsymSymbol);
-		}
+			// TODO: Move into JsScope ctor
+			tc::for_each(
+				vecjsymExportedSymbol,
+				[&](ts::Symbol const& jsymSourceFile) noexcept {
+					tc::append(std::cerr, "Global symbol/module name is ", tc::explicit_cast<std::string>(jsymSourceFile->getName()), "\n");
+					WalkSymbol(jtsTypeChecker, 0, jsymSourceFile);
+				}
+			);
+			
+			return vecjsymExportedSymbol;
+		}()
 	);
 
 	tc::append(std::cerr, "\n========== GENERATED CODE ==========\n");
@@ -1002,35 +1013,9 @@ int main(int argc, char* argv[]) {
 			}))
 		);
 
-		std::vector<ts::Symbol> vecjsymGlobalType;
-		std::vector<SJsFunctionLike> vecjsfunctionlikeGlobalFunction;
-		std::vector<SJsVariableLike> vecjsvariablelikeGlobalVariable;
-		std::vector<ts::Symbol> vecjsymGlobalUnknown;
-
-		tc::for_each(vecjsymExportedSymbol, [&](ts::Symbol const& jsymExported) noexcept {
-			if (IsClassInCpp(jsymExported) || IsEnumInCpp(jsymExported)) {
-				tc::cont_emplace_back(vecjsymGlobalType, jsymExported);
-			} else if (ts::SymbolFlags::Function == jsymExported->getFlags()) {
-				tc::append(vecjsfunctionlikeGlobalFunction, tc::transform(
-					jsymExported->declarations(),
-					[&](ts::Declaration const jdeclFunction) {
-						return SJsFunctionLike(jtsTypeChecker, jsymExported, jdeclFunction);
-					}
-				));
-			} else if (ts::SymbolFlags::FunctionScopedVariable == jsymExported->getFlags() ||
-				ts::SymbolFlags::BlockScopedVariable == jsymExported->getFlags()) {
-				tc::cont_emplace_back(vecjsvariablelikeGlobalVariable, jtsTypeChecker, jsymExported);
-			} else {
-				tc::cont_emplace_back(vecjsymGlobalUnknown, jsymExported);
-			}
-		});
-
-		MergeWithSameCppSignatureInplace(vecjsfunctionlikeGlobalFunction);
-		MergeVariableRedeclarationsInplace(vecjsvariablelikeGlobalVariable);
-
 		tc::append(std::cout,
 			tc::join(tc::transform(
-				vecjsfunctionlikeGlobalFunction,
+				scopeGlobal.m_vecjsfunctionlikeExportFunction,
 				[&jtsTypeChecker](SJsFunctionLike& jsfunctionlikeFunction) {
 					// TODO: deduplicate following code into SJsFunctionLike.
 					auto const rngchCallArguments = tc::join_separated(
@@ -1060,7 +1045,7 @@ int main(int argc, char* argv[]) {
 				}
 			)),
 			tc::join(tc::transform(
-				vecjsvariablelikeGlobalVariable,
+				scopeGlobal.m_vecjsvariablelikeExportVariable,
 				[&](SJsVariableLike const& jsvariablelikeVariable) noexcept {
 					// TODO: deduplicate following code into SJsVariableLike.
 					return tc::explicit_cast<std::string>(tc::concat(
@@ -1078,21 +1063,12 @@ int main(int argc, char* argv[]) {
 				}
 			)),
 			"}; // namespace tc::js_defs\n",
-			"namespace tc::js {\n",
-			tc::join(tc::transform(
-				vecjsymExportedModule,
-				[&jtsTypeChecker](ts::Symbol const& jsymSourceFile) noexcept {
-					_ASSERT(IsClassInCpp(jsymSourceFile));
-					return tc::concat(
-						"using ", CppifyName(jsymSourceFile), " = js_defs::", MangleSymbolName(jtsTypeChecker, jsymSourceFile), ";\n"
-					);
-				}
-			))
+			"namespace tc::js {\n"
 		);
 
 		tc::append(std::cout,
 			tc::join(tc::transform(
-				vecjsymGlobalType,
+				scopeGlobal.m_vecjsymExportType,
 				[&jtsTypeChecker](ts::Symbol const& jsymType) noexcept {
 					return tc::explicit_cast<std::string>(tc::concat(
 						"	using ", CppifyName(jsymType), " = js_defs::", MangleSymbolName(jtsTypeChecker, jsymType), ";\n"
@@ -1100,23 +1076,15 @@ int main(int argc, char* argv[]) {
 				}
 			)),
 			tc::join(tc::transform(
-				vecjsfunctionlikeGlobalFunction,
+				scopeGlobal.m_vecjsfunctionlikeExportFunction,
 				[](SJsFunctionLike& jsfunctionlikeFunction) {
 					return tc::concat("	using js_defs::", jsfunctionlikeFunction.m_strCppifiedName, ";\n");
 				}
 			)),
 			tc::join(tc::transform(
-				vecjsvariablelikeGlobalVariable,
+				scopeGlobal.m_vecjsvariablelikeExportVariable,
 				[](SJsVariableLike const& jsvariablelikeVariable) noexcept {
 					return tc::concat("	using js_defs::", jsvariablelikeVariable.m_strCppifiedName, ";\n");
-				}
-			)),
-			tc::join(tc::transform(
-				vecjsymGlobalUnknown,
-				[&jtsTypeChecker](ts::Symbol const& jsymUnknown) noexcept {
-					return tc::explicit_cast<std::string>(tc::concat(
-						"	/* ", tc::explicit_cast<std::string>(jtsTypeChecker->getFullyQualifiedName(jsymUnknown)), " flags=", tc::as_dec(static_cast<int>(jsymUnknown->getFlags())), "*/\n"
-					));
 				}
 			)),
 			"} // namespace tc::js\n"
