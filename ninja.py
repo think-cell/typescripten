@@ -86,9 +86,9 @@ if __name__ == "__main__":
 	with open(strBuildNinja, "w") as fBuildNinja:
 		fBuildNinja.write("include " + os.path.relpath(os.path.join(strScriptDir, "build-config.ninja")) + "\n")
 
-		fBuildNinja.write("INTDIR = " + os.path.abspath(args.intdir) + "\n")
-		fBuildNinja.write("OUTDIR = " + os.path.abspath(args.outdir) + "\n")
-		fBuildNinja.write("SRCDIR = " + os.path.abspath(args.srcdir) + "\n")
+		fBuildNinja.write("INTDIR = " + args.intdir + "\n")
+		fBuildNinja.write("OUTDIR = " + args.outdir + "\n")
+		fBuildNinja.write("SRCDIR = " + args.srcdir + "\n")
 		fBuildNinja.write("TCJSDIR = " + strScriptDir + "\n")
 
 		fBuildNinja.write("CFLAGS = ${COMMON_CFLAGS} " 
@@ -122,7 +122,7 @@ rule CXX_EXECUTABLE_LINKER
   restat = $RESTAT
 
 rule TCJS 
-  command = """ + ExecShellCommand("cd ${TCJSDIR}/stage1 && node main.js $in > $out 2>${INTDIR}/tcjs.log") + """
+  command = """ + ExecShellCommand("node ${TCJSDIR}/stage1/main.js $in > $out 2>${INTDIR}/tcjs.log") + """
 
 """)
 
