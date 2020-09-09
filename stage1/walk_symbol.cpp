@@ -29,20 +29,19 @@ bool IsTypeAliasInCpp(ts::TypeChecker const& jtsTypeChecker, ts::Symbol const js
 		// A type alias of a single or a union of literals should be transformed into tag structs in C++
 		auto IsObject = [](auto jtypeInternal) noexcept {
 			switch(jtypeInternal->flags()) {
-				case ts::TypeFlags::Any:
-				case ts::TypeFlags::Unknown:
-				case ts::TypeFlags::String:
-				case ts::TypeFlags::Number:
-				case ts::TypeFlags::Boolean:
-				case ts::TypeFlags::Enum:
-				case ts::TypeFlags::BigInt:
-				case ts::TypeFlags::Undefined:
-				case ts::TypeFlags::Object:
-					return true;
-				default:
-					;
+			case ts::TypeFlags::Any:
+			case ts::TypeFlags::Unknown:
+			case ts::TypeFlags::String:
+			case ts::TypeFlags::Number:
+			case ts::TypeFlags::Boolean:
+			case ts::TypeFlags::Enum:
+			case ts::TypeFlags::BigInt:
+			case ts::TypeFlags::Undefined:
+			case ts::TypeFlags::Object:
+				return true;
+			default:
+				return false;
 			}
-			return false;
 		};
 
 		auto const jtype = jtsTypeChecker->getTypeFromTypeNode(ts::TypeAliasDeclaration(jsymType->declarations()[0])->type());
@@ -129,31 +128,3 @@ void WalkSymbol(ts::TypeChecker const& jtsTypeChecker, int const nOffset, ts::Sy
 	}
 }
 
-std::vector<ts::Symbol> ListSourceFileTopLevel(ts::TypeChecker const& jtsTypeChecker, ts::SourceFile const jtsSourceFile) noexcept {
-	std::vector<ts::Symbol> vecjsymTopLevel;
-	ts::forEachChild(jtsSourceFile, tc::jst::js_lambda_wrap([&](ts::Node jnodeChild) noexcept -> tc::jst::js_unknown {
-		if (auto const jotsFunctionDeclaration = tc::js::ts_ext::isFunctionDeclaration(jnodeChild)) {
-			tc::cont_emplace_back(vecjsymTopLevel, jtsTypeChecker->getSymbolAtLocation(*(*jotsFunctionDeclaration)->name()));
-		} else if (auto const jotsVariableStatement = tc::js::ts_ext::isVariableStatement(jnodeChild)) {
-			tc::for_each(tc::js::ts_ext::MakeReadOnlyArray<ts::VariableDeclaration>((*jotsVariableStatement)->declarationList()->declarations()), [&](ts::VariableDeclaration const jtsVariableDeclaration) {
-				tc::cont_emplace_back(vecjsymTopLevel, jtsTypeChecker->getSymbolAtLocation(jtsVariableDeclaration->name()));
-			});
-		} else if (auto const jotsClassDeclaration = tc::js::ts_ext::isClassDeclaration(jnodeChild)) {
-			tc::cont_emplace_back(vecjsymTopLevel, jtsTypeChecker->getSymbolAtLocation(*(*jotsClassDeclaration)->name()));
-		} else if (auto const jotsInterfaceDeclaration = tc::js::ts_ext::isInterfaceDeclaration(jnodeChild)) {
-			tc::cont_emplace_back(vecjsymTopLevel, jtsTypeChecker->getSymbolAtLocation((*jotsInterfaceDeclaration)->name()));
-		} else /* TODO: TypeAliasDeclaration */ if (auto const jotsEnumDeclaration = tc::js::ts_ext::isEnumDeclaration(jnodeChild)) {
-			tc::cont_emplace_back(vecjsymTopLevel, jtsTypeChecker->getSymbolAtLocation((*jotsEnumDeclaration)->name()));
-		} else if (auto const jotsModuleDeclaration = tc::js::ts_ext::isModuleDeclaration(jnodeChild)) {
-			tc::cont_emplace_back(vecjsymTopLevel, jtsTypeChecker->getSymbolAtLocation((*jotsModuleDeclaration)->name()));
-		} else if(auto const jotsTypeAliasDeclaration = tc::js::ts_ext::isTypeAliasDeclaration(jnodeChild)) {
-			tc::cont_emplace_back(vecjsymTopLevel, jtsTypeChecker->getSymbolAtLocation((*jotsTypeAliasDeclaration)->name()));
-		} else if (jnodeChild->kind() == ts::SyntaxKind::EndOfFileToken) {
-			// Do nothing
-		} else {
-			tc::append(std::cerr, "Unknown source file-level child kind: ", tc::as_dec(static_cast<int>(jnodeChild->kind())), "\n");
-		}
-		return tc::jst::js_undefined();
-	}));
-	return vecjsymTopLevel;
-}

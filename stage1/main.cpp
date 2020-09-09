@@ -65,6 +65,7 @@ namespace {
 		_ASSERT(!strResult.empty());
 		return strResult;
 	}
+	
 	struct SJsEnumOption {
 		ts::Symbol m_jsymOption;
 		std::string m_strJsName;
@@ -508,6 +509,7 @@ int main(int argc, char* argv[]) {
 		}
 	}
 
+	// Iterate over source files, enumerate global symbols and then walk the tree of child symbols
 	std::vector<ts::Symbol> vecjsymExportedModule;
 	std::vector<ts::Symbol> vecjsymExportedSymbol;
 	tc::for_each(jtsProgram->getSourceFiles(),
@@ -518,12 +520,61 @@ int main(int argc, char* argv[]) {
 			auto const josymSourceFile = jtsTypeChecker->getSymbolAtLocation(jtsSourceFile);
 			if (!josymSourceFile) {
 				tc::append(std::cerr, "Module not found for ", tc::explicit_cast<std::string>(jtsSourceFile->fileName()), ", treating at as a global library\n");
-				tc::append(vecjsymExportedSymbol, ListSourceFileTopLevel(jtsTypeChecker, jtsSourceFile));
-				return;
+
+				{
+					ts::forEachChild(jtsSourceFile, tc::jst::js_lambda_wrap([&](ts::Node jnodeChild) noexcept -> tc::jst::js_unknown {
+						if (auto const jotsFunctionDeclaration = tc::js::ts_ext::isFunctionDeclaration(jnodeChild)) {
+							tc::cont_emplace_back(vecjsymExportedSymbol, jtsTypeChecker->getSymbolAtLocation(*(*jotsFunctionDeclaration)->name()));
+						} else if (auto const jotsVariableStatement = tc::js::ts_ext::isVariableStatement(jnodeChild)) {
+							tc::for_each(tc::js::ts_ext::MakeReadOnlyArray<ts::VariableDeclaration>((*jotsVariableStatement)->declarationList()->declarations()), [&](ts::VariableDeclaration const jtsVariableDeclaration) {
+								tc::cont_emplace_back(vecjsymExportedSymbol, jtsTypeChecker->getSymbolAtLocation(jtsVariableDeclaration->name()));
+							});
+						} else if (auto const jotsClassDeclaration = tc::js::ts_ext::isClassDeclaration(jnodeChild)) {
+							tc::cont_emplace_back(vecjsymExportedSymbol, jtsTypeChecker->getSymbolAtLocation(*(*jotsClassDeclaration)->name()));
+						} else if (auto const jotsInterfaceDeclaration = tc::js::ts_ext::isInterfaceDeclaration(jnodeChild)) {
+							tc::cont_emplace_back(vecjsymExportedSymbol, jtsTypeChecker->getSymbolAtLocation((*jotsInterfaceDeclaration)->name()));
+						} else if (auto const jotsEnumDeclaration = tc::js::ts_ext::isEnumDeclaration(jnodeChild)) {
+							tc::cont_emplace_back(vecjsymExportedSymbol, jtsTypeChecker->getSymbolAtLocation((*jotsEnumDeclaration)->name()));
+						} else if (auto const jotsModuleDeclaration = tc::js::ts_ext::isModuleDeclaration(jnodeChild)) {
+							tc::cont_emplace_back(vecjsymExportedSymbol, jtsTypeChecker->getSymbolAtLocation((*jotsModuleDeclaration)->name()));
+						} else if(auto const jotsTypeAliasDeclaration = tc::js::ts_ext::isTypeAliasDeclaration(jnodeChild)) {
+							tc::cont_emplace_back(vecjsymExportedSymbol, jtsTypeChecker->getSymbolAtLocation((*jotsTypeAliasDeclaration)->name()));
+						} else if (jnodeChild->kind() == ts::SyntaxKind::EndOfFileToken) {
+							// Do nothing
+						} else {
+							tc::append(std::cerr, "Unknown source file-level child kind: ", tc::as_dec(static_cast<int>(jnodeChild->kind())), "\n");
+						}
+						return tc::jst::js_undefined();
+					}));
+
+					// An interface declaration and a variable statement may introduce the same symbol, e.g., 
+					// interface EventTarget {
+					// }
+
+					// var EventTarget: {
+					// 	prototype: EventTarget;
+					// 	new(): EventTarget;
+					// };
+					//
+					// These define the same C++ class
+
+					// Overloaded functions also define the same symbol with two declarations:
+
+					// function test(a: number);
+					// function test(a: string);
+
+					// For more combinations see tests/duplicate_symbols and https://www.typescriptlang.org/docs/handbook/declaration-files/deep-dive.html#advanced-combinations
+					return;
+				}
 			}
 			tc::cont_emplace_back(vecjsymExportedModule, *josymSourceFile);
 		}
 	);
+
+	// Make list of exported symbols unique
+	tc::sort_unique_inplace(vecjsymExportedSymbol, tc::projected(tc::fn_less(), [&](ts::Symbol jsym) noexcept {
+		return jtsTypeChecker->getFullyQualifiedName(jsym);
+	}));
 
 	tc::for_each(
 		vecjsymExportedModule,

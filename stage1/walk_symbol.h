@@ -46,6 +46,4 @@ bool IsTypeAliasInCpp(tc::js::ts::TypeChecker const& jtsTypeChecker, tc::js::ts:
 
 void WalkSymbol(tc::js::ts::TypeChecker const& jtsTypeChecker, int nOffset, tc::js::ts::Symbol jsymType) noexcept;
 
-std::vector<tc::js::ts::Symbol> ListSourceFileTopLevel(tc::js::ts::TypeChecker const& jtsTypeChecker, tc::js::ts::SourceFile const jtsSourceFile) noexcept;
-
 #endif // WALK_SYMBOL_H_
