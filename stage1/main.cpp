@@ -30,7 +30,38 @@ namespace {
 			)
 		);
 	}
+
+
+	template<typename SetJsXXX, typename Func>
+	void SortDeclarationOrder(ts::TypeChecker jtsTypeChecker, SetJsXXX& setjs, Func ForEachChildSymbol) noexcept {
+		std::unordered_set<std::string> setstrSeen;
+		auto itjsSorted = setjs.begin();
+
+		auto dfs = [&](typename SetJsXXX::iterator itjs, auto const& dfs) {
+			if(!setstrSeen.insert(itjs->m_strMangledName).second) {
+				return;
+			}
+			ForEachChildSymbol(itjs, [&](ts::Symbol const& jsym) {
+				if(auto const itjsSymbol = tc::cont_find<tc::return_element_or_null>(
+					setjs.template get<1>(),
+					MangleSymbolName(jtsTypeChecker, jsym)
+				)) { // stop dfs when the child class is not part of our source files
+					dfs(setjs.template project<0>(tc::base_cast< decltype(setjs.template get<1>().begin()) >(itjsSymbol)), dfs);
+				}
+			});
+			setjs.relocate(itjsSorted, itjs);
+		};
+
+		while(itjsSorted!=setjs.end()) {
+			dfs(itjsSorted, dfs);
+			++itjsSorted;
+		}
+	}
 }
+
+SetJsEnum g_setjsenum;
+SetJsClass g_setjsclass;
+SetJsTypeAlias g_setjstypealias;
 
 int main(int argc, char* argv[]) {
 	_ASSERT(2 <= argc);
@@ -127,113 +158,71 @@ int main(int argc, char* argv[]) {
 				return static_cast<std::string>(jtsTypeChecker->getFullyQualifiedName(jsym));
 			}));
 
-			// TODO: Move into JsScope ctor
 			tc::for_each(
 				vecjsymExportedSymbol,
 				[&](ts::Symbol const& jsymSourceFile) noexcept {
 					tc::append(std::cerr, "Global symbol/module name is ", tc::explicit_cast<std::string>(jsymSourceFile->getName()), "\n");
-					WalkSymbol(jtsTypeChecker, 0, jsymSourceFile);
+					PrintSymbolTree(jtsTypeChecker, 0, jsymSourceFile);
 				}
 			);
 			
 			return vecjsymExportedSymbol;
 		}()
 	);
+	scopeGlobal.WalkSymbols(jtsTypeChecker);
 
 	tc::append(std::cerr, "\n========== GENERATED CODE ==========\n");
 
 	{
-		tc::for_each(g_vecjsymEnum, [&](ts::Symbol const jsymEnum) noexcept {
-			g_usstrAllowedMangledTypes.insert(MangleSymbolName(jtsTypeChecker, jsymEnum));
+		// TODO: Do this in constructors or in SJsScope::Initialize?
+		tc::for_each(g_setjsclass, [&](SJsClass const& jsclass) noexcept {
+			g_usstrAllowedMangledTypes.insert(jsclass.m_strMangledName);
 		});
 
-		tc::for_each(g_vecjsymClass, [&](ts::Symbol const jsymClass) noexcept {
-			g_usstrAllowedMangledTypes.insert(MangleSymbolName(jtsTypeChecker, jsymClass));
+		tc::for_each(g_setjsenum, [&](SJsEnum const& jsenum) noexcept {
+			g_usstrAllowedMangledTypes.insert(jsenum.m_strMangledName);
+		});
+
+		tc::for_each(g_setjstypealias, [&](SJsTypeAlias const& jstypealias) noexcept {
+			g_usstrAllowedMangledTypes.insert(jstypealias.m_strMangledName);
 		});
 
 		// Find correct declaration order by going depth-first over class hierarchy
-		auto SortClasses = [&jtsTypeChecker](std::vector<SJsClass> vecjsclassOriginal) {
-			tc::sort_inplace(vecjsclassOriginal, tc::projected(tc::fn_less(),TC_MEMBER(.m_strMangledName)));
-
-			std::vector<SJsClass> vecjsclassResult;
-			std::unordered_set<std::string> setstrSeen;
-
-			auto dfs = [&](SJsClass const& jsclassClass, auto const& dfs) {
-				if(!setstrSeen.insert(jsclassClass.m_strMangledName).second) {
-					return;
-				}
-				
-				tc::for_each(jsclassClass.m_vecjsymBaseClass, [&](ts::Symbol const& jsymBaseClass) {
-					if(auto const ojsclass = tc::binary_find_unique<tc::return_element_or_null>(
-						tc::transform(vecjsclassOriginal, TC_MEMBER(.m_strMangledName)),
-						MangleSymbolName(jtsTypeChecker, jsymBaseClass)
-					).element_base()) { // stop dfs when the base class is not part of our source files
-						dfs(*ojsclass, dfs);
-					}
-				});
-				vecjsclassResult.emplace_back(jsclassClass);
-			};
-			tc::for_each(vecjsclassOriginal, [&](SJsClass const& jsclassCls) {
-				dfs(jsclassCls, dfs);
-			});
-			return vecjsclassResult;
-		};
-
-		auto vecjsenumEnum = tc::make_vector(tc::transform(g_vecjsymEnum, [&](ts::Symbol const jsymEnum) noexcept {
-			return SJsEnum(jtsTypeChecker, jsymEnum);
-		}));
-
-		auto vecjsclassClass = SortClasses(tc::make_vector(tc::transform(g_vecjsymClass, [&](ts::Symbol const jsymClass) noexcept {
-			return SJsClass(jtsTypeChecker, jsymClass);
-		})));
-
 		// Typescript has no requirements on declaration order of type aliases. This is valid typescript:
 		// type FooBar2 = FooBar;
 		// type FooBar = number | string;
 		// In C++, FooBar must be declared before FooBar2.
 		// For each type alias declaration, we iterate depth-first over all type aliases referenced on the right-hand side
-		// and emit them first. 
-		auto SortTypeAliases = [&jtsTypeChecker](std::vector<SJsTypeAlias> vecjstypealias) {
-			tc::sort_inplace(vecjstypealias, tc::projected(tc::fn_less(),TC_MEMBER(.m_strSymbolName)));
+		// and emit them first.
 
-			std::vector<SJsTypeAlias> vecjstypealiasResult;
-			std::unordered_set<std::string> setstrSeen;
-
-			auto dfs = [&](SJsTypeAlias const& jstypealias, auto const& dfs) {
-				if(!setstrSeen.insert(jstypealias.m_strSymbolName).second) {
-					return;
-				}
-
-				ForEachChildTypeNode(jstypealias.m_jtypenode, [&](ts::TypeNode jtypenode) noexcept {
+		// Sort the sequenced indices of g_setjsclass/g_setjstypealias
+		SortDeclarationOrder(
+			jtsTypeChecker,
+			g_setjsclass, 
+			[](SetJsClass::iterator itjsclass, auto ForEachChildSymbol) noexcept {
+				tc::for_each(itjsclass->m_vecjsymBaseClass, ForEachChildSymbol);
+			}
+		);
+		SortDeclarationOrder(
+			jtsTypeChecker,
+			g_setjstypealias, 
+			[&](SetJsTypeAlias::iterator itjstypealias, auto ForEachChildSymbol) noexcept {
+				ForEachChildTypeNode(itjstypealias->m_jtypenode, [&](ts::TypeNode jtypenode) noexcept {
 					if(ts::SyntaxKind::TypeReference==jtypenode->kind()) {
 						if(auto const ojsym = jtsTypeChecker->getTypeFromTypeNode(jtypenode)->aliasSymbol()) {
-							if(auto const ojstypealias = tc::binary_find_unique<tc::return_element_or_null>(
-								tc::transform(vecjstypealias, TC_MEMBER(.m_strSymbolName)),
-								MangleSymbolName(jtsTypeChecker, *ojsym)
-							).element_base()) { // stop dfs when jsym is not a type alias itself
-								dfs(*ojstypealias, dfs);
-							}
+							ForEachChildSymbol(*ojsym);
 						}
 						return erecurseSKIP;
 					} else {
 						return erecurseCONTINUE;
 					}
 				});
-				vecjstypealiasResult.emplace_back(jstypealias);
-			};
-			tc::for_each(vecjstypealias, [&](auto const& jstypealias) {
-				dfs(jstypealias, dfs);
-			});
-			return vecjstypealiasResult;
-		};
-
-		auto vecjsymTypeAlias = SortTypeAliases(tc::make_vector(tc::transform(g_vecjsymTypeAlias, [&](ts::Symbol jsymTypeAlias) noexcept {
-			return SJsTypeAlias(jtsTypeChecker, jsymTypeAlias);
-		})));
+			}
+		);
 
 		tc::append(std::cout,
 			"namespace tc::js_defs {\n",
-			tc::join(tc::transform(vecjsenumEnum, [](SJsEnum const& jsenumEnum) noexcept {
+			tc::join(tc::transform(g_setjsenum, [](SJsEnum const& jsenumEnum) noexcept {
 				// We have to mark enums as IsJsIntegralEnum before using in js interop.
 				return tc::concat(
 					"enum class _enum", jsenumEnum.m_strMangledName, " {\n",
@@ -260,7 +249,7 @@ int main(int argc, char* argv[]) {
 			})),
 			"} // namespace tc::js_defs\n",
 			"namespace tc::jst {\n",
-			tc::join(tc::transform(vecjsenumEnum, [](SJsEnum const& jsenumEnum) noexcept {
+			tc::join(tc::transform(g_setjsenum, [](SJsEnum const& jsenumEnum) noexcept {
 				// Enums are declared outside of the _jsall class because we have to mark them as IsJsIntegralEnum
 				// before using in js interop.
 				return tc_conditional_range(
@@ -306,26 +295,26 @@ int main(int argc, char* argv[]) {
 			"} // namespace tc::jst\n",
 			"namespace tc::js_defs {\n",
 			"	using namespace jst; // no ADL\n",
-			tc::join(tc::transform(vecjsenumEnum, [](SJsEnum const& jsenumEnum) noexcept {
+			tc::join(tc::transform(g_setjsenum, [](SJsEnum const& jsenumEnum) noexcept {
 				return tc::concat(
 					"	using ", jsenumEnum.m_strMangledName, " = _enum", jsenumEnum.m_strMangledName, ";\n"
 				);
 			})),
-			tc::join(tc::transform(vecjsclassClass, [](SJsClass const& jsclassClass) noexcept {
+			tc::join(tc::transform(g_setjsclass, [](SJsClass const& jsclassClass) noexcept {
 				return tc::concat(
 					"	struct _impl", jsclassClass.m_strMangledName, ";\n",
 					"	using ", jsclassClass.m_strMangledName, " = js_ref<_impl", jsclassClass.m_strMangledName, ">;\n"
 				);
 			})),
-			tc::join(tc::transform(vecjsymTypeAlias, [&](SJsTypeAlias const& jtypealias) noexcept {
+			tc::join(tc::transform(g_setjstypealias, [&](SJsTypeAlias const& jtypealias) noexcept {
 				return tc::explicit_cast<std::string>(
 					tc::concat(
-						"	using ", jtypealias.m_strSymbolName, " = ", jtypealias.m_mt.m_strWithComments,
+						"	using ", jtypealias.m_strMangledName, " = ", jtypealias.m_mt.m_strWithComments,
 						";\n"
 					)
 				);
 			})),
-			tc::join(tc::transform(vecjsclassClass, [&jtsTypeChecker](SJsClass const& jsclassClass) noexcept {
+			tc::join(tc::transform(g_setjsclass, [&jtsTypeChecker](SJsClass const& jsclassClass) noexcept {
 				std::vector<std::string> vecstrBaseClass, vecstrUnknownBaseClass;
 				 tc::for_each(
 					jsclassClass.m_vecjsymBaseClass,
@@ -435,7 +424,7 @@ int main(int argc, char* argv[]) {
 					"	};\n"
 				));
 			})),
-			tc::join(tc::transform(vecjsclassClass, [&jtsTypeChecker](SJsClass const& jsclassClass) noexcept {
+			tc::join(tc::transform(g_setjsclass, [&jtsTypeChecker](SJsClass const& jsclassClass) noexcept {
 				auto strClassNamespace = tc::explicit_cast<std::string>(tc::concat(
 					"_impl", jsclassClass.m_strMangledName, "::"
 				));

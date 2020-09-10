@@ -9,6 +9,52 @@ using tc::js::ts;
 using tc::js::Array;
 using tc::js::ReadonlyArray;
 
+ECppType CppType(ts::TypeChecker jtsTypeChecker, ts::Symbol jsymType) noexcept {
+	// TODO: Symbol::getFlags returns a bitmask and we must treat it so
+	// Callers of CppType must treat return value as a bit mask too
+	if(ts::SymbolFlags::RegularEnum == jsymType->getFlags() || ts::SymbolFlags::ConstEnum == jsymType->getFlags()) {
+		return ecpptypeENUM;
+	}
+	if(ts::SymbolFlags::Class == jsymType->getFlags() ||
+	ts::SymbolFlags::Interface == jsymType->getFlags() ||
+	(ts::SymbolFlags::Interface | ts::SymbolFlags::FunctionScopedVariable) == jsymType->getFlags() ||
+	ts::SymbolFlags::ValueModule == jsymType->getFlags() ||
+	(ts::SymbolFlags::ValueModule | ts::SymbolFlags::Interface) == jsymType->getFlags() ||
+	(ts::SymbolFlags::NamespaceModule | ts::SymbolFlags::Interface) == jsymType->getFlags() ||
+	ts::SymbolFlags::NamespaceModule == jsymType->getFlags()) {
+		return ecpptypeCLASS;
+	}
+
+	if(ts::SymbolFlags::TypeAlias==jsymType->getFlags()) {
+		// Emit type aliases as using declarations if the type alias only references types, not e.g. literals
+		// A type alias of a single or a union of literals should be transformed into tag structs in C++
+		auto IsObject = [](auto jtypeInternal) noexcept {
+			switch(jtypeInternal->flags()) {
+			case ts::TypeFlags::Any:
+			case ts::TypeFlags::Unknown:
+			case ts::TypeFlags::String:
+			case ts::TypeFlags::Number:
+			case ts::TypeFlags::Boolean:
+			case ts::TypeFlags::Enum:
+			case ts::TypeFlags::BigInt:
+			case ts::TypeFlags::Undefined:
+			case ts::TypeFlags::Object:
+				return true;
+			default:
+				return false;
+			}
+		};
+
+		auto const jtype = jtsTypeChecker->getTypeFromTypeNode(ts::TypeAliasDeclaration(jsymType->declarations()[0])->type());
+		auto const ojuniontype = tc::js::ts_ext::isUnion(jtype);
+		if((ojuniontype && tc::all_of((*ojuniontype)->types(), IsObject))
+		|| IsObject(jtype)) {
+			return ecpptypeTYPEALIAS;
+		}
+	}
+	return ecpptypeIGNORE;
+}
+
 SJsEnumOption::SJsEnumOption(ts::TypeChecker const jtsTypeChecker, ts::Symbol const jsymOption) noexcept
     : m_jsymOption([&]() noexcept {
         _ASSERTEQUAL(jsymOption->getFlags(), ts::SymbolFlags::EnumMember);
@@ -183,6 +229,29 @@ SJsFunctionLike::SJsFunctionLike(ts::TypeChecker const jtsTypeChecker, ts::Symbo
     return a.m_strCanonizedParameterCppTypes < b.m_strCanonizedParameterCppTypes;
 }
 
+void SJsScope::WalkSymbols(ts::TypeChecker jtsTypeChecker) const noexcept {
+    // auto AssertNoChildren = [&](ts::Symbol jsymType) noexcept {
+
+    // };
+    tc::for_each(m_vecjsymExportType, [&](ts::Symbol const& jsymType) noexcept {
+        // Use tc::cont_must_emplace to make sure we only create a single enum/class/typealias per symbol.
+        // We assume that ts::Symbol::exports() returns a symbol list without duplicates.
+        auto const ecpptype = CppType(jtsTypeChecker, jsymType);
+        if(ecpptypeENUM&ecpptype) {
+            tc::cont_must_emplace(g_setjsenum, jtsTypeChecker, jsymType);
+            // AssertNoChildren(jsymType);
+        }
+        if(ecpptypeCLASS&ecpptype) {
+            auto const itjsclass = tc::cont_must_emplace(g_setjsclass.get<1>(), jtsTypeChecker, jsymType);
+            itjsclass->WalkSymbols(jtsTypeChecker);
+        }
+        if(ecpptypeTYPEALIAS&ecpptype) {
+            tc::cont_must_emplace(g_setjstypealias.get<1>(), jtsTypeChecker, jsymType); 
+            // AssertNoChildren(jsymType);
+        }
+    });
+}
+
 SJsClass::SJsClass(ts::TypeChecker const jtsTypeChecker, ts::Symbol const jsymClass) noexcept
     : m_jsymClass(jsymClass)
     , m_strMangledName(MangleSymbolName(jtsTypeChecker, jsymClass))
@@ -280,11 +349,10 @@ SJsClass::SJsClass(ts::TypeChecker const jtsTypeChecker, ts::Symbol const jsymCl
     }
 }
 
-
 SJsTypeAlias::SJsTypeAlias(ts::TypeChecker jtsTypeChecker, ts::Symbol jsym) noexcept 
     : m_jtypenode(ts::TypeAliasDeclaration(jsym->declarations()[0])->type())
     , m_jtype(jtsTypeChecker->getTypeFromTypeNode(m_jtypenode))
-    , m_strSymbolName(MangleSymbolName(jtsTypeChecker, jsym))
+    , m_strMangledName(MangleSymbolName(jtsTypeChecker, jsym))
     // If a type alias is defined by a union, we have to define it by the corresponding js_union<...> declaration
     // type FooBar = number | string;
     // using FooBar = js_union<js_number, js_string>;
