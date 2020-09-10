@@ -307,7 +307,7 @@ namespace {
 			m_vecjsymExportType = tc::make_vector(tc::filter(
 				rngjsym,
 				[&](ts::Symbol const jsymExport) noexcept {
-					return IsEnumInCpp(jsymExport) || IsClassInCpp(jsymExport) || IsTypeAliasInCpp(jtsTypeChecker, jsymExport);
+					return ecpptypeIGNORE!=CppType(jtsTypeChecker, jsymExport);
 				}
 			));
 

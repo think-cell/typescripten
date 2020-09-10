@@ -39,11 +39,16 @@ tc::break_or_continue ForEachChildTypeNode(tc::js::ts::Node jnode, Func fn) noex
     }
 }
 
+enum ECppType {
+    ecpptypeIGNORE = 0,
+    ecpptypeENUM = 1,
+    ecpptypeCLASS = 2,
+    ecpptypeTYPEALIAS = 4
+};
+BITMASK_OPS(ECppType);
 
-bool IsEnumInCpp(tc::js::ts::Symbol jsymType) noexcept;
-bool IsClassInCpp(tc::js::ts::Symbol jsymType) noexcept;
-bool IsTypeAliasInCpp(tc::js::ts::TypeChecker const& jtsTypeChecker, tc::js::ts::Symbol jsymType) noexcept;
+ECppType CppType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Symbol jsymType) noexcept;
 
-void WalkSymbol(tc::js::ts::TypeChecker const& jtsTypeChecker, int nOffset, tc::js::ts::Symbol jsymType) noexcept;
+void WalkSymbol(tc::js::ts::TypeChecker jtsTypeChecker, int nOffset, tc::js::ts::Symbol jsymType) noexcept;
 
 #endif // WALK_SYMBOL_H_

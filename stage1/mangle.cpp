@@ -115,7 +115,7 @@ SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type
 	}
 	if(bUseTypeAlias) {
 		if(auto ojsymAlias = jtypeRoot->aliasSymbol()) {
-			if(IsTypeAliasInCpp(jtsTypeChecker, *ojsymAlias)) {
+			if(ecpptypeTYPEALIAS & CppType(jtsTypeChecker, *ojsymAlias)) {
 				return {mangled_no_comments, MangleSymbolName(jtsTypeChecker, *ojsymAlias)};
 			}
 		}	
