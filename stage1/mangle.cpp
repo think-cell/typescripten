@@ -154,11 +154,13 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 		return {mangled_no_comments, "js_null"};
 	}
 	if(bUseTypeAlias) {
-		if(auto ojsymAlias = jtypeRoot->aliasSymbol()) {
-			if(ecpptypeTYPEALIAS & CppType(*ojsymAlias)) {
-				return {mangled_no_comments, MangleSymbolName(*ojsymAlias)};
-			}
-		}	
+		if(!jtypeRoot->aliasTypeArguments()) { // We do not support generic types/type aliases yet
+			if(auto ojsymAlias = jtypeRoot->aliasSymbol()) {
+				if(ecpptypeTYPEALIAS & CppType(*ojsymAlias)) {
+					return {mangled_no_comments, MangleSymbolName(*ojsymAlias)};
+				}
+			}	
+		}
 	}
 	if (auto jouniontypeRoot = tc::js::ts_ext::isUnion(jtypeRoot)) {
 		_ASSERT(1 < (*jouniontypeRoot)->types()->length());
@@ -187,6 +189,7 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 			}
 		}
 	}
+
 	std::vector<std::string> vecstrExtraInfo;
 	if (auto jotypereferenceRoot = IsTypeReference(jtypeRoot)) {
 		if (auto josymTargetSymbol = (*jotypereferenceRoot)->target()->getSymbol(); josymTargetSymbol) {

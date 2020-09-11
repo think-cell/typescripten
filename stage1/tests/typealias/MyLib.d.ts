@@ -4,6 +4,8 @@ type GlobalFooBar = test2.A | test.B;
 type GlobalFn = (a: test2.FooBar3) => test.FooBar;
 type GenericValueType<T> = T;
 
+type Test = string | number | Record<string, number>;
+
 declare namespace test2 {
     export function TestFunction() : test.FooBar;
     export type FooBar2 = test.FooBar;
