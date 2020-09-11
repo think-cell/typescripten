@@ -50,9 +50,11 @@ if __name__ == "__main__":
 
         RunTests(os.path.join(strScriptPath, "stage1", "tests"))
 
+        print("{}/{} succeeded".format(nTestsSucceeded, nTests))
+        exit(0 if nTests==nTestsSucceeded else 1)
+
     except subprocess.CalledProcessError as e:
         print("[FAILED]\n")
         print(e.stdout.decode())
+        exit(1)
 
-    print(f"{nTestsSucceeded}/{nTests} succeeded")
-    exit(0 if nTests==nTestsSucceeded else 1)

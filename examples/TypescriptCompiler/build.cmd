@@ -1,3 +1,3 @@
 @call ../../build-config.cmd
-npm install
+@call npm install
 python ../../ninja.py main.emscripten debug
