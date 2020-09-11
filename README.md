@@ -53,7 +53,7 @@ Close analogues are Rust's [stdweb](https://github.com/koute/stdweb) and [wasm-b
 * [Python 3](https://www.python.org/downloads/)
 * [Emscripten](https://emscripten.org/) 1.38.41 or newer (Node.js and NPM are included)
 * [think-cell public library](https://github.com/think-cell/range)
-* [boost 1.68.0](https://dl.bintray.com/boostorg/release/1.68.0/source/) (later versions are probably fine)
+* [boost 1.73.0](https://dl.bintray.com/boostorg/release/1.73.0/source/)
 * [ninja](https://ninja-build.org)
 
 # Setup

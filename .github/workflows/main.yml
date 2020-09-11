@@ -29,8 +29,8 @@ jobs:
     - name: Setup Boost 1.68.0
       shell: bash
       run: |
-        curl -L https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.zip --output boost_1_68_0.zip
-        unzip -q boost_1_68_0.zip
+        curl -L https://dl.bintray.com/boostorg/release/1.73.0/source/boost_1_73_0.zip --output boost_1_73_0.zip
+        unzip -q boost_1_73_0.zip
     - name: Install Emscripten
       uses: mymindstorm/setup-emsdk@v6
       with:
@@ -45,11 +45,11 @@ jobs:
     - name: Setup build config (Ubuntu)
       if: ${{ !contains(runner.os, 'windows') }}
       shell: bash
-      run: ./github_action_configure.py range-master/tc boost_1_68_0
+      run: ./github_action_configure.py range-master/tc boost_1_73_0
     - name: Setup build config (Windows)
       if: ${{ contains(runner.os, 'windows') }}
       shell: cmd
-      run: python ./github_action_configure.py range-master/tc boost_1_68_0
+      run: python ./github_action_configure.py range-master/tc boost_1_73_0
     - name: Run all library examples (Ubuntu)
       if: ${{ !contains(runner.os, 'windows') }}
       shell: bash
