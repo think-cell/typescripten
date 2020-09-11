@@ -53,7 +53,7 @@ jobs:
     - name: Run all library examples (Ubuntu)
       if: ${{ !contains(runner.os, 'windows') }}
       shell: bash
-      run: testall.py 
+      run: ./testall.py 
     - name: Run all library examples (Windows)
       if: ${{ contains(runner.os, 'windows') }}
       shell: cmd
