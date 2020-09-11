@@ -156,5 +156,5 @@ As `Bar` for interfaces is an alias for `js_ref<>`, we should make sure
 * For (almost) singleton objects from TypeScript Compiler API: `jts<exact-type-name-from-typescript>`.
     * "Almost singleton" ~ "does not require any name in local scope, type is enough".
     * The decision is made on a per-class basis, e.g. `Symbol` is never "almost singleton" to avoid confusion.
-    * E.g. `jtsTypeChecker`.
+    * E.g. `(*g_ojtsTypeChecker)`.
 * Optional singleton objects are `jots<exact-type-name-from-typescript>`.

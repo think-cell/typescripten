@@ -6,11 +6,12 @@
 
 using tc::js::ts;
 
+extern std::optional<tc::js::ts::TypeChecker> g_ojtsTypeChecker;
 std::unordered_set<std::string> g_usstrAllowedMangledTypes;
 
-std::string MangleSymbolName(ts::TypeChecker const& jtsTypeChecker, ts::Symbol const jsymType) noexcept {
+std::string MangleSymbolName(ts::Symbol const jsymType) noexcept {
 	std::string strMangled = "_js_j";
-	tc::for_each(tc::explicit_cast<std::string>(jtsTypeChecker->getFullyQualifiedName(jsymType)), [&](char c) noexcept {
+	tc::for_each(tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->getFullyQualifiedName(jsymType)), [&](char c) noexcept {
 		switch (c) {
 		case '_': tc::append(strMangled, "_u"); break;
 		case ',': tc::append(strMangled, "_c"); break;
@@ -104,19 +105,21 @@ SMangledType WrapType(std::string const strPrefix, SMangledType const mtType, st
 	};
 }
 
-SMangledType CommentType(tc::js::ts::TypeChecker const jtsTypeChecker, std::string const strCppType, tc::js::ts::Type const jtypeRoot) noexcept {
+SMangledType CommentType(std::string const strCppType, tc::js::ts::Type const jtypeRoot) noexcept {
 	return {
 		tc::explicit_cast<std::string>(tc::concat(
 			strCppType,
 			" /*",
-			tc::explicit_cast<std::string>(jtsTypeChecker->typeToString(jtypeRoot)),
+			tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->typeToString(jtypeRoot)),
 			"*/"
 		)),
 		strCppType
 	};
 }
 
-SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept {
+SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept {
+	_ASSERT(!tc::empty(g_usstrAllowedMangledTypes));
+	
 	// See checker.ts:typeToTypeNodeHelper
 	if (ts::TypeFlags::Any == jtypeRoot->flags() ||
 		ts::TypeFlags::Unknown == jtypeRoot->flags()
@@ -127,19 +130,19 @@ SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type
 		return {mangled_no_comments, "js_string"};
 	}
 	if (ts::TypeFlags::StringLiteral == jtypeRoot->flags()) {
-		return CommentType(jtsTypeChecker, "js_string", jtypeRoot);
+		return CommentType("js_string", jtypeRoot);
 	}
 	if (ts::TypeFlags::Number == jtypeRoot->flags()) {
 		return {mangled_no_comments, "double"};
 	}
 	if (ts::TypeFlags::NumberLiteral == jtypeRoot->flags()) {
-		return CommentType(jtsTypeChecker, "double", jtypeRoot);
+		return CommentType("double", jtypeRoot);
 	}
 	if (ts::TypeFlags::Boolean == jtypeRoot->flags()) {
 		return {mangled_no_comments, "bool"};
 	}
 	if (ts::TypeFlags::BooleanLiteral == jtypeRoot->flags()) {
-		return CommentType(jtsTypeChecker, "bool", jtypeRoot);
+		return CommentType("bool", jtypeRoot);
 	}
 	if (ts::TypeFlags::Void == jtypeRoot->flags()) {
 		return {mangled_no_comments, "void"};
@@ -152,15 +155,15 @@ SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type
 	}
 	if(bUseTypeAlias) {
 		if(auto ojsymAlias = jtypeRoot->aliasSymbol()) {
-			if(ecpptypeTYPEALIAS & CppType(jtsTypeChecker, *ojsymAlias)) {
-				return {mangled_no_comments, MangleSymbolName(jtsTypeChecker, *ojsymAlias)};
+			if(ecpptypeTYPEALIAS & CppType(*ojsymAlias)) {
+				return {mangled_no_comments, MangleSymbolName(*ojsymAlias)};
 			}
 		}	
 	}
 	if (auto jouniontypeRoot = tc::js::ts_ext::isUnion(jtypeRoot)) {
 		_ASSERT(1 < (*jouniontypeRoot)->types()->length());
 		auto vecmtType = tc::make_vector(tc::transform((*jouniontypeRoot)->types(), [&](ts::Type const jtypeUnionOption) noexcept {
-			return MangleType(jtsTypeChecker, jtypeUnionOption);
+			return MangleType(jtypeUnionOption);
 		}));
 		auto isJsUnknown = [](SMangledType const& mt) noexcept { return mt.m_strCppCanonized == "js_unknown"; };
 		if (std::find_if(vecmtType.begin(), vecmtType.end(), isJsUnknown) == vecmtType.end()) {
@@ -187,18 +190,18 @@ SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type
 	std::vector<std::string> vecstrExtraInfo;
 	if (auto jotypereferenceRoot = IsTypeReference(jtypeRoot)) {
 		if (auto josymTargetSymbol = (*jotypereferenceRoot)->target()->getSymbol(); josymTargetSymbol) {
-			std::string strTarget = tc::explicit_cast<std::string>(jtsTypeChecker->getFullyQualifiedName(*josymTargetSymbol));
+			std::string strTarget = tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->getFullyQualifiedName(*josymTargetSymbol));
 			if(auto jorarrTypeArguments = (*jotypereferenceRoot)->typeArguments()) {
 				auto const jrarrTypeArguments = *jorarrTypeArguments;
 				if ("Array" == strTarget) {
 					_ASSERTEQUAL(jrarrTypeArguments->length(), 1);
-					return WrapType("js::Array<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">");
+					return WrapType("js::Array<", MangleType(jrarrTypeArguments[0]), ">");
 				} else if ("ReadonlyArray" == strTarget) {
 					_ASSERTEQUAL(jrarrTypeArguments->length(), 1);
-					return WrapType("js::ReadonlyArray<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">");
+					return WrapType("js::ReadonlyArray<", MangleType(jrarrTypeArguments[0]), ">");
 				} else if ("Promise" == strTarget) {
 					_ASSERTEQUAL(jrarrTypeArguments->length(), 1);
-					return WrapType("js::Promise<", MangleType(jtsTypeChecker, jrarrTypeArguments[0]), ">");
+					return WrapType("js::Promise<", MangleType(jrarrTypeArguments[0]), ">");
 				}
 			}
 			tc::cont_emplace_back(vecstrExtraInfo, tc::concat("TypeReference=", strTarget));
@@ -219,16 +222,16 @@ SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type
 			ts::Symbol const& jsymSignature = vecjsymMember[0];
 			_ASSERTEQUAL(jsymSignature->getFlags(), ts::SymbolFlags::Signature);
 			_ASSERTEQUAL(jsymSignature->declarations()->length(), 1);
-			ts::Signature const jtsSignature = *jtsTypeChecker->getSignatureFromDeclaration(
+			ts::Signature const jtsSignature = *(*g_ojtsTypeChecker)->getSignatureFromDeclaration(
 				ts::CallSignatureDeclaration(jsymSignature->declarations()[0])
 			);
-			auto mtReturnType = MangleType(jtsTypeChecker, jtsSignature->getReturnType());
+			auto mtReturnType = MangleType(jtsSignature->getReturnType());
 			auto vecmtParameters = tc::make_vector(tc::transform(jtsSignature->getParameters(),
 				[&](ts::Symbol const jsymParameter) noexcept {
 					// TODO: deduplicate with SJsVariableLike.
 					_ASSERTEQUAL(jsymParameter->declarations()->length(), 1);
 					// TODO: add parameter name to the type.
-					return MangleType(jtsTypeChecker, jtsTypeChecker->getTypeOfSymbolAtLocation(jsymParameter, jsymParameter->declarations()[0]));
+					return MangleType((*g_ojtsTypeChecker)->getTypeOfSymbolAtLocation(jsymParameter, jsymParameter->declarations()[0]));
 				}
 			));
 			return {
@@ -244,7 +247,7 @@ SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type
 	if (auto jointerfacetypeRoot = tc::js::ts_ext::isClassOrInterface(jtypeRoot)) {
 		if (IsTrivialType(*jointerfacetypeRoot)) {
 			_ASSERTEQUAL((*jointerfacetypeRoot)->flags(), ts::TypeFlags::Object);
-			auto strMangledType = MangleSymbolName(jtsTypeChecker, *(*jointerfacetypeRoot)->getSymbol());
+			auto strMangledType = MangleSymbolName(*(*jointerfacetypeRoot)->getSymbol());
 			if (0 < g_usstrAllowedMangledTypes.count(strMangledType)) {
 				return {mangled_no_comments, strMangledType};
 			} else {
@@ -253,7 +256,7 @@ SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type
 		}
 		std::string strThisType = "undefined";
 		if ((*jointerfacetypeRoot)->thisType()) {
-			strThisType = tc::explicit_cast<std::string>(jtsTypeChecker->getFullyQualifiedName(*(*(*jointerfacetypeRoot)->thisType())->getSymbol()));
+			strThisType = tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->getFullyQualifiedName(*(*(*jointerfacetypeRoot)->thisType())->getSymbol()));
 		}
 		tc::cont_emplace_back(vecstrExtraInfo, tc::concat(
 			"ClassOrInterface(",
@@ -269,9 +272,9 @@ SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type
 		auto jsymParentSymbol = *tc::js::ts_ext::Symbol(*jtypeRoot->getSymbol())->parent();
 		_ASSERT(ts::SymbolFlags::RegularEnum == jsymParentSymbol->getFlags() ||
 			ts::SymbolFlags::ConstEnum == jsymParentSymbol->getFlags());
-		auto strMangledType = MangleSymbolName(jtsTypeChecker, jsymParentSymbol);
+		auto strMangledType = MangleSymbolName(jsymParentSymbol);
 		if (0 < g_usstrAllowedMangledTypes.count(strMangledType)) {
-			return CommentType(jtsTypeChecker, tc_move(strMangledType), jtypeRoot);
+			return CommentType(tc_move(strMangledType), jtypeRoot);
 		} else {
 			tc::cont_emplace_back(vecstrExtraInfo, tc::concat("UnknownMangledEnum=", strMangledType));
 		}
@@ -281,7 +284,7 @@ SMangledType MangleType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Type
 			"js_unknown /*flags=",
 			tc::as_dec(static_cast<int>(jtypeRoot->flags())),
 			": ",
-			tc::explicit_cast<std::string>(jtsTypeChecker->typeToString(jtypeRoot)),
+			tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->typeToString(jtypeRoot)),
 			" (", tc::join_separated(vecstrExtraInfo, ","), ")",
 			"*/"
 		)),

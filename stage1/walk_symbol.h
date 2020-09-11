@@ -37,6 +37,6 @@ tc::break_or_continue ForEachChildTypeNode(tc::js::ts::Node jnode, Func fn) noex
     }
 }
 
-void PrintSymbolTree(tc::js::ts::TypeChecker jtsTypeChecker, int nOffset, tc::js::ts::Symbol jsymType) noexcept;
+void PrintSymbolTree(int nOffset, tc::js::ts::Symbol jsymType) noexcept;
 
 #endif // WALK_SYMBOL_H_

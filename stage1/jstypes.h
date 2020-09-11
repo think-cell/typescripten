@@ -15,7 +15,7 @@ enum ECppType {
     ecpptypeTYPEALIAS = 4
 };
 BITMASK_OPS(ECppType);
-ECppType CppType(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Symbol jsymType) noexcept;
+ECppType CppType(tc::js::ts::Symbol jsymType) noexcept;
 
 struct SJsEnumOption {
     tc::js::ts::Symbol m_jsymOption;
@@ -24,7 +24,7 @@ struct SJsEnumOption {
     tc::js::ts::EnumMember m_jtsEnumMember;
     std::optional<std::variant<double, std::string>> m_ovardblstrValue;
 
-    SJsEnumOption(tc::js::ts::TypeChecker const jtsTypeChecker, tc::js::ts::Symbol const jsymOption) noexcept;
+    SJsEnumOption(tc::js::ts::Symbol const jsymOption) noexcept;
 };
 
 struct SJsEnum {
@@ -33,7 +33,7 @@ struct SJsEnum {
     std::vector<SJsEnumOption> m_vecjsenumoption;
     bool m_bIsIntegral;
 
-    SJsEnum(tc::js::ts::TypeChecker const jtsTypeChecker, tc::js::ts::Symbol const jsymEnum) noexcept;
+    SJsEnum(tc::js::ts::Symbol const jsymEnum) noexcept;
 };
 
 struct SJsVariableLike {
@@ -42,12 +42,14 @@ struct SJsVariableLike {
     std::string m_strCppifiedName;
 private:
     tc::js::ts::Declaration m_jdeclVariableLike; // There may be multiple declarations, we ensure they do not conflict.
+    std::optional<SMangledType> mutable m_omtType; // cached
+
 public:
     tc::js::ts::Type m_jtypeDeclared;
-    SMangledType m_mtType;
     bool m_bReadonly;
 
-    SJsVariableLike(tc::js::ts::TypeChecker const jtsTypeChecker, tc::js::ts::Symbol const jsymName) noexcept;
+    SJsVariableLike(tc::js::ts::Symbol const jsymName) noexcept;
+    SMangledType const& MangleType() const noexcept;
 };
 
 struct SJsFunctionLike {
@@ -58,11 +60,17 @@ struct SJsFunctionLike {
     tc::js::ts::Signature m_jtsSignature;
     tc::jst::js_union<tc::js::Array<tc::js::ts::TypeParameter>, tc::jst::js_undefined> m_joptarrunkTypeParameter;
     std::vector<SJsVariableLike> m_vecjsvariablelikeParameters;
-    std::string m_strCppifiedParametersWithCommentsDecl;
-    std::string m_strCppifiedParametersWithCommentsDef;
-    std::string m_strCanonizedParameterCppTypes;
 
-    SJsFunctionLike(tc::js::ts::TypeChecker const jtsTypeChecker, tc::js::ts::Symbol const jsymFunctionLike, tc::js::ts::Declaration const jdeclFunctionLike) noexcept;
+private:
+    // Cached
+    std::string mutable m_strCanonizedParameterCppTypes;
+    std::string const& CanonizedParameterCppTypes() const noexcept;
+
+public:
+    SJsFunctionLike(tc::js::ts::Symbol const jsymFunctionLike, tc::js::ts::Declaration const jdeclFunctionLike) noexcept;
+
+    std::string CppifiedParametersWithCommentsDecl() const noexcept;
+    std::string CppifiedParametersWithCommentsDef() const noexcept;
 
     static bool LessCppSignature(SJsFunctionLike const& a, SJsFunctionLike const& b) noexcept;
 };
@@ -82,14 +90,14 @@ struct SJsScope {
     std::vector<SJsVariableLike> m_vecjsvariablelikeExportVariable;
 
     template<typename Rng>
-    SJsScope(tc::js::ts::TypeChecker const jtsTypeChecker, Rng&& rngjsym) noexcept;
-    void WalkSymbols(tc::js::ts::TypeChecker jtsTypeChecker) const noexcept;
+    SJsScope(Rng&& rngjsym) noexcept;
+    void WalkSymbols() const noexcept;
 
 protected:
     SJsScope() noexcept = default;
 
     template<typename Rng>
-    void Initialize(tc::js::ts::TypeChecker const jtsTypeChecker, Rng&& rngjsym) noexcept;
+    void Initialize(Rng&& rngjsym) noexcept;
 };
 
 struct SJsClass final : SJsScope { 
@@ -100,17 +108,18 @@ struct SJsClass final : SJsScope {
     std::vector<tc::js::ts::Symbol> m_vecjsymBaseClass;
     bool m_bHasImplicitDefaultConstructor;
 
-    SJsClass(tc::js::ts::TypeChecker const jtsTypeChecker, tc::js::ts::Symbol const jsymClass) noexcept;
+    SJsClass(tc::js::ts::Symbol const jsymClass) noexcept;
 };
 
 struct SJsTypeAlias final {
+    tc::js::ts::Symbol m_jsym;
     tc::js::ts::TypeNode m_jtypenode;
     tc::js::ts::Type m_jtype;
 
     std::string m_strMangledName;
-    SMangledType m_mt;
 
-    SJsTypeAlias(tc::js::ts::TypeChecker jtsTypeChecker, tc::js::ts::Symbol jsym) noexcept;
+    SJsTypeAlias(tc::js::ts::Symbol jsym) noexcept;
+    SMangledType MangleType() const noexcept;
 };
 
 using SetJsEnum = 
@@ -149,48 +158,47 @@ using SetJsTypeAlias =
 extern SetJsTypeAlias g_setjstypealias;
 
 template<typename Rng>
-SJsScope::SJsScope(tc::js::ts::TypeChecker const jtsTypeChecker, Rng&& rngjsym) noexcept {
-    Initialize(jtsTypeChecker, std::forward<Rng>(rngjsym));
+SJsScope::SJsScope(Rng&& rngjsym) noexcept {
+    Initialize(std::forward<Rng>(rngjsym));
 }
 
 template<typename Rng>
-void SJsScope::Initialize(tc::js::ts::TypeChecker const jtsTypeChecker, Rng&& rngjsym) noexcept {
+void SJsScope::Initialize(Rng&& rngjsym) noexcept {
     m_vecjsymExportType = tc::make_vector(tc::filter(
         rngjsym,
         [&](tc::js::ts::Symbol jsymExport) noexcept {
-            return ecpptypeIGNORE!=CppType(jtsTypeChecker, jsymExport);
+            return ecpptypeIGNORE!=CppType(jsymExport);
         }
     ));
 
     m_vecjsfunctionlikeExportFunction = tc::make_vector(tc::join(tc::transform(
         tc::filter(
             rngjsym,
-            [](tc::js::ts::Symbol const jsymExport) noexcept {
+            [](tc::js::ts::Symbol jsymExport) noexcept {
                 return tc::js::ts::SymbolFlags::Function == jsymExport->getFlags();
             }
         ),
-        [&](tc::js::ts::Symbol const jsymFunction) noexcept {
+        [&](tc::js::ts::Symbol jsymFunction) noexcept {
             return tc::transform(
                 jsymFunction->declarations(),
-                [&jtsTypeChecker, jsymFunction](tc::js::ts::Declaration const jdeclFunction) noexcept {
-                    return SJsFunctionLike(jtsTypeChecker, jsymFunction, jdeclFunction);
+                [=](tc::js::ts::Declaration jdeclFunction) noexcept {
+                    return SJsFunctionLike(jsymFunction, jdeclFunction);
                 }
             );
         }
     )));
-    MergeWithSameCppSignatureInplace(m_vecjsfunctionlikeExportFunction);
 
     m_vecjsvariablelikeExportVariable = tc::make_vector(tc::transform(
         tc::filter(
             rngjsym,
-            [](tc::js::ts::Symbol const jsymExport) noexcept {
+            [](tc::js::ts::Symbol jsymExport) noexcept {
                 return
                     tc::js::ts::SymbolFlags::FunctionScopedVariable == jsymExport->getFlags() ||
                     tc::js::ts::SymbolFlags::BlockScopedVariable == jsymExport->getFlags();
             }
         ),
-        [&](tc::js::ts::Symbol const jsymVariable) noexcept {
-            return SJsVariableLike(jtsTypeChecker, jsymVariable);
+        [&](tc::js::ts::Symbol jsymVariable) noexcept {
+            return SJsVariableLike(jsymVariable);
         }
     ));
 
