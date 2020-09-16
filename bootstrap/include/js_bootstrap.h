@@ -17,11 +17,15 @@ namespace no_adl {
 template<typename> struct _js_Array;
 template<typename> struct _js_ReadonlyArray;
 template<typename> struct _js_Promise;
+template<typename K, typename V> struct _js_Record;
+// TODO: Typescript Utility type https://www.typescriptlang.org/docs/handbook/utility-types.html
+
 struct _js_console;
 
 template<typename T> using Array = ::tc::jst::js_ref<_js_Array<T>>;
 template<typename T> using ReadonlyArray = ::tc::jst::js_ref<_js_ReadonlyArray<T>>;
 template<typename T> using Promise = ::tc::jst::js_ref<_js_Promise<T>>;
+template<typename K, typename V> using Record = ::tc::jst::js_ref<_js_Record<K, V>>;
 using console = ::tc::jst::js_ref<_js_console>;
 
 template<typename T>
@@ -101,6 +105,14 @@ struct _js_ReadonlyArray : virtual ::tc::jst::IObject {
 	}
 };
 
+template<typename K, typename V>
+struct _js_Record : virtual ::tc::jst::IObject {
+	static_assert(::tc::jst::IsJsInteropable<K>::value);
+	static_assert(::tc::jst::IsJsInteropable<V>::value);
+
+	auto operator[](K k) noexcept { return _getProperty<V>(k); }
+};
+
 template<typename T> struct RemovePromise { using type = T; };
 template<typename T> struct RemovePromise<Promise<T>> { using type = T; };
 template<typename T> using RemovePromise_t = typename RemovePromise<T>::type;
@@ -162,6 +174,7 @@ struct _js_console : virtual ::tc::jst::IObject {
 using no_adl::Array;
 using no_adl::ReadonlyArray;
 using no_adl::Promise;
+using no_adl::Record;
 using no_adl::console;
 
 inline auto stackTrace() noexcept {  // Expects non-standard `stackTrace()` function in JS to be available globally.

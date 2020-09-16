@@ -18,6 +18,17 @@ namespace MyLib {
     export class SomeObject extends SomeBaseClass {
         str: string = "";
         arr: Array<SomeObject> = [];
+        rec: Record<string, string> = {
+            "hello": "world"
+        };
+        
+        rec2: Record<string, number> = {
+            "hello": 1
+        };
+
+        rec3: Record<number, number> = {
+            1: 2
+        };
 
         foo(x: number) { return "foo() retval " + (typeof x) + " " + x; }
     }

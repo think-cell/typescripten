@@ -46,6 +46,9 @@ int main() {
 	_ASSERTEQUAL(obj2->arr()->length(), 0);
 	_ASSERT(tc::empty(obj2->arr()));
 
+	_ASSERTEQUAL(tc::explicit_cast<std::string>(obj2->rec()[tc::jst::js_string("hello")]), "world");
+	_ASSERTEQUAL(obj2->rec2()[tc::jst::js_string("hello")], 1);
+
 	tc::js::MyLib::SomeObject obj3 = tc::js::MyLib::ForwardReferencingNamespace::createSomeObject();
 	_ASSERTEQUAL(tc::explicit_cast<std::string>(obj3->str()), "foobar");
 	_ASSERTEQUAL(obj3->arr()->length(), 0);

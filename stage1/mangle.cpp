@@ -98,11 +98,33 @@ bool IsTrivialType(ts::InterfaceType jinterfacetypeRoot) noexcept {
 	return true;
 }
 
-SMangledType WrapType(std::string const strPrefix, SMangledType const mtType, std::string const strSuffix) noexcept {
+SMangledType WrapType(std::string const strPrefix, tc::js::ReadonlyArray<ts::Type> atypeArguments, std::string const strSuffix) noexcept {
+	auto const rngmt = tc::transform(atypeArguments, [](ts::Type jtype) noexcept { return MangleType(jtype); });
 	return {
-		tc::explicit_cast<std::string>(tc::concat(strPrefix, mtType.m_strWithComments, strSuffix)),
-		tc::explicit_cast<std::string>(tc::concat(strPrefix, mtType.m_strCppCanonized, strSuffix)),
+		tc::explicit_cast<std::string>(tc::concat(strPrefix, tc::join_separated(tc::transform(rngmt, TC_MEMBER(.m_strWithComments)), ", "), strSuffix)),
+		tc::explicit_cast<std::string>(tc::concat(strPrefix, tc::join_separated(tc::transform(rngmt, TC_MEMBER(.m_strCppCanonized)), ", "), strSuffix)),
 	};
+}
+
+std::optional<SMangledType> MangleBootstrapType(ts::Symbol jsym, tc::jst::js_union<tc::js::ReadonlyArray<ts::Type>, tc::jst::js_undefined> jorarrtypeArguments) noexcept {
+	if(jorarrtypeArguments) {
+		std::string strTarget = tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->getFullyQualifiedName(jsym));
+		auto const jrarrTypeArguments = *jorarrtypeArguments;
+		if ("Array" == strTarget) {
+			_ASSERTEQUAL(jrarrTypeArguments->length(), 1);
+			return WrapType("js::Array<", jrarrTypeArguments, ">");
+		} else if ("ReadonlyArray" == strTarget) {
+			_ASSERTEQUAL(jrarrTypeArguments->length(), 1);
+			return WrapType("js::ReadonlyArray<", jrarrTypeArguments, ">");
+		} else if ("Promise" == strTarget) {
+			_ASSERTEQUAL(jrarrTypeArguments->length(), 1);
+			return WrapType("js::Promise<", jrarrTypeArguments, ">");
+		} else if ("Record" == strTarget) {
+			_ASSERTEQUAL(jrarrTypeArguments->length(), 2);
+			return WrapType("js::Record<", jrarrTypeArguments, ">");
+		}
+	}
+	return std::nullopt;
 }
 
 SMangledType CommentType(std::string const strCppType, tc::js::ts::Type const jtypeRoot) noexcept {
@@ -154,13 +176,14 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 		return {mangled_no_comments, "js_null"};
 	}
 	if(bUseTypeAlias) {
-		if(!jtypeRoot->aliasTypeArguments()) { // We do not support generic types/type aliases yet
-			if(auto ojsymAlias = jtypeRoot->aliasSymbol()) {
-				if(ecpptypeTYPEALIAS & CppType(*ojsymAlias)) {
-					return {mangled_no_comments, MangleSymbolName(*ojsymAlias)};
+		if(auto ojsymAlias = jtypeRoot->aliasSymbol()) {
+			if(ecpptypeTYPEALIAS & CppType(*ojsymAlias)) {
+				if(auto omt = MangleBootstrapType(*ojsymAlias, jtypeRoot->aliasTypeArguments())) {
+					return *omt;
 				}
-			}	
-		}
+				return {mangled_no_comments, MangleSymbolName(*ojsymAlias)};
+			}
+		}	
 	}
 	if (auto jouniontypeRoot = tc::js::ts_ext::isUnion(jtypeRoot)) {
 		_ASSERT(1 < (*jouniontypeRoot)->types()->length());
@@ -189,25 +212,13 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 			}
 		}
 	}
-
 	std::vector<std::string> vecstrExtraInfo;
 	if (auto jotypereferenceRoot = IsTypeReference(jtypeRoot)) {
 		if (auto josymTargetSymbol = (*jotypereferenceRoot)->target()->getSymbol(); josymTargetSymbol) {
-			std::string strTarget = tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->getFullyQualifiedName(*josymTargetSymbol));
-			if(auto jorarrTypeArguments = (*jotypereferenceRoot)->typeArguments()) {
-				auto const jrarrTypeArguments = *jorarrTypeArguments;
-				if ("Array" == strTarget) {
-					_ASSERTEQUAL(jrarrTypeArguments->length(), 1);
-					return WrapType("js::Array<", MangleType(jrarrTypeArguments[0]), ">");
-				} else if ("ReadonlyArray" == strTarget) {
-					_ASSERTEQUAL(jrarrTypeArguments->length(), 1);
-					return WrapType("js::ReadonlyArray<", MangleType(jrarrTypeArguments[0]), ">");
-				} else if ("Promise" == strTarget) {
-					_ASSERTEQUAL(jrarrTypeArguments->length(), 1);
-					return WrapType("js::Promise<", MangleType(jrarrTypeArguments[0]), ">");
-				}
+			if(auto const omt = MangleBootstrapType(*josymTargetSymbol, (*jotypereferenceRoot)->typeArguments())) {
+				return *omt;
 			}
-			tc::cont_emplace_back(vecstrExtraInfo, tc::concat("TypeReference=", strTarget));
+			tc::cont_emplace_back(vecstrExtraInfo, tc::concat("TypeReference=", tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->getFullyQualifiedName(*josymTargetSymbol))));
 		}
 	}
 	if (auto josymTypeLiteral = IsAnonymousTypeWithTypeLiteral(jtypeRoot)) {
