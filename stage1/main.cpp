@@ -35,7 +35,7 @@ namespace {
 
 
 	template<typename SetJsXXX, typename Func>
-	void SortDeclarationOrder(SetJsXXX& setjs, Func ForEachChildSymbol) noexcept {
+	void SortDeclarationOrder(SetJsXXX& setjs, Func ForEachChild) noexcept {
 		std::unordered_set<std::string> setstrSeen;
 		auto itjsSorted = setjs.begin();
 
@@ -43,13 +43,8 @@ namespace {
 			if(!setstrSeen.insert(itjs->m_strMangledName).second) {
 				return;
 			}
-			ForEachChildSymbol(itjs, [&](ts::Symbol const& jsym) {
-				if(auto const itjsSymbol = tc::cont_find<tc::return_element_or_null>(
-					setjs.template get<1>(),
-					MangleSymbolName(jsym)
-				)) { // stop dfs when the child class is not part of our source files
-					dfs(setjs.template project<0>(tc::base_cast< decltype(setjs.template get<1>().begin()) >(itjsSymbol)), dfs);
-				}
+			ForEachChild(itjs, [&](auto const& itjs) {
+				dfs(setjs.template project<0>(tc::base_cast< decltype(setjs.template get<1>().begin()) >(itjs)), dfs);
 			});
 			setjs.relocate(itjsSorted, itjs);
 		};
@@ -169,13 +164,20 @@ int main(int argc, char* argv[]) {
 			return vecjsymExportedSymbol;
 		}()
 	);
-	scopeGlobal.WalkSymbols();
+
+	tc::for_each(g_setjsclass, [](auto const& jsclass) noexcept { 
+		const_cast<SJsClass&>(jsclass).ResolveBaseClasses();
+	});
 
 	tc::append(std::cerr, "\n========== GENERATED CODE ==========\n");
 
 	{
+		// TODO: We need a representation of known types, maybe by their fully-qualified typename
+		// This includes the types we create from g_setjsclass/g_setjsenum/g_setjstypealias
+		// and all built-in typescript classes that we must implement in tcjs/bootstrap
+
 		// Create map of all valid mangled type names. 
-		// Only after g_usstrAllowedMangledTypes is initialized can we call MangleType
+		 // Only after g_usstrAllowedMangledTypes is initialized can we call MangleType
 		tc::for_each(g_setjsclass, [&](SJsClass const& jsclass) noexcept {
 			g_usstrAllowedMangledTypes.insert(jsclass.m_strMangledName);
 		});
@@ -205,17 +207,27 @@ int main(int argc, char* argv[]) {
 		// Sort the sequenced indices of g_setjsclass/g_setjstypealias
 		SortDeclarationOrder(
 			g_setjsclass, 
-			[](SetJsClass::iterator itjsclass, auto ForEachChildSymbol) noexcept {
-				tc::for_each(itjsclass->m_vecjsymBaseClass, ForEachChildSymbol);
+			[](SetJsClass::iterator itjsclass, auto ForEachChild) noexcept {
+				tc::for_each(itjsclass->m_vecpjsclassBase, [&](SJsClass const* pjsclass) noexcept {
+					ForEachChild(tc::cont_find<tc::return_element>(
+						g_setjsclass.template get<1>(),
+						pjsclass->m_strMangledName
+					));
+				});
 			}
 		);
 		SortDeclarationOrder(
 			g_setjstypealias, 
-			[&](SetJsTypeAlias::iterator itjstypealias, auto ForEachChildSymbol) noexcept {
+			[&](SetJsTypeAlias::iterator itjstypealias, auto ForEachChild) noexcept {
 				ForEachChildTypeNode(itjstypealias->m_jtypenode, [&](ts::TypeNode jtypenode) noexcept {
 					if(ts::SyntaxKind::TypeReference==jtypenode->kind()) {
 						if(auto const ojsym = (*g_ojtsTypeChecker)->getTypeFromTypeNode(jtypenode)->aliasSymbol()) {
-							ForEachChildSymbol(*ojsym);
+							if(auto const itjstypealias = tc::cont_find<tc::return_element_or_null>(
+								g_setjstypealias.template get<1>(),
+								MangleSymbolName(*ojsym)
+							)) { // stop dfs when the child class is not part of our source files
+								ForEachChild(itjstypealias);
+							}
 						}
 						return erecurseSKIP;
 					} else {
@@ -305,10 +317,10 @@ int main(int argc, char* argv[]) {
 					"	using ", jsenumEnum.m_strMangledName, " = _enum", jsenumEnum.m_strMangledName, ";\n"
 				);
 			})),
-			tc::join(tc::transform(g_setjsclass, [](SJsClass const& jsclassClass) noexcept {
+			tc::join(tc::transform(g_setjsclass, [](SJsClass const& jsclass) noexcept {
 				return tc::concat(
-					"	struct _impl", jsclassClass.m_strMangledName, ";\n",
-					"	using ", jsclassClass.m_strMangledName, " = js_ref<_impl", jsclassClass.m_strMangledName, ">;\n"
+					"	struct _impl", jsclass.m_strMangledName, ";\n",
+					"	using ", jsclass.m_strMangledName, " = js_ref<_impl", jsclass.m_strMangledName, ">;\n"
 				);
 			})),
 			tc::join(tc::transform(g_setjstypealias, [&](SJsTypeAlias const& jtypealias) noexcept {
@@ -319,56 +331,46 @@ int main(int argc, char* argv[]) {
 					)
 				);
 			})),
-			tc::join(tc::transform(g_setjsclass, [](SJsClass const& jsclassClass) noexcept {
-				std::vector<std::string> vecstrBaseClass, vecstrUnknownBaseClass;
-				 tc::for_each(
-					jsclassClass.m_vecjsymBaseClass,
-					[&](ts::Symbol const jsymBaseClass) noexcept {
-						auto strMangledName = MangleSymbolName(jsymBaseClass);
-						if (g_usstrAllowedMangledTypes.count(strMangledName)) {
-							tc::cont_emplace_back(vecstrBaseClass, strMangledName);
-						} else {
-							tc::cont_emplace_back(vecstrUnknownBaseClass, strMangledName);
-						}
-					}
-				);
+			tc::join(tc::transform(g_setjsclass, [](SJsClass const& jsclass) noexcept {
 				return tc::explicit_cast<std::string>(tc::concat(
-					"	struct _impl", jsclassClass.m_strMangledName,
+					"	struct _impl", jsclass.m_strMangledName,
 					" : ",
 					tc_conditional_range(
-						tc::empty(vecstrBaseClass),
+						tc::empty(jsclass.m_vecpjsclassBase),
 						"virtual IObject",
 						tc::join_separated(
-							tc::transform(vecstrBaseClass,
-								[](std::string const& strMangledName) noexcept {
-									return tc::concat("virtual _impl", strMangledName);
+							tc::transform(jsclass.m_vecpjsclassBase,
+								[](SJsClass const* pjsclass) noexcept {
+									return tc::concat("virtual _impl", pjsclass->m_strMangledName);
 								}
 							),
 							", "
 						)
 					),
 					tc::join(tc::transform(
-						vecstrUnknownBaseClass,
-						[](std::string const& strMangledName) noexcept {
-							return tc::concat("/* : ", strMangledName, " */");
+						jsclass.m_vecjsymBaseUnknown,
+						[](ts::Symbol jsym) noexcept {
+							return tc::concat("/* : ", MangleSymbolName(jsym), " */");
 						}
 					)),
 					" {\n",
 					"		struct _tcjs_definitions {\n",
 					tc::join(tc::transform(
-						jsclassClass.m_vecjsymExportType,
-						[](ts::Symbol const jsymExport) noexcept {
-							return tc::concat(
-								"			using ",
-								CppifyName(jsymExport),
-								" = ",
-								MangleSymbolName(jsymExport),
-								";\n"
-							);
+						jsclass.m_vecvarpExportType,
+						[](auto const& varp) noexcept {
+							return tc::visit(varp, [](auto const* pjs) noexcept {
+								return tc::concat(
+									"			using ",
+									CppifyName(pjs->m_jsym),
+									" = ",
+									pjs->m_strMangledName,
+									";\n"
+								);
+							});
 						}
 					)),
 					tc::join(tc::transform(
-						jsclassClass.m_vecjsfunctionlikeExportFunction,
+						jsclass.m_vecjsfunctionlikeExportFunction,
 						[](SJsFunctionLike const& jsfunctionlikeFunction) noexcept {
 							return tc::concat(
 								"			static auto ", jsfunctionlikeFunction.m_strCppifiedName, "(", jsfunctionlikeFunction.CppifiedParametersWithCommentsDecl(), ") noexcept;\n"
@@ -376,7 +378,7 @@ int main(int argc, char* argv[]) {
 						}
 					)),
 					tc::join(tc::transform(
-						jsclassClass.m_vecjsvariablelikeExportVariable,
+						jsclass.m_vecjsvariablelikeExportVariable,
 						[](SJsVariableLike const& jsvariablelikeVariable) noexcept {
 							return tc::concat(
 								"			static auto ", jsvariablelikeVariable.m_strCppifiedName, "() noexcept;\n",
@@ -392,7 +394,7 @@ int main(int argc, char* argv[]) {
 					)),
 					"		};\n",
 					tc::join(tc::transform(
-						jsclassClass.m_vecjsvariablelikeProperty,
+						jsclass.m_vecjsvariablelikeProperty,
 						[](SJsVariableLike const& jsvariablelikeProperty) noexcept {
 							return tc::concat(
 								"		auto ", jsvariablelikeProperty.m_strCppifiedName, "() noexcept;\n",
@@ -407,7 +409,7 @@ int main(int argc, char* argv[]) {
 						}
 					)),
 					tc::join(tc::transform(
-						jsclassClass.m_vecjsfunctionlikeMethod,
+						jsclass.m_vecjsfunctionlikeMethod,
 						[](SJsFunctionLike const& jsfunctionlikeMethod) noexcept {
 							if (ts::SymbolFlags::Method == jsfunctionlikeMethod.m_jsymFunctionLike->getFlags()) {
 								return tc::explicit_cast<std::string>(tc::concat(
@@ -423,20 +425,20 @@ int main(int argc, char* argv[]) {
 						}
 					)),
 					tc_conditional_range(
-						jsclassClass.m_bHasImplicitDefaultConstructor,
+						jsclass.m_bHasImplicitDefaultConstructor,
 						"		static auto _tcjs_construct() noexcept;\n"
 					),
 					"	};\n"
 				));
 			})),
-			tc::join(tc::transform(g_setjsclass, [](SJsClass const& jsclassClass) noexcept {
+			tc::join(tc::transform(g_setjsclass, [](SJsClass const& jsclass) noexcept {
 				auto strClassNamespace = tc::explicit_cast<std::string>(tc::concat(
-					"_impl", jsclassClass.m_strMangledName, "::"
+					"_impl", jsclass.m_strMangledName, "::"
 				));
-				auto strClassInstanceRetrieve = RetrieveSymbolFromCpp(jsclassClass.m_jsymClass);
+				auto strClassInstanceRetrieve = RetrieveSymbolFromCpp(jsclass.m_jsym);
 				return tc::explicit_cast<std::string>(tc::concat(
 					tc::join(tc::transform(
-						jsclassClass.m_vecjsfunctionlikeExportFunction,
+						jsclass.m_vecjsfunctionlikeExportFunction,
 						[&strClassNamespace](SJsFunctionLike const& jsfunctionlikeFunction) noexcept {
 							auto const rngchCallArguments = tc::join_separated(
 								tc::transform(
@@ -465,7 +467,7 @@ int main(int argc, char* argv[]) {
 						}
 					)),
 					tc::join(tc::transform(
-						jsclassClass.m_vecjsvariablelikeExportVariable,
+						jsclass.m_vecjsvariablelikeExportVariable,
 						[&strClassNamespace, &strClassInstanceRetrieve](SJsVariableLike const& jsvariablelikeVariable) noexcept {
 							return tc::concat(
 								"	inline auto ", strClassNamespace, "_tcjs_definitions::", jsvariablelikeVariable.m_strCppifiedName, "() noexcept ",
@@ -482,7 +484,7 @@ int main(int argc, char* argv[]) {
 						}
 					)),
 					tc::join(tc::transform(
-						jsclassClass.m_vecjsvariablelikeProperty,
+						jsclass.m_vecjsvariablelikeProperty,
 						[&strClassNamespace](SJsVariableLike const& jsvariablelikeProperty) noexcept {
 							return tc::concat(
 								"	inline auto ", strClassNamespace, jsvariablelikeProperty.m_strCppifiedName, "() noexcept ",
@@ -499,8 +501,8 @@ int main(int argc, char* argv[]) {
 						}
 					)),
 					tc::join(tc::transform(
-						jsclassClass.m_vecjsfunctionlikeMethod,
-						[&jsclassClass, &strClassNamespace](SJsFunctionLike const& jsfunctionlikeMethod) noexcept {
+						jsclass.m_vecjsfunctionlikeMethod,
+						[&jsclass, &strClassNamespace](SJsFunctionLike const& jsfunctionlikeMethod) noexcept {
 							auto const rngstrArguments = tc::transform(
 								jsfunctionlikeMethod.m_jtsSignature->getParameters(),
 								[](ts::Symbol const jsymParameter) noexcept {
@@ -524,7 +526,7 @@ int main(int argc, char* argv[]) {
 								auto const rngchCallArguments = tc::join_separated(rngstrArguments, ", ");
 								return tc::explicit_cast<std::string>(tc::concat(
 									"	inline auto ", strClassNamespace, "_tcjs_construct(", jsfunctionlikeMethod.CppifiedParametersWithCommentsDef(), ") noexcept {\n",
-									"		return ", jsclassClass.m_strMangledName, "(", RetrieveSymbolFromCpp(jsclassClass.m_jsymClass), ".new_(", rngchCallArguments, "));\n",
+									"		return ", jsclass.m_strMangledName, "(", RetrieveSymbolFromCpp(jsclass.m_jsym), ".new_(", rngchCallArguments, "));\n",
 									"	}\n"
 								));
 							} else {
@@ -533,10 +535,10 @@ int main(int argc, char* argv[]) {
 						}
 					)),
 					tc_conditional_range(
-						jsclassClass.m_bHasImplicitDefaultConstructor,
+						jsclass.m_bHasImplicitDefaultConstructor,
 						tc::concat(
 							"	inline auto ", strClassNamespace, "_tcjs_construct() noexcept {\n",
-							"		return ", jsclassClass.m_strMangledName, "(", RetrieveSymbolFromCpp(jsclassClass.m_jsymClass), ".new_());\n",
+							"		return ", jsclass.m_strMangledName, "(", RetrieveSymbolFromCpp(jsclass.m_jsym), ".new_());\n",
 							"	}\n"
 						)
 					)
@@ -599,11 +601,13 @@ int main(int argc, char* argv[]) {
 
 		tc::append(std::cout,
 			tc::join(tc::transform(
-				scopeGlobal.m_vecjsymExportType,
-				[](ts::Symbol const& jsymType) noexcept {
-					return tc::explicit_cast<std::string>(tc::concat(
-						"	using ", CppifyName(jsymType), " = js_defs::", MangleSymbolName(jsymType), ";\n"
-					));
+				scopeGlobal.m_vecvarpExportType,
+				[](auto const& varp) noexcept {
+					return tc::visit(varp, [](auto const* pjs) noexcept {
+						return tc::explicit_cast<std::string>(tc::concat(
+							"	using ", CppifyName(pjs->m_jsym), " = js_defs::", pjs->m_strMangledName, ";\n"
+						));
+					});
 				}
 			)),
 			tc::join(tc::transform(

@@ -24,20 +24,20 @@ struct SJsEnumOption {
     tc::js::ts::EnumMember m_jtsEnumMember;
     std::optional<std::variant<double, std::string>> m_ovardblstrValue;
 
-    SJsEnumOption(tc::js::ts::Symbol const jsymOption) noexcept;
+    SJsEnumOption(tc::js::ts::Symbol jsymOption) noexcept;
 };
 
 struct SJsEnum {
-    tc::js::ts::Symbol m_jsymEnum;
+    tc::js::ts::Symbol m_jsym;
     std::string m_strMangledName;
     std::vector<SJsEnumOption> m_vecjsenumoption;
     bool m_bIsIntegral;
 
-    SJsEnum(tc::js::ts::Symbol const jsymEnum) noexcept;
+    SJsEnum(tc::js::ts::Symbol jsymEnum) noexcept;
 };
 
 struct SJsVariableLike {
-    tc::js::ts::Symbol m_jsymName;
+    tc::js::ts::Symbol m_jsym;
     std::string m_strJsName;
     std::string m_strCppifiedName;
 private:
@@ -48,7 +48,7 @@ public:
     tc::js::ts::Type m_jtypeDeclared;
     bool m_bReadonly;
 
-    SJsVariableLike(tc::js::ts::Symbol const jsymName) noexcept;
+    SJsVariableLike(tc::js::ts::Symbol jsymName) noexcept;
     SMangledType const& MangleType() const noexcept;
 };
 
@@ -67,7 +67,7 @@ private:
     std::string const& CanonizedParameterCppTypes() const noexcept;
 
 public:
-    SJsFunctionLike(tc::js::ts::Symbol const jsymFunctionLike, tc::js::ts::Declaration const jdeclFunctionLike) noexcept;
+    SJsFunctionLike(tc::js::ts::Symbol jsymFunctionLike, tc::js::ts::Declaration jdeclFunctionLike) noexcept;
 
     std::string CppifiedParametersWithCommentsDecl() const noexcept;
     std::string CppifiedParametersWithCommentsDef() const noexcept;
@@ -84,14 +84,17 @@ void MergeWithSameCppSignatureInplace(Rng& rngjsfunctionlikeFuncs) noexcept {
     // TODO: add comments about skipped overloads;
 }
 
+
+struct SJsClass;
+struct SJsTypeAlias;
+
 struct SJsScope {
-    std::vector<tc::js::ts::Symbol> m_vecjsymExportType;
+    std::vector<std::variant<SJsClass const*, SJsEnum const*, SJsTypeAlias const*>> m_vecvarpExportType;
     std::vector<SJsFunctionLike> m_vecjsfunctionlikeExportFunction;
     std::vector<SJsVariableLike> m_vecjsvariablelikeExportVariable;
 
     template<typename Rng>
     SJsScope(Rng&& rngjsym) noexcept;
-    void WalkSymbols() const noexcept;
 
 protected:
     SJsScope() noexcept = default;
@@ -101,14 +104,19 @@ protected:
 };
 
 struct SJsClass final : SJsScope { 
-    tc::js::ts::Symbol m_jsymClass;
+    tc::js::ts::Symbol m_jsym;
     std::string m_strMangledName;
     std::vector<SJsFunctionLike> m_vecjsfunctionlikeMethod;
     std::vector<SJsVariableLike> m_vecjsvariablelikeProperty;
-    std::vector<tc::js::ts::Symbol> m_vecjsymBaseClass;
+    std::vector<SJsClass const*> m_vecpjsclassBase;
+    std::vector<tc::js::ts::Symbol> m_vecjsymBaseUnknown;
+
     bool m_bHasImplicitDefaultConstructor;
 
-    SJsClass(tc::js::ts::Symbol const jsymClass) noexcept;
+    SJsClass(tc::js::ts::Symbol jsymClass) noexcept;
+    
+    void Initialize() noexcept;
+    void ResolveBaseClasses() noexcept;
 };
 
 struct SJsTypeAlias final {
@@ -164,12 +172,22 @@ SJsScope::SJsScope(Rng&& rngjsym) noexcept {
 
 template<typename Rng>
 void SJsScope::Initialize(Rng&& rngjsym) noexcept {
-    m_vecjsymExportType = tc::make_vector(tc::filter(
-        rngjsym,
-        [&](tc::js::ts::Symbol jsymExport) noexcept {
-            return ecpptypeIGNORE!=CppType(jsymExport);
+     tc::for_each(rngjsym, [&](tc::js::ts::Symbol const& jsymType) noexcept {
+        // Use tc::cont_must_emplace to make sure we only create a single enum/class/typealias per symbol.
+        // We assume that ts::Symbol::exports() returns a symbol list without duplicates.
+        auto const ecpptype = CppType(jsymType);
+        if(ecpptypeENUM&ecpptype) {
+            m_vecvarpExportType.emplace_back(std::addressof(*tc::cont_must_emplace(g_setjsenum, jsymType)));
         }
-    ));
+        if(ecpptypeCLASS&ecpptype) {
+            auto const pjsclass = std::addressof(*tc::cont_must_emplace(g_setjsclass.get<1>(), jsymType));
+            m_vecvarpExportType.emplace_back(pjsclass);
+            const_cast<SJsClass*>(pjsclass)->Initialize();
+        }
+        if(ecpptypeTYPEALIAS&ecpptype) {
+            m_vecvarpExportType.emplace_back(std::addressof(*tc::cont_must_emplace(g_setjstypealias.get<1>(), jsymType))); 
+        }
+    });
 
     m_vecjsfunctionlikeExportFunction = tc::make_vector(tc::join(tc::transform(
         tc::filter(
@@ -207,7 +225,7 @@ void SJsScope::Initialize(Rng&& rngjsym) noexcept {
         m_vecjsvariablelikeExportVariable,
         [](SJsVariableLike const& a, SJsVariableLike const& b) { return a.m_strJsName < b.m_strJsName; },
         [](SJsVariableLike const& first, SJsVariableLike const& current) {
-            _ASSERT(current.m_jsymName.getEmval().strictlyEquals(first.m_jsymName.getEmval()));
+            _ASSERT(current.m_jsym.getEmval().strictlyEquals(first.m_jsym.getEmval()));
         }
     );
 }

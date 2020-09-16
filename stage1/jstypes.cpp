@@ -56,7 +56,7 @@ ECppType CppType(ts::Symbol jsymType) noexcept {
 	return ecpptypeIGNORE;
 }
 
-SJsEnumOption::SJsEnumOption(ts::Symbol const jsymOption) noexcept
+SJsEnumOption::SJsEnumOption(ts::Symbol jsymOption) noexcept
     : m_jsymOption([&]() noexcept {
         _ASSERTEQUAL(jsymOption->getFlags(), ts::SymbolFlags::EnumMember);
         return jsymOption;
@@ -83,12 +83,12 @@ SJsEnumOption::SJsEnumOption(ts::Symbol const jsymOption) noexcept
     }())
 {}
 
-SJsEnum::SJsEnum(ts::Symbol const jsymEnum) noexcept
-    : m_jsymEnum(jsymEnum)
+SJsEnum::SJsEnum(ts::Symbol jsymEnum) noexcept
+    : m_jsym(jsymEnum)
     , m_strMangledName(MangleSymbolName(jsymEnum))
     , m_vecjsenumoption(tc::make_vector(tc::transform(
         *tc::js::ts_ext::Symbol(jsymEnum)->exports(),
-        [](ts::Symbol const jsymOption) noexcept {
+        [](ts::Symbol jsymOption) noexcept {
             return SJsEnumOption(jsymOption);
         }
     )))
@@ -104,8 +104,8 @@ SJsEnum::SJsEnum(ts::Symbol const jsymEnum) noexcept
     ))
 {}
 
-SJsVariableLike::SJsVariableLike(ts::Symbol const jsymName) noexcept
-    : m_jsymName(jsymName)
+SJsVariableLike::SJsVariableLike(ts::Symbol jsymName) noexcept
+    : m_jsym(jsymName)
     , m_strJsName(tc::explicit_cast<std::string>(jsymName->getName()))
     , m_strCppifiedName(CppifyName(jsymName))
     , m_jdeclVariableLike([&]() noexcept {
@@ -153,7 +153,7 @@ SMangledType const& SJsVariableLike::MangleType() const noexcept {
     return *m_omtType;
 }
 
-SJsFunctionLike::SJsFunctionLike(ts::Symbol const jsymFunctionLike, ts::Declaration const jdeclFunctionLike) noexcept
+SJsFunctionLike::SJsFunctionLike(ts::Symbol jsymFunctionLike, ts::Declaration const jdeclFunctionLike) noexcept
     : m_jsymFunctionLike(jsymFunctionLike)
     , m_strCppifiedName(CppifyName(m_jsymFunctionLike))
     , m_jdeclFunctionLike(jdeclFunctionLike)
@@ -176,7 +176,7 @@ SJsFunctionLike::SJsFunctionLike(ts::Symbol const jsymFunctionLike, ts::Declarat
     , m_joptarrunkTypeParameter(m_jtsSignature->getTypeParameters())
     , m_vecjsvariablelikeParameters(tc::make_vector(tc::transform(
         m_jtsSignature->getParameters(),
-        [&](ts::Symbol const jsymParameter) noexcept {
+        [&](ts::Symbol jsymParameter) noexcept {
             return SJsVariableLike(jsymParameter);
         }
     )))
@@ -246,39 +246,22 @@ std::string const& SJsFunctionLike::CanonizedParameterCppTypes() const noexcept 
     return a.CanonizedParameterCppTypes() < b.CanonizedParameterCppTypes();
 }
 
-void SJsScope::WalkSymbols() const noexcept {
-    tc::for_each(m_vecjsymExportType, [&](ts::Symbol const& jsymType) noexcept {
-        // Use tc::cont_must_emplace to make sure we only create a single enum/class/typealias per symbol.
-        // We assume that ts::Symbol::exports() returns a symbol list without duplicates.
-        auto const ecpptype = CppType(jsymType);
-        if(ecpptypeENUM&ecpptype) {
-            tc::cont_must_emplace(g_setjsenum, jsymType);
-        }
-        if(ecpptypeCLASS&ecpptype) {
-            auto const itjsclass = tc::cont_must_emplace(g_setjsclass.get<1>(), jsymType);
-            itjsclass->WalkSymbols();
-        }
-        if(ecpptypeTYPEALIAS&ecpptype) {
-            tc::cont_must_emplace(g_setjstypealias.get<1>(), jsymType); 
-        }
-    });
-}
-
-SJsClass::SJsClass(ts::Symbol const jsymClass) noexcept
-    : m_jsymClass(jsymClass)
+SJsClass::SJsClass(ts::Symbol jsymClass) noexcept
+    : m_jsym(jsymClass)
     , m_strMangledName(MangleSymbolName(jsymClass))
-    , m_vecjsymBaseClass()
     , m_bHasImplicitDefaultConstructor(false)
-{
-    Initialize(
+{}
+
+void SJsClass::Initialize() noexcept {
+    SJsScope::Initialize(
         tc_conditional_range(
-            jsymClass->getFlags() & ts::SymbolFlags::Module,
-            (*g_ojtsTypeChecker)->getExportsOfModule(jsymClass),
+            m_jsym->getFlags() & ts::SymbolFlags::Module,
+            (*g_ojtsTypeChecker)->getExportsOfModule(m_jsym),
             tc::make_empty_range<ts::Symbol>()
         )
     );
 
-    if(auto ojarrsymMembers = tc::js::ts_ext::Symbol(jsymClass)->members()) { 
+    if(auto ojarrsymMembers = tc::js::ts_ext::Symbol(m_jsym)->members()) { 
         auto vecjsymMembers = tc::explicit_cast<std::vector<ts::Symbol>>(*ojarrsymMembers);
         m_vecjsfunctionlikeMethod = tc::make_vector(tc::join(tc::transform(
             tc::filter(vecjsymMembers, [](ts::Symbol jsymMember) noexcept {
@@ -305,55 +288,62 @@ SJsClass::SJsClass(ts::Symbol const jsymClass) noexcept
         ));
     }
 
-    // MergeVariableRedeclarationsInplace(m_vecjsvariablelikeProperty); // Properties cannot be redeclared.
-    
-    if (auto jointerfacetypeClass = tc::js::ts_ext::isClassOrInterface((*g_ojtsTypeChecker)->getDeclaredTypeOfSymbol(jsymClass))) {
+     if((*g_ojtsTypeChecker)->getDeclaredTypeOfSymbol(m_jsym)->isClass()) {
+        // See logic at `src/compiler/transformers/es2015.ts`, `addConstructor`, `transformConstructorBody` and `createDefaultConstructorBody`:
+        // if no constructrs are defined, we add a "default" constructor with no parameters.
+        m_bHasImplicitDefaultConstructor = !tc::find_first_if<tc::return_bool>(
+            m_vecjsfunctionlikeMethod,
+            [](SJsFunctionLike const& jsfunctionlikeMethod) noexcept {
+                return ts::SymbolFlags::Constructor == jsfunctionlikeMethod.m_jsymFunctionLike->getFlags();
+            }
+        );
+    }
+}
+
+void SJsClass::ResolveBaseClasses() noexcept {
+    auto AddBaseClass = [this](ts::Symbol jsymBase) noexcept {
+        if(auto ojsclass = tc::cont_find<tc::return_element_or_null>(g_setjsclass.get<1>(), MangleSymbolName(jsymBase))) {
+            tc::cont_emplace_back(m_vecpjsclassBase, std::addressof(*ojsclass));
+        } else {
+            tc::cont_emplace_back(m_vecjsymBaseUnknown, jsymBase);
+        }
+    };
+
+    if (auto jointerfacetypeClass = tc::js::ts_ext::isClassOrInterface((*g_ojtsTypeChecker)->getDeclaredTypeOfSymbol(m_jsym))) {
         tc::for_each((*g_ojtsTypeChecker)->getBaseTypes(*jointerfacetypeClass),
             [&](tc::js::ts::BaseType jtsBaseType) noexcept {
                 if (auto const jointerfacetypeBase = tc::js::ts_ext::isClassOrInterface(tc::reluctant_implicit_cast<ts::Type>(jtsBaseType))) {
-                    tc::cont_emplace_back(m_vecjsymBaseClass, *(*jointerfacetypeBase)->getSymbol());
+                    AddBaseClass(*(*jointerfacetypeBase)->getSymbol());
                 }
             }
         );
         // See `utilities.ts:getAllSuperTypeNodes`. `extends` clause for classes is already covered by `getBaseTypes()`, as well as `implements` clause for interfaces.
         // The only missing part is `implements` for classes.
-        tc::for_each(jsymClass->declarations(), [&](ts::Declaration jdeclClass) {
+        tc::for_each(m_jsym->declarations(), [&](ts::Declaration jdeclClass) {
             if (auto joclassdeclarationClass = tc::js::ts_ext::isClassDeclaration(jdeclClass)) {
-                auto jorarrHeritageClause = tc::js::ts_ext::ClassLikeDeclaration(*joclassdeclarationClass)->heritageClauses();
-                if (jorarrHeritageClause) {
-                    tc::for_each(*jorarrHeritageClause, [&](ts::HeritageClause jtsHeritageClause) {
-                        if (jtsHeritageClause->token() == ts::SyntaxKind::ImplementsKeyword) {
-                            tc::for_each(tc::js::ts_ext::HeritageClause(jtsHeritageClause)->types(), [&](ts::Node jnodeImplementsType) {
+                if (auto jorarrHeritageClause = tc::js::ts_ext::ClassLikeDeclaration(*joclassdeclarationClass)->heritageClauses()) {
+                    tc::for_each(*jorarrHeritageClause, [&](ts::HeritageClause jtsHeritageClause) noexcept {
+                        if(ts::SyntaxKind::ImplementsKeyword == jtsHeritageClause->token()) {
+                            tc::for_each(tc::js::ts_ext::HeritageClause(jtsHeritageClause)->types(), [&](ts::Node jnodeImplementsType) noexcept {
                                 auto jtypeImplements = (*g_ojtsTypeChecker)->getTypeAtLocation(jnodeImplementsType);
-                                auto josymImplements = jtypeImplements->getSymbol();
-                                if (!josymImplements) {
+                                if(auto josymImplements = jtypeImplements->getSymbol()) {
+                                    AddBaseClass(*josymImplements);
+                                } else {
                                     tc::append(std::cerr,
                                         "Unable to determine 'implements' symbol for class '",
-                                        tc::explicit_cast<std::string>(jsymClass->getName()),
+                                        tc::explicit_cast<std::string>(m_jsym->getName()),
                                         "' for type '",
                                         tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->typeToString(jtypeImplements)),
                                         "'\n"
                                     );
                                     _ASSERTFALSE;
                                 }
-                                tc::cont_emplace_back(m_vecjsymBaseClass, *josymImplements);
                             });
                         }
                     });
                 }
             }
         });
-
-        if ((*jointerfacetypeClass)->isClass()) {
-            // See logic at `src/compiler/transformers/es2015.ts`, `addConstructor`, `transformConstructorBody` and `createDefaultConstructorBody`:
-            // if no constructrs are defined, we add a "default" constructor with no parameters.
-            m_bHasImplicitDefaultConstructor = !tc::find_first_if<tc::return_bool>(
-                m_vecjsfunctionlikeMethod,
-                [](SJsFunctionLike const& jsfunctionlikeMethod) noexcept {
-                    return ts::SymbolFlags::Constructor == jsfunctionlikeMethod.m_jsymFunctionLike->getFlags();
-                }
-            );
-        }
     } else {
         // Do nothing: e.g. namespaces.
     }
