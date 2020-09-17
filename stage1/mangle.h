@@ -1,5 +1,4 @@
-#ifndef MANGLE_H_
-#define MANGLE_H_
+#pragma once
 
 #include <string>
 #include <utility>
@@ -26,5 +25,3 @@ struct SMangledType {
 };
 
 SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias = true) noexcept;
-
-#endif // MANGLE_H_

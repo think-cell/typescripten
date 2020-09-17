@@ -169,7 +169,7 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 			if(ecpptypeTYPEALIAS & CppType(*ojsymAlias)) {
 				if(auto omt = MangleBootstrapType(*ojsymAlias, jtypeRoot->aliasTypeArguments())) {
 					return *omt;
-				} else if(auto const ojstypealias = tc::cont_find<tc::return_element_or_null>(g_setjstypealias.get<1>(), FullyQualifiedName(*ojsymAlias))) {
+				} else if(auto const ojstypealias = tc::cont_find<tc::return_element_or_null>(g_setjstypealias, FullyQualifiedName(*ojsymAlias))) {
 					return {mangled_no_comments, ojstypealias->m_strMangledName};
 				}
 			}
@@ -252,7 +252,7 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 		if (IsTrivialType(*jointerfacetypeRoot)) {
 			_ASSERTEQUAL((*jointerfacetypeRoot)->flags(), ts::TypeFlags::Object);
 			auto const strName = FullyQualifiedName(*(*jointerfacetypeRoot)->getSymbol());
-			if(auto ojsclass = tc::cont_find<tc::return_element_or_null>(g_setjsclass.get<1>(), FullyQualifiedName(*(*jointerfacetypeRoot)->getSymbol()))) {
+			if(auto ojsclass = tc::cont_find<tc::return_element_or_null>(g_setjsclass, FullyQualifiedName(*(*jointerfacetypeRoot)->getSymbol()))) {
 				return {mangled_no_comments, ojsclass->m_strMangledName};
 			} else {
 				tc::cont_emplace_back(vecstrExtraInfo, tc::concat("UnknownMangledClassOrInterface=", strName));

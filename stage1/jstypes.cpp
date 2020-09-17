@@ -122,6 +122,10 @@ SJsEnum::SJsEnum(ts::Symbol jsymEnum) noexcept
     ))
 {}
 
+void SJsEnum::Initialize() noexcept {
+    tc::cont_must_insert(g_setjsenum, *this);
+}
+
 SJsVariableLike::SJsVariableLike(ts::Symbol jsymName) noexcept
     : m_jsym(jsymName)
     , m_strJsName(tc::explicit_cast<std::string>(jsymName->getName()))
@@ -268,9 +272,7 @@ SJsClass::SJsClass(ts::Symbol jsymClass) noexcept
     , m_strQualifiedName(FullyQualifiedName(m_jsym))
     , m_strMangledName(MangleSymbolName(m_jsym))
     , m_bHasImplicitDefaultConstructor(false)
-{}
-
-void SJsClass::Initialize() noexcept {
+{
     SJsScope::Initialize(
         tc_conditional_range(
             m_jsym->getFlags() & ts::SymbolFlags::Module,
@@ -318,9 +320,13 @@ void SJsClass::Initialize() noexcept {
     }
 }
 
+void SJsClass::Initialize() noexcept {
+    tc::cont_must_insert(g_setjsclass, *this);
+}
+
 void SJsClass::ResolveBaseClasses() noexcept {
     auto AddBaseClass = [this](ts::Symbol jsymBase) noexcept {
-        if(auto ojsclass = tc::cont_find<tc::return_element_or_null>(g_setjsclass.get<1>(), FullyQualifiedName(jsymBase))) {
+        if(auto ojsclass = tc::cont_find<tc::return_element_or_null>(g_setjsclass, FullyQualifiedName(jsymBase))) {
             tc::cont_emplace_back(m_vecpjsclassBase, std::addressof(*ojsclass));
         } else {
             tc::cont_emplace_back(m_vecjsymBaseUnknown, jsymBase);
@@ -374,6 +380,10 @@ SJsTypeAlias::SJsTypeAlias(ts::Symbol jsym) noexcept
     , m_strQualifiedName(FullyQualifiedName(m_jsym))
     , m_strMangledName(MangleSymbolName(m_jsym))
 {}
+
+void SJsTypeAlias::Initialize() noexcept {
+    tc::cont_must_insert(g_setjstypealias, *this);
+}
 
 SMangledType SJsTypeAlias::MangleType() const noexcept {
     // If a type alias is defined by a union, we have to define it by the corresponding js_union<...> declaration

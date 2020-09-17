@@ -1,5 +1,4 @@
-#ifndef WALK_SYMBOL_H_
-#define WALK_SYMBOL_H_
+#pragma once
 
 #include <vector>
 #include "typescript.d.bootstrap.h"
@@ -38,5 +37,3 @@ tc::break_or_continue ForEachChildTypeNode(tc::js::ts::Node jnode, Func fn) noex
 }
 
 void PrintSymbolTree(int nOffset, tc::js::ts::Symbol jsymType) noexcept;
-
-#endif // WALK_SYMBOL_H_

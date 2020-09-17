@@ -1,3 +1,4 @@
+#pragma once
 #include "precompiled.h"
 #include "typescript.d.bootstrap.h"
 #include "mangle.h"
@@ -17,17 +18,22 @@ enum ECppType {
 BITMASK_OPS(ECppType);
 ECppType CppType(tc::js::ts::Symbol jsymType) noexcept;
 
-struct SJsEnumOption {
+struct SJsEnumOption final {
     tc::js::ts::Symbol m_jsymOption;
     std::string m_strJsName;
     std::string m_strCppifiedName;
     tc::js::ts::EnumMember m_jtsEnumMember;
     std::optional<std::variant<double, std::string>> m_ovardblstrValue;
 
-    SJsEnumOption(tc::js::ts::Symbol jsymOption) noexcept;
+    SJsEnumOption() = delete;
+    SJsEnumOption(tc::js::ts::Symbol jsymOption) noexcept;    
+    SJsEnumOption(SJsEnumOption&&) noexcept = default;
+    SJsEnumOption& operator=(SJsEnumOption&&) noexcept = default;
 };
+static_assert(std::is_nothrow_move_constructible<SJsEnumOption>::value);
+static_assert(std::is_nothrow_move_assignable<SJsEnumOption>::value);
 
-struct SJsEnum {
+struct SJsEnum final : public boost::intrusive::set_base_hook<boost::intrusive::link_mode<boost::intrusive::auto_unlink>> {
     tc::js::ts::Symbol m_jsym;
     std::string m_strQualifiedName;
     std::string m_strMangledName;
@@ -36,13 +42,19 @@ struct SJsEnum {
     bool m_bIsIntegral;
 
     SJsEnum(tc::js::ts::Symbol jsymEnum) noexcept;
-};
+    SJsEnum(SJsEnum&&) noexcept = default;
+    SJsEnum& operator=(SJsEnum&&) noexcept = default;
 
-struct SJsVariableLike {
+    void Initialize() noexcept;
+};
+static_assert(std::is_nothrow_move_constructible<SJsEnum>::value);
+static_assert(std::is_nothrow_move_assignable<SJsEnum>::value);
+
+struct SJsVariableLike final {
     tc::js::ts::Symbol m_jsym;
     std::string m_strJsName;
     std::string m_strCppifiedName;
-    
+
 private:
     tc::js::ts::Declaration m_jdeclVariableLike; // There may be multiple declarations, we ensure they do not conflict.
     std::optional<SMangledType> mutable m_omtType; // cached
@@ -52,10 +64,15 @@ public:
     bool m_bReadonly;
 
     SJsVariableLike(tc::js::ts::Symbol jsymName) noexcept;
+    SJsVariableLike(SJsVariableLike&&) noexcept = default;
+    SJsVariableLike& operator=(SJsVariableLike&&) noexcept = default;
+
     SMangledType const& MangleType() const noexcept;
 };
+static_assert(std::is_nothrow_move_constructible<SJsVariableLike>::value);
+static_assert(std::is_nothrow_move_assignable<SJsVariableLike>::value);
 
-struct SJsFunctionLike {
+struct SJsFunctionLike final {
     tc::js::ts::Symbol m_jsym;
     std::string m_strCppifiedName;
 
@@ -71,12 +88,16 @@ private:
 
 public:
     SJsFunctionLike(tc::js::ts::Symbol jsymFunctionLike, tc::js::ts::Declaration jdeclFunctionLike) noexcept;
+    SJsFunctionLike(SJsFunctionLike&&) noexcept = default;
+    SJsFunctionLike& operator=(SJsFunctionLike&&) noexcept = default;
 
     std::string CppifiedParametersWithCommentsDecl() const noexcept;
     std::string CppifiedParametersWithCommentsDef() const noexcept;
 
     static bool LessCppSignature(SJsFunctionLike const& a, SJsFunctionLike const& b) noexcept;
 };
+static_assert(std::is_nothrow_move_constructible<SJsFunctionLike>::value);
+static_assert(std::is_nothrow_move_assignable<SJsFunctionLike>::value);
 
 template<typename Rng>
 void MergeWithSameCppSignatureInplace(Rng& rngjsfunctionlikeFuncs) noexcept {
@@ -87,17 +108,18 @@ void MergeWithSameCppSignatureInplace(Rng& rngjsfunctionlikeFuncs) noexcept {
     // TODO: add comments about skipped overloads;
 }
 
-
 struct SJsClass;
 struct SJsTypeAlias;
 
 struct SJsScope {
-    std::vector<std::variant<SJsClass const*, SJsEnum const*, SJsTypeAlias const*>> m_vecvarpExportType;
+    std::vector<std::variant<SJsClass, SJsEnum, SJsTypeAlias>> m_vecvarjsExportType;
     std::vector<SJsFunctionLike> m_vecjsfunctionlikeExportFunction;
     std::vector<SJsVariableLike> m_vecjsvariablelikeExportVariable;
 
     template<typename Rng>
     SJsScope(Rng&& rngjsym) noexcept;
+    SJsScope(SJsScope&&) noexcept = default;
+    SJsScope& operator=(SJsScope&&) noexcept = default;
 
 protected:
     SJsScope() noexcept = default;
@@ -105,8 +127,10 @@ protected:
     template<typename Rng>
     void Initialize(Rng&& rngjsym) noexcept;
 };
+static_assert(std::is_nothrow_move_constructible<SJsScope>::value);
+static_assert(std::is_nothrow_move_assignable<SJsScope>::value);
 
-struct SJsClass final : SJsScope { 
+struct SJsClass final : public SJsScope, public boost::intrusive::set_base_hook<boost::intrusive::link_mode<boost::intrusive::auto_unlink>> { 
     tc::js::ts::Symbol m_jsym;
     std::string m_strQualifiedName;
     std::string m_strMangledName;
@@ -119,12 +143,16 @@ struct SJsClass final : SJsScope {
     bool m_bHasImplicitDefaultConstructor;
 
     SJsClass(tc::js::ts::Symbol jsymClass) noexcept;
+    SJsClass(SJsClass&&) noexcept = default;
+    SJsClass& operator=(SJsClass&&) noexcept = default;
     
     void Initialize() noexcept;
     void ResolveBaseClasses() noexcept;
 };
+static_assert(std::is_nothrow_move_constructible<SJsClass>::value);
+static_assert(std::is_nothrow_move_assignable<SJsClass>::value);
 
-struct SJsTypeAlias final {
+struct SJsTypeAlias final : public boost::intrusive::set_base_hook<boost::intrusive::link_mode<boost::intrusive::auto_unlink>> {
     tc::js::ts::Symbol m_jsym;
     tc::js::ts::TypeNode m_jtypenode;
     tc::js::ts::Type m_jtype;
@@ -133,42 +161,43 @@ struct SJsTypeAlias final {
     std::string m_strMangledName;
 
     SJsTypeAlias(tc::js::ts::Symbol jsym) noexcept;
+    SJsTypeAlias(SJsTypeAlias&&) noexcept = default;
+    SJsTypeAlias& operator=(SJsTypeAlias&&) noexcept = default;
+
+    void Initialize() noexcept;
+
     SMangledType MangleType() const noexcept;
 };
+static_assert(std::is_nothrow_move_constructible<SJsTypeAlias>::value);
+static_assert(std::is_nothrow_move_assignable<SJsTypeAlias>::value);
 
-using SetJsEnum = 
-	boost::multi_index_container<
-		SJsEnum,
-		boost::multi_index::indexed_by<	
-			boost::multi_index::ordered_unique<
-				boost::multi_index::key<&SJsEnum::m_strQualifiedName>
-			>
-		>
-	>;
+template<typename JsXXX>
+struct FQualifiedNameExtractorT {
+    using type = std::string;
+    type operator()(JsXXX const& js) const& noexcept {
+        return js.m_strQualifiedName;
+    }
+};
+
+using SetJsEnum = boost::intrusive::set<
+    SJsEnum,
+    boost::intrusive::constant_time_size<false>,
+    boost::intrusive::key_of_value<FQualifiedNameExtractorT<SJsEnum>>
+>;
 extern SetJsEnum g_setjsenum;
 
-using SetJsClass = 
-	boost::multi_index_container<
-		SJsClass,
-		boost::multi_index::indexed_by<	
-			boost::multi_index::sequenced <>,
-			boost::multi_index::ordered_unique<
-				boost::multi_index::key<&SJsClass::m_strQualifiedName>
-			>
-		>
-	>;
+using SetJsClass = boost::intrusive::set<
+    SJsClass,
+    boost::intrusive::constant_time_size<false>,
+    boost::intrusive::key_of_value<FQualifiedNameExtractorT<SJsClass>>
+>;
 extern SetJsClass g_setjsclass;
 
-using SetJsTypeAlias = 
-	boost::multi_index_container<
-		SJsTypeAlias,
-		boost::multi_index::indexed_by<	
-            boost::multi_index::sequenced <>,
-			boost::multi_index::ordered_unique<
-				boost::multi_index::key<&SJsTypeAlias::m_strQualifiedName>
-			>
-		>
-	>;
+using SetJsTypeAlias = boost::intrusive::set<
+    SJsTypeAlias,
+    boost::intrusive::constant_time_size<false>,
+    boost::intrusive::key_of_value<FQualifiedNameExtractorT<SJsTypeAlias>>
+>;
 extern SetJsTypeAlias g_setjstypealias;
 
 template<typename Rng>
@@ -183,16 +212,19 @@ void SJsScope::Initialize(Rng&& rngjsym) noexcept {
         // We assume that ts::Symbol::exports() returns a symbol list without duplicates.
         auto const ecpptype = CppType(jsymType);
         if(ecpptypeENUM&ecpptype) {
-            m_vecvarpExportType.emplace_back(std::addressof(*tc::cont_must_emplace(g_setjsenum, jsymType)));
+            m_vecvarjsExportType.emplace_back(SJsEnum(jsymType));
         }
         if(ecpptypeCLASS&ecpptype) {
-            auto const pjsclass = std::addressof(*tc::cont_must_emplace(g_setjsclass.get<1>(), jsymType));
-            m_vecvarpExportType.emplace_back(pjsclass);
-            const_cast<SJsClass*>(pjsclass)->Initialize();
+            m_vecvarjsExportType.emplace_back(SJsClass(jsymType));
         }
         if(ecpptypeTYPEALIAS&ecpptype) {
-            m_vecvarpExportType.emplace_back(std::addressof(*tc::cont_must_emplace(g_setjstypealias.get<1>(), jsymType))); 
+            m_vecvarjsExportType.emplace_back(SJsTypeAlias(jsymType)); 
         }
+    });
+    tc::for_each(m_vecvarjsExportType, [](auto& varjs) noexcept {
+        tc::visit(varjs, [](auto& js) noexcept {
+            js.Initialize();
+        });
     });
 
     m_vecjsfunctionlikeExportFunction = tc::make_vector(tc::join(tc::transform(
