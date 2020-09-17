@@ -7,21 +7,10 @@
 using tc::js::ts;
 
 extern std::optional<tc::js::ts::TypeChecker> g_ojtsTypeChecker;
-std::unordered_set<std::string> g_usstrAllowedMangledTypes;
+extern bool g_bGlobalScopeConstructionComplete;
 
-std::string MangleSymbolName(ts::Symbol const jsymType) noexcept {
-	std::string strMangled = "_js_j";
-	tc::for_each(tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->getFullyQualifiedName(jsymType)), [&](char c) noexcept {
-		switch (c) {
-		case '_': tc::append(strMangled, "_u"); break;
-		case ',': tc::append(strMangled, "_c"); break;
-		case '.': tc::append(strMangled, "_d"); break;
-		case '-': tc::append(strMangled, "_m"); break;
-		case '"': tc::append(strMangled, "_q"); break;
-		default: tc::cont_emplace_back(strMangled, c); break;
-		}
-	});
-	return strMangled;
+std::string FullyQualifiedName(ts::Symbol jsymType) noexcept {
+	return tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->getFullyQualifiedName(jsymType));
 }
 
 std::string CppifyName(ts::Symbol jsymSymbol) noexcept {
@@ -108,7 +97,7 @@ SMangledType WrapType(std::string const strPrefix, tc::js::ReadonlyArray<ts::Typ
 
 std::optional<SMangledType> MangleBootstrapType(ts::Symbol jsym, tc::jst::js_union<tc::js::ReadonlyArray<ts::Type>, tc::jst::js_undefined> jorarrtypeArguments) noexcept {
 	if(jorarrtypeArguments) {
-		std::string strTarget = tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->getFullyQualifiedName(jsym));
+		std::string strTarget = FullyQualifiedName(jsym);
 		auto const jrarrTypeArguments = *jorarrtypeArguments;
 		if ("Array" == strTarget) {
 			_ASSERTEQUAL(jrarrTypeArguments->length(), 1);
@@ -140,7 +129,7 @@ SMangledType CommentType(std::string const strCppType, tc::js::ts::Type const jt
 }
 
 SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept {
-	_ASSERT(!tc::empty(g_usstrAllowedMangledTypes));
+	_ASSERT(g_bGlobalScopeConstructionComplete);
 	
 	// See checker.ts:typeToTypeNodeHelper
 	if (ts::TypeFlags::Any == jtypeRoot->flags() ||
@@ -180,8 +169,9 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 			if(ecpptypeTYPEALIAS & CppType(*ojsymAlias)) {
 				if(auto omt = MangleBootstrapType(*ojsymAlias, jtypeRoot->aliasTypeArguments())) {
 					return *omt;
+				} else if(auto const ojstypealias = tc::cont_find<tc::return_element_or_null>(g_setjstypealias.get<1>(), FullyQualifiedName(*ojsymAlias))) {
+					return {mangled_no_comments, ojstypealias->m_strMangledName};
 				}
-				return {mangled_no_comments, MangleSymbolName(*ojsymAlias)};
 			}
 		}	
 	}
@@ -218,7 +208,7 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 			if(auto const omt = MangleBootstrapType(*josymTargetSymbol, (*jotypereferenceRoot)->typeArguments())) {
 				return *omt;
 			}
-			tc::cont_emplace_back(vecstrExtraInfo, tc::concat("TypeReference=", tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->getFullyQualifiedName(*josymTargetSymbol))));
+			tc::cont_emplace_back(vecstrExtraInfo, tc::concat("TypeReference=", FullyQualifiedName(*josymTargetSymbol)));
 		}
 	}
 	if (auto josymTypeLiteral = IsAnonymousTypeWithTypeLiteral(jtypeRoot)) {
@@ -261,16 +251,16 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 	if (auto jointerfacetypeRoot = tc::js::ts_ext::isClassOrInterface(jtypeRoot)) {
 		if (IsTrivialType(*jointerfacetypeRoot)) {
 			_ASSERTEQUAL((*jointerfacetypeRoot)->flags(), ts::TypeFlags::Object);
-			auto strMangledType = MangleSymbolName(*(*jointerfacetypeRoot)->getSymbol());
-			if (0 < g_usstrAllowedMangledTypes.count(strMangledType)) {
-				return {mangled_no_comments, strMangledType};
+			auto const strName = FullyQualifiedName(*(*jointerfacetypeRoot)->getSymbol());
+			if(auto ojsclass = tc::cont_find<tc::return_element_or_null>(g_setjsclass.get<1>(), FullyQualifiedName(*(*jointerfacetypeRoot)->getSymbol()))) {
+				return {mangled_no_comments, ojsclass->m_strMangledName};
 			} else {
-				tc::cont_emplace_back(vecstrExtraInfo, tc::concat("UnknownMangledClassOrInterface=", strMangledType));
+				tc::cont_emplace_back(vecstrExtraInfo, tc::concat("UnknownMangledClassOrInterface=", strName));
 			}
 		}
 		std::string strThisType = "undefined";
 		if ((*jointerfacetypeRoot)->thisType()) {
-			strThisType = tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->getFullyQualifiedName(*(*(*jointerfacetypeRoot)->thisType())->getSymbol()));
+			strThisType = FullyQualifiedName(*(*(*jointerfacetypeRoot)->thisType())->getSymbol());
 		}
 		tc::cont_emplace_back(vecstrExtraInfo, tc::concat(
 			"ClassOrInterface(",
@@ -286,11 +276,12 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 		auto jsymParentSymbol = *tc::js::ts_ext::Symbol(*jtypeRoot->getSymbol())->parent();
 		_ASSERT(ts::SymbolFlags::RegularEnum == jsymParentSymbol->getFlags() ||
 			ts::SymbolFlags::ConstEnum == jsymParentSymbol->getFlags());
-		auto strMangledType = MangleSymbolName(jsymParentSymbol);
-		if (0 < g_usstrAllowedMangledTypes.count(strMangledType)) {
-			return CommentType(tc_move(strMangledType), jtypeRoot);
+
+		auto const strName = FullyQualifiedName(jsymParentSymbol);
+		if(auto ojsenum = tc::cont_find<tc::return_element_or_null>(g_setjsenum, strName)) {
+			return CommentType(ojsenum->m_strMangledName, jtypeRoot);
 		} else {
-			tc::cont_emplace_back(vecstrExtraInfo, tc::concat("UnknownMangledEnum=", strMangledType));
+			tc::cont_emplace_back(vecstrExtraInfo, tc::concat("UnknownMangledEnum=", strName));
 		}
 	}
 	return {

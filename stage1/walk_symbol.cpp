@@ -1,6 +1,8 @@
 #include "precompiled.h"
 #include "typescript.d.bootstrap.h"
+
 #include "walk_symbol.h"
+#include "mangle.h"
 
 using tc::js::ts;
 extern std::optional<tc::js::ts::TypeChecker> g_ojtsTypeChecker;
@@ -8,7 +10,7 @@ extern std::optional<tc::js::ts::TypeChecker> g_ojtsTypeChecker;
 void PrintSymbolTree(int const nOffset, ts::Symbol const jsymType) noexcept {
 	tc::append(std::cerr,
 		tc::repeat_n(' ', nOffset),
-		"'", tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->getFullyQualifiedName(jsymType)), "', ",
+		"'", FullyQualifiedName(jsymType), "', ",
 		"flags=", tc::as_dec(static_cast<int>(jsymType->getFlags())),
 		"\n"
 	);

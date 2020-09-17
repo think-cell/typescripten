@@ -56,6 +56,23 @@ ECppType CppType(ts::Symbol jsymType) noexcept {
 	return ecpptypeIGNORE;
 }
 
+namespace {
+    std::string MangleSymbolName(ts::Symbol jsymType) noexcept {
+        std::string strMangled = "_js_j";
+        tc::for_each(FullyQualifiedName(jsymType), [&](char c) noexcept {
+            switch (c) {
+            case '_': tc::append(strMangled, "_u"); break;
+            case ',': tc::append(strMangled, "_c"); break;
+            case '.': tc::append(strMangled, "_d"); break;
+            case '-': tc::append(strMangled, "_m"); break;
+            case '"': tc::append(strMangled, "_q"); break;
+            default: tc::cont_emplace_back(strMangled, c); break;
+            }
+        });
+        return strMangled;
+    }
+}
+
 SJsEnumOption::SJsEnumOption(ts::Symbol jsymOption) noexcept
     : m_jsymOption([&]() noexcept {
         _ASSERTEQUAL(jsymOption->getFlags(), ts::SymbolFlags::EnumMember);
@@ -85,9 +102,10 @@ SJsEnumOption::SJsEnumOption(ts::Symbol jsymOption) noexcept
 
 SJsEnum::SJsEnum(ts::Symbol jsymEnum) noexcept
     : m_jsym(jsymEnum)
-    , m_strMangledName(MangleSymbolName(jsymEnum))
+    , m_strQualifiedName(FullyQualifiedName(m_jsym))
+    , m_strMangledName(MangleSymbolName(m_jsym))
     , m_vecjsenumoption(tc::make_vector(tc::transform(
-        *tc::js::ts_ext::Symbol(jsymEnum)->exports(),
+        *tc::js::ts_ext::Symbol(m_jsym)->exports(),
         [](ts::Symbol jsymOption) noexcept {
             return SJsEnumOption(jsymOption);
         }
@@ -154,9 +172,8 @@ SMangledType const& SJsVariableLike::MangleType() const noexcept {
 }
 
 SJsFunctionLike::SJsFunctionLike(ts::Symbol jsymFunctionLike, ts::Declaration const jdeclFunctionLike) noexcept
-    : m_jsymFunctionLike(jsymFunctionLike)
-    , m_strCppifiedName(CppifyName(m_jsymFunctionLike))
-    , m_jdeclFunctionLike(jdeclFunctionLike)
+    : m_jsym(jsymFunctionLike)
+    , m_strCppifiedName(CppifyName(m_jsym))
     , m_jtsSignatureDeclaration([&]() noexcept -> ts::SignatureDeclaration {
         if (auto const jotsMethodSignature = tc::js::ts_ext::isMethodSignature(jdeclFunctionLike)) { // In interfaces.
             return *jotsMethodSignature;
@@ -186,7 +203,7 @@ SJsFunctionLike::SJsFunctionLike(ts::Symbol jsymFunctionLike, ts::Declaration co
         ts::ModifierFlags::Ambient != ts::getCombinedModifierFlags(jdeclFunctionLike)) {
         tc::append(std::cerr,
             "Unknown getCombinedModifierFlags for jdeclFunctionLike ",
-            tc::explicit_cast<std::string>(m_jsymFunctionLike->getName()),
+            tc::explicit_cast<std::string>(m_jsym->getName()),
             ": ",
             tc::as_dec(static_cast<int>(ts::getCombinedModifierFlags(jdeclFunctionLike))),
             "\n"
@@ -248,7 +265,8 @@ std::string const& SJsFunctionLike::CanonizedParameterCppTypes() const noexcept 
 
 SJsClass::SJsClass(ts::Symbol jsymClass) noexcept
     : m_jsym(jsymClass)
-    , m_strMangledName(MangleSymbolName(jsymClass))
+    , m_strQualifiedName(FullyQualifiedName(m_jsym))
+    , m_strMangledName(MangleSymbolName(m_jsym))
     , m_bHasImplicitDefaultConstructor(false)
 {}
 
@@ -294,7 +312,7 @@ void SJsClass::Initialize() noexcept {
         m_bHasImplicitDefaultConstructor = !tc::find_first_if<tc::return_bool>(
             m_vecjsfunctionlikeMethod,
             [](SJsFunctionLike const& jsfunctionlikeMethod) noexcept {
-                return ts::SymbolFlags::Constructor == jsfunctionlikeMethod.m_jsymFunctionLike->getFlags();
+                return ts::SymbolFlags::Constructor == jsfunctionlikeMethod.m_jsym->getFlags();
             }
         );
     }
@@ -302,7 +320,7 @@ void SJsClass::Initialize() noexcept {
 
 void SJsClass::ResolveBaseClasses() noexcept {
     auto AddBaseClass = [this](ts::Symbol jsymBase) noexcept {
-        if(auto ojsclass = tc::cont_find<tc::return_element_or_null>(g_setjsclass.get<1>(), MangleSymbolName(jsymBase))) {
+        if(auto ojsclass = tc::cont_find<tc::return_element_or_null>(g_setjsclass.get<1>(), FullyQualifiedName(jsymBase))) {
             tc::cont_emplace_back(m_vecpjsclassBase, std::addressof(*ojsclass));
         } else {
             tc::cont_emplace_back(m_vecjsymBaseUnknown, jsymBase);
@@ -353,7 +371,8 @@ SJsTypeAlias::SJsTypeAlias(ts::Symbol jsym) noexcept
     : m_jsym(jsym)
     , m_jtypenode(ts::TypeAliasDeclaration(jsym->declarations()[0])->type())
     , m_jtype((*g_ojtsTypeChecker)->getTypeFromTypeNode(m_jtypenode))
-    , m_strMangledName(MangleSymbolName(jsym))
+    , m_strQualifiedName(FullyQualifiedName(m_jsym))
+    , m_strMangledName(MangleSymbolName(m_jsym))
 {}
 
 SMangledType SJsTypeAlias::MangleType() const noexcept {

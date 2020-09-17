@@ -29,7 +29,9 @@ struct SJsEnumOption {
 
 struct SJsEnum {
     tc::js::ts::Symbol m_jsym;
+    std::string m_strQualifiedName;
     std::string m_strMangledName;
+
     std::vector<SJsEnumOption> m_vecjsenumoption;
     bool m_bIsIntegral;
 
@@ -40,6 +42,7 @@ struct SJsVariableLike {
     tc::js::ts::Symbol m_jsym;
     std::string m_strJsName;
     std::string m_strCppifiedName;
+    
 private:
     tc::js::ts::Declaration m_jdeclVariableLike; // There may be multiple declarations, we ensure they do not conflict.
     std::optional<SMangledType> mutable m_omtType; // cached
@@ -53,9 +56,9 @@ public:
 };
 
 struct SJsFunctionLike {
-    tc::js::ts::Symbol m_jsymFunctionLike;
+    tc::js::ts::Symbol m_jsym;
     std::string m_strCppifiedName;
-    tc::js::ts::Declaration m_jdeclFunctionLike;
+
     tc::js::ts::SignatureDeclaration m_jtsSignatureDeclaration;
     tc::js::ts::Signature m_jtsSignature;
     tc::jst::js_union<tc::js::Array<tc::js::ts::TypeParameter>, tc::jst::js_undefined> m_joptarrunkTypeParameter;
@@ -105,7 +108,9 @@ protected:
 
 struct SJsClass final : SJsScope { 
     tc::js::ts::Symbol m_jsym;
+    std::string m_strQualifiedName;
     std::string m_strMangledName;
+
     std::vector<SJsFunctionLike> m_vecjsfunctionlikeMethod;
     std::vector<SJsVariableLike> m_vecjsvariablelikeProperty;
     std::vector<SJsClass const*> m_vecpjsclassBase;
@@ -124,6 +129,7 @@ struct SJsTypeAlias final {
     tc::js::ts::TypeNode m_jtypenode;
     tc::js::ts::Type m_jtype;
 
+    std::string m_strQualifiedName;
     std::string m_strMangledName;
 
     SJsTypeAlias(tc::js::ts::Symbol jsym) noexcept;
@@ -135,7 +141,7 @@ using SetJsEnum =
 		SJsEnum,
 		boost::multi_index::indexed_by<	
 			boost::multi_index::ordered_unique<
-				boost::multi_index::key<&SJsEnum::m_strMangledName>
+				boost::multi_index::key<&SJsEnum::m_strQualifiedName>
 			>
 		>
 	>;
@@ -147,7 +153,7 @@ using SetJsClass =
 		boost::multi_index::indexed_by<	
 			boost::multi_index::sequenced <>,
 			boost::multi_index::ordered_unique<
-				boost::multi_index::key<&SJsClass::m_strMangledName>
+				boost::multi_index::key<&SJsClass::m_strQualifiedName>
 			>
 		>
 	>;
@@ -159,7 +165,7 @@ using SetJsTypeAlias =
 		boost::multi_index::indexed_by<	
             boost::multi_index::sequenced <>,
 			boost::multi_index::ordered_unique<
-				boost::multi_index::key<&SJsTypeAlias::m_strMangledName>
+				boost::multi_index::key<&SJsTypeAlias::m_strQualifiedName>
 			>
 		>
 	>;
