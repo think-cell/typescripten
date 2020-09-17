@@ -225,25 +225,19 @@ int main(int argc, char* argv[]) {
 				// We have to mark enums as IsJsIntegralEnum before using in js interop.
 				return tc::concat(
 					"	enum class ", jsenumEnum.m_strMangledName, " {\n",
-					tc::join(
+					tc::join_separated(
 						tc::transform(jsenumEnum.m_vecjsenumoption, [&jsenumEnum](SJsEnumOption const& jsenumoption) noexcept {
-							return tc_conditional_range(
-								jsenumoption.m_ovardblstrValue,
-								tc::concat(
-									"		", jsenumoption.m_strCppifiedName,
-									tc_conditional_range(
-										jsenumEnum.m_bIsIntegral,
-										tc::concat(" = ", tc::as_dec(tc::explicit_cast<int>(std::get<double>(*jsenumoption.m_ovardblstrValue))))
-									),
-									",\n"
-								),
-								tc::concat(
-									"		/*", jsenumoption.m_strJsName, " = ??? */\n"
+							return tc::concat(
+								"		", jsenumoption.m_strCppifiedName,
+								tc_conditional_range(
+									jsenumEnum.m_bIsIntegral && jsenumoption.m_ovardblstrValue,
+									tc::concat(" = ", tc::as_dec(tc::explicit_cast<int>(std::get<double>(*jsenumoption.m_ovardblstrValue))))
 								)
 							);
-						})
+						}),
+						",\n"
 					),
-					"	};\n"
+					"\n	};\n"
 				);
 			})),
 			"} // namespace tc::js_defs\n",

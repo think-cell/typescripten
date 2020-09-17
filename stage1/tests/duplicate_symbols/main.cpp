@@ -17,6 +17,7 @@ int main() {
     // Namespace + enum 
     static_assert(std::is_same<decltype(tc::js::XYZ_class::x()), double>::value);
     static_assert(static_cast<int>(tc::js::XYZ_enum::d) == 4);
+    static_assert(static_cast<int>(tc::js::XYZ_enum::a) == 0);
 
     // Namespace + function
     static_assert(std::is_same<decltype(tc::js::test_class::T()), double>::value);
