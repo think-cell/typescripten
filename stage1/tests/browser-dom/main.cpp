@@ -16,7 +16,7 @@ int main() {
 	} clicker;
 	tc::js::onclick(clicker.m_jfuncOnClick);
 
-	tc::js::document()->addEventListener(tc::jst::js_string("click"), clicker.m_jfuncOnClick);
+	// tc::js::document()->addEventListener(tc::jst::js_string("click"), clicker.m_jfuncOnClick);
 
 	printf("Success!\n");
 }

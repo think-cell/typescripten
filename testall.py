@@ -38,7 +38,8 @@ if __name__ == "__main__":
                             
                     except subprocess.CalledProcessError as e:
                         print("[FAILED]\n")
-                        print(e.stdout.decode())
+                        if e.stdout:
+                            print(e.stdout.decode())
 
     RunTests(os.path.join(strScriptPath, "examples"))
 
@@ -55,6 +56,7 @@ if __name__ == "__main__":
 
     except subprocess.CalledProcessError as e:
         print("[FAILED]\n")
-        print(e.stdout.decode())
+        if e.stdout:
+            print(e.stdout.decode())
         exit(1)
 
