@@ -11,22 +11,27 @@ using tc::jst::js_unknown;
 extern std::optional<tc::js::ts::TypeChecker> g_ojtsTypeChecker;
 
 ECppType CppType(ts::Symbol jsymType) noexcept {
-	// TODO: Symbol::getFlags returns a bitmask and we must treat it so
-	// Callers of CppType must treat return value as a bit mask too
-	if(ts::SymbolFlags::RegularEnum == jsymType->getFlags() || ts::SymbolFlags::ConstEnum == jsymType->getFlags()) {
-		return ecpptypeENUM;
-	}
-	if(ts::SymbolFlags::Class == jsymType->getFlags() ||
-	ts::SymbolFlags::Interface == jsymType->getFlags() ||
-	(ts::SymbolFlags::Interface | ts::SymbolFlags::FunctionScopedVariable) == jsymType->getFlags() ||
-	ts::SymbolFlags::ValueModule == jsymType->getFlags() ||
-	(ts::SymbolFlags::ValueModule | ts::SymbolFlags::Interface) == jsymType->getFlags() ||
-	(ts::SymbolFlags::NamespaceModule | ts::SymbolFlags::Interface) == jsymType->getFlags() ||
-	ts::SymbolFlags::NamespaceModule == jsymType->getFlags()) {
-		return ecpptypeCLASS;
+    ECppType ecpptype = ecpptypeIGNORE;
+	if((ts::SymbolFlags::RegularEnum|ts::SymbolFlags::ConstEnum) & jsymType->getFlags()) {
+		ecpptype |= ecpptypeENUM;
 	}
 
-	if(ts::SymbolFlags::TypeAlias==jsymType->getFlags()) {
+	if((ts::SymbolFlags::Class|ts::SymbolFlags::Interface|ts::SymbolFlags::ValueModule|ts::SymbolFlags::NamespaceModule) & jsymType->getFlags()
+    && (
+        // node.js may introduce a property __promisify__: https://nodejs.org/api/util.html#util_util_promisify_original
+        // Don't generate a class if that is the only export on the symbol 
+        !(ts::SymbolFlags::Function & jsymType->getFlags())
+        || !tc::all_of(
+            (*g_ojtsTypeChecker)->getExportsOfModule(jsymType), 
+            [](auto jsym) noexcept { 
+                return tc::equal("__promisify__", tc::explicit_cast<std::string>(jsym->getName())); 
+            }
+        )
+    )) {
+		ecpptype |= ecpptypeCLASS;
+	}
+
+	if(ts::SymbolFlags::TypeAlias&jsymType->getFlags()) {
 		// Emit type aliases as using declarations if the type alias only references types, not e.g. literals
 		// A type alias of a single or a union of literals should be transformed into tag structs in C++
 		auto IsObject = [](auto jtypeInternal) noexcept {
@@ -46,14 +51,21 @@ ECppType CppType(ts::Symbol jsymType) noexcept {
 			}
 		};
 
-		auto const jtype = (*g_ojtsTypeChecker)->getTypeFromTypeNode(ts::TypeAliasDeclaration(jsymType->declarations()[0])->type());
+		auto const jtype = (*g_ojtsTypeChecker)->getTypeFromTypeNode(tc::js::ts::TypeAliasDeclaration(
+            tc::find_first_if<tc::return_value>(
+                jsymType->declarations(), 
+                [](tc::js::ts::Declaration decl) noexcept -> bool {
+                    return tc::js::ts::isTypeAliasDeclaration(decl);
+                }
+            )
+        )->type());
 		auto const ojuniontype = tc::js::ts_ext::isUnion(jtype);
 		if((ojuniontype && tc::all_of((*ojuniontype)->types(), IsObject))
 		|| IsObject(jtype)) {
-			return ecpptypeTYPEALIAS;
+			ecpptype |= ecpptypeTYPEALIAS;
 		}
 	}
-	return ecpptypeIGNORE;
+	return ecpptype;
 }
 
 namespace {
@@ -73,15 +85,15 @@ namespace {
     }
 }
 
-SJsEnumOption::SJsEnumOption(ts::Symbol jsymOption) noexcept
-    : m_jsymOption([&]() noexcept {
-        _ASSERTEQUAL(jsymOption->getFlags(), ts::SymbolFlags::EnumMember);
-        return jsymOption;
+SJsEnumOption::SJsEnumOption(ts::Symbol jsym) noexcept
+    : m_jsym([&]() noexcept {
+        _ASSERTEQUAL(jsym->getFlags(), ts::SymbolFlags::EnumMember);
+        return jsym;
     }())
-    , m_strJsName(tc::explicit_cast<std::string>(jsymOption->getName()))
-    , m_strCppifiedName(CppifyName(jsymOption))
+    , m_strJsName(tc::explicit_cast<std::string>(jsym->getName()))
+    , m_strCppifiedName(CppifyName(jsym))
     , m_jtsEnumMember([&]() noexcept {
-        auto const jarrDeclaration = jsymOption->declarations();
+        auto const jarrDeclaration = jsym->declarations();
         _ASSERTEQUAL(jarrDeclaration->length(), 1);
         return ts::EnumMember(jarrDeclaration[0]);
     }())
@@ -100,15 +112,18 @@ SJsEnumOption::SJsEnumOption(ts::Symbol jsymOption) noexcept
     }())
 {}
 
-SJsEnum::SJsEnum(ts::Symbol jsymEnum) noexcept
-    : m_jsym(jsymEnum)
+SJsEnum::SJsEnum(ts::Symbol jsym) noexcept
+    : m_jsym(jsym)
     , m_strQualifiedName(FullyQualifiedName(m_jsym))
     , m_strMangledName(MangleSymbolName(m_jsym))
     , m_vecjsenumoption(tc::make_vector(tc::transform(
-        *tc::js::ts_ext::Symbol(m_jsym)->exports(),
-        [](ts::Symbol jsymOption) noexcept {
-            return SJsEnumOption(jsymOption);
-        }
+        tc::filter(
+            *tc::js::ts_ext::Symbol(m_jsym)->exports(),
+            [](ts::Symbol const jsymExport) noexcept {
+                return ts::SymbolFlags::EnumMember&jsymExport->getFlags();
+            }
+        ),
+        tc::fn_explicit_cast<SJsEnumOption>()
     )))
     , m_bIsIntegral(!tc::find_first_if<tc::return_bool>(
         m_vecjsenumoption,
@@ -126,30 +141,33 @@ void SJsEnum::Initialize() noexcept {
     tc::cont_must_insert(g_setjsenum, *this);
 }
 
-SJsVariableLike::SJsVariableLike(ts::Symbol jsymName) noexcept
-    : m_jsym(jsymName)
-    , m_strJsName(tc::explicit_cast<std::string>(jsymName->getName()))
-    , m_strCppifiedName(CppifyName(jsymName))
+SJsVariableLike::SJsVariableLike(ts::Symbol jsym) noexcept
+    : m_jsym(jsym)
+    , m_strJsName(tc::explicit_cast<std::string>(m_jsym->getName()))
+    , m_strCppifiedName(CppifyName(m_jsym))
     , m_jdeclVariableLike([&]() noexcept {
-        _ASSERT(1 <= jsymName->declarations()->length());
-        if (1 < jsymName->declarations()->length()) {
+        auto rngvariabledecl = tc::filter(tc::make_vector(m_jsym->declarations()), [](ts::Declaration decl) noexcept { // TODO: https://github.com/think-cell/tcjs/issues/5
+            return tc::js::ts::isVariableDeclaration(decl) || tc::js::ts::isParameter(decl) || tc::js::ts::isPropertySignature(decl) || tc::js::ts::isPropertyDeclaration(decl);;
+        });
+        _ASSERT(!tc::empty(rngvariabledecl));
+        {
             // There may be multiple declarations, but they should have the same type (structurally).
-            // We strenghten this requirement even more for now.
-            auto const jdeclFirst = jsymName->declarations()[0];
+            // We strengthen this requirement even more for now.
+            auto const jdeclFirst = tc_front(rngvariabledecl);
             auto const nModifierFlagsFirst = ts::getCombinedModifierFlags(jdeclFirst);
-            auto const jtypeFirst = (*g_ojtsTypeChecker)->getTypeOfSymbolAtLocation(jsymName, jdeclFirst);
-            tc::for_each(jsymName->declarations(), [&](ts::Declaration const jdeclCurrent) {
+            auto const jtypeFirst = (*g_ojtsTypeChecker)->getTypeOfSymbolAtLocation(m_jsym, jdeclFirst);
+            tc::for_each(rngvariabledecl, [&](ts::Declaration const jdeclCurrent) {
                 auto const nModifierFlagsCurrent = ts::getCombinedModifierFlags(jdeclCurrent);
-                auto const jtypeCurrent = (*g_ojtsTypeChecker)->getTypeOfSymbolAtLocation(jsymName, jdeclCurrent);
+                auto const jtypeCurrent = (*g_ojtsTypeChecker)->getTypeOfSymbolAtLocation(m_jsym, jdeclCurrent);
                 if (nModifierFlagsCurrent != nModifierFlagsFirst || !jtypeCurrent.getEmval().strictlyEquals(jtypeFirst.getEmval())) {
-                    tc::append(std::cerr, "JSVariableLike of symbol '", m_strJsName, "' has ", tc::as_dec(jsymName->declarations()->length()), " conflicting declarations\n");
+                    tc::append(std::cerr, "JSVariableLike of symbol '", m_strJsName, "' has ", tc::as_dec(m_jsym->declarations()->length()), " conflicting declarations\n");
                     _ASSERTFALSE;
                 }
             });
         }
-        return jsymName->declarations()[0];
+        return tc_front(rngvariabledecl);
     }())
-    , m_jtypeDeclared((*g_ojtsTypeChecker)->getTypeOfSymbolAtLocation(jsymName, m_jdeclVariableLike))
+    , m_jtypeDeclared((*g_ojtsTypeChecker)->getTypeOfSymbolAtLocation(m_jsym, m_jdeclVariableLike))
     , m_bReadonly(ts::getCombinedModifierFlags(m_jdeclVariableLike) & ts::ModifierFlags::Readonly)
 {
     ts::ModifierFlags const nModifierFlags = ts::getCombinedModifierFlags(m_jdeclVariableLike);
@@ -175,41 +193,25 @@ SMangledType const& SJsVariableLike::MangleType() const noexcept {
     return *m_omtType;
 }
 
-SJsFunctionLike::SJsFunctionLike(ts::Symbol jsymFunctionLike, ts::Declaration const jdeclFunctionLike) noexcept
-    : m_jsym(jsymFunctionLike)
+SJsFunctionLike::SJsFunctionLike(ts::Symbol jsym, ts::SignatureDeclaration jsigndecl) noexcept
+    : m_jsym(jsym)
     , m_strCppifiedName(CppifyName(m_jsym))
-    , m_jtsSignatureDeclaration([&]() noexcept -> ts::SignatureDeclaration {
-        if (auto const jotsMethodSignature = tc::js::ts_ext::isMethodSignature(jdeclFunctionLike)) { // In interfaces.
-            return *jotsMethodSignature;
-        }
-        if (auto const jotsMethodDeclaration = tc::js::ts_ext::isMethodDeclaration(jdeclFunctionLike)) { // In classes.
-            return *jotsMethodDeclaration;
-        }
-        if (auto const jotsConstructorDeclaration = tc::js::ts_ext::isConstructorDeclaration(jdeclFunctionLike)) {
-            return *jotsConstructorDeclaration;
-        }
-        if (auto const jotsFunctionDeclaration = tc::js::ts_ext::isFunctionDeclaration(jdeclFunctionLike)) {
-            return *jotsFunctionDeclaration;
-        }
-        _ASSERTFALSE;
-    }())
-    , m_jtsSignature(*(*g_ojtsTypeChecker)->getSignatureFromDeclaration(m_jtsSignatureDeclaration))
-    , m_joptarrunkTypeParameter(m_jtsSignature->getTypeParameters())
+    , m_jsignature(*(*g_ojtsTypeChecker)->getSignatureFromDeclaration(jsigndecl))
     , m_vecjsvariablelikeParameters(tc::make_vector(tc::transform(
-        m_jtsSignature->getParameters(),
-        [&](ts::Symbol jsymParameter) noexcept {
+        m_jsignature->getParameters(),
+        [&](ts::Symbol const jsymParameter) noexcept {
             return SJsVariableLike(jsymParameter);
         }
     )))
 {
-    if (ts::ModifierFlags::None != ts::getCombinedModifierFlags(jdeclFunctionLike) &&
-        ts::ModifierFlags::Export != ts::getCombinedModifierFlags(jdeclFunctionLike) &&
-        ts::ModifierFlags::Ambient != ts::getCombinedModifierFlags(jdeclFunctionLike)) {
+    if (ts::ModifierFlags::None != ts::getCombinedModifierFlags(jsigndecl) &&
+        ts::ModifierFlags::Export != ts::getCombinedModifierFlags(jsigndecl) &&
+        ts::ModifierFlags::Ambient != ts::getCombinedModifierFlags(jsigndecl)) {
         tc::append(std::cerr,
-            "Unknown getCombinedModifierFlags for jdeclFunctionLike ",
+            "Unknown getCombinedModifierFlags for jsigndecl ",
             tc::explicit_cast<std::string>(m_jsym->getName()),
             ": ",
-            tc::as_dec(static_cast<int>(ts::getCombinedModifierFlags(jdeclFunctionLike))),
+            tc::as_dec(static_cast<int>(ts::getCombinedModifierFlags(jsigndecl))),
             "\n"
         );
         _ASSERTFALSE;
@@ -267,15 +269,15 @@ std::string const& SJsFunctionLike::CanonizedParameterCppTypes() const noexcept 
     return a.CanonizedParameterCppTypes() < b.CanonizedParameterCppTypes();
 }
 
-SJsClass::SJsClass(ts::Symbol jsymClass) noexcept
-    : m_jsym(jsymClass)
+SJsClass::SJsClass(ts::Symbol jsym) noexcept
+    : m_jsym(jsym)
     , m_strQualifiedName(FullyQualifiedName(m_jsym))
     , m_strMangledName(MangleSymbolName(m_jsym))
     , m_bHasImplicitDefaultConstructor(false)
 {
     SJsScope::Initialize(
         tc_conditional_range(
-            m_jsym->getFlags() & ts::SymbolFlags::Module,
+            ts::SymbolFlags::Module & m_jsym->getFlags(),
             (*g_ojtsTypeChecker)->getExportsOfModule(m_jsym),
             tc::make_empty_range<ts::Symbol>()
         )
@@ -283,19 +285,24 @@ SJsClass::SJsClass(ts::Symbol jsymClass) noexcept
 
     if(auto ojarrsymMembers = tc::js::ts_ext::Symbol(m_jsym)->members()) { 
         auto vecjsymMembers = tc::explicit_cast<std::vector<ts::Symbol>>(*ojarrsymMembers);
-        m_vecjsfunctionlikeMethod = tc::make_vector(tc::join(tc::transform(
+        tc::for_each(
             tc::filter(vecjsymMembers, [](ts::Symbol jsymMember) noexcept {
-                return ts::SymbolFlags::Method == jsymMember->getFlags() || ts::SymbolFlags::Constructor == jsymMember->getFlags();
+                return (ts::SymbolFlags::Method|ts::SymbolFlags::Constructor) & jsymMember->getFlags();
             }),
             [&](ts::Symbol jsymMethod) noexcept {
-                return tc::transform(
-                    jsymMethod->declarations(),
-                    [=](ts::Declaration jdeclMethod) noexcept {
-                        return SJsFunctionLike(jsymMethod, jdeclMethod);
+                tc::for_each(jsymMethod->declarations(),
+                    [&](ts::Declaration jdecl) noexcept {
+                        if (auto const jotsMethodSignature = tc::js::ts_ext::isMethodSignature(jdecl)) { // In interfaces.
+                            tc::cont_emplace_back(m_vecjsfunctionlikeMethod, SJsFunctionLike(jsymMethod, *jotsMethodSignature));
+                        } else if (auto const jotsMethodDeclaration = tc::js::ts_ext::isMethodDeclaration(jdecl)) { // In classes.
+                            tc::cont_emplace_back(m_vecjsfunctionlikeMethod, SJsFunctionLike(jsymMethod, *jotsMethodDeclaration));
+                        } else if (auto const jotsConstructorDeclaration = tc::js::ts_ext::isConstructorDeclaration(jdecl)) {
+                             tc::cont_emplace_back(m_vecjsfunctionlikeMethod, SJsFunctionLike(jsymMethod, *jotsConstructorDeclaration));
+                        }
                     }
                 );
             }
-        )));
+        );
 
         m_vecjsvariablelikeProperty = tc::make_vector(tc::transform(
             tc::filter(vecjsymMembers, [](ts::Symbol jsymMember) noexcept {
@@ -375,7 +382,14 @@ void SJsClass::ResolveBaseClasses() noexcept {
 
 SJsTypeAlias::SJsTypeAlias(ts::Symbol jsym) noexcept 
     : m_jsym(jsym)
-    , m_jtypenode(ts::TypeAliasDeclaration(jsym->declarations()[0])->type())
+    , m_jtypenode(tc::js::ts::TypeAliasDeclaration(
+        tc::find_first_if<tc::return_value>(
+            jsym->declarations(), 
+            [](tc::js::ts::Declaration decl) noexcept -> bool {
+                return tc::js::ts::isTypeAliasDeclaration(decl);
+            }
+        )
+      )->type())
     , m_jtype((*g_ojtsTypeChecker)->getTypeFromTypeNode(m_jtypenode))
     , m_strQualifiedName(FullyQualifiedName(m_jsym))
     , m_strMangledName(MangleSymbolName(m_jsym))
@@ -397,7 +411,7 @@ SMangledType SJsTypeAlias::MangleType() const noexcept {
     //
     // This does not work in all cases, see https://github.com/microsoft/TypeScript/issues/28197
     return ::MangleType(
-        (*g_ojtsTypeChecker)->getTypeFromTypeNode(m_jtypenode), 
+        m_jtype, 
         /*bUseTypeAlias*/ [&]() noexcept {
             if (auto const ojsymAlias = m_jtype->aliasSymbol())
             {

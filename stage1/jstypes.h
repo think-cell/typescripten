@@ -19,14 +19,14 @@ BITMASK_OPS(ECppType);
 ECppType CppType(tc::js::ts::Symbol jsymType) noexcept;
 
 struct SJsEnumOption final {
-    tc::js::ts::Symbol m_jsymOption;
+    tc::js::ts::Symbol m_jsym;
     std::string m_strJsName;
     std::string m_strCppifiedName;
     tc::js::ts::EnumMember m_jtsEnumMember;
     std::optional<std::variant<double, std::string>> m_ovardblstrValue;
 
     SJsEnumOption() = delete;
-    SJsEnumOption(tc::js::ts::Symbol jsymOption) noexcept;    
+    SJsEnumOption(tc::js::ts::Symbol jsym) noexcept;    
     SJsEnumOption(SJsEnumOption&&) noexcept = default;
     SJsEnumOption& operator=(SJsEnumOption&&) noexcept = default;
 };
@@ -75,10 +75,7 @@ static_assert(std::is_nothrow_move_assignable<SJsVariableLike>::value);
 struct SJsFunctionLike final {
     tc::js::ts::Symbol m_jsym;
     std::string m_strCppifiedName;
-
-    tc::js::ts::SignatureDeclaration m_jtsSignatureDeclaration;
-    tc::js::ts::Signature m_jtsSignature;
-    tc::jst::js_union<tc::js::Array<tc::js::ts::TypeParameter>, tc::jst::js_undefined> m_joptarrunkTypeParameter;
+    tc::js::ts::Signature m_jsignature;
     std::vector<SJsVariableLike> m_vecjsvariablelikeParameters;
 
 private:
@@ -87,7 +84,7 @@ private:
     std::string const& CanonizedParameterCppTypes() const noexcept;
 
 public:
-    SJsFunctionLike(tc::js::ts::Symbol jsymFunctionLike, tc::js::ts::Declaration jdeclFunctionLike) noexcept;
+    SJsFunctionLike(tc::js::ts::Symbol jsym, tc::js::ts::SignatureDeclaration jsigndecl) noexcept;
     SJsFunctionLike(SJsFunctionLike&&) noexcept = default;
     SJsFunctionLike& operator=(SJsFunctionLike&&) noexcept = default;
 
@@ -227,27 +224,32 @@ void SJsScope::Initialize(Rng&& rngjsym) noexcept {
         });
     });
 
-    m_vecjsfunctionlikeExportFunction = tc::make_vector(tc::join(tc::transform(
+    tc::for_each(
         tc::filter(
             rngjsym,
             [](tc::js::ts::Symbol jsymExport) noexcept {
-                return tc::js::ts::SymbolFlags::Function == jsymExport->getFlags();
+                return tc::js::ts::SymbolFlags::Function & jsymExport->getFlags();
             }
         ),
         [&](tc::js::ts::Symbol jsymFunction) noexcept {
-            return tc::transform(
+            tc::for_each(
                 jsymFunction->declarations(),
                 [=](tc::js::ts::Declaration jdeclFunction) noexcept {
-                    return SJsFunctionLike(jsymFunction, jdeclFunction);
+                    if(auto const ojsfuncdecl = tc::js::ts_ext::isFunctionDeclaration(jdeclFunction)) {
+                        tc::cont_emplace_back(m_vecjsfunctionlikeExportFunction, SJsFunctionLike(jsymFunction, *ojsfuncdecl));
+                    }
                 }
             );
         }
-    )));
+    );
 
     m_vecjsvariablelikeExportVariable = tc::make_vector(tc::transform(
         tc::filter(
             rngjsym,
             [](tc::js::ts::Symbol jsymExport) noexcept {
+                // TODO: Leave equality check here for now. 
+                // tc::js::ts::SymbolFlags::FunctionScopedVariable|tc::js::ts::SymbolFlags::Interface is not turned into a variable but is 
+                // merged into a class
                 return
                     tc::js::ts::SymbolFlags::FunctionScopedVariable == jsymExport->getFlags() ||
                     tc::js::ts::SymbolFlags::BlockScopedVariable == jsymExport->getFlags();

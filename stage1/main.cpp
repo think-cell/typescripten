@@ -393,13 +393,13 @@ int main(int argc, char* argv[]) {
 					tc::join(tc::transform(
 						pjsclass->m_vecjsfunctionlikeMethod,
 						[](SJsFunctionLike const& jsfunctionlikeMethod) noexcept {
-							if (ts::SymbolFlags::Method == jsfunctionlikeMethod.m_jsym->getFlags()) {
-								return tc::explicit_cast<std::string>(tc::concat(
-									"		auto ", jsfunctionlikeMethod.m_strCppifiedName, "(", jsfunctionlikeMethod.CppifiedParametersWithCommentsDecl(), ") noexcept;\n"
-								));
-							} else if (ts::SymbolFlags::Constructor == jsfunctionlikeMethod.m_jsym->getFlags()) {
+							if (ts::SymbolFlags::Constructor & jsfunctionlikeMethod.m_jsym->getFlags()) {
 								return tc::explicit_cast<std::string>(tc::concat(
 									"		static auto _tcjs_construct(", jsfunctionlikeMethod.CppifiedParametersWithCommentsDecl(), ") noexcept;\n"
+								));
+							} else if (ts::SymbolFlags::Method & jsfunctionlikeMethod.m_jsym->getFlags()) {
+								return tc::explicit_cast<std::string>(tc::concat(
+									"		auto ", jsfunctionlikeMethod.m_strCppifiedName, "(", jsfunctionlikeMethod.CppifiedParametersWithCommentsDecl(), ") noexcept;\n"
 								));
 							} else {
 								_ASSERTFALSE;
@@ -424,7 +424,7 @@ int main(int argc, char* argv[]) {
 						[&strClassNamespace](SJsFunctionLike const& jsfunctionlikeFunction) noexcept {
 							auto const rngchCallArguments = tc::join_separated(
 								tc::transform(
-									jsfunctionlikeFunction.m_jtsSignature->getParameters(),
+									jsfunctionlikeFunction.m_jsignature->getParameters(),
 									[](ts::Symbol const jsymParameter) noexcept {
 										return CppifyName(jsymParameter);
 									}
@@ -438,10 +438,10 @@ int main(int argc, char* argv[]) {
 								"	inline auto ", strClassNamespace, "_tcjs_definitions::",
 									jsfunctionlikeFunction.m_strCppifiedName, "(", jsfunctionlikeFunction.CppifiedParametersWithCommentsDef(), ") noexcept {\n",
 								tc_conditional_range(
-									ts::TypeFlags::Void == jsfunctionlikeFunction.m_jtsSignature->getReturnType()->flags(),
+									ts::TypeFlags::Void == jsfunctionlikeFunction.m_jsignature->getReturnType()->flags(),
 									tc::concat("		", rngchFunctionCall, ";\n"),
 									tc::concat(
-										"		return ", rngchFunctionCall, ".template as<", MangleType(jsfunctionlikeFunction.m_jtsSignature->getReturnType()).m_strWithComments, ">();\n"
+										"		return ", rngchFunctionCall, ".template as<", MangleType(jsfunctionlikeFunction.m_jsignature->getReturnType()).m_strWithComments, ">();\n"
 									)
 								),
 								"	}\n"
@@ -486,12 +486,19 @@ int main(int argc, char* argv[]) {
 						pjsclass->m_vecjsfunctionlikeMethod,
 						[&pjsclass, &strClassNamespace](SJsFunctionLike const& jsfunctionlikeMethod) noexcept {
 							auto const rngstrArguments = tc::transform(
-								jsfunctionlikeMethod.m_jtsSignature->getParameters(),
+								jsfunctionlikeMethod.m_jsignature->getParameters(),
 								[](ts::Symbol const jsymParameter) noexcept {
 									return CppifyName(jsymParameter);
 								}
 							);
-							if (ts::SymbolFlags::Method == jsfunctionlikeMethod.m_jsym->getFlags()) {
+							if (ts::SymbolFlags::Constructor & jsfunctionlikeMethod.m_jsym->getFlags()) {
+								auto const rngchCallArguments = tc::join_separated(rngstrArguments, ", ");
+								return tc::explicit_cast<std::string>(tc::concat(
+									"	inline auto ", strClassNamespace, "_tcjs_construct(", jsfunctionlikeMethod.CppifiedParametersWithCommentsDef(), ") noexcept {\n",
+									"		return ", pjsclass->m_strMangledName, "(", RetrieveSymbolFromCpp(pjsclass->m_jsym), ".new_(", rngchCallArguments, "));\n",
+									"	}\n"
+								));
+							} else if (ts::SymbolFlags::Method & jsfunctionlikeMethod.m_jsym->getFlags()) {
 								auto const rngchCallArguments = tc::join_separated(
 									tc::concat(
 										tc::single(tc::concat("\"", tc::explicit_cast<std::string>(jsfunctionlikeMethod.m_jsym->getName()), "\"")),
@@ -501,14 +508,7 @@ int main(int argc, char* argv[]) {
 								);
 								return tc::explicit_cast<std::string>(tc::concat(
 									"	inline auto ", strClassNamespace, jsfunctionlikeMethod.m_strCppifiedName, "(", jsfunctionlikeMethod.CppifiedParametersWithCommentsDef(), ") noexcept {\n",
-									"		return _call<", MangleType(jsfunctionlikeMethod.m_jtsSignature->getReturnType()).m_strWithComments, ">(", rngchCallArguments, ");\n",
-									"	}\n"
-								));
-							} else if (ts::SymbolFlags::Constructor == jsfunctionlikeMethod.m_jsym->getFlags()) {
-								auto const rngchCallArguments = tc::join_separated(rngstrArguments, ", ");
-								return tc::explicit_cast<std::string>(tc::concat(
-									"	inline auto ", strClassNamespace, "_tcjs_construct(", jsfunctionlikeMethod.CppifiedParametersWithCommentsDef(), ") noexcept {\n",
-									"		return ", pjsclass->m_strMangledName, "(", RetrieveSymbolFromCpp(pjsclass->m_jsym), ".new_(", rngchCallArguments, "));\n",
+									"		return _call<", MangleType(jsfunctionlikeMethod.m_jsignature->getReturnType()).m_strWithComments, ">(", rngchCallArguments, ");\n",
 									"	}\n"
 								));
 							} else {
@@ -535,7 +535,7 @@ int main(int argc, char* argv[]) {
 					// TODO: deduplicate following code into SJsFunctionLike.
 					auto const rngchCallArguments = tc::join_separated(
 						tc::transform(
-							jsfunctionlikeFunction.m_jtsSignature->getParameters(),
+							jsfunctionlikeFunction.m_jsignature->getParameters(),
 							[](ts::Symbol const jsymParameter) noexcept {
 								return CppifyName(jsymParameter);
 							}
@@ -549,10 +549,10 @@ int main(int argc, char* argv[]) {
 						"	inline auto ",
 							jsfunctionlikeFunction.m_strCppifiedName, "(", jsfunctionlikeFunction.CppifiedParametersWithCommentsDef(), ") noexcept {\n",
 						tc_conditional_range(
-							ts::TypeFlags::Void == jsfunctionlikeFunction.m_jtsSignature->getReturnType()->flags(),
+							ts::TypeFlags::Void == jsfunctionlikeFunction.m_jsignature->getReturnType()->flags(),
 							tc::concat("		", rngchFunctionCall, ";\n"),
 							tc::concat(
-								"		return ", rngchFunctionCall, ".template as<", MangleType(jsfunctionlikeFunction.m_jtsSignature->getReturnType()).m_strWithComments, ">();\n"
+								"		return ", rngchFunctionCall, ".template as<", MangleType(jsfunctionlikeFunction.m_jsignature->getReturnType()).m_strWithComments, ">();\n"
 							)
 						),
 						"	}\n"
