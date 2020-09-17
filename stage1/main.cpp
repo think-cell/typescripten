@@ -223,6 +223,9 @@ int main(int argc, char* argv[]) {
 			"namespace tc::js_defs {\n",
 			tc::join(tc::transform(g_setjsenum, [](SJsEnum const& jsenumEnum) noexcept {
 				// We have to mark enums as IsJsIntegralEnum before using in js interop.
+				// We have to generate them as enum class even though this is semantically stronger than 
+				// TypeScript enums actually are. Non-class C++ enum options must be globally unique though
+				// and TypeScript enum option names are scoped names like C++ enum class options.
 				return tc::concat(
 					"	enum class ", jsenumEnum.m_strMangledName, " {\n",
 					tc::join_separated(
