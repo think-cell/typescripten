@@ -224,13 +224,13 @@ int main(int argc, char* argv[]) {
 			tc::join(tc::transform(g_setjsenum, [](SJsEnum const& jsenumEnum) noexcept {
 				// We have to mark enums as IsJsIntegralEnum before using in js interop.
 				return tc::concat(
-					"enum class _enum", jsenumEnum.m_strMangledName, " {\n",
+					"	enum class ", jsenumEnum.m_strMangledName, " {\n",
 					tc::join(
 						tc::transform(jsenumEnum.m_vecjsenumoption, [&jsenumEnum](SJsEnumOption const& jsenumoption) noexcept {
 							return tc_conditional_range(
 								jsenumoption.m_ovardblstrValue,
 								tc::concat(
-									"	", jsenumoption.m_strCppifiedName,
+									"		", jsenumoption.m_strCppifiedName,
 									tc_conditional_range(
 										jsenumEnum.m_bIsIntegral,
 										tc::concat(" = ", tc::as_dec(tc::explicit_cast<int>(std::get<double>(*jsenumoption.m_ovardblstrValue))))
@@ -238,12 +238,12 @@ int main(int argc, char* argv[]) {
 									",\n"
 								),
 								tc::concat(
-									"	/*", jsenumoption.m_strJsName, " = ??? */\n"
+									"		/*", jsenumoption.m_strJsName, " = ??? */\n"
 								)
 							);
 						})
 					),
-					"};\n"
+					"	};\n"
 				);
 			})),
 			"} // namespace tc::js_defs\n",
@@ -254,12 +254,12 @@ int main(int argc, char* argv[]) {
 				return tc_conditional_range(
 					jsenumEnum.m_bIsIntegral,
 					tc::concat(
-						"template<> struct IsJsIntegralEnum<js_defs::_enum", jsenumEnum.m_strMangledName, "> : std::true_type {};\n"
+						"	template<> struct IsJsIntegralEnum<js_defs::", jsenumEnum.m_strMangledName, "> : std::true_type {};\n"
 					),
 					tc::concat(
-						"template<> struct IsJsHeterogeneousEnum<js_defs::_enum", jsenumEnum.m_strMangledName, "> : std::true_type {\n",
+						"template<> struct IsJsHeterogeneousEnum<js_defs::", jsenumEnum.m_strMangledName, "> : std::true_type {\n",
 						"	static inline auto const& Values() {\n",
-						"		using E = js_defs::_enum", jsenumEnum.m_strMangledName, ";\n",
+						"		using E = js_defs::", jsenumEnum.m_strMangledName, ";\n",
 						"		static tc::unordered_map<E, jst::js_unknown> vals{\n",
 						tc::join_separated(
 							tc::transform(
@@ -294,11 +294,6 @@ int main(int argc, char* argv[]) {
 			"} // namespace tc::jst\n",
 			"namespace tc::js_defs {\n",
 			"	using namespace jst; // no ADL\n",
-			tc::join(tc::transform(g_setjsenum, [](SJsEnum const& jsenumEnum) noexcept {
-				return tc::concat(
-					"	using ", jsenumEnum.m_strMangledName, " = _enum", jsenumEnum.m_strMangledName, ";\n"
-				);
-			})),
 			tc::join(tc::transform(vecpjsclassSorted, [](SJsClass const* pjsclass) noexcept {
 				return tc::concat(
 					"	struct _impl", pjsclass->m_strMangledName, ";\n",
@@ -343,7 +338,7 @@ int main(int argc, char* argv[]) {
 							return tc::visit(varjs, [](auto const& js) noexcept {
 								return tc::concat(
 									"			using ",
-									CppifyName(js.m_jsym),
+									js.m_strCppifiedName,
 									" = ",
 									js.m_strMangledName,
 									";\n"
@@ -393,11 +388,11 @@ int main(int argc, char* argv[]) {
 					tc::join(tc::transform(
 						pjsclass->m_vecjsfunctionlikeMethod,
 						[](SJsFunctionLike const& jsfunctionlikeMethod) noexcept {
-							if (ts::SymbolFlags::Constructor & jsfunctionlikeMethod.m_jsym->getFlags()) {
+							if (static_cast<bool>(ts::SymbolFlags::Constructor & jsfunctionlikeMethod.m_jsym->getFlags())) {
 								return tc::explicit_cast<std::string>(tc::concat(
 									"		static auto _tcjs_construct(", jsfunctionlikeMethod.CppifiedParametersWithCommentsDecl(), ") noexcept;\n"
 								));
-							} else if (ts::SymbolFlags::Method & jsfunctionlikeMethod.m_jsym->getFlags()) {
+							} else if (static_cast<bool>(ts::SymbolFlags::Method & jsfunctionlikeMethod.m_jsym->getFlags())) {
 								return tc::explicit_cast<std::string>(tc::concat(
 									"		auto ", jsfunctionlikeMethod.m_strCppifiedName, "(", jsfunctionlikeMethod.CppifiedParametersWithCommentsDecl(), ") noexcept;\n"
 								));
@@ -426,7 +421,7 @@ int main(int argc, char* argv[]) {
 								tc::transform(
 									jsfunctionlikeFunction.m_jsignature->getParameters(),
 									[](ts::Symbol const jsymParameter) noexcept {
-										return CppifyName(jsymParameter);
+										return CppifyName(jsymParameter, enamectxNONE);
 									}
 								),
 								", "
@@ -488,17 +483,17 @@ int main(int argc, char* argv[]) {
 							auto const rngstrArguments = tc::transform(
 								jsfunctionlikeMethod.m_jsignature->getParameters(),
 								[](ts::Symbol const jsymParameter) noexcept {
-									return CppifyName(jsymParameter);
+									return CppifyName(jsymParameter, enamectxNONE);
 								}
 							);
-							if (ts::SymbolFlags::Constructor & jsfunctionlikeMethod.m_jsym->getFlags()) {
+							if (static_cast<bool>(ts::SymbolFlags::Constructor & jsfunctionlikeMethod.m_jsym->getFlags())) {
 								auto const rngchCallArguments = tc::join_separated(rngstrArguments, ", ");
 								return tc::explicit_cast<std::string>(tc::concat(
 									"	inline auto ", strClassNamespace, "_tcjs_construct(", jsfunctionlikeMethod.CppifiedParametersWithCommentsDef(), ") noexcept {\n",
 									"		return ", pjsclass->m_strMangledName, "(", RetrieveSymbolFromCpp(pjsclass->m_jsym), ".new_(", rngchCallArguments, "));\n",
 									"	}\n"
 								));
-							} else if (ts::SymbolFlags::Method & jsfunctionlikeMethod.m_jsym->getFlags()) {
+							} else if (static_cast<bool>(ts::SymbolFlags::Method & jsfunctionlikeMethod.m_jsym->getFlags())) {
 								auto const rngchCallArguments = tc::join_separated(
 									tc::concat(
 										tc::single(tc::concat("\"", tc::explicit_cast<std::string>(jsfunctionlikeMethod.m_jsym->getName()), "\"")),
@@ -537,7 +532,7 @@ int main(int argc, char* argv[]) {
 						tc::transform(
 							jsfunctionlikeFunction.m_jsignature->getParameters(),
 							[](ts::Symbol const jsymParameter) noexcept {
-								return CppifyName(jsymParameter);
+								return CppifyName(jsymParameter, enamectxNONE);
 							}
 						),
 						", "
@@ -587,7 +582,7 @@ int main(int argc, char* argv[]) {
 				[](auto const& varjs) noexcept {
 					return tc::visit(varjs, [](auto const& js) noexcept {
 						return tc::explicit_cast<std::string>(tc::concat(
-							"	using ", CppifyName(js.m_jsym), " = js_defs::", js.m_strMangledName, ";\n"
+							"	using ", js.m_strCppifiedName, " = js_defs::", js.m_strMangledName, ";\n"
 						));
 					});
 				}

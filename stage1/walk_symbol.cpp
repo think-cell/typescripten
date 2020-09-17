@@ -24,7 +24,7 @@ void PrintSymbolTree(int const nOffset, ts::Symbol const jsymType) noexcept {
 		tc::for_each(*tc::js::ts_ext::Symbol(jsymType)->members(), [&](ts::Symbol const jsymChild) noexcept { PrintSymbolTree(nOffset + 4, jsymChild); });
 	}
 
-	if (jsymType->getFlags() & ts::SymbolFlags::Module) {
+	if(static_cast<bool>(jsymType->getFlags() & ts::SymbolFlags::Module)) {
 		tc::append(std::cerr, tc::repeat_n(' ', nOffset + 2), "exportsOfModule\n");
 		tc::for_each((*g_ojtsTypeChecker)->getExportsOfModule(jsymType),
 			[&](ts::Symbol const jsymChild) noexcept { PrintSymbolTree(nOffset + 4, jsymChild); }

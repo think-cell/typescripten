@@ -18,6 +18,9 @@ enum ECppType {
 BITMASK_OPS(ECppType);
 ECppType CppType(tc::js::ts::Symbol jsymType) noexcept;
 
+DEFINE_ENUM(ENameContext, enamectx, (NONE)(ENUM)(CLASS)(TYPEALIAS)(FUNCTION));
+std::string CppifyName(tc::js::ts::Symbol jsymSymbol, ENameContext enamectx) noexcept;
+
 struct SJsEnumOption final {
     tc::js::ts::Symbol m_jsym;
     std::string m_strJsName;
@@ -36,6 +39,7 @@ static_assert(std::is_nothrow_move_assignable<SJsEnumOption>::value);
 struct SJsEnum final : public boost::intrusive::set_base_hook<boost::intrusive::link_mode<boost::intrusive::auto_unlink>> {
     tc::js::ts::Symbol m_jsym;
     std::string m_strQualifiedName;
+    std::string m_strCppifiedName;
     std::string m_strMangledName;
 
     std::vector<SJsEnumOption> m_vecjsenumoption;
@@ -130,6 +134,7 @@ static_assert(std::is_nothrow_move_assignable<SJsScope>::value);
 struct SJsClass final : public SJsScope, public boost::intrusive::set_base_hook<boost::intrusive::link_mode<boost::intrusive::auto_unlink>> { 
     tc::js::ts::Symbol m_jsym;
     std::string m_strQualifiedName;
+    std::string m_strCppifiedName;
     std::string m_strMangledName;
 
     std::vector<SJsFunctionLike> m_vecjsfunctionlikeMethod;
@@ -155,6 +160,7 @@ struct SJsTypeAlias final : public boost::intrusive::set_base_hook<boost::intrus
     tc::js::ts::Type m_jtype;
 
     std::string m_strQualifiedName;
+    std::string m_strCppifiedName;
     std::string m_strMangledName;
 
     SJsTypeAlias(tc::js::ts::Symbol jsym) noexcept;
@@ -228,7 +234,7 @@ void SJsScope::Initialize(Rng&& rngjsym) noexcept {
         tc::filter(
             rngjsym,
             [](tc::js::ts::Symbol jsymExport) noexcept {
-                return tc::js::ts::SymbolFlags::Function & jsymExport->getFlags();
+                return static_cast<bool>(tc::js::ts::SymbolFlags::Function & jsymExport->getFlags());
             }
         ),
         [&](tc::js::ts::Symbol jsymFunction) noexcept {

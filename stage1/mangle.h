@@ -5,7 +5,6 @@
 #include "typescript.d.bootstrap.h"
 
 std::string FullyQualifiedName(tc::js::ts::Symbol jsymType) noexcept;
-std::string CppifyName(tc::js::ts::Symbol jsymSymbol) noexcept;
 
 DEFINE_ADL_TAG_TYPE(mangled_no_comments)
 

@@ -13,42 +13,6 @@ std::string FullyQualifiedName(ts::Symbol jsymType) noexcept {
 	return tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->getFullyQualifiedName(jsymType));
 }
 
-std::string CppifyName(ts::Symbol jsymSymbol) noexcept {
-    std::string strSourceName = tc::explicit_cast<std::string>(jsymSymbol->getName());
-    if ('"' == strSourceName.front() && '"' == strSourceName.back()) {
-        strSourceName = strSourceName.substr(1, strSourceName.length() - 2);
-    }
-    // TODO: https://en.cppreference.com/w/cpp/language/identifiers
-    std::string strResult;
-    bool bLastIsUnderscore = false;
-    tc::for_each(
-        tc::transform(strSourceName, [&](char c) noexcept {
-            if(('a' <= c && c <= 'z')
-            || ('A' <= c && c <= 'Z')
-            || ('0' <= c && c <= '9')
-            || '_' == c) {
-                return c;
-            } else {
-                return '_';
-            }
-        }),
-        [&](char c) noexcept {
-            if (bLastIsUnderscore && c == '_') {
-                tc::append(strResult, "u_u"); // ABC__DEF --> ABC_u_uDEF
-                return;
-            }
-            bLastIsUnderscore = c == '_';
-            strResult += c;
-        }
-    );
-    static std::unordered_set<std::string> usstrCppKeywords = {"alignas", "alignof", "and", "and_eq", "asm", "auto", "bitand", "bitor", "bool", "break", "case", "catch", "char", "char16_t", "char32_t", "class", "compl", "const", "constexpr", "const_cast", "continue", "decltype", "default", "delete", "do", "double", "dynamic_cast", "else", "enum", "explicit", "export", "extern", "false", "float", "for", "friend", "goto", "if", "inline", "int", "long", "mutable", "namespace", "new", "noexcept", "not", "not_eq", "nullptr", "operator", "or", "or_eq", "private", "protected", "public", "register", "reinterpret_cast", "return", "short", "signed", "sizeof", "static", "static_assert", "static_cast", "struct", "switch", "template", "this", "thread_local", "throw", "true", "try", "typedef", "typeid", "typename", "union", "unsigned", "using", "virtual", "void", "volatile", "wchar_t", "while", "xor", "xor_eq"};
-    if (usstrCppKeywords.count(strResult)) {
-        tc::append(strResult, "_");
-    }
-    _ASSERT(!strResult.empty());
-    return strResult;
-}
-
 std::optional<ts::TypeReference> IsTypeReference(ts::Type jtypeRoot) noexcept {
 	if (ts::TypeFlags::Object != jtypeRoot->flags()) {
 		return std::nullopt;

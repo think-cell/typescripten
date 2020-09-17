@@ -27,6 +27,14 @@ declare namespace X {
     export interface Z {
         d: number;
     }
+
+    export namespace A {
+        export class D {
+            e: number;
+        }
+    }
+
+    export type A = number;
 }
 declare type X = string;
 

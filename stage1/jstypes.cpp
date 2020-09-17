@@ -12,15 +12,15 @@ extern std::optional<tc::js::ts::TypeChecker> g_ojtsTypeChecker;
 
 ECppType CppType(ts::Symbol jsymType) noexcept {
     ECppType ecpptype = ecpptypeIGNORE;
-	if((ts::SymbolFlags::RegularEnum|ts::SymbolFlags::ConstEnum) & jsymType->getFlags()) {
+	if(static_cast<bool>((ts::SymbolFlags::RegularEnum|ts::SymbolFlags::ConstEnum) & jsymType->getFlags())) {
 		ecpptype |= ecpptypeENUM;
 	}
 
-	if((ts::SymbolFlags::Class|ts::SymbolFlags::Interface|ts::SymbolFlags::ValueModule|ts::SymbolFlags::NamespaceModule) & jsymType->getFlags()
+	if(static_cast<bool>((ts::SymbolFlags::Class|ts::SymbolFlags::Interface|ts::SymbolFlags::ValueModule|ts::SymbolFlags::NamespaceModule) & jsymType->getFlags())
     && (
         // node.js may introduce a property __promisify__: https://nodejs.org/api/util.html#util_util_promisify_original
         // Don't generate a class if that is the only export on the symbol 
-        !(ts::SymbolFlags::Function & jsymType->getFlags())
+        !static_cast<bool>(ts::SymbolFlags::Function & jsymType->getFlags())
         || !tc::all_of(
             (*g_ojtsTypeChecker)->getExportsOfModule(jsymType), 
             [](auto jsym) noexcept { 
@@ -31,7 +31,7 @@ ECppType CppType(ts::Symbol jsymType) noexcept {
 		ecpptype |= ecpptypeCLASS;
 	}
 
-	if(ts::SymbolFlags::TypeAlias&jsymType->getFlags()) {
+	if(static_cast<bool>(ts::SymbolFlags::TypeAlias&jsymType->getFlags())) {
 		// Emit type aliases as using declarations if the type alias only references types, not e.g. literals
 		// A type alias of a single or a union of literals should be transformed into tag structs in C++
 		auto IsObject = [](auto jtypeInternal) noexcept {
@@ -69,7 +69,40 @@ ECppType CppType(ts::Symbol jsymType) noexcept {
 }
 
 namespace {
-    std::string MangleSymbolName(ts::Symbol jsymType) noexcept {
+    // Symbols in typescript can be declared twice in some circumstances. Make the names unique 
+    // if this happens.
+    std::string MakeUniqueName(ts::Symbol jsym, std::string strName, ENameContext enamectx) noexcept {
+        auto const ecpptype = CppType(jsym);
+        switch_no_default(enamectx) {
+        case enamectxNONE: 
+        case enamectxFUNCTION: 
+            // Functions are not renamed. All other contexts check for collision with function name
+            break;
+        case enamectxENUM: 
+            _ASSERT(!static_cast<bool>(ts::SymbolFlags::Function & jsym->getFlags())); // enum and function names cannot collide
+            if(ecpptype!=ecpptypeENUM) {
+                tc::append(strName, "_enum");
+            }
+            break;
+        case enamectxCLASS:
+            if(ecpptype!=ecpptypeCLASS || static_cast<bool>(ts::SymbolFlags::Function & jsym->getFlags())) {
+                tc::append(strName, "_class");
+            }
+            break;
+        case enamectxTYPEALIAS:
+            if(ecpptype!=ecpptypeTYPEALIAS || static_cast<bool>(ts::SymbolFlags::Function & jsym->getFlags())) {
+                tc::append(strName, "_alias");
+            }
+            break;
+        }
+        return strName;
+    }
+
+    // MangleSymbolName returns the name used internally that should be globally unique 
+    // (that is why it is based on the fully qualified name).
+    // We define all classes in a single namespace, sorted in a C++ compatible declaration order,
+    // and export them with using declarations.
+    std::string MangleSymbolName(ts::Symbol jsymType, ENameContext enamectx) noexcept {
         std::string strMangled = "_js_j";
         tc::for_each(FullyQualifiedName(jsymType), [&](char c) noexcept {
             switch (c) {
@@ -81,8 +114,45 @@ namespace {
             default: tc::cont_emplace_back(strMangled, c); break;
             }
         });
-        return strMangled;
+       return MakeUniqueName(jsymType, strMangled, enamectx);
     }
+}
+
+// CppifyName returns the user-visible name that we export from namespaces/classes
+std::string CppifyName(ts::Symbol jsymSymbol, ENameContext enamectx) noexcept {
+    std::string strSourceName = tc::explicit_cast<std::string>(jsymSymbol->getName());
+    if ('"' == strSourceName.front() && '"' == strSourceName.back()) {
+        strSourceName = strSourceName.substr(1, strSourceName.length() - 2);
+    }
+    // TODO: https://en.cppreference.com/w/cpp/language/identifiers
+    std::string strResult;
+    bool bLastIsUnderscore = false;
+    tc::for_each(
+        tc::transform(strSourceName, [&](char c) noexcept {
+            if(('a' <= c && c <= 'z')
+            || ('A' <= c && c <= 'Z')
+            || ('0' <= c && c <= '9')
+            || '_' == c) {
+                return c;
+            } else {
+                return '_';
+            }
+        }),
+        [&](char c) noexcept {
+            if (bLastIsUnderscore && c == '_') {
+                tc::append(strResult, "u_u"); // ABC__DEF --> ABC_u_uDEF
+                return;
+            }
+            bLastIsUnderscore = c == '_';
+            strResult += c;
+        }
+    );
+    static std::unordered_set<std::string> usstrCppKeywords = {"alignas", "alignof", "and", "and_eq", "asm", "auto", "bitand", "bitor", "bool", "break", "case", "catch", "char", "char16_t", "char32_t", "class", "compl", "const", "constexpr", "const_cast", "continue", "decltype", "default", "delete", "do", "double", "dynamic_cast", "else", "enum", "explicit", "export", "extern", "false", "float", "for", "friend", "goto", "if", "inline", "int", "long", "mutable", "namespace", "new", "noexcept", "not", "not_eq", "nullptr", "operator", "or", "or_eq", "private", "protected", "public", "register", "reinterpret_cast", "return", "short", "signed", "sizeof", "static", "static_assert", "static_cast", "struct", "switch", "template", "this", "thread_local", "throw", "true", "try", "typedef", "typeid", "typename", "union", "unsigned", "using", "virtual", "void", "volatile", "wchar_t", "while", "xor", "xor_eq"};
+    if (usstrCppKeywords.count(strResult)) {
+        tc::append(strResult, "_");
+    }
+    _ASSERT(!strResult.empty());
+    return MakeUniqueName(jsymSymbol, strResult, enamectx);
 }
 
 SJsEnumOption::SJsEnumOption(ts::Symbol jsym) noexcept
@@ -91,7 +161,7 @@ SJsEnumOption::SJsEnumOption(ts::Symbol jsym) noexcept
         return jsym;
     }())
     , m_strJsName(tc::explicit_cast<std::string>(jsym->getName()))
-    , m_strCppifiedName(CppifyName(jsym))
+    , m_strCppifiedName(CppifyName(jsym, enamectxNONE))
     , m_jtsEnumMember([&]() noexcept {
         auto const jarrDeclaration = jsym->declarations();
         _ASSERTEQUAL(jarrDeclaration->length(), 1);
@@ -115,12 +185,13 @@ SJsEnumOption::SJsEnumOption(ts::Symbol jsym) noexcept
 SJsEnum::SJsEnum(ts::Symbol jsym) noexcept
     : m_jsym(jsym)
     , m_strQualifiedName(FullyQualifiedName(m_jsym))
-    , m_strMangledName(MangleSymbolName(m_jsym))
+    , m_strCppifiedName(CppifyName(m_jsym, enamectxENUM))
+    , m_strMangledName(MangleSymbolName(m_jsym, enamectxENUM))
     , m_vecjsenumoption(tc::make_vector(tc::transform(
         tc::filter(
             *tc::js::ts_ext::Symbol(m_jsym)->exports(),
             [](ts::Symbol const jsymExport) noexcept {
-                return ts::SymbolFlags::EnumMember&jsymExport->getFlags();
+                return static_cast<bool>(ts::SymbolFlags::EnumMember&jsymExport->getFlags());
             }
         ),
         tc::fn_explicit_cast<SJsEnumOption>()
@@ -144,7 +215,7 @@ void SJsEnum::Initialize() noexcept {
 SJsVariableLike::SJsVariableLike(ts::Symbol jsym) noexcept
     : m_jsym(jsym)
     , m_strJsName(tc::explicit_cast<std::string>(m_jsym->getName()))
-    , m_strCppifiedName(CppifyName(m_jsym))
+    , m_strCppifiedName(CppifyName(m_jsym, enamectxNONE))
     , m_jdeclVariableLike([&]() noexcept {
         auto rngvariabledecl = tc::filter(tc::make_vector(m_jsym->declarations()), [](ts::Declaration decl) noexcept { // TODO: https://github.com/think-cell/tcjs/issues/5
             return tc::js::ts::isVariableDeclaration(decl) || tc::js::ts::isParameter(decl) || tc::js::ts::isPropertySignature(decl) || tc::js::ts::isPropertyDeclaration(decl);;
@@ -168,7 +239,7 @@ SJsVariableLike::SJsVariableLike(ts::Symbol jsym) noexcept
         return tc_front(rngvariabledecl);
     }())
     , m_jtypeDeclared((*g_ojtsTypeChecker)->getTypeOfSymbolAtLocation(m_jsym, m_jdeclVariableLike))
-    , m_bReadonly(ts::getCombinedModifierFlags(m_jdeclVariableLike) & ts::ModifierFlags::Readonly)
+    , m_bReadonly(static_cast<bool>(ts::getCombinedModifierFlags(m_jdeclVariableLike) & ts::ModifierFlags::Readonly))
 {
     ts::ModifierFlags const nModifierFlags = ts::getCombinedModifierFlags(m_jdeclVariableLike);
     if (ts::ModifierFlags::None != nModifierFlags &&
@@ -195,7 +266,7 @@ SMangledType const& SJsVariableLike::MangleType() const noexcept {
 
 SJsFunctionLike::SJsFunctionLike(ts::Symbol jsym, ts::SignatureDeclaration jsigndecl) noexcept
     : m_jsym(jsym)
-    , m_strCppifiedName(CppifyName(m_jsym))
+    , m_strCppifiedName(CppifyName(m_jsym, enamectxFUNCTION))
     , m_jsignature(*(*g_ojtsTypeChecker)->getSignatureFromDeclaration(jsigndecl))
     , m_vecjsvariablelikeParameters(tc::make_vector(tc::transform(
         m_jsignature->getParameters(),
@@ -272,12 +343,13 @@ std::string const& SJsFunctionLike::CanonizedParameterCppTypes() const noexcept 
 SJsClass::SJsClass(ts::Symbol jsym) noexcept
     : m_jsym(jsym)
     , m_strQualifiedName(FullyQualifiedName(m_jsym))
-    , m_strMangledName(MangleSymbolName(m_jsym))
+    , m_strCppifiedName(CppifyName(m_jsym, enamectxCLASS))
+    , m_strMangledName(MangleSymbolName(m_jsym, enamectxCLASS))
     , m_bHasImplicitDefaultConstructor(false)
 {
     SJsScope::Initialize(
         tc_conditional_range(
-            ts::SymbolFlags::Module & m_jsym->getFlags(),
+            static_cast<bool>(ts::SymbolFlags::Module & m_jsym->getFlags()),
             (*g_ojtsTypeChecker)->getExportsOfModule(m_jsym),
             tc::make_empty_range<ts::Symbol>()
         )
@@ -287,7 +359,9 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
         auto vecjsymMembers = tc::explicit_cast<std::vector<ts::Symbol>>(*ojarrsymMembers);
         tc::for_each(
             tc::filter(vecjsymMembers, [](ts::Symbol jsymMember) noexcept {
-                return (ts::SymbolFlags::Method|ts::SymbolFlags::Constructor) & jsymMember->getFlags();
+                // TODO: Support optional member functions
+                return static_cast<bool>((ts::SymbolFlags::Method|ts::SymbolFlags::Constructor) & jsymMember->getFlags())
+                    && !static_cast<bool>(ts::SymbolFlags::Optional & jsymMember->getFlags());
             }),
             [&](ts::Symbol jsymMethod) noexcept {
                 tc::for_each(jsymMethod->declarations(),
@@ -306,8 +380,8 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
 
         m_vecjsvariablelikeProperty = tc::make_vector(tc::transform(
             tc::filter(vecjsymMembers, [](ts::Symbol jsymMember) noexcept {
-                _ASSERT(!(ts::SymbolFlags::Property & jsymMember->getFlags()) || !(~(ts::SymbolFlags::Property|ts::SymbolFlags::Optional) & jsymMember->getFlags()));
-                return ts::SymbolFlags::Property & jsymMember->getFlags();
+                _ASSERT(!static_cast<bool>(ts::SymbolFlags::Property & jsymMember->getFlags()) || !static_cast<bool>(~(ts::SymbolFlags::Property|ts::SymbolFlags::Optional) & jsymMember->getFlags()));
+                return static_cast<bool>(ts::SymbolFlags::Property & jsymMember->getFlags());
             }),
             [](ts::Symbol jsymProperty) noexcept {
                 return SJsVariableLike(jsymProperty);
@@ -392,7 +466,8 @@ SJsTypeAlias::SJsTypeAlias(ts::Symbol jsym) noexcept
       )->type())
     , m_jtype((*g_ojtsTypeChecker)->getTypeFromTypeNode(m_jtypenode))
     , m_strQualifiedName(FullyQualifiedName(m_jsym))
-    , m_strMangledName(MangleSymbolName(m_jsym))
+    , m_strCppifiedName(CppifyName(m_jsym, enamectxTYPEALIAS))
+    , m_strMangledName(MangleSymbolName(m_jsym, enamectxTYPEALIAS))
 {}
 
 void SJsTypeAlias::Initialize() noexcept {
