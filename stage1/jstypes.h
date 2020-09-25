@@ -113,7 +113,9 @@ struct SJsClass;
 struct SJsTypeAlias;
 
 struct SJsScope {
-    std::vector<std::variant<SJsClass, SJsEnum, SJsTypeAlias>> m_vecvarjsExportType;
+    std::vector<SJsEnum> m_vecvarjsExportEnum;
+    std::vector<SJsClass> m_vecvarjsExportClass;
+    std::vector<SJsTypeAlias> m_vecvarjsExportTypeAlias;
     std::vector<SJsFunctionLike> m_vecjsfunctionlikeExportFunction;
     std::vector<SJsVariableLike> m_vecjsvariablelikeExportVariable;
 
@@ -215,21 +217,19 @@ void SJsScope::Initialize(Rng&& rngjsym) noexcept {
         // We assume that ts::Symbol::exports() returns a symbol list without duplicates.
         auto const ecpptype = CppType(jsymType);
         if(ecpptypeENUM&ecpptype) {
-            m_vecvarjsExportType.emplace_back(SJsEnum(jsymType));
+            m_vecvarjsExportEnum.emplace_back(jsymType);
         }
         if(ecpptypeCLASS&ecpptype) {
-            m_vecvarjsExportType.emplace_back(SJsClass(jsymType));
+            m_vecvarjsExportClass.emplace_back(jsymType);
         }
         if(ecpptypeTYPEALIAS&ecpptype) {
-            m_vecvarjsExportType.emplace_back(SJsTypeAlias(jsymType)); 
+            m_vecvarjsExportTypeAlias.emplace_back(jsymType); 
         }
     });
-    tc::for_each(m_vecvarjsExportType, [](auto& varjs) noexcept {
-        tc::visit(varjs, [](auto& js) noexcept {
-            js.Initialize();
-        });
-    });
-
+    tc::for_each(m_vecvarjsExportEnum, TC_MEMBER(.Initialize()));
+    tc::for_each(m_vecvarjsExportClass, TC_MEMBER(.Initialize()));
+    tc::for_each(m_vecvarjsExportTypeAlias, TC_MEMBER(.Initialize()));
+    
     tc::for_each(
         tc::filter(
             rngjsym,

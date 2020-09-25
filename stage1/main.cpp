@@ -219,6 +219,16 @@ int main(int argc, char* argv[]) {
 			}
 		);
 
+		auto PrintClassExportType = [](auto const& js) noexcept {
+			return tc::concat(
+				"\tusing ",
+				js.m_strCppifiedName,
+				" = ",
+				js.m_strMangledName,
+				";\n"
+			);
+		};
+
 		tc::append(std::cout,
 			"namespace tc::js_defs {\n",
 			tc::join(tc::transform(g_setjsenum, [](SJsEnum const& jsenumEnum) noexcept {
@@ -305,7 +315,7 @@ int main(int argc, char* argv[]) {
 					)
 				);
 			})),
-			tc::join(tc::transform(vecpjsclassSorted, [](SJsClass const* pjsclass) noexcept {
+			tc::join(tc::transform(vecpjsclassSorted, [&](SJsClass const* pjsclass) noexcept {
 				return tc::explicit_cast<std::string>(tc::concat(
 					"	struct _impl", pjsclass->m_strMangledName,
 					" : ",
@@ -330,18 +340,16 @@ int main(int argc, char* argv[]) {
 					" {\n",
 					"		struct _tcjs_definitions {\n",
 					tc::join(tc::transform(
-						pjsclass->m_vecvarjsExportType,
-						[](auto const& varjs) noexcept {
-							return tc::visit(varjs, [](auto const& js) noexcept {
-								return tc::concat(
-									"			using ",
-									js.m_strCppifiedName,
-									" = ",
-									js.m_strMangledName,
-									";\n"
-								);
-							});
-						}
+						pjsclass->m_vecvarjsExportEnum,
+						PrintClassExportType
+					)),
+					tc::join(tc::transform(
+						pjsclass->m_vecvarjsExportClass,
+						PrintClassExportType
+					)),
+					tc::join(tc::transform(
+						pjsclass->m_vecvarjsExportTypeAlias,
+						PrintClassExportType
 					)),
 					tc::join(tc::transform(
 						pjsclass->m_vecjsfunctionlikeExportFunction,
@@ -573,16 +581,28 @@ int main(int argc, char* argv[]) {
 			"namespace tc::js {\n"
 		);
 
+		auto PrintGlobalExportType = [](auto const& js) noexcept {
+			return tc::concat(
+				"\t\t\tusing ",
+				js.m_strCppifiedName,
+				" = js_defs::",
+				js.m_strMangledName,
+				";\n"
+			);
+		};
+
 		tc::append(std::cout,
 			tc::join(tc::transform(
-				scopeGlobal.m_vecvarjsExportType,
-				[](auto const& varjs) noexcept {
-					return tc::visit(varjs, [](auto const& js) noexcept {
-						return tc::explicit_cast<std::string>(tc::concat(
-							"	using ", js.m_strCppifiedName, " = js_defs::", js.m_strMangledName, ";\n"
-						));
-					});
-				}
+				scopeGlobal.m_vecvarjsExportEnum,
+				PrintGlobalExportType
+			)),
+			tc::join(tc::transform(
+				scopeGlobal.m_vecvarjsExportClass,
+				PrintGlobalExportType
+			)),
+			tc::join(tc::transform(
+				scopeGlobal.m_vecvarjsExportTypeAlias,
+				PrintGlobalExportType
 			)),
 			tc::join(tc::transform(
 				scopeGlobal.m_vecjsfunctionlikeExportFunction,
