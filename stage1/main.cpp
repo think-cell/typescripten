@@ -219,7 +219,34 @@ int main(int argc, char* argv[]) {
 			}
 		);
 
-		auto PrintClassExportType = [](auto const& js) noexcept {
+		auto ExportFunctionImpl = [](auto const& rngstrNamespace, SJsFunctionLike const& jsfunction) noexcept {
+			auto const rngchCallArguments = tc::join_separated(
+				tc::transform(
+					jsfunction.m_jsignature->getParameters(),
+					[](ts::Symbol const jsymParameter) noexcept {
+						return CppifyName(jsymParameter, enamectxNONE);
+					}
+				),
+				", "
+			);
+			auto const rngchFunctionCall = tc::concat(
+				RetrieveSymbolFromCpp(jsfunction.m_jsym), "(", rngchCallArguments, ")"
+			);
+			return tc::explicit_cast<std::string>(tc::concat(
+				"	inline auto ", rngstrNamespace,
+				jsfunction.m_strCppifiedName, "(", jsfunction.CppifiedParametersWithCommentsDef(), ") noexcept {\n",
+				tc_conditional_range(
+					ts::TypeFlags::Void == jsfunction.m_jsignature->getReturnType()->flags(),
+					tc::concat("		", rngchFunctionCall, ";\n"),
+					tc::concat(
+						"		return ", rngchFunctionCall, ".template as<", MangleType(jsfunction.m_jsignature->getReturnType()).m_strWithComments, ">();\n"
+					)
+				),
+				"	}\n"
+			));
+		};
+
+		auto ClassExportTypeUsingDecl = [](auto const& js) noexcept {
 			return tc::concat(
 				"\tusing ",
 				js.m_strCppifiedName,
@@ -341,21 +368,21 @@ int main(int argc, char* argv[]) {
 					"		struct _tcjs_definitions {\n",
 					tc::join(tc::transform(
 						pjsclass->m_vecvarjsExportEnum,
-						PrintClassExportType
+						ClassExportTypeUsingDecl
 					)),
 					tc::join(tc::transform(
 						pjsclass->m_vecvarjsExportClass,
-						PrintClassExportType
+						ClassExportTypeUsingDecl
 					)),
 					tc::join(tc::transform(
 						pjsclass->m_vecvarjsExportTypeAlias,
-						PrintClassExportType
+						ClassExportTypeUsingDecl
 					)),
 					tc::join(tc::transform(
 						pjsclass->m_vecjsfunctionlikeExportFunction,
-						[](SJsFunctionLike const& jsfunctionlikeFunction) noexcept {
+						[](SJsFunctionLike const& jsfunction) noexcept {
 							return tc::concat(
-								"			static auto ", jsfunctionlikeFunction.m_strCppifiedName, "(", jsfunctionlikeFunction.CppifiedParametersWithCommentsDecl(), ") noexcept;\n"
+								"			static auto ", jsfunction.m_strCppifiedName, "(", jsfunction.CppifiedParametersWithCommentsDecl(), ") noexcept;\n"
 							);
 						}
 					)),
@@ -413,7 +440,7 @@ int main(int argc, char* argv[]) {
 					"	};\n"
 				));
 			})),
-			tc::join(tc::transform(vecpjsclassSorted, [](SJsClass const* pjsclass) noexcept {
+			tc::join(tc::transform(vecpjsclassSorted, [&](SJsClass const* pjsclass) noexcept {
 				auto strClassNamespace = tc::explicit_cast<std::string>(tc::concat(
 					"_impl", pjsclass->m_strMangledName, "::"
 				));
@@ -421,31 +448,8 @@ int main(int argc, char* argv[]) {
 				return tc::explicit_cast<std::string>(tc::concat(
 					tc::join(tc::transform(
 						pjsclass->m_vecjsfunctionlikeExportFunction,
-						[&strClassNamespace](SJsFunctionLike const& jsfunctionlikeFunction) noexcept {
-							auto const rngchCallArguments = tc::join_separated(
-								tc::transform(
-									jsfunctionlikeFunction.m_jsignature->getParameters(),
-									[](ts::Symbol const jsymParameter) noexcept {
-										return CppifyName(jsymParameter, enamectxNONE);
-									}
-								),
-								", "
-							);
-							auto const rngchFunctionCall = tc::concat(
-								RetrieveSymbolFromCpp(jsfunctionlikeFunction.m_jsym), "(", rngchCallArguments, ")"
-							);
-							return tc::explicit_cast<std::string>(tc::concat(
-								"	inline auto ", strClassNamespace, "_tcjs_definitions::",
-									jsfunctionlikeFunction.m_strCppifiedName, "(", jsfunctionlikeFunction.CppifiedParametersWithCommentsDef(), ") noexcept {\n",
-								tc_conditional_range(
-									ts::TypeFlags::Void == jsfunctionlikeFunction.m_jsignature->getReturnType()->flags(),
-									tc::concat("		", rngchFunctionCall, ";\n"),
-									tc::concat(
-										"		return ", rngchFunctionCall, ".template as<", MangleType(jsfunctionlikeFunction.m_jsignature->getReturnType()).m_strWithComments, ">();\n"
-									)
-								),
-								"	}\n"
-							));
+						[&](SJsFunctionLike const& jsfunction) noexcept {
+							return ExportFunctionImpl(tc::concat(strClassNamespace, "_tcjs_definitions::"), jsfunction);
 						}
 					)),
 					tc::join(tc::transform(
@@ -531,32 +535,8 @@ int main(int argc, char* argv[]) {
 		tc::append(std::cout,
 			tc::join(tc::transform(
 				scopeGlobal.m_vecjsfunctionlikeExportFunction,
-				[](SJsFunctionLike& jsfunctionlikeFunction) {
-					// TODO: deduplicate following code into SJsFunctionLike.
-					auto const rngchCallArguments = tc::join_separated(
-						tc::transform(
-							jsfunctionlikeFunction.m_jsignature->getParameters(),
-							[](ts::Symbol const jsymParameter) noexcept {
-								return CppifyName(jsymParameter, enamectxNONE);
-							}
-						),
-						", "
-					);
-					auto const rngchFunctionCall = tc::concat(
-						RetrieveSymbolFromCpp(jsfunctionlikeFunction.m_jsym), "(", rngchCallArguments, ")"
-					);
-					return tc::explicit_cast<std::string>(tc::concat(
-						"	inline auto ",
-							jsfunctionlikeFunction.m_strCppifiedName, "(", jsfunctionlikeFunction.CppifiedParametersWithCommentsDef(), ") noexcept {\n",
-						tc_conditional_range(
-							ts::TypeFlags::Void == jsfunctionlikeFunction.m_jsignature->getReturnType()->flags(),
-							tc::concat("		", rngchFunctionCall, ";\n"),
-							tc::concat(
-								"		return ", rngchFunctionCall, ".template as<", MangleType(jsfunctionlikeFunction.m_jsignature->getReturnType()).m_strWithComments, ">();\n"
-							)
-						),
-						"	}\n"
-					));
+				[&](SJsFunctionLike& jsfunction) {
+					return ExportFunctionImpl(tc::empty_range(), jsfunction);
 				}
 			)),
 			tc::join(tc::transform(
@@ -581,7 +561,7 @@ int main(int argc, char* argv[]) {
 			"namespace tc::js {\n"
 		);
 
-		auto PrintGlobalExportType = [](auto const& js) noexcept {
+		auto GlobalExportTypeUsingDecl = [](auto const& js) noexcept {
 			return tc::concat(
 				"\t\t\tusing ",
 				js.m_strCppifiedName,
@@ -594,20 +574,20 @@ int main(int argc, char* argv[]) {
 		tc::append(std::cout,
 			tc::join(tc::transform(
 				scopeGlobal.m_vecvarjsExportEnum,
-				PrintGlobalExportType
+				GlobalExportTypeUsingDecl
 			)),
 			tc::join(tc::transform(
 				scopeGlobal.m_vecvarjsExportClass,
-				PrintGlobalExportType
+				GlobalExportTypeUsingDecl
 			)),
 			tc::join(tc::transform(
 				scopeGlobal.m_vecvarjsExportTypeAlias,
-				PrintGlobalExportType
+				GlobalExportTypeUsingDecl
 			)),
 			tc::join(tc::transform(
 				scopeGlobal.m_vecjsfunctionlikeExportFunction,
-				[](SJsFunctionLike& jsfunctionlikeFunction) {
-					return tc::concat("	using js_defs::", jsfunctionlikeFunction.m_strCppifiedName, ";\n");
+				[](SJsFunctionLike& jsfunction) {
+					return tc::concat("	using js_defs::", jsfunction.m_strCppifiedName, ";\n");
 				}
 			)),
 			tc::join(tc::transform(
