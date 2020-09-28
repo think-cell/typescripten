@@ -542,7 +542,6 @@ int main(int argc, char* argv[]) {
 			tc::join(tc::transform(
 				scopeGlobal.m_vecjsvariablelikeExportVariable,
 				[&](SJsVariableLike const& jsvariablelikeVariable) noexcept {
-					// TODO: deduplicate following code into SJsVariableLike.
 					return tc::explicit_cast<std::string>(tc::concat(
 						"	inline auto ", jsvariablelikeVariable.m_strCppifiedName, "() noexcept ",
 						"{ return emscripten::val::global(\"", jsvariablelikeVariable.m_strJsName, "\").template as<", jsvariablelikeVariable.MangleType().m_strWithComments, ">(); }\n",

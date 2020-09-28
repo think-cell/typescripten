@@ -16,18 +16,7 @@ ECppType CppType(ts::Symbol jsymType) noexcept {
 		ecpptype |= ecpptypeENUM;
 	}
 
-	if(static_cast<bool>((ts::SymbolFlags::Class|ts::SymbolFlags::Interface|ts::SymbolFlags::ValueModule|ts::SymbolFlags::NamespaceModule) & jsymType->getFlags())
-    && (
-        // node.js may introduce a property __promisify__: https://nodejs.org/api/util.html#util_util_promisify_original
-        // Don't generate a class if that is the only export on the symbol 
-        !static_cast<bool>(ts::SymbolFlags::Function & jsymType->getFlags())
-        || !tc::all_of(
-            (*g_ojtsTypeChecker)->getExportsOfModule(jsymType), 
-            [](auto jsym) noexcept { 
-                return tc::equal("__promisify__", tc::explicit_cast<std::string>(jsym->getName())); 
-            }
-        )
-    )) {
+	if(static_cast<bool>((ts::SymbolFlags::Class|ts::SymbolFlags::Interface|ts::SymbolFlags::ValueModule|ts::SymbolFlags::NamespaceModule) & jsymType->getFlags())) {
 		ecpptype |= ecpptypeCLASS;
 	}
 
