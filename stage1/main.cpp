@@ -101,21 +101,21 @@ int main(int argc, char* argv[]) {
 
 						{
 							ts::forEachChild(jtsSourceFile, tc::jst::js_lambda_wrap([&](ts::Node jnodeChild) noexcept -> tc::jst::js_unknown {
-								if (auto const jotsFunctionDeclaration = tc::js::ts_ext::isFunctionDeclaration(jnodeChild)) {
+								if (auto const jotsFunctionDeclaration = ts::isFunctionDeclaration(jnodeChild)) {
 									tc::cont_emplace_back(vecjsymExportedSymbol, (*g_ojtsTypeChecker)->getSymbolAtLocation(*(*jotsFunctionDeclaration)->name()));
-								} else if (auto const jotsVariableStatement = tc::js::ts_ext::isVariableStatement(jnodeChild)) {
+								} else if (auto const jotsVariableStatement = ts::isVariableStatement(jnodeChild)) {
 									tc::for_each(tc::js::ts_ext::MakeReadOnlyArray<ts::VariableDeclaration>((*jotsVariableStatement)->declarationList()->declarations()), [&](ts::VariableDeclaration const jtsVariableDeclaration) {
 										tc::cont_emplace_back(vecjsymExportedSymbol, (*g_ojtsTypeChecker)->getSymbolAtLocation(jtsVariableDeclaration->name()));
 									});
-								} else if (auto const jotsClassDeclaration = tc::js::ts_ext::isClassDeclaration(jnodeChild)) {
+								} else if (auto const jotsClassDeclaration = ts::isClassDeclaration(jnodeChild)) {
 									tc::cont_emplace_back(vecjsymExportedSymbol, (*g_ojtsTypeChecker)->getSymbolAtLocation(*(*jotsClassDeclaration)->name()));
-								} else if (auto const jotsInterfaceDeclaration = tc::js::ts_ext::isInterfaceDeclaration(jnodeChild)) {
+								} else if (auto const jotsInterfaceDeclaration = ts::isInterfaceDeclaration(jnodeChild)) {
 									tc::cont_emplace_back(vecjsymExportedSymbol, (*g_ojtsTypeChecker)->getSymbolAtLocation((*jotsInterfaceDeclaration)->name()));
-								} else if (auto const jotsEnumDeclaration = tc::js::ts_ext::isEnumDeclaration(jnodeChild)) {
+								} else if (auto const jotsEnumDeclaration = ts::isEnumDeclaration(jnodeChild)) {
 									tc::cont_emplace_back(vecjsymExportedSymbol, (*g_ojtsTypeChecker)->getSymbolAtLocation((*jotsEnumDeclaration)->name()));
-								} else if (auto const jotsModuleDeclaration = tc::js::ts_ext::isModuleDeclaration(jnodeChild)) {
+								} else if (auto const jotsModuleDeclaration = ts::isModuleDeclaration(jnodeChild)) {
 									tc::cont_emplace_back(vecjsymExportedSymbol, (*g_ojtsTypeChecker)->getSymbolAtLocation((*jotsModuleDeclaration)->name()));
-								} else if(auto const jotsTypeAliasDeclaration = tc::js::ts_ext::isTypeAliasDeclaration(jnodeChild)) {
+								} else if(auto const jotsTypeAliasDeclaration = ts::isTypeAliasDeclaration(jnodeChild)) {
 									tc::cont_emplace_back(vecjsymExportedSymbol, (*g_ojtsTypeChecker)->getSymbolAtLocation((*jotsTypeAliasDeclaration)->name()));
 								} else if (jnodeChild->kind() == ts::SyntaxKind::EndOfFileToken) {
 									// Do nothing
@@ -528,7 +528,7 @@ int main(int argc, char* argv[]) {
 					)),
 					tc::join(tc::transform(
 						pjsclass->m_vecjsfunctionlikeCtor,
-						[&pjsclass, &strClassNamespace](SJsFunctionLike const& jsfunctionlike) noexcept {
+						[&pjsclass, &strClassNamespace, &strClassInstanceRetrieve](SJsFunctionLike const& jsfunctionlike) noexcept {
 							return tc::concat(
 								"	inline auto ", strClassNamespace, "_tcjs_construct(", jsfunctionlike.CppifiedParametersWithCommentsDef(), ") noexcept {\n",
 								"		return ", pjsclass->m_strMangledName, "(", 

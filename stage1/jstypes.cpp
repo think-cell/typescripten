@@ -43,12 +43,12 @@ ECppType CppType(ts::Symbol jsymType) noexcept {
 		auto const jtype = (*g_ojtsTypeChecker)->getTypeFromTypeNode(tc::js::ts::TypeAliasDeclaration(
             tc::find_first_if<tc::return_value>(
                 jsymType->declarations(), 
-                [](tc::js::ts::Declaration decl) noexcept -> bool {
-                    return tc::js::ts::isTypeAliasDeclaration(decl);
+                [](tc::js::ts::Declaration decl) noexcept {
+                    return tc::bool_cast(tc::js::ts::isTypeAliasDeclaration(decl));
                 }
             )
         )->type());
-		auto const ojuniontype = tc::js::ts_ext::isUnion(jtype);
+		auto const ojuniontype = jtype->isUnion();
 		if((ojuniontype && tc::all_of((*ojuniontype)->types(), IsObject))
 		|| IsObject(jtype)) {
 			ecpptype |= ecpptypeTYPEALIAS;
@@ -281,7 +281,7 @@ SJsFunctionLike::SJsFunctionLike(ts::Symbol jsym, ts::SignatureDeclaration jsign
 std::string SJsFunctionLike::CppifiedParametersWithCommentsDecl() const noexcept {
     // Trailing function arguments of type 'x | undefined' can be defaulted to undefined
     auto const itjsvariablelike = tc::find_last_if<tc::return_border_after_or_begin>(m_vecjsvariablelikeParameters, [](auto const& jsvariablelike) noexcept {
-        if(auto ounion = tc::js::ts_ext::isUnion(jsvariablelike.m_jtypeDeclared)) {
+        if(auto ounion = jsvariablelike.m_jtypeDeclared->isUnion()) {
             return !tc::find_first_if<tc::return_bool>((*ounion)->types(), [](auto const& type) noexcept {
                 return ts::TypeFlags::Undefined==type->flags();
             });
@@ -355,11 +355,11 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
             [&](ts::Symbol jsymMethod) noexcept {
                 tc::for_each(jsymMethod->declarations(),
                     [&](ts::Declaration jdecl) noexcept {
-                        if (auto const jotsMethodSignature = tc::js::ts_ext::isMethodSignature(jdecl)) { // In interfaces.
+                        if (auto const jotsMethodSignature = ts::isMethodSignature(jdecl)) { // In interfaces.
                             tc::cont_emplace_back(m_vecjsfunctionlikeMethod, SJsFunctionLike(jsymMethod, *jotsMethodSignature));
-                        } else if (auto const jotsMethodDeclaration = tc::js::ts_ext::isMethodDeclaration(jdecl)) { // In classes.
+                        } else if (auto const jotsMethodDeclaration = ts::isMethodDeclaration(jdecl)) { // In classes.
                             tc::cont_emplace_back(m_vecjsfunctionlikeMethod, SJsFunctionLike(jsymMethod, *jotsMethodDeclaration));
-                        } else if (auto const jotsConstructorDeclaration = tc::js::ts_ext::isConstructorDeclaration(jdecl)) {
+                        } else if (auto const jotsConstructorDeclaration = ts::isConstructorDeclaration(jdecl)) {
                              tc::cont_emplace_back(m_vecjsfunctionlikeCtor, SJsFunctionLike(jsymMethod, *jotsConstructorDeclaration));
                         }
                     }
@@ -398,10 +398,10 @@ void SJsClass::ResolveBaseClasses() noexcept {
         }
     };
 
-    if (auto jointerfacetypeClass = tc::js::ts_ext::isClassOrInterface((*g_ojtsTypeChecker)->getDeclaredTypeOfSymbol(m_jsym))) {
+    if (auto jointerfacetypeClass = (*g_ojtsTypeChecker)->getDeclaredTypeOfSymbol(m_jsym)->isClassOrInterface()) {
         tc::for_each((*g_ojtsTypeChecker)->getBaseTypes(*jointerfacetypeClass),
             [&](tc::js::ts::BaseType jtsBaseType) noexcept {
-                if (auto const jointerfacetypeBase = tc::js::ts_ext::isClassOrInterface(tc::reluctant_implicit_cast<ts::Type>(jtsBaseType))) {
+                if (auto const jointerfacetypeBase = tc::reluctant_implicit_cast<ts::Type>(jtsBaseType)->isClassOrInterface()) {
                     AddBaseClass(*(*jointerfacetypeBase)->getSymbol());
                 }
             }
@@ -409,7 +409,7 @@ void SJsClass::ResolveBaseClasses() noexcept {
         // See `utilities.ts:getAllSuperTypeNodes`. `extends` clause for classes is already covered by `getBaseTypes()`, as well as `implements` clause for interfaces.
         // The only missing part is `implements` for classes.
         tc::for_each(m_jsym->declarations(), [&](ts::Declaration jdeclClass) {
-            if (auto joclassdeclarationClass = tc::js::ts_ext::isClassDeclaration(jdeclClass)) {
+            if (auto joclassdeclarationClass = ts::isClassDeclaration(jdeclClass)) {
                 if (auto jorarrHeritageClause = tc::js::ts_ext::ClassLikeDeclaration(*joclassdeclarationClass)->heritageClauses()) {
                     tc::for_each(*jorarrHeritageClause, [&](ts::HeritageClause jtsHeritageClause) noexcept {
                         if(ts::SyntaxKind::ImplementsKeyword == jtsHeritageClause->token()) {
@@ -443,8 +443,8 @@ SJsTypeAlias::SJsTypeAlias(ts::Symbol jsym) noexcept
     , m_jtypenode(tc::js::ts::TypeAliasDeclaration(
         tc::find_first_if<tc::return_value>(
             jsym->declarations(), 
-            [](tc::js::ts::Declaration decl) noexcept -> bool {
-                return tc::js::ts::isTypeAliasDeclaration(decl);
+            [](tc::js::ts::Declaration decl) noexcept {
+                return tc::bool_cast(tc::js::ts::isTypeAliasDeclaration(decl));
             }
         )
       )->type())

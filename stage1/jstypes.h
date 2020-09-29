@@ -242,7 +242,7 @@ void SJsScope::Initialize(Rng&& rngjsym) noexcept {
             tc::for_each(
                 jsymFunction->declarations(),
                 [=](tc::js::ts::Declaration jdeclFunction) noexcept {
-                    if(auto const ojsfuncdecl = tc::js::ts_ext::isFunctionDeclaration(jdeclFunction)) {
+                    if(auto const ojsfuncdecl = tc::js::ts::isFunctionDeclaration(jdeclFunction)) {
                         tc::cont_emplace_back(m_vecjsfunctionlikeExportFunction, SJsFunctionLike(jsymFunction, *ojsfuncdecl));
                     }
                 }

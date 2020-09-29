@@ -139,7 +139,7 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 			}
 		}	
 	}
-	if (auto jouniontypeRoot = tc::js::ts_ext::isUnion(jtypeRoot)) {
+	if (auto jouniontypeRoot = jtypeRoot->isUnion()) {
 		_ASSERT(1 < (*jouniontypeRoot)->types()->length());
 		auto vecmtType = tc::make_vector(tc::transform((*jouniontypeRoot)->types(), [&](ts::Type const jtypeUnionOption) noexcept {
 			return MangleType(jtypeUnionOption);
@@ -212,7 +212,7 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 			};
 		}
 	}
-	if (auto jointerfacetypeRoot = tc::js::ts_ext::isClassOrInterface(jtypeRoot)) {
+	if (auto jointerfacetypeRoot = jtypeRoot->isClassOrInterface()) {
 		if (IsTrivialType(*jointerfacetypeRoot)) {
 			_ASSERTEQUAL((*jointerfacetypeRoot)->flags(), ts::TypeFlags::Object);
 			auto const strName = FullyQualifiedName(*(*jointerfacetypeRoot)->getSymbol());

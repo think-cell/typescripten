@@ -12,7 +12,7 @@ enum ERecurse {
 template<typename Func>
 tc::break_or_continue ForEachChildTypeNode(tc::js::ts::Node jnode, Func fn) noexcept {
     switch([&]() noexcept {
-        if(auto ojtypenode = tc::js::ts_ext::isTypeNode(jnode)) {
+        if(auto ojtypenode = tc::js::ts::isTypeNode(jnode)) {
             return fn(*ojtypenode);
         } else {
             return erecurseCONTINUE;

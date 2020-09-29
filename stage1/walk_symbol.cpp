@@ -58,7 +58,7 @@ void PrintSymbolTree(int const nOffset, ts::Symbol const jsymType) noexcept {
 		}
 	);
 
-	if (auto jointerfacetype = tc::js::ts_ext::isClassOrInterface((*g_ojtsTypeChecker)->getDeclaredTypeOfSymbol(jsymType))) {
+	if (auto jointerfacetype = (*g_ojtsTypeChecker)->getDeclaredTypeOfSymbol(jsymType)->isClassOrInterface()) {
 		tc::append(std::cerr, tc::repeat_n(' ', nOffset + 2), "base types\n");
 		tc::for_each((*g_ojtsTypeChecker)->getBaseTypes(*jointerfacetype),
 			[&](tc::js::ts::BaseType const jtsBaseType) noexcept {

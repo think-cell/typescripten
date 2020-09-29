@@ -2212,579 +2212,579 @@ namespace tc::js_defs {
 	using _js_jts_dWriteFileCallback = js_function<void(js_string, js_string, bool /*false*/, js_union<js_function<void(js_string)>, js_undefined>, js_union<js::ReadonlyArray<_js_jts_dSourceFile>, js_undefined>)>;
 	struct _impl_js_j_qts_q : virtual IObject {
 		struct _tcjs_definitions {
-			using MapLike = _js_jts_dMapLike;
-			using SortedReadonlyArray = _js_jts_dSortedReadonlyArray;
-			using SortedArray = _js_jts_dSortedArray;
-			using ReadonlyMap = _js_jts_dReadonlyMap;
-			using Map = _js_jts_dMap;
-			using Iterator = _js_jts_dIterator;
-			using Push = _js_jts_dPush;
-			using TextRange = _js_jts_dTextRange;
-			using SyntaxKind = _js_jts_dSyntaxKind;
-			using NodeFlags = _js_jts_dNodeFlags;
-			using ModifierFlags = _js_jts_dModifierFlags;
-			using JsxFlags = _js_jts_dJsxFlags;
-			using Node = _js_jts_dNode;
-			using JSDocContainer = _js_jts_dJSDocContainer;
-			using HasType = _js_jts_dHasType;
-			using HasInitializer = _js_jts_dHasInitializer;
-			using HasExpressionInitializer = _js_jts_dHasExpressionInitializer;
-			using NodeArray = _js_jts_dNodeArray;
-			using Token = _js_jts_dToken;
-			using DotDotDotToken = _js_jts_dDotDotDotToken;
-			using QuestionToken = _js_jts_dQuestionToken;
-			using ExclamationToken = _js_jts_dExclamationToken;
-			using ColonToken = _js_jts_dColonToken;
-			using EqualsToken = _js_jts_dEqualsToken;
-			using AsteriskToken = _js_jts_dAsteriskToken;
-			using EqualsGreaterThanToken = _js_jts_dEqualsGreaterThanToken;
-			using ReadonlyToken = _js_jts_dReadonlyToken;
-			using AwaitKeywordToken = _js_jts_dAwaitKeywordToken;
-			using PlusToken = _js_jts_dPlusToken;
-			using MinusToken = _js_jts_dMinusToken;
-			using Modifier = _js_jts_dModifier;
-			using ModifiersArray = _js_jts_dModifiersArray;
-			using Identifier = _js_jts_dIdentifier;
-			using TransientIdentifier = _js_jts_dTransientIdentifier;
-			using QualifiedName = _js_jts_dQualifiedName;
-			using EntityName = _js_jts_dEntityName;
-			using PropertyName = _js_jts_dPropertyName;
-			using DeclarationName = _js_jts_dDeclarationName;
-			using Declaration = _js_jts_dDeclaration;
-			using NamedDeclaration = _js_jts_dNamedDeclaration;
-			using DeclarationStatement = _js_jts_dDeclarationStatement;
-			using ComputedPropertyName = _js_jts_dComputedPropertyName;
-			using Decorator = _js_jts_dDecorator;
-			using TypeParameterDeclaration = _js_jts_dTypeParameterDeclaration;
-			using SignatureDeclarationBase = _js_jts_dSignatureDeclarationBase;
-			using SignatureDeclaration = _js_jts_dSignatureDeclaration;
-			using CallSignatureDeclaration = _js_jts_dCallSignatureDeclaration;
-			using ConstructSignatureDeclaration = _js_jts_dConstructSignatureDeclaration;
-			using BindingName = _js_jts_dBindingName;
-			using VariableDeclaration = _js_jts_dVariableDeclaration;
-			using VariableDeclarationList = _js_jts_dVariableDeclarationList;
-			using ParameterDeclaration = _js_jts_dParameterDeclaration;
-			using BindingElement = _js_jts_dBindingElement;
-			using PropertySignature = _js_jts_dPropertySignature;
-			using PropertyDeclaration = _js_jts_dPropertyDeclaration;
-			using ObjectLiteralElement = _js_jts_dObjectLiteralElement;
-			using ObjectLiteralElementLike = _js_jts_dObjectLiteralElementLike;
-			using PropertyAssignment = _js_jts_dPropertyAssignment;
-			using ShorthandPropertyAssignment = _js_jts_dShorthandPropertyAssignment;
-			using SpreadAssignment = _js_jts_dSpreadAssignment;
-			using VariableLikeDeclaration = _js_jts_dVariableLikeDeclaration;
-			using PropertyLikeDeclaration = _js_jts_dPropertyLikeDeclaration;
-			using ObjectBindingPattern = _js_jts_dObjectBindingPattern;
-			using ArrayBindingPattern = _js_jts_dArrayBindingPattern;
-			using BindingPattern = _js_jts_dBindingPattern;
-			using ArrayBindingElement = _js_jts_dArrayBindingElement;
-			using FunctionLikeDeclarationBase = _js_jts_dFunctionLikeDeclarationBase;
-			using FunctionLikeDeclaration = _js_jts_dFunctionLikeDeclaration;
-			using FunctionLike = _js_jts_dFunctionLike;
-			using FunctionDeclaration = _js_jts_dFunctionDeclaration;
-			using MethodSignature = _js_jts_dMethodSignature;
-			using MethodDeclaration = _js_jts_dMethodDeclaration;
-			using ConstructorDeclaration = _js_jts_dConstructorDeclaration;
-			using SemicolonClassElement = _js_jts_dSemicolonClassElement;
-			using GetAccessorDeclaration = _js_jts_dGetAccessorDeclaration;
-			using SetAccessorDeclaration = _js_jts_dSetAccessorDeclaration;
-			using AccessorDeclaration = _js_jts_dAccessorDeclaration;
-			using IndexSignatureDeclaration = _js_jts_dIndexSignatureDeclaration;
-			using TypeNode = _js_jts_dTypeNode;
-			using KeywordTypeNode = _js_jts_dKeywordTypeNode;
-			using ImportTypeNode = _js_jts_dImportTypeNode;
-			using ThisTypeNode = _js_jts_dThisTypeNode;
-			using FunctionOrConstructorTypeNode = _js_jts_dFunctionOrConstructorTypeNode;
-			using FunctionOrConstructorTypeNodeBase = _js_jts_dFunctionOrConstructorTypeNodeBase;
-			using FunctionTypeNode = _js_jts_dFunctionTypeNode;
-			using ConstructorTypeNode = _js_jts_dConstructorTypeNode;
-			using NodeWithTypeArguments = _js_jts_dNodeWithTypeArguments;
-			using TypeReferenceType = _js_jts_dTypeReferenceType;
-			using TypeReferenceNode = _js_jts_dTypeReferenceNode;
-			using TypePredicateNode = _js_jts_dTypePredicateNode;
-			using TypeQueryNode = _js_jts_dTypeQueryNode;
-			using TypeLiteralNode = _js_jts_dTypeLiteralNode;
-			using ArrayTypeNode = _js_jts_dArrayTypeNode;
-			using TupleTypeNode = _js_jts_dTupleTypeNode;
-			using OptionalTypeNode = _js_jts_dOptionalTypeNode;
-			using RestTypeNode = _js_jts_dRestTypeNode;
-			using UnionOrIntersectionTypeNode = _js_jts_dUnionOrIntersectionTypeNode;
-			using UnionTypeNode = _js_jts_dUnionTypeNode;
-			using IntersectionTypeNode = _js_jts_dIntersectionTypeNode;
-			using ConditionalTypeNode = _js_jts_dConditionalTypeNode;
-			using InferTypeNode = _js_jts_dInferTypeNode;
-			using ParenthesizedTypeNode = _js_jts_dParenthesizedTypeNode;
-			using TypeOperatorNode = _js_jts_dTypeOperatorNode;
-			using IndexedAccessTypeNode = _js_jts_dIndexedAccessTypeNode;
-			using MappedTypeNode = _js_jts_dMappedTypeNode;
-			using LiteralTypeNode = _js_jts_dLiteralTypeNode;
-			using StringLiteral = _js_jts_dStringLiteral;
-			using StringLiteralLike = _js_jts_dStringLiteralLike;
-			using Expression = _js_jts_dExpression;
-			using OmittedExpression = _js_jts_dOmittedExpression;
-			using PartiallyEmittedExpression = _js_jts_dPartiallyEmittedExpression;
-			using UnaryExpression = _js_jts_dUnaryExpression;
-			using IncrementExpression = _js_jts_dIncrementExpression;
-			using UpdateExpression = _js_jts_dUpdateExpression;
-			using PrefixUnaryExpression = _js_jts_dPrefixUnaryExpression;
-			using PostfixUnaryExpression = _js_jts_dPostfixUnaryExpression;
-			using LeftHandSideExpression = _js_jts_dLeftHandSideExpression;
-			using MemberExpression = _js_jts_dMemberExpression;
-			using PrimaryExpression = _js_jts_dPrimaryExpression;
-			using NullLiteral = _js_jts_dNullLiteral;
-			using BooleanLiteral = _js_jts_dBooleanLiteral;
-			using ThisExpression = _js_jts_dThisExpression;
-			using SuperExpression = _js_jts_dSuperExpression;
-			using ImportExpression = _js_jts_dImportExpression;
-			using DeleteExpression = _js_jts_dDeleteExpression;
-			using TypeOfExpression = _js_jts_dTypeOfExpression;
-			using VoidExpression = _js_jts_dVoidExpression;
-			using AwaitExpression = _js_jts_dAwaitExpression;
-			using YieldExpression = _js_jts_dYieldExpression;
-			using SyntheticExpression = _js_jts_dSyntheticExpression;
-			using BinaryOperatorToken = _js_jts_dBinaryOperatorToken;
-			using BinaryExpression = _js_jts_dBinaryExpression;
-			using AssignmentOperatorToken = _js_jts_dAssignmentOperatorToken;
-			using AssignmentExpression = _js_jts_dAssignmentExpression;
-			using ObjectDestructuringAssignment = _js_jts_dObjectDestructuringAssignment;
-			using ArrayDestructuringAssignment = _js_jts_dArrayDestructuringAssignment;
-			using DestructuringAssignment = _js_jts_dDestructuringAssignment;
-			using BindingOrAssignmentElement = _js_jts_dBindingOrAssignmentElement;
-			using BindingOrAssignmentElementRestIndicator = _js_jts_dBindingOrAssignmentElementRestIndicator;
-			using BindingOrAssignmentElementTarget = _js_jts_dBindingOrAssignmentElementTarget;
-			using ObjectBindingOrAssignmentPattern = _js_jts_dObjectBindingOrAssignmentPattern;
-			using ArrayBindingOrAssignmentPattern = _js_jts_dArrayBindingOrAssignmentPattern;
-			using AssignmentPattern = _js_jts_dAssignmentPattern;
-			using BindingOrAssignmentPattern = _js_jts_dBindingOrAssignmentPattern;
-			using ConditionalExpression = _js_jts_dConditionalExpression;
-			using FunctionBody = _js_jts_dFunctionBody;
-			using ConciseBody = _js_jts_dConciseBody;
-			using FunctionExpression = _js_jts_dFunctionExpression;
-			using ArrowFunction = _js_jts_dArrowFunction;
-			using LiteralLikeNode = _js_jts_dLiteralLikeNode;
-			using LiteralExpression = _js_jts_dLiteralExpression;
-			using RegularExpressionLiteral = _js_jts_dRegularExpressionLiteral;
-			using NoSubstitutionTemplateLiteral = _js_jts_dNoSubstitutionTemplateLiteral;
-			using TokenFlags = _js_jts_dTokenFlags;
-			using NumericLiteral = _js_jts_dNumericLiteral;
-			using BigIntLiteral = _js_jts_dBigIntLiteral;
-			using TemplateHead = _js_jts_dTemplateHead;
-			using TemplateMiddle = _js_jts_dTemplateMiddle;
-			using TemplateTail = _js_jts_dTemplateTail;
-			using TemplateLiteral = _js_jts_dTemplateLiteral;
-			using TemplateExpression = _js_jts_dTemplateExpression;
-			using TemplateSpan = _js_jts_dTemplateSpan;
-			using ParenthesizedExpression = _js_jts_dParenthesizedExpression;
-			using ArrayLiteralExpression = _js_jts_dArrayLiteralExpression;
-			using SpreadElement = _js_jts_dSpreadElement;
-			using ObjectLiteralExpressionBase = _js_jts_dObjectLiteralExpressionBase;
-			using ObjectLiteralExpression = _js_jts_dObjectLiteralExpression;
-			using EntityNameExpression = _js_jts_dEntityNameExpression;
-			using EntityNameOrEntityNameExpression = _js_jts_dEntityNameOrEntityNameExpression;
-			using PropertyAccessExpression = _js_jts_dPropertyAccessExpression;
-			using SuperPropertyAccessExpression = _js_jts_dSuperPropertyAccessExpression;
-			using PropertyAccessEntityNameExpression = _js_jts_dPropertyAccessEntityNameExpression;
-			using ElementAccessExpression = _js_jts_dElementAccessExpression;
-			using SuperElementAccessExpression = _js_jts_dSuperElementAccessExpression;
-			using SuperProperty = _js_jts_dSuperProperty;
-			using CallExpression = _js_jts_dCallExpression;
-			using SuperCall = _js_jts_dSuperCall;
-			using ImportCall = _js_jts_dImportCall;
-			using ExpressionWithTypeArguments = _js_jts_dExpressionWithTypeArguments;
-			using NewExpression = _js_jts_dNewExpression;
-			using TaggedTemplateExpression = _js_jts_dTaggedTemplateExpression;
-			using CallLikeExpression = _js_jts_dCallLikeExpression;
-			using AsExpression = _js_jts_dAsExpression;
-			using TypeAssertion = _js_jts_dTypeAssertion;
-			using AssertionExpression = _js_jts_dAssertionExpression;
-			using NonNullExpression = _js_jts_dNonNullExpression;
-			using MetaProperty = _js_jts_dMetaProperty;
-			using JsxElement = _js_jts_dJsxElement;
-			using JsxOpeningLikeElement = _js_jts_dJsxOpeningLikeElement;
-			using JsxAttributeLike = _js_jts_dJsxAttributeLike;
-			using JsxTagNameExpression = _js_jts_dJsxTagNameExpression;
-			using JsxTagNamePropertyAccess = _js_jts_dJsxTagNamePropertyAccess;
-			using JsxAttributes = _js_jts_dJsxAttributes;
-			using JsxOpeningElement = _js_jts_dJsxOpeningElement;
-			using JsxSelfClosingElement = _js_jts_dJsxSelfClosingElement;
-			using JsxFragment = _js_jts_dJsxFragment;
-			using JsxOpeningFragment = _js_jts_dJsxOpeningFragment;
-			using JsxClosingFragment = _js_jts_dJsxClosingFragment;
-			using JsxAttribute = _js_jts_dJsxAttribute;
-			using JsxSpreadAttribute = _js_jts_dJsxSpreadAttribute;
-			using JsxClosingElement = _js_jts_dJsxClosingElement;
-			using JsxExpression = _js_jts_dJsxExpression;
-			using JsxText = _js_jts_dJsxText;
-			using JsxChild = _js_jts_dJsxChild;
-			using Statement = _js_jts_dStatement;
-			using NotEmittedStatement = _js_jts_dNotEmittedStatement;
-			using CommaListExpression = _js_jts_dCommaListExpression;
-			using EmptyStatement = _js_jts_dEmptyStatement;
-			using DebuggerStatement = _js_jts_dDebuggerStatement;
-			using MissingDeclaration = _js_jts_dMissingDeclaration;
-			using BlockLike = _js_jts_dBlockLike;
-			using Block = _js_jts_dBlock;
-			using VariableStatement = _js_jts_dVariableStatement;
-			using ExpressionStatement = _js_jts_dExpressionStatement;
-			using IfStatement = _js_jts_dIfStatement;
-			using IterationStatement = _js_jts_dIterationStatement;
-			using DoStatement = _js_jts_dDoStatement;
-			using WhileStatement = _js_jts_dWhileStatement;
-			using ForInitializer = _js_jts_dForInitializer;
-			using ForStatement = _js_jts_dForStatement;
-			using ForInOrOfStatement = _js_jts_dForInOrOfStatement;
-			using ForInStatement = _js_jts_dForInStatement;
-			using ForOfStatement = _js_jts_dForOfStatement;
-			using BreakStatement = _js_jts_dBreakStatement;
-			using ContinueStatement = _js_jts_dContinueStatement;
-			using BreakOrContinueStatement = _js_jts_dBreakOrContinueStatement;
-			using ReturnStatement = _js_jts_dReturnStatement;
-			using WithStatement = _js_jts_dWithStatement;
-			using SwitchStatement = _js_jts_dSwitchStatement;
-			using CaseBlock = _js_jts_dCaseBlock;
-			using CaseClause = _js_jts_dCaseClause;
-			using DefaultClause = _js_jts_dDefaultClause;
-			using CaseOrDefaultClause = _js_jts_dCaseOrDefaultClause;
-			using LabeledStatement = _js_jts_dLabeledStatement;
-			using ThrowStatement = _js_jts_dThrowStatement;
-			using TryStatement = _js_jts_dTryStatement;
-			using CatchClause = _js_jts_dCatchClause;
-			using ObjectTypeDeclaration = _js_jts_dObjectTypeDeclaration;
-			using DeclarationWithTypeParameters = _js_jts_dDeclarationWithTypeParameters;
-			using DeclarationWithTypeParameterChildren = _js_jts_dDeclarationWithTypeParameterChildren;
-			using ClassLikeDeclarationBase = _js_jts_dClassLikeDeclarationBase;
-			using ClassDeclaration = _js_jts_dClassDeclaration;
-			using ClassExpression = _js_jts_dClassExpression;
-			using ClassLikeDeclaration = _js_jts_dClassLikeDeclaration;
-			using ClassElement = _js_jts_dClassElement;
-			using TypeElement = _js_jts_dTypeElement;
-			using InterfaceDeclaration = _js_jts_dInterfaceDeclaration;
-			using HeritageClause = _js_jts_dHeritageClause;
-			using TypeAliasDeclaration = _js_jts_dTypeAliasDeclaration;
-			using EnumMember = _js_jts_dEnumMember;
-			using EnumDeclaration = _js_jts_dEnumDeclaration;
-			using ModuleName = _js_jts_dModuleName;
-			using ModuleBody = _js_jts_dModuleBody;
-			using ModuleDeclaration = _js_jts_dModuleDeclaration;
-			using NamespaceBody = _js_jts_dNamespaceBody;
-			using NamespaceDeclaration = _js_jts_dNamespaceDeclaration;
-			using JSDocNamespaceBody = _js_jts_dJSDocNamespaceBody;
-			using JSDocNamespaceDeclaration = _js_jts_dJSDocNamespaceDeclaration;
-			using ModuleBlock = _js_jts_dModuleBlock;
-			using ModuleReference = _js_jts_dModuleReference;
-			using ImportEqualsDeclaration = _js_jts_dImportEqualsDeclaration;
-			using ExternalModuleReference = _js_jts_dExternalModuleReference;
-			using ImportDeclaration = _js_jts_dImportDeclaration;
-			using NamedImportBindings = _js_jts_dNamedImportBindings;
-			using ImportClause = _js_jts_dImportClause;
-			using NamespaceImport = _js_jts_dNamespaceImport;
-			using NamespaceExportDeclaration = _js_jts_dNamespaceExportDeclaration;
-			using ExportDeclaration = _js_jts_dExportDeclaration;
-			using NamedImports = _js_jts_dNamedImports;
-			using NamedExports = _js_jts_dNamedExports;
-			using NamedImportsOrExports = _js_jts_dNamedImportsOrExports;
-			using ImportSpecifier = _js_jts_dImportSpecifier;
-			using ExportSpecifier = _js_jts_dExportSpecifier;
-			using ImportOrExportSpecifier = _js_jts_dImportOrExportSpecifier;
-			using ExportAssignment = _js_jts_dExportAssignment;
-			using FileReference = _js_jts_dFileReference;
-			using CheckJsDirective = _js_jts_dCheckJsDirective;
-			using CommentRange = _js_jts_dCommentRange;
-			using SynthesizedComment = _js_jts_dSynthesizedComment;
-			using JSDocTypeExpression = _js_jts_dJSDocTypeExpression;
-			using JSDocType = _js_jts_dJSDocType;
-			using JSDocAllType = _js_jts_dJSDocAllType;
-			using JSDocUnknownType = _js_jts_dJSDocUnknownType;
-			using JSDocNonNullableType = _js_jts_dJSDocNonNullableType;
-			using JSDocNullableType = _js_jts_dJSDocNullableType;
-			using JSDocOptionalType = _js_jts_dJSDocOptionalType;
-			using JSDocFunctionType = _js_jts_dJSDocFunctionType;
-			using JSDocVariadicType = _js_jts_dJSDocVariadicType;
-			using JSDocTypeReferencingNode = _js_jts_dJSDocTypeReferencingNode;
-			using JSDoc = _js_jts_dJSDoc;
-			using JSDocTag = _js_jts_dJSDocTag;
-			using JSDocUnknownTag = _js_jts_dJSDocUnknownTag;
-			using JSDocAugmentsTag = _js_jts_dJSDocAugmentsTag;
-			using JSDocClassTag = _js_jts_dJSDocClassTag;
-			using JSDocEnumTag = _js_jts_dJSDocEnumTag;
-			using JSDocThisTag = _js_jts_dJSDocThisTag;
-			using JSDocTemplateTag = _js_jts_dJSDocTemplateTag;
-			using JSDocReturnTag = _js_jts_dJSDocReturnTag;
-			using JSDocTypeTag = _js_jts_dJSDocTypeTag;
-			using JSDocTypedefTag = _js_jts_dJSDocTypedefTag;
-			using JSDocCallbackTag = _js_jts_dJSDocCallbackTag;
-			using JSDocSignature = _js_jts_dJSDocSignature;
-			using JSDocPropertyLikeTag = _js_jts_dJSDocPropertyLikeTag;
-			using JSDocPropertyTag = _js_jts_dJSDocPropertyTag;
-			using JSDocParameterTag = _js_jts_dJSDocParameterTag;
-			using JSDocTypeLiteral = _js_jts_dJSDocTypeLiteral;
-			using FlowFlags = _js_jts_dFlowFlags;
-			using FlowLock = _js_jts_dFlowLock;
-			using AfterFinallyFlow = _js_jts_dAfterFinallyFlow;
-			using PreFinallyFlow = _js_jts_dPreFinallyFlow;
-			using FlowNode = _js_jts_dFlowNode;
-			using FlowNodeBase = _js_jts_dFlowNodeBase;
-			using FlowStart = _js_jts_dFlowStart;
-			using FlowLabel = _js_jts_dFlowLabel;
-			using FlowAssignment = _js_jts_dFlowAssignment;
-			using FlowCondition = _js_jts_dFlowCondition;
-			using FlowSwitchClause = _js_jts_dFlowSwitchClause;
-			using FlowArrayMutation = _js_jts_dFlowArrayMutation;
-			using FlowType = _js_jts_dFlowType;
-			using IncompleteType = _js_jts_dIncompleteType;
-			using AmdDependency = _js_jts_dAmdDependency;
-			using SourceFile = _js_jts_dSourceFile;
-			using Bundle = _js_jts_dBundle;
-			using InputFiles = _js_jts_dInputFiles;
-			using UnparsedSource = _js_jts_dUnparsedSource;
-			using UnparsedSourceText = _js_jts_dUnparsedSourceText;
-			using UnparsedNode = _js_jts_dUnparsedNode;
-			using UnparsedSection = _js_jts_dUnparsedSection;
-			using UnparsedPrologue = _js_jts_dUnparsedPrologue;
-			using UnparsedPrepend = _js_jts_dUnparsedPrepend;
-			using UnparsedTextLike = _js_jts_dUnparsedTextLike;
-			using UnparsedSyntheticReference = _js_jts_dUnparsedSyntheticReference;
-			using JsonSourceFile = _js_jts_dJsonSourceFile;
-			using TsConfigSourceFile = _js_jts_dTsConfigSourceFile;
-			using JsonMinusNumericLiteral = _js_jts_dJsonMinusNumericLiteral;
-			using JsonObjectExpressionStatement = _js_jts_dJsonObjectExpressionStatement;
-			using ScriptReferenceHost = _js_jts_dScriptReferenceHost;
-			using ParseConfigHost = _js_jts_dParseConfigHost;
-			using WriteFileCallback = _js_jts_dWriteFileCallback;
-			using OperationCanceledException = _js_jts_dOperationCanceledException;
-			using CancellationToken = _js_jts_dCancellationToken;
-			using Program = _js_jts_dProgram;
-			using ResolvedProjectReference = _js_jts_dResolvedProjectReference;
-			using CustomTransformerFactory = _js_jts_dCustomTransformerFactory;
-			using CustomTransformer = _js_jts_dCustomTransformer;
-			using CustomTransformers = _js_jts_dCustomTransformers;
-			using SourceMapSpan = _js_jts_dSourceMapSpan;
-			using ExitStatus = _js_jts_dExitStatus;
-			using EmitResult = _js_jts_dEmitResult;
-			using TypeChecker = _js_jts_dTypeChecker;
-			using NodeBuilderFlags = _js_jts_dNodeBuilderFlags;
-			using TypeFormatFlags = _js_jts_dTypeFormatFlags;
-			using SymbolFormatFlags = _js_jts_dSymbolFormatFlags;
-			using TypePredicateKind = _js_jts_dTypePredicateKind;
-			using TypePredicateBase = _js_jts_dTypePredicateBase;
-			using ThisTypePredicate = _js_jts_dThisTypePredicate;
-			using IdentifierTypePredicate = _js_jts_dIdentifierTypePredicate;
-			using TypePredicate = _js_jts_dTypePredicate;
-			using SymbolFlags = _js_jts_dSymbolFlags;
-			using Symbol = _js_jts_dSymbol;
-			using InternalSymbolName = _js_jts_dInternalSymbolName;
-			using ReadonlyUnderscoreEscapedMap = _js_jts_dReadonlyUnderscoreEscapedMap;
-			using UnderscoreEscapedMap = _js_jts_dUnderscoreEscapedMap;
-			using SymbolTable = _js_jts_dSymbolTable;
-			using TypeFlags = _js_jts_dTypeFlags;
-			using DestructuringPattern = _js_jts_dDestructuringPattern;
-			using Type = _js_jts_dType;
-			using LiteralType = _js_jts_dLiteralType;
-			using UniqueESSymbolType = _js_jts_dUniqueESSymbolType;
-			using StringLiteralType = _js_jts_dStringLiteralType;
-			using NumberLiteralType = _js_jts_dNumberLiteralType;
-			using BigIntLiteralType = _js_jts_dBigIntLiteralType;
-			using EnumType = _js_jts_dEnumType;
-			using ObjectFlags = _js_jts_dObjectFlags;
-			using ObjectType = _js_jts_dObjectType;
-			using InterfaceType = _js_jts_dInterfaceType;
-			using BaseType = _js_jts_dBaseType;
-			using InterfaceTypeWithDeclaredMembers = _js_jts_dInterfaceTypeWithDeclaredMembers;
-			using TypeReference = _js_jts_dTypeReference;
-			using GenericType = _js_jts_dGenericType;
-			using TupleType = _js_jts_dTupleType;
-			using TupleTypeReference = _js_jts_dTupleTypeReference;
-			using UnionOrIntersectionType = _js_jts_dUnionOrIntersectionType;
-			using UnionType = _js_jts_dUnionType;
-			using IntersectionType = _js_jts_dIntersectionType;
-			using StructuredType = _js_jts_dStructuredType;
-			using EvolvingArrayType = _js_jts_dEvolvingArrayType;
-			using InstantiableType = _js_jts_dInstantiableType;
-			using TypeParameter = _js_jts_dTypeParameter;
-			using IndexedAccessType = _js_jts_dIndexedAccessType;
-			using TypeVariable = _js_jts_dTypeVariable;
-			using IndexType = _js_jts_dIndexType;
-			using ConditionalRoot = _js_jts_dConditionalRoot;
-			using ConditionalType = _js_jts_dConditionalType;
-			using SubstitutionType = _js_jts_dSubstitutionType;
-			using SignatureKind = _js_jts_dSignatureKind;
-			using Signature = _js_jts_dSignature;
-			using IndexKind = _js_jts_dIndexKind;
-			using IndexInfo = _js_jts_dIndexInfo;
-			using InferencePriority = _js_jts_dInferencePriority;
-			using JsFileExtensionInfo = _js_jts_dJsFileExtensionInfo;
-			using FileExtensionInfo = _js_jts_dFileExtensionInfo;
-			using DiagnosticMessage = _js_jts_dDiagnosticMessage;
-			using DiagnosticMessageChain = _js_jts_dDiagnosticMessageChain;
-			using Diagnostic = _js_jts_dDiagnostic;
-			using DiagnosticRelatedInformation = _js_jts_dDiagnosticRelatedInformation;
-			using DiagnosticWithLocation = _js_jts_dDiagnosticWithLocation;
-			using DiagnosticCategory = _js_jts_dDiagnosticCategory;
-			using ModuleResolutionKind = _js_jts_dModuleResolutionKind;
-			using PluginImport = _js_jts_dPluginImport;
-			using ProjectReference = _js_jts_dProjectReference;
-			using CompilerOptions = _js_jts_dCompilerOptions;
-			using TypeAcquisition = _js_jts_dTypeAcquisition;
-			using ModuleKind = _js_jts_dModuleKind;
-			using JsxEmit = _js_jts_dJsxEmit;
-			using NewLineKind = _js_jts_dNewLineKind;
-			using LineAndCharacter = _js_jts_dLineAndCharacter;
-			using ScriptKind = _js_jts_dScriptKind;
-			using ScriptTarget = _js_jts_dScriptTarget;
-			using LanguageVariant = _js_jts_dLanguageVariant;
-			using ParsedCommandLine = _js_jts_dParsedCommandLine;
-			using WatchDirectoryFlags = _js_jts_dWatchDirectoryFlags;
-			using ExpandResult = _js_jts_dExpandResult;
-			using CreateProgramOptions = _js_jts_dCreateProgramOptions;
-			using ModuleResolutionHost = _js_jts_dModuleResolutionHost;
-			using ResolvedModule = _js_jts_dResolvedModule;
-			using ResolvedModuleFull = _js_jts_dResolvedModuleFull;
-			using PackageId = _js_jts_dPackageId;
-			using Extension = _js_jts_dExtension;
-			using ResolvedModuleWithFailedLookupLocations = _js_jts_dResolvedModuleWithFailedLookupLocations;
-			using ResolvedTypeReferenceDirective = _js_jts_dResolvedTypeReferenceDirective;
-			using ResolvedTypeReferenceDirectiveWithFailedLookupLocations = _js_jts_dResolvedTypeReferenceDirectiveWithFailedLookupLocations;
-			using CompilerHost = _js_jts_dCompilerHost;
-			using SourceMapRange = _js_jts_dSourceMapRange;
-			using SourceMapSource = _js_jts_dSourceMapSource;
-			using EmitFlags = _js_jts_dEmitFlags;
-			using EmitHelper = _js_jts_dEmitHelper;
-			using UnscopedEmitHelper = _js_jts_dUnscopedEmitHelper;
-			using EmitHelperUniqueNameCallback = _js_jts_dEmitHelperUniqueNameCallback;
-			using EmitHint = _js_jts_dEmitHint;
-			using TransformationContext = _js_jts_dTransformationContext;
-			using TransformationResult = _js_jts_dTransformationResult;
-			using TransformerFactory = _js_jts_dTransformerFactory;
-			using Transformer = _js_jts_dTransformer;
-			using Visitor = _js_jts_dVisitor;
-			using Printer = _js_jts_dPrinter;
-			using PrintHandlers = _js_jts_dPrintHandlers;
-			using PrinterOptions = _js_jts_dPrinterOptions;
-			using GetEffectiveTypeRootsHost = _js_jts_dGetEffectiveTypeRootsHost;
-			using TextSpan = _js_jts_dTextSpan;
-			using TextChangeRange = _js_jts_dTextChangeRange;
-			using SyntaxList = _js_jts_dSyntaxList;
-			using ListFormat = _js_jts_dListFormat;
-			using UserPreferences = _js_jts_dUserPreferences;
-			using PseudoBigInt = _js_jts_dPseudoBigInt;
-			using FileWatcherEventKind = _js_jts_dFileWatcherEventKind;
-			using FileWatcherCallback = _js_jts_dFileWatcherCallback;
-			using DirectoryWatcherCallback = _js_jts_dDirectoryWatcherCallback;
-			using System = _js_jts_dSystem;
-			using FileWatcher = _js_jts_dFileWatcher;
-			using ErrorCallback = _js_jts_dErrorCallback;
-			using Scanner = _js_jts_dScanner;
-			using TemplateLiteralToken = _js_jts_dTemplateLiteralToken;
-			using DiagnosticReporter = _js_jts_dDiagnosticReporter;
-			using ConfigFileDiagnosticsReporter = _js_jts_dConfigFileDiagnosticsReporter;
-			using ParseConfigFileHost = _js_jts_dParseConfigFileHost;
-			using ParsedTsconfig = _js_jts_dParsedTsconfig;
-			using ExtendedConfigCacheEntry = _js_jts_dExtendedConfigCacheEntry;
-			using ModuleResolutionCache = _js_jts_dModuleResolutionCache;
-			using NonRelativeModuleNameResolutionCache = _js_jts_dNonRelativeModuleNameResolutionCache;
-			using PerModuleNameCache = _js_jts_dPerModuleNameCache;
-			using FormatDiagnosticsHost = _js_jts_dFormatDiagnosticsHost;
-			using ResolveProjectReferencePathHost = _js_jts_dResolveProjectReferencePathHost;
-			using EmitOutput = _js_jts_dEmitOutput;
-			using OutputFile = _js_jts_dOutputFile;
-			using AffectedFileResult = _js_jts_dAffectedFileResult;
-			using BuilderProgramHost = _js_jts_dBuilderProgramHost;
-			using BuilderProgram = _js_jts_dBuilderProgram;
-			using SemanticDiagnosticsBuilderProgram = _js_jts_dSemanticDiagnosticsBuilderProgram;
-			using EmitAndSemanticDiagnosticsBuilderProgram = _js_jts_dEmitAndSemanticDiagnosticsBuilderProgram;
-			using WatchStatusReporter = _js_jts_dWatchStatusReporter;
-			using CreateProgram = _js_jts_dCreateProgram;
-			using WatchHost = _js_jts_dWatchHost;
-			using ProgramHost = _js_jts_dProgramHost;
-			using WatchCompilerHost = _js_jts_dWatchCompilerHost;
-			using WatchCompilerHostOfFilesAndCompilerOptions = _js_jts_dWatchCompilerHostOfFilesAndCompilerOptions;
-			using WatchCompilerHostOfConfigFile = _js_jts_dWatchCompilerHostOfConfigFile;
-			using Watch = _js_jts_dWatch;
-			using WatchOfConfigFile = _js_jts_dWatchOfConfigFile;
-			using WatchOfFilesAndCompilerOptions = _js_jts_dWatchOfFilesAndCompilerOptions;
-			using server = _js_jts_dserver;
-			using SourceFileLike = _js_jts_dSourceFileLike;
-			using IScriptSnapshot = _js_jts_dIScriptSnapshot;
-			using ScriptSnapshot = _js_jts_dScriptSnapshot;
-			using PreProcessedFileInfo = _js_jts_dPreProcessedFileInfo;
-			using HostCancellationToken = _js_jts_dHostCancellationToken;
-			using InstallPackageOptions = _js_jts_dInstallPackageOptions;
-			using LanguageServiceHost = _js_jts_dLanguageServiceHost;
-			using LanguageService = _js_jts_dLanguageService;
-			using JsxClosingTagInfo = _js_jts_dJsxClosingTagInfo;
-			using CombinedCodeFixScope = _js_jts_dCombinedCodeFixScope;
-			using OrganizeImportsScope = _js_jts_dOrganizeImportsScope;
-			using GetCompletionsAtPositionOptions = _js_jts_dGetCompletionsAtPositionOptions;
-			using SignatureHelpItemsOptions = _js_jts_dSignatureHelpItemsOptions;
-			using SignatureHelpTriggerReason = _js_jts_dSignatureHelpTriggerReason;
-			using SignatureHelpInvokedReason = _js_jts_dSignatureHelpInvokedReason;
-			using SignatureHelpCharacterTypedReason = _js_jts_dSignatureHelpCharacterTypedReason;
-			using SignatureHelpRetriggeredReason = _js_jts_dSignatureHelpRetriggeredReason;
-			using ApplyCodeActionCommandResult = _js_jts_dApplyCodeActionCommandResult;
-			using Classifications = _js_jts_dClassifications;
-			using ClassifiedSpan = _js_jts_dClassifiedSpan;
-			using NavigationBarItem = _js_jts_dNavigationBarItem;
-			using NavigationTree = _js_jts_dNavigationTree;
-			using TodoCommentDescriptor = _js_jts_dTodoCommentDescriptor;
-			using TodoComment = _js_jts_dTodoComment;
-			using TextChange = _js_jts_dTextChange;
-			using FileTextChanges = _js_jts_dFileTextChanges;
-			using CodeAction = _js_jts_dCodeAction;
-			using CodeFixAction = _js_jts_dCodeFixAction;
-			using CombinedCodeActions = _js_jts_dCombinedCodeActions;
-			using CodeActionCommand = _js_jts_dCodeActionCommand;
-			using InstallPackageAction = _js_jts_dInstallPackageAction;
-			using ApplicableRefactorInfo = _js_jts_dApplicableRefactorInfo;
-			using RefactorActionInfo = _js_jts_dRefactorActionInfo;
-			using RefactorEditInfo = _js_jts_dRefactorEditInfo;
-			using TextInsertion = _js_jts_dTextInsertion;
-			using DocumentSpan = _js_jts_dDocumentSpan;
-			using RenameLocation = _js_jts_dRenameLocation;
-			using ReferenceEntry = _js_jts_dReferenceEntry;
-			using ImplementationLocation = _js_jts_dImplementationLocation;
-			using DocumentHighlights = _js_jts_dDocumentHighlights;
-			using HighlightSpanKind = _js_jts_dHighlightSpanKind;
-			using HighlightSpan = _js_jts_dHighlightSpan;
-			using NavigateToItem = _js_jts_dNavigateToItem;
-			using IndentStyle = _js_jts_dIndentStyle;
-			using EditorOptions = _js_jts_dEditorOptions;
-			using EditorSettings = _js_jts_dEditorSettings;
-			using FormatCodeOptions = _js_jts_dFormatCodeOptions;
-			using FormatCodeSettings = _js_jts_dFormatCodeSettings;
-			using DefinitionInfo = _js_jts_dDefinitionInfo;
-			using DefinitionInfoAndBoundSpan = _js_jts_dDefinitionInfoAndBoundSpan;
-			using ReferencedSymbolDefinitionInfo = _js_jts_dReferencedSymbolDefinitionInfo;
-			using ReferencedSymbol = _js_jts_dReferencedSymbol;
-			using SymbolDisplayPartKind = _js_jts_dSymbolDisplayPartKind;
-			using SymbolDisplayPart = _js_jts_dSymbolDisplayPart;
-			using JSDocTagInfo = _js_jts_dJSDocTagInfo;
-			using QuickInfo = _js_jts_dQuickInfo;
-			using RenameInfo = _js_jts_dRenameInfo;
-			using RenameInfoSuccess = _js_jts_dRenameInfoSuccess;
-			using RenameInfoFailure = _js_jts_dRenameInfoFailure;
-			using RenameInfoOptions = _js_jts_dRenameInfoOptions;
-			using SignatureHelpParameter = _js_jts_dSignatureHelpParameter;
-			using SelectionRange = _js_jts_dSelectionRange;
-			using SignatureHelpItem = _js_jts_dSignatureHelpItem;
-			using SignatureHelpItems = _js_jts_dSignatureHelpItems;
-			using CompletionInfo = _js_jts_dCompletionInfo;
-			using CompletionEntry = _js_jts_dCompletionEntry;
-			using CompletionEntryDetails = _js_jts_dCompletionEntryDetails;
-			using OutliningSpan = _js_jts_dOutliningSpan;
-			using OutliningSpanKind = _js_jts_dOutliningSpanKind;
-			using OutputFileType = _js_jts_dOutputFileType;
-			using EndOfLineState = _js_jts_dEndOfLineState;
-			using TokenClass = _js_jts_dTokenClass;
-			using ClassificationResult = _js_jts_dClassificationResult;
-			using ClassificationInfo = _js_jts_dClassificationInfo;
-			using Classifier = _js_jts_dClassifier;
-			using ScriptElementKind = _js_jts_dScriptElementKind;
-			using ScriptElementKindModifier = _js_jts_dScriptElementKindModifier;
-			using ClassificationTypeNames = _js_jts_dClassificationTypeNames;
-			using ClassificationType = _js_jts_dClassificationType;
-			using DocumentRegistry = _js_jts_dDocumentRegistry;
-			using TranspileOptions = _js_jts_dTranspileOptions;
-			using TranspileOutput = _js_jts_dTranspileOutput;
+	using SyntaxKind = _js_jts_dSyntaxKind;
+	using NodeFlags = _js_jts_dNodeFlags;
+	using ModifierFlags = _js_jts_dModifierFlags;
+	using JsxFlags = _js_jts_dJsxFlags;
+	using TokenFlags = _js_jts_dTokenFlags;
+	using FlowFlags = _js_jts_dFlowFlags;
+	using ExitStatus = _js_jts_dExitStatus;
+	using NodeBuilderFlags = _js_jts_dNodeBuilderFlags;
+	using TypeFormatFlags = _js_jts_dTypeFormatFlags;
+	using SymbolFormatFlags = _js_jts_dSymbolFormatFlags;
+	using TypePredicateKind = _js_jts_dTypePredicateKind;
+	using SymbolFlags = _js_jts_dSymbolFlags;
+	using InternalSymbolName = _js_jts_dInternalSymbolName;
+	using TypeFlags = _js_jts_dTypeFlags;
+	using ObjectFlags = _js_jts_dObjectFlags;
+	using SignatureKind = _js_jts_dSignatureKind;
+	using IndexKind = _js_jts_dIndexKind;
+	using InferencePriority = _js_jts_dInferencePriority;
+	using DiagnosticCategory = _js_jts_dDiagnosticCategory;
+	using ModuleResolutionKind = _js_jts_dModuleResolutionKind;
+	using ModuleKind = _js_jts_dModuleKind;
+	using JsxEmit = _js_jts_dJsxEmit;
+	using NewLineKind = _js_jts_dNewLineKind;
+	using ScriptKind = _js_jts_dScriptKind;
+	using ScriptTarget = _js_jts_dScriptTarget;
+	using LanguageVariant = _js_jts_dLanguageVariant;
+	using WatchDirectoryFlags = _js_jts_dWatchDirectoryFlags;
+	using Extension = _js_jts_dExtension;
+	using EmitFlags = _js_jts_dEmitFlags;
+	using EmitHint = _js_jts_dEmitHint;
+	using ListFormat = _js_jts_dListFormat;
+	using FileWatcherEventKind = _js_jts_dFileWatcherEventKind;
+	using HighlightSpanKind = _js_jts_dHighlightSpanKind;
+	using IndentStyle = _js_jts_dIndentStyle;
+	using SymbolDisplayPartKind = _js_jts_dSymbolDisplayPartKind;
+	using OutliningSpanKind = _js_jts_dOutliningSpanKind;
+	using OutputFileType = _js_jts_dOutputFileType;
+	using EndOfLineState = _js_jts_dEndOfLineState;
+	using TokenClass = _js_jts_dTokenClass;
+	using ScriptElementKind = _js_jts_dScriptElementKind;
+	using ScriptElementKindModifier = _js_jts_dScriptElementKindModifier;
+	using ClassificationTypeNames = _js_jts_dClassificationTypeNames;
+	using ClassificationType = _js_jts_dClassificationType;
+	using MapLike = _js_jts_dMapLike;
+	using SortedReadonlyArray = _js_jts_dSortedReadonlyArray;
+	using SortedArray = _js_jts_dSortedArray;
+	using ReadonlyMap = _js_jts_dReadonlyMap;
+	using Map = _js_jts_dMap;
+	using Iterator = _js_jts_dIterator;
+	using Push = _js_jts_dPush;
+	using TextRange = _js_jts_dTextRange;
+	using Node = _js_jts_dNode;
+	using JSDocContainer = _js_jts_dJSDocContainer;
+	using NodeArray = _js_jts_dNodeArray;
+	using Token = _js_jts_dToken;
+	using Identifier = _js_jts_dIdentifier;
+	using TransientIdentifier = _js_jts_dTransientIdentifier;
+	using QualifiedName = _js_jts_dQualifiedName;
+	using Declaration = _js_jts_dDeclaration;
+	using NamedDeclaration = _js_jts_dNamedDeclaration;
+	using DeclarationStatement = _js_jts_dDeclarationStatement;
+	using ComputedPropertyName = _js_jts_dComputedPropertyName;
+	using Decorator = _js_jts_dDecorator;
+	using TypeParameterDeclaration = _js_jts_dTypeParameterDeclaration;
+	using SignatureDeclarationBase = _js_jts_dSignatureDeclarationBase;
+	using CallSignatureDeclaration = _js_jts_dCallSignatureDeclaration;
+	using ConstructSignatureDeclaration = _js_jts_dConstructSignatureDeclaration;
+	using VariableDeclaration = _js_jts_dVariableDeclaration;
+	using VariableDeclarationList = _js_jts_dVariableDeclarationList;
+	using ParameterDeclaration = _js_jts_dParameterDeclaration;
+	using BindingElement = _js_jts_dBindingElement;
+	using PropertySignature = _js_jts_dPropertySignature;
+	using PropertyDeclaration = _js_jts_dPropertyDeclaration;
+	using ObjectLiteralElement = _js_jts_dObjectLiteralElement;
+	using PropertyAssignment = _js_jts_dPropertyAssignment;
+	using ShorthandPropertyAssignment = _js_jts_dShorthandPropertyAssignment;
+	using SpreadAssignment = _js_jts_dSpreadAssignment;
+	using PropertyLikeDeclaration = _js_jts_dPropertyLikeDeclaration;
+	using ObjectBindingPattern = _js_jts_dObjectBindingPattern;
+	using ArrayBindingPattern = _js_jts_dArrayBindingPattern;
+	using FunctionLikeDeclarationBase = _js_jts_dFunctionLikeDeclarationBase;
+	using FunctionDeclaration = _js_jts_dFunctionDeclaration;
+	using MethodSignature = _js_jts_dMethodSignature;
+	using MethodDeclaration = _js_jts_dMethodDeclaration;
+	using ConstructorDeclaration = _js_jts_dConstructorDeclaration;
+	using SemicolonClassElement = _js_jts_dSemicolonClassElement;
+	using GetAccessorDeclaration = _js_jts_dGetAccessorDeclaration;
+	using SetAccessorDeclaration = _js_jts_dSetAccessorDeclaration;
+	using IndexSignatureDeclaration = _js_jts_dIndexSignatureDeclaration;
+	using TypeNode = _js_jts_dTypeNode;
+	using KeywordTypeNode = _js_jts_dKeywordTypeNode;
+	using ImportTypeNode = _js_jts_dImportTypeNode;
+	using ThisTypeNode = _js_jts_dThisTypeNode;
+	using FunctionOrConstructorTypeNodeBase = _js_jts_dFunctionOrConstructorTypeNodeBase;
+	using FunctionTypeNode = _js_jts_dFunctionTypeNode;
+	using ConstructorTypeNode = _js_jts_dConstructorTypeNode;
+	using NodeWithTypeArguments = _js_jts_dNodeWithTypeArguments;
+	using TypeReferenceNode = _js_jts_dTypeReferenceNode;
+	using TypePredicateNode = _js_jts_dTypePredicateNode;
+	using TypeQueryNode = _js_jts_dTypeQueryNode;
+	using TypeLiteralNode = _js_jts_dTypeLiteralNode;
+	using ArrayTypeNode = _js_jts_dArrayTypeNode;
+	using TupleTypeNode = _js_jts_dTupleTypeNode;
+	using OptionalTypeNode = _js_jts_dOptionalTypeNode;
+	using RestTypeNode = _js_jts_dRestTypeNode;
+	using UnionTypeNode = _js_jts_dUnionTypeNode;
+	using IntersectionTypeNode = _js_jts_dIntersectionTypeNode;
+	using ConditionalTypeNode = _js_jts_dConditionalTypeNode;
+	using InferTypeNode = _js_jts_dInferTypeNode;
+	using ParenthesizedTypeNode = _js_jts_dParenthesizedTypeNode;
+	using TypeOperatorNode = _js_jts_dTypeOperatorNode;
+	using IndexedAccessTypeNode = _js_jts_dIndexedAccessTypeNode;
+	using MappedTypeNode = _js_jts_dMappedTypeNode;
+	using LiteralTypeNode = _js_jts_dLiteralTypeNode;
+	using StringLiteral = _js_jts_dStringLiteral;
+	using Expression = _js_jts_dExpression;
+	using OmittedExpression = _js_jts_dOmittedExpression;
+	using PartiallyEmittedExpression = _js_jts_dPartiallyEmittedExpression;
+	using UnaryExpression = _js_jts_dUnaryExpression;
+	using UpdateExpression = _js_jts_dUpdateExpression;
+	using PrefixUnaryExpression = _js_jts_dPrefixUnaryExpression;
+	using PostfixUnaryExpression = _js_jts_dPostfixUnaryExpression;
+	using LeftHandSideExpression = _js_jts_dLeftHandSideExpression;
+	using MemberExpression = _js_jts_dMemberExpression;
+	using PrimaryExpression = _js_jts_dPrimaryExpression;
+	using NullLiteral = _js_jts_dNullLiteral;
+	using BooleanLiteral = _js_jts_dBooleanLiteral;
+	using ThisExpression = _js_jts_dThisExpression;
+	using SuperExpression = _js_jts_dSuperExpression;
+	using ImportExpression = _js_jts_dImportExpression;
+	using DeleteExpression = _js_jts_dDeleteExpression;
+	using TypeOfExpression = _js_jts_dTypeOfExpression;
+	using VoidExpression = _js_jts_dVoidExpression;
+	using AwaitExpression = _js_jts_dAwaitExpression;
+	using YieldExpression = _js_jts_dYieldExpression;
+	using SyntheticExpression = _js_jts_dSyntheticExpression;
+	using BinaryExpression = _js_jts_dBinaryExpression;
+	using AssignmentExpression = _js_jts_dAssignmentExpression;
+	using ObjectDestructuringAssignment = _js_jts_dObjectDestructuringAssignment;
+	using ArrayDestructuringAssignment = _js_jts_dArrayDestructuringAssignment;
+	using ConditionalExpression = _js_jts_dConditionalExpression;
+	using FunctionExpression = _js_jts_dFunctionExpression;
+	using ArrowFunction = _js_jts_dArrowFunction;
+	using LiteralLikeNode = _js_jts_dLiteralLikeNode;
+	using LiteralExpression = _js_jts_dLiteralExpression;
+	using RegularExpressionLiteral = _js_jts_dRegularExpressionLiteral;
+	using NoSubstitutionTemplateLiteral = _js_jts_dNoSubstitutionTemplateLiteral;
+	using NumericLiteral = _js_jts_dNumericLiteral;
+	using BigIntLiteral = _js_jts_dBigIntLiteral;
+	using TemplateHead = _js_jts_dTemplateHead;
+	using TemplateMiddle = _js_jts_dTemplateMiddle;
+	using TemplateTail = _js_jts_dTemplateTail;
+	using TemplateExpression = _js_jts_dTemplateExpression;
+	using TemplateSpan = _js_jts_dTemplateSpan;
+	using ParenthesizedExpression = _js_jts_dParenthesizedExpression;
+	using ArrayLiteralExpression = _js_jts_dArrayLiteralExpression;
+	using SpreadElement = _js_jts_dSpreadElement;
+	using ObjectLiteralExpressionBase = _js_jts_dObjectLiteralExpressionBase;
+	using ObjectLiteralExpression = _js_jts_dObjectLiteralExpression;
+	using PropertyAccessExpression = _js_jts_dPropertyAccessExpression;
+	using SuperPropertyAccessExpression = _js_jts_dSuperPropertyAccessExpression;
+	using PropertyAccessEntityNameExpression = _js_jts_dPropertyAccessEntityNameExpression;
+	using ElementAccessExpression = _js_jts_dElementAccessExpression;
+	using SuperElementAccessExpression = _js_jts_dSuperElementAccessExpression;
+	using CallExpression = _js_jts_dCallExpression;
+	using SuperCall = _js_jts_dSuperCall;
+	using ImportCall = _js_jts_dImportCall;
+	using ExpressionWithTypeArguments = _js_jts_dExpressionWithTypeArguments;
+	using NewExpression = _js_jts_dNewExpression;
+	using TaggedTemplateExpression = _js_jts_dTaggedTemplateExpression;
+	using AsExpression = _js_jts_dAsExpression;
+	using TypeAssertion = _js_jts_dTypeAssertion;
+	using NonNullExpression = _js_jts_dNonNullExpression;
+	using MetaProperty = _js_jts_dMetaProperty;
+	using JsxElement = _js_jts_dJsxElement;
+	using JsxTagNamePropertyAccess = _js_jts_dJsxTagNamePropertyAccess;
+	using JsxAttributes = _js_jts_dJsxAttributes;
+	using JsxOpeningElement = _js_jts_dJsxOpeningElement;
+	using JsxSelfClosingElement = _js_jts_dJsxSelfClosingElement;
+	using JsxFragment = _js_jts_dJsxFragment;
+	using JsxOpeningFragment = _js_jts_dJsxOpeningFragment;
+	using JsxClosingFragment = _js_jts_dJsxClosingFragment;
+	using JsxAttribute = _js_jts_dJsxAttribute;
+	using JsxSpreadAttribute = _js_jts_dJsxSpreadAttribute;
+	using JsxClosingElement = _js_jts_dJsxClosingElement;
+	using JsxExpression = _js_jts_dJsxExpression;
+	using JsxText = _js_jts_dJsxText;
+	using Statement = _js_jts_dStatement;
+	using NotEmittedStatement = _js_jts_dNotEmittedStatement;
+	using CommaListExpression = _js_jts_dCommaListExpression;
+	using EmptyStatement = _js_jts_dEmptyStatement;
+	using DebuggerStatement = _js_jts_dDebuggerStatement;
+	using MissingDeclaration = _js_jts_dMissingDeclaration;
+	using Block = _js_jts_dBlock;
+	using VariableStatement = _js_jts_dVariableStatement;
+	using ExpressionStatement = _js_jts_dExpressionStatement;
+	using IfStatement = _js_jts_dIfStatement;
+	using IterationStatement = _js_jts_dIterationStatement;
+	using DoStatement = _js_jts_dDoStatement;
+	using WhileStatement = _js_jts_dWhileStatement;
+	using ForStatement = _js_jts_dForStatement;
+	using ForInStatement = _js_jts_dForInStatement;
+	using ForOfStatement = _js_jts_dForOfStatement;
+	using BreakStatement = _js_jts_dBreakStatement;
+	using ContinueStatement = _js_jts_dContinueStatement;
+	using ReturnStatement = _js_jts_dReturnStatement;
+	using WithStatement = _js_jts_dWithStatement;
+	using SwitchStatement = _js_jts_dSwitchStatement;
+	using CaseBlock = _js_jts_dCaseBlock;
+	using CaseClause = _js_jts_dCaseClause;
+	using DefaultClause = _js_jts_dDefaultClause;
+	using LabeledStatement = _js_jts_dLabeledStatement;
+	using ThrowStatement = _js_jts_dThrowStatement;
+	using TryStatement = _js_jts_dTryStatement;
+	using CatchClause = _js_jts_dCatchClause;
+	using ClassLikeDeclarationBase = _js_jts_dClassLikeDeclarationBase;
+	using ClassDeclaration = _js_jts_dClassDeclaration;
+	using ClassExpression = _js_jts_dClassExpression;
+	using ClassElement = _js_jts_dClassElement;
+	using TypeElement = _js_jts_dTypeElement;
+	using InterfaceDeclaration = _js_jts_dInterfaceDeclaration;
+	using HeritageClause = _js_jts_dHeritageClause;
+	using TypeAliasDeclaration = _js_jts_dTypeAliasDeclaration;
+	using EnumMember = _js_jts_dEnumMember;
+	using EnumDeclaration = _js_jts_dEnumDeclaration;
+	using ModuleDeclaration = _js_jts_dModuleDeclaration;
+	using NamespaceDeclaration = _js_jts_dNamespaceDeclaration;
+	using JSDocNamespaceDeclaration = _js_jts_dJSDocNamespaceDeclaration;
+	using ModuleBlock = _js_jts_dModuleBlock;
+	using ImportEqualsDeclaration = _js_jts_dImportEqualsDeclaration;
+	using ExternalModuleReference = _js_jts_dExternalModuleReference;
+	using ImportDeclaration = _js_jts_dImportDeclaration;
+	using ImportClause = _js_jts_dImportClause;
+	using NamespaceImport = _js_jts_dNamespaceImport;
+	using NamespaceExportDeclaration = _js_jts_dNamespaceExportDeclaration;
+	using ExportDeclaration = _js_jts_dExportDeclaration;
+	using NamedImports = _js_jts_dNamedImports;
+	using NamedExports = _js_jts_dNamedExports;
+	using ImportSpecifier = _js_jts_dImportSpecifier;
+	using ExportSpecifier = _js_jts_dExportSpecifier;
+	using ExportAssignment = _js_jts_dExportAssignment;
+	using FileReference = _js_jts_dFileReference;
+	using CheckJsDirective = _js_jts_dCheckJsDirective;
+	using CommentRange = _js_jts_dCommentRange;
+	using SynthesizedComment = _js_jts_dSynthesizedComment;
+	using JSDocTypeExpression = _js_jts_dJSDocTypeExpression;
+	using JSDocType = _js_jts_dJSDocType;
+	using JSDocAllType = _js_jts_dJSDocAllType;
+	using JSDocUnknownType = _js_jts_dJSDocUnknownType;
+	using JSDocNonNullableType = _js_jts_dJSDocNonNullableType;
+	using JSDocNullableType = _js_jts_dJSDocNullableType;
+	using JSDocOptionalType = _js_jts_dJSDocOptionalType;
+	using JSDocFunctionType = _js_jts_dJSDocFunctionType;
+	using JSDocVariadicType = _js_jts_dJSDocVariadicType;
+	using JSDoc = _js_jts_dJSDoc;
+	using JSDocTag = _js_jts_dJSDocTag;
+	using JSDocUnknownTag = _js_jts_dJSDocUnknownTag;
+	using JSDocAugmentsTag = _js_jts_dJSDocAugmentsTag;
+	using JSDocClassTag = _js_jts_dJSDocClassTag;
+	using JSDocEnumTag = _js_jts_dJSDocEnumTag;
+	using JSDocThisTag = _js_jts_dJSDocThisTag;
+	using JSDocTemplateTag = _js_jts_dJSDocTemplateTag;
+	using JSDocReturnTag = _js_jts_dJSDocReturnTag;
+	using JSDocTypeTag = _js_jts_dJSDocTypeTag;
+	using JSDocTypedefTag = _js_jts_dJSDocTypedefTag;
+	using JSDocCallbackTag = _js_jts_dJSDocCallbackTag;
+	using JSDocSignature = _js_jts_dJSDocSignature;
+	using JSDocPropertyLikeTag = _js_jts_dJSDocPropertyLikeTag;
+	using JSDocPropertyTag = _js_jts_dJSDocPropertyTag;
+	using JSDocParameterTag = _js_jts_dJSDocParameterTag;
+	using JSDocTypeLiteral = _js_jts_dJSDocTypeLiteral;
+	using FlowLock = _js_jts_dFlowLock;
+	using AfterFinallyFlow = _js_jts_dAfterFinallyFlow;
+	using PreFinallyFlow = _js_jts_dPreFinallyFlow;
+	using FlowNodeBase = _js_jts_dFlowNodeBase;
+	using FlowStart = _js_jts_dFlowStart;
+	using FlowLabel = _js_jts_dFlowLabel;
+	using FlowAssignment = _js_jts_dFlowAssignment;
+	using FlowCondition = _js_jts_dFlowCondition;
+	using FlowSwitchClause = _js_jts_dFlowSwitchClause;
+	using FlowArrayMutation = _js_jts_dFlowArrayMutation;
+	using IncompleteType = _js_jts_dIncompleteType;
+	using AmdDependency = _js_jts_dAmdDependency;
+	using SourceFile = _js_jts_dSourceFile;
+	using Bundle = _js_jts_dBundle;
+	using InputFiles = _js_jts_dInputFiles;
+	using UnparsedSource = _js_jts_dUnparsedSource;
+	using UnparsedSection = _js_jts_dUnparsedSection;
+	using UnparsedPrologue = _js_jts_dUnparsedPrologue;
+	using UnparsedPrepend = _js_jts_dUnparsedPrepend;
+	using UnparsedTextLike = _js_jts_dUnparsedTextLike;
+	using UnparsedSyntheticReference = _js_jts_dUnparsedSyntheticReference;
+	using JsonSourceFile = _js_jts_dJsonSourceFile;
+	using TsConfigSourceFile = _js_jts_dTsConfigSourceFile;
+	using JsonMinusNumericLiteral = _js_jts_dJsonMinusNumericLiteral;
+	using JsonObjectExpressionStatement = _js_jts_dJsonObjectExpressionStatement;
+	using ScriptReferenceHost = _js_jts_dScriptReferenceHost;
+	using ParseConfigHost = _js_jts_dParseConfigHost;
+	using OperationCanceledException = _js_jts_dOperationCanceledException;
+	using CancellationToken = _js_jts_dCancellationToken;
+	using Program = _js_jts_dProgram;
+	using ResolvedProjectReference = _js_jts_dResolvedProjectReference;
+	using CustomTransformer = _js_jts_dCustomTransformer;
+	using CustomTransformers = _js_jts_dCustomTransformers;
+	using SourceMapSpan = _js_jts_dSourceMapSpan;
+	using EmitResult = _js_jts_dEmitResult;
+	using TypeChecker = _js_jts_dTypeChecker;
+	using TypePredicateBase = _js_jts_dTypePredicateBase;
+	using ThisTypePredicate = _js_jts_dThisTypePredicate;
+	using IdentifierTypePredicate = _js_jts_dIdentifierTypePredicate;
+	using Symbol = _js_jts_dSymbol;
+	using ReadonlyUnderscoreEscapedMap = _js_jts_dReadonlyUnderscoreEscapedMap;
+	using UnderscoreEscapedMap = _js_jts_dUnderscoreEscapedMap;
+	using Type = _js_jts_dType;
+	using LiteralType = _js_jts_dLiteralType;
+	using UniqueESSymbolType = _js_jts_dUniqueESSymbolType;
+	using StringLiteralType = _js_jts_dStringLiteralType;
+	using NumberLiteralType = _js_jts_dNumberLiteralType;
+	using BigIntLiteralType = _js_jts_dBigIntLiteralType;
+	using EnumType = _js_jts_dEnumType;
+	using ObjectType = _js_jts_dObjectType;
+	using InterfaceType = _js_jts_dInterfaceType;
+	using InterfaceTypeWithDeclaredMembers = _js_jts_dInterfaceTypeWithDeclaredMembers;
+	using TypeReference = _js_jts_dTypeReference;
+	using GenericType = _js_jts_dGenericType;
+	using TupleType = _js_jts_dTupleType;
+	using TupleTypeReference = _js_jts_dTupleTypeReference;
+	using UnionOrIntersectionType = _js_jts_dUnionOrIntersectionType;
+	using UnionType = _js_jts_dUnionType;
+	using IntersectionType = _js_jts_dIntersectionType;
+	using EvolvingArrayType = _js_jts_dEvolvingArrayType;
+	using InstantiableType = _js_jts_dInstantiableType;
+	using TypeParameter = _js_jts_dTypeParameter;
+	using IndexedAccessType = _js_jts_dIndexedAccessType;
+	using IndexType = _js_jts_dIndexType;
+	using ConditionalRoot = _js_jts_dConditionalRoot;
+	using ConditionalType = _js_jts_dConditionalType;
+	using SubstitutionType = _js_jts_dSubstitutionType;
+	using Signature = _js_jts_dSignature;
+	using IndexInfo = _js_jts_dIndexInfo;
+	using FileExtensionInfo = _js_jts_dFileExtensionInfo;
+	using DiagnosticMessage = _js_jts_dDiagnosticMessage;
+	using DiagnosticMessageChain = _js_jts_dDiagnosticMessageChain;
+	using Diagnostic = _js_jts_dDiagnostic;
+	using DiagnosticRelatedInformation = _js_jts_dDiagnosticRelatedInformation;
+	using DiagnosticWithLocation = _js_jts_dDiagnosticWithLocation;
+	using PluginImport = _js_jts_dPluginImport;
+	using ProjectReference = _js_jts_dProjectReference;
+	using CompilerOptions = _js_jts_dCompilerOptions;
+	using TypeAcquisition = _js_jts_dTypeAcquisition;
+	using LineAndCharacter = _js_jts_dLineAndCharacter;
+	using ParsedCommandLine = _js_jts_dParsedCommandLine;
+	using ExpandResult = _js_jts_dExpandResult;
+	using CreateProgramOptions = _js_jts_dCreateProgramOptions;
+	using ModuleResolutionHost = _js_jts_dModuleResolutionHost;
+	using ResolvedModule = _js_jts_dResolvedModule;
+	using ResolvedModuleFull = _js_jts_dResolvedModuleFull;
+	using PackageId = _js_jts_dPackageId;
+	using ResolvedModuleWithFailedLookupLocations = _js_jts_dResolvedModuleWithFailedLookupLocations;
+	using ResolvedTypeReferenceDirective = _js_jts_dResolvedTypeReferenceDirective;
+	using ResolvedTypeReferenceDirectiveWithFailedLookupLocations = _js_jts_dResolvedTypeReferenceDirectiveWithFailedLookupLocations;
+	using CompilerHost = _js_jts_dCompilerHost;
+	using SourceMapRange = _js_jts_dSourceMapRange;
+	using SourceMapSource = _js_jts_dSourceMapSource;
+	using EmitHelper = _js_jts_dEmitHelper;
+	using UnscopedEmitHelper = _js_jts_dUnscopedEmitHelper;
+	using TransformationContext = _js_jts_dTransformationContext;
+	using TransformationResult = _js_jts_dTransformationResult;
+	using Printer = _js_jts_dPrinter;
+	using PrintHandlers = _js_jts_dPrintHandlers;
+	using PrinterOptions = _js_jts_dPrinterOptions;
+	using GetEffectiveTypeRootsHost = _js_jts_dGetEffectiveTypeRootsHost;
+	using TextSpan = _js_jts_dTextSpan;
+	using TextChangeRange = _js_jts_dTextChangeRange;
+	using SyntaxList = _js_jts_dSyntaxList;
+	using UserPreferences = _js_jts_dUserPreferences;
+	using PseudoBigInt = _js_jts_dPseudoBigInt;
+	using System = _js_jts_dSystem;
+	using FileWatcher = _js_jts_dFileWatcher;
+	using Scanner = _js_jts_dScanner;
+	using ConfigFileDiagnosticsReporter = _js_jts_dConfigFileDiagnosticsReporter;
+	using ParseConfigFileHost = _js_jts_dParseConfigFileHost;
+	using ParsedTsconfig = _js_jts_dParsedTsconfig;
+	using ExtendedConfigCacheEntry = _js_jts_dExtendedConfigCacheEntry;
+	using ModuleResolutionCache = _js_jts_dModuleResolutionCache;
+	using NonRelativeModuleNameResolutionCache = _js_jts_dNonRelativeModuleNameResolutionCache;
+	using PerModuleNameCache = _js_jts_dPerModuleNameCache;
+	using FormatDiagnosticsHost = _js_jts_dFormatDiagnosticsHost;
+	using ResolveProjectReferencePathHost = _js_jts_dResolveProjectReferencePathHost;
+	using EmitOutput = _js_jts_dEmitOutput;
+	using OutputFile = _js_jts_dOutputFile;
+	using BuilderProgramHost = _js_jts_dBuilderProgramHost;
+	using BuilderProgram = _js_jts_dBuilderProgram;
+	using SemanticDiagnosticsBuilderProgram = _js_jts_dSemanticDiagnosticsBuilderProgram;
+	using EmitAndSemanticDiagnosticsBuilderProgram = _js_jts_dEmitAndSemanticDiagnosticsBuilderProgram;
+	using WatchHost = _js_jts_dWatchHost;
+	using ProgramHost = _js_jts_dProgramHost;
+	using WatchCompilerHost = _js_jts_dWatchCompilerHost;
+	using WatchCompilerHostOfFilesAndCompilerOptions = _js_jts_dWatchCompilerHostOfFilesAndCompilerOptions;
+	using WatchCompilerHostOfConfigFile = _js_jts_dWatchCompilerHostOfConfigFile;
+	using Watch = _js_jts_dWatch;
+	using WatchOfConfigFile = _js_jts_dWatchOfConfigFile;
+	using WatchOfFilesAndCompilerOptions = _js_jts_dWatchOfFilesAndCompilerOptions;
+	using server = _js_jts_dserver;
+	using SourceFileLike = _js_jts_dSourceFileLike;
+	using IScriptSnapshot = _js_jts_dIScriptSnapshot;
+	using ScriptSnapshot = _js_jts_dScriptSnapshot;
+	using PreProcessedFileInfo = _js_jts_dPreProcessedFileInfo;
+	using HostCancellationToken = _js_jts_dHostCancellationToken;
+	using InstallPackageOptions = _js_jts_dInstallPackageOptions;
+	using LanguageServiceHost = _js_jts_dLanguageServiceHost;
+	using LanguageService = _js_jts_dLanguageService;
+	using JsxClosingTagInfo = _js_jts_dJsxClosingTagInfo;
+	using CombinedCodeFixScope = _js_jts_dCombinedCodeFixScope;
+	using GetCompletionsAtPositionOptions = _js_jts_dGetCompletionsAtPositionOptions;
+	using SignatureHelpItemsOptions = _js_jts_dSignatureHelpItemsOptions;
+	using SignatureHelpInvokedReason = _js_jts_dSignatureHelpInvokedReason;
+	using SignatureHelpCharacterTypedReason = _js_jts_dSignatureHelpCharacterTypedReason;
+	using SignatureHelpRetriggeredReason = _js_jts_dSignatureHelpRetriggeredReason;
+	using ApplyCodeActionCommandResult = _js_jts_dApplyCodeActionCommandResult;
+	using Classifications = _js_jts_dClassifications;
+	using ClassifiedSpan = _js_jts_dClassifiedSpan;
+	using NavigationBarItem = _js_jts_dNavigationBarItem;
+	using NavigationTree = _js_jts_dNavigationTree;
+	using TodoCommentDescriptor = _js_jts_dTodoCommentDescriptor;
+	using TodoComment = _js_jts_dTodoComment;
+	using TextChange = _js_jts_dTextChange;
+	using FileTextChanges = _js_jts_dFileTextChanges;
+	using CodeAction = _js_jts_dCodeAction;
+	using CodeFixAction = _js_jts_dCodeFixAction;
+	using CombinedCodeActions = _js_jts_dCombinedCodeActions;
+	using InstallPackageAction = _js_jts_dInstallPackageAction;
+	using ApplicableRefactorInfo = _js_jts_dApplicableRefactorInfo;
+	using RefactorActionInfo = _js_jts_dRefactorActionInfo;
+	using RefactorEditInfo = _js_jts_dRefactorEditInfo;
+	using TextInsertion = _js_jts_dTextInsertion;
+	using DocumentSpan = _js_jts_dDocumentSpan;
+	using RenameLocation = _js_jts_dRenameLocation;
+	using ReferenceEntry = _js_jts_dReferenceEntry;
+	using ImplementationLocation = _js_jts_dImplementationLocation;
+	using DocumentHighlights = _js_jts_dDocumentHighlights;
+	using HighlightSpan = _js_jts_dHighlightSpan;
+	using NavigateToItem = _js_jts_dNavigateToItem;
+	using EditorOptions = _js_jts_dEditorOptions;
+	using EditorSettings = _js_jts_dEditorSettings;
+	using FormatCodeOptions = _js_jts_dFormatCodeOptions;
+	using FormatCodeSettings = _js_jts_dFormatCodeSettings;
+	using DefinitionInfo = _js_jts_dDefinitionInfo;
+	using DefinitionInfoAndBoundSpan = _js_jts_dDefinitionInfoAndBoundSpan;
+	using ReferencedSymbolDefinitionInfo = _js_jts_dReferencedSymbolDefinitionInfo;
+	using ReferencedSymbol = _js_jts_dReferencedSymbol;
+	using SymbolDisplayPart = _js_jts_dSymbolDisplayPart;
+	using JSDocTagInfo = _js_jts_dJSDocTagInfo;
+	using QuickInfo = _js_jts_dQuickInfo;
+	using RenameInfoSuccess = _js_jts_dRenameInfoSuccess;
+	using RenameInfoFailure = _js_jts_dRenameInfoFailure;
+	using RenameInfoOptions = _js_jts_dRenameInfoOptions;
+	using SignatureHelpParameter = _js_jts_dSignatureHelpParameter;
+	using SelectionRange = _js_jts_dSelectionRange;
+	using SignatureHelpItem = _js_jts_dSignatureHelpItem;
+	using SignatureHelpItems = _js_jts_dSignatureHelpItems;
+	using CompletionInfo = _js_jts_dCompletionInfo;
+	using CompletionEntry = _js_jts_dCompletionEntry;
+	using CompletionEntryDetails = _js_jts_dCompletionEntryDetails;
+	using OutliningSpan = _js_jts_dOutliningSpan;
+	using ClassificationResult = _js_jts_dClassificationResult;
+	using ClassificationInfo = _js_jts_dClassificationInfo;
+	using Classifier = _js_jts_dClassifier;
+	using DocumentRegistry = _js_jts_dDocumentRegistry;
+	using TranspileOptions = _js_jts_dTranspileOptions;
+	using TranspileOutput = _js_jts_dTranspileOutput;
+	using HasType = _js_jts_dHasType;
+	using HasInitializer = _js_jts_dHasInitializer;
+	using HasExpressionInitializer = _js_jts_dHasExpressionInitializer;
+	using DotDotDotToken = _js_jts_dDotDotDotToken;
+	using QuestionToken = _js_jts_dQuestionToken;
+	using ExclamationToken = _js_jts_dExclamationToken;
+	using ColonToken = _js_jts_dColonToken;
+	using EqualsToken = _js_jts_dEqualsToken;
+	using AsteriskToken = _js_jts_dAsteriskToken;
+	using EqualsGreaterThanToken = _js_jts_dEqualsGreaterThanToken;
+	using ReadonlyToken = _js_jts_dReadonlyToken;
+	using AwaitKeywordToken = _js_jts_dAwaitKeywordToken;
+	using PlusToken = _js_jts_dPlusToken;
+	using MinusToken = _js_jts_dMinusToken;
+	using Modifier = _js_jts_dModifier;
+	using ModifiersArray = _js_jts_dModifiersArray;
+	using EntityName = _js_jts_dEntityName;
+	using PropertyName = _js_jts_dPropertyName;
+	using DeclarationName = _js_jts_dDeclarationName;
+	using SignatureDeclaration = _js_jts_dSignatureDeclaration;
+	using BindingName = _js_jts_dBindingName;
+	using ObjectLiteralElementLike = _js_jts_dObjectLiteralElementLike;
+	using VariableLikeDeclaration = _js_jts_dVariableLikeDeclaration;
+	using BindingPattern = _js_jts_dBindingPattern;
+	using ArrayBindingElement = _js_jts_dArrayBindingElement;
+	using FunctionLikeDeclaration = _js_jts_dFunctionLikeDeclaration;
+	using FunctionLike = _js_jts_dFunctionLike;
+	using AccessorDeclaration = _js_jts_dAccessorDeclaration;
+	using FunctionOrConstructorTypeNode = _js_jts_dFunctionOrConstructorTypeNode;
+	using TypeReferenceType = _js_jts_dTypeReferenceType;
+	using UnionOrIntersectionTypeNode = _js_jts_dUnionOrIntersectionTypeNode;
+	using StringLiteralLike = _js_jts_dStringLiteralLike;
+	using IncrementExpression = _js_jts_dIncrementExpression;
+	using BinaryOperatorToken = _js_jts_dBinaryOperatorToken;
+	using AssignmentOperatorToken = _js_jts_dAssignmentOperatorToken;
+	using DestructuringAssignment = _js_jts_dDestructuringAssignment;
+	using BindingOrAssignmentElement = _js_jts_dBindingOrAssignmentElement;
+	using BindingOrAssignmentElementRestIndicator = _js_jts_dBindingOrAssignmentElementRestIndicator;
+	using BindingOrAssignmentElementTarget = _js_jts_dBindingOrAssignmentElementTarget;
+	using ObjectBindingOrAssignmentPattern = _js_jts_dObjectBindingOrAssignmentPattern;
+	using ArrayBindingOrAssignmentPattern = _js_jts_dArrayBindingOrAssignmentPattern;
+	using AssignmentPattern = _js_jts_dAssignmentPattern;
+	using BindingOrAssignmentPattern = _js_jts_dBindingOrAssignmentPattern;
+	using FunctionBody = _js_jts_dFunctionBody;
+	using ConciseBody = _js_jts_dConciseBody;
+	using TemplateLiteral = _js_jts_dTemplateLiteral;
+	using EntityNameExpression = _js_jts_dEntityNameExpression;
+	using EntityNameOrEntityNameExpression = _js_jts_dEntityNameOrEntityNameExpression;
+	using SuperProperty = _js_jts_dSuperProperty;
+	using CallLikeExpression = _js_jts_dCallLikeExpression;
+	using AssertionExpression = _js_jts_dAssertionExpression;
+	using JsxOpeningLikeElement = _js_jts_dJsxOpeningLikeElement;
+	using JsxAttributeLike = _js_jts_dJsxAttributeLike;
+	using JsxTagNameExpression = _js_jts_dJsxTagNameExpression;
+	using JsxChild = _js_jts_dJsxChild;
+	using BlockLike = _js_jts_dBlockLike;
+	using ForInitializer = _js_jts_dForInitializer;
+	using ForInOrOfStatement = _js_jts_dForInOrOfStatement;
+	using BreakOrContinueStatement = _js_jts_dBreakOrContinueStatement;
+	using CaseOrDefaultClause = _js_jts_dCaseOrDefaultClause;
+	using ObjectTypeDeclaration = _js_jts_dObjectTypeDeclaration;
+	using DeclarationWithTypeParameters = _js_jts_dDeclarationWithTypeParameters;
+	using DeclarationWithTypeParameterChildren = _js_jts_dDeclarationWithTypeParameterChildren;
+	using ClassLikeDeclaration = _js_jts_dClassLikeDeclaration;
+	using ModuleName = _js_jts_dModuleName;
+	using ModuleBody = _js_jts_dModuleBody;
+	using NamespaceBody = _js_jts_dNamespaceBody;
+	using JSDocNamespaceBody = _js_jts_dJSDocNamespaceBody;
+	using ModuleReference = _js_jts_dModuleReference;
+	using NamedImportBindings = _js_jts_dNamedImportBindings;
+	using NamedImportsOrExports = _js_jts_dNamedImportsOrExports;
+	using ImportOrExportSpecifier = _js_jts_dImportOrExportSpecifier;
+	using JSDocTypeReferencingNode = _js_jts_dJSDocTypeReferencingNode;
+	using FlowNode = _js_jts_dFlowNode;
+	using FlowType = _js_jts_dFlowType;
+	using UnparsedSourceText = _js_jts_dUnparsedSourceText;
+	using UnparsedNode = _js_jts_dUnparsedNode;
+	using WriteFileCallback = _js_jts_dWriteFileCallback;
+	using CustomTransformerFactory = _js_jts_dCustomTransformerFactory;
+	using TypePredicate = _js_jts_dTypePredicate;
+	using SymbolTable = _js_jts_dSymbolTable;
+	using DestructuringPattern = _js_jts_dDestructuringPattern;
+	using BaseType = _js_jts_dBaseType;
+	using StructuredType = _js_jts_dStructuredType;
+	using TypeVariable = _js_jts_dTypeVariable;
+	using JsFileExtensionInfo = _js_jts_dJsFileExtensionInfo;
+	using EmitHelperUniqueNameCallback = _js_jts_dEmitHelperUniqueNameCallback;
+	using TransformerFactory = _js_jts_dTransformerFactory;
+	using Transformer = _js_jts_dTransformer;
+	using Visitor = _js_jts_dVisitor;
+	using FileWatcherCallback = _js_jts_dFileWatcherCallback;
+	using DirectoryWatcherCallback = _js_jts_dDirectoryWatcherCallback;
+	using ErrorCallback = _js_jts_dErrorCallback;
+	using TemplateLiteralToken = _js_jts_dTemplateLiteralToken;
+	using DiagnosticReporter = _js_jts_dDiagnosticReporter;
+	using AffectedFileResult = _js_jts_dAffectedFileResult;
+	using WatchStatusReporter = _js_jts_dWatchStatusReporter;
+	using CreateProgram = _js_jts_dCreateProgram;
+	using OrganizeImportsScope = _js_jts_dOrganizeImportsScope;
+	using SignatureHelpTriggerReason = _js_jts_dSignatureHelpTriggerReason;
+	using CodeActionCommand = _js_jts_dCodeActionCommand;
+	using RenameInfo = _js_jts_dRenameInfo;
 			static auto addEmitHelper(js_unknown /*flags=262144: T ()*/ node, _js_jts_dEmitHelper helper) noexcept;
 			static auto addEmitHelpers(js_unknown /*flags=262144: T ()*/ node, js_union<js::Array<_js_jts_dEmitHelper>, js_undefined> helpers = js_undefined()) noexcept;
 			static auto addSyntheticLeadingComment(js_unknown /*flags=262144: T ()*/ node, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/ kind, js_string text, js_union<bool /*false*/, js_undefined> hasTrailingNewLine = js_undefined()) noexcept;
@@ -7868,20 +7868,20 @@ namespace tc::js_defs {
 	};
 	struct _impl_js_jts_dserver : virtual IObject {
 		struct _tcjs_definitions {
-			using TypingInstallerResponse = _js_jts_dserver_dTypingInstallerResponse;
-			using TypingInstallerRequestWithProjectName = _js_jts_dserver_dTypingInstallerRequestWithProjectName;
-			using DiscoverTypings = _js_jts_dserver_dDiscoverTypings;
-			using CloseProject = _js_jts_dserver_dCloseProject;
-			using TypesRegistryRequest = _js_jts_dserver_dTypesRegistryRequest;
-			using InstallPackageRequest = _js_jts_dserver_dInstallPackageRequest;
-			using PackageInstalledResponse = _js_jts_dserver_dPackageInstalledResponse;
-			using InitializationFailedResponse = _js_jts_dserver_dInitializationFailedResponse;
-			using ProjectResponse = _js_jts_dserver_dProjectResponse;
-			using InvalidateCachedTypings = _js_jts_dserver_dInvalidateCachedTypings;
-			using InstallTypes = _js_jts_dserver_dInstallTypes;
-			using BeginInstallTypes = _js_jts_dserver_dBeginInstallTypes;
-			using EndInstallTypes = _js_jts_dserver_dEndInstallTypes;
-			using SetTypings = _js_jts_dserver_dSetTypings;
+	using TypingInstallerResponse = _js_jts_dserver_dTypingInstallerResponse;
+	using TypingInstallerRequestWithProjectName = _js_jts_dserver_dTypingInstallerRequestWithProjectName;
+	using DiscoverTypings = _js_jts_dserver_dDiscoverTypings;
+	using CloseProject = _js_jts_dserver_dCloseProject;
+	using TypesRegistryRequest = _js_jts_dserver_dTypesRegistryRequest;
+	using InstallPackageRequest = _js_jts_dserver_dInstallPackageRequest;
+	using PackageInstalledResponse = _js_jts_dserver_dPackageInstalledResponse;
+	using InitializationFailedResponse = _js_jts_dserver_dInitializationFailedResponse;
+	using ProjectResponse = _js_jts_dserver_dProjectResponse;
+	using InvalidateCachedTypings = _js_jts_dserver_dInvalidateCachedTypings;
+	using InstallTypes = _js_jts_dserver_dInstallTypes;
+	using BeginInstallTypes = _js_jts_dserver_dBeginInstallTypes;
+	using EndInstallTypes = _js_jts_dserver_dEndInstallTypes;
+	using SetTypings = _js_jts_dserver_dSetTypings;
 		};
 	};
 	struct _impl_js_jts_dserver_dTypingInstallerResponse : virtual IObject {
@@ -8662,7 +8662,7 @@ namespace tc::js_defs {
 		return emscripten::val::global("ts")["displayPartsToString"](displayParts).template as<js_string>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::disposeEmitNodes(_js_jts_dSourceFile sourceFile) noexcept {
-		emscripten::val::global("ts")["disposeEmitNodes"](sourceFile);
+		 emscripten::val::global("ts")["disposeEmitNodes"](sourceFile);
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::escapeLeadingUnderscores(js_string identifier) noexcept {
 		return emscripten::val::global("ts")["escapeLeadingUnderscores"](identifier).template as<js_unknown /*flags=1048576: __String ()*/>();
@@ -8857,166 +8857,374 @@ namespace tc::js_defs {
 		return emscripten::val::global("ts")["idText"](identifier).template as<js_string>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isAccessor(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isAccessor"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dAccessorDeclaration> result;
+		if(emscripten::val::global("ts")["isAccessor"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isArrayBindingPattern(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isArrayBindingPattern"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dArrayBindingPattern> result;
+		if(emscripten::val::global("ts")["isArrayBindingPattern"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isArrayLiteralExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isArrayLiteralExpression"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dArrayLiteralExpression> result;
+		if(emscripten::val::global("ts")["isArrayLiteralExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isArrayTypeNode(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isArrayTypeNode"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dArrayTypeNode> result;
+		if(emscripten::val::global("ts")["isArrayTypeNode"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isArrowFunction(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isArrowFunction"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dArrowFunction> result;
+		if(emscripten::val::global("ts")["isArrowFunction"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isAsExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isAsExpression"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dAsExpression> result;
+		if(emscripten::val::global("ts")["isAsExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isAssertionExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isAssertionExpression"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dAssertionExpression> result;
+		if(emscripten::val::global("ts")["isAssertionExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isAwaitExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isAwaitExpression"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dAwaitExpression> result;
+		if(emscripten::val::global("ts")["isAwaitExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isBigIntLiteral(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isBigIntLiteral"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dBigIntLiteral> result;
+		if(emscripten::val::global("ts")["isBigIntLiteral"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isBinaryExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isBinaryExpression"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dBinaryExpression> result;
+		if(emscripten::val::global("ts")["isBinaryExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isBindingElement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isBindingElement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dBindingElement> result;
+		if(emscripten::val::global("ts")["isBindingElement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isBindingName(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isBindingName"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dBindingName> result;
+		if(emscripten::val::global("ts")["isBindingName"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isBlock(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isBlock"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dBlock> result;
+		if(emscripten::val::global("ts")["isBlock"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isBreakOrContinueStatement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isBreakOrContinueStatement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dBreakOrContinueStatement> result;
+		if(emscripten::val::global("ts")["isBreakOrContinueStatement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isBreakStatement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isBreakStatement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dBreakStatement> result;
+		if(emscripten::val::global("ts")["isBreakStatement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isBundle(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isBundle"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dBundle> result;
+		if(emscripten::val::global("ts")["isBundle"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isCallExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isCallExpression"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dCallExpression> result;
+		if(emscripten::val::global("ts")["isCallExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isCallLikeExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isCallLikeExpression"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dCallLikeExpression> result;
+		if(emscripten::val::global("ts")["isCallLikeExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isCallOrNewExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isCallOrNewExpression"](node).template as<bool /*false*/>();
+		std::optional<js_union<_js_jts_dCallExpression, _js_jts_dNewExpression>> result;
+		if(emscripten::val::global("ts")["isCallOrNewExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isCallSignatureDeclaration(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isCallSignatureDeclaration"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dCallSignatureDeclaration> result;
+		if(emscripten::val::global("ts")["isCallSignatureDeclaration"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isCaseBlock(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isCaseBlock"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dCaseBlock> result;
+		if(emscripten::val::global("ts")["isCaseBlock"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isCaseClause(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isCaseClause"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dCaseClause> result;
+		if(emscripten::val::global("ts")["isCaseClause"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isCaseOrDefaultClause(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isCaseOrDefaultClause"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dCaseOrDefaultClause> result;
+		if(emscripten::val::global("ts")["isCaseOrDefaultClause"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isCatchClause(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isCatchClause"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dCatchClause> result;
+		if(emscripten::val::global("ts")["isCatchClause"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isClassDeclaration(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isClassDeclaration"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dClassDeclaration> result;
+		if(emscripten::val::global("ts")["isClassDeclaration"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isClassElement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isClassElement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dClassElement> result;
+		if(emscripten::val::global("ts")["isClassElement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isClassExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isClassExpression"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dClassExpression> result;
+		if(emscripten::val::global("ts")["isClassExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isClassLike(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isClassLike"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dClassLikeDeclaration> result;
+		if(emscripten::val::global("ts")["isClassLike"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isClassOrTypeElement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isClassOrTypeElement"](node).template as<bool /*false*/>();
+		std::optional<js_union<_js_jts_dClassElement, _js_jts_dTypeElement>> result;
+		if(emscripten::val::global("ts")["isClassOrTypeElement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isComputedPropertyName(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isComputedPropertyName"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dComputedPropertyName> result;
+		if(emscripten::val::global("ts")["isComputedPropertyName"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isConditionalExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isConditionalExpression"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dConditionalExpression> result;
+		if(emscripten::val::global("ts")["isConditionalExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isConditionalTypeNode(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isConditionalTypeNode"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dConditionalTypeNode> result;
+		if(emscripten::val::global("ts")["isConditionalTypeNode"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isConstTypeReference(_js_jts_dNode node) noexcept {
 		return emscripten::val::global("ts")["isConstTypeReference"](node).template as<bool /*false*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isConstructSignatureDeclaration(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isConstructSignatureDeclaration"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dConstructSignatureDeclaration> result;
+		if(emscripten::val::global("ts")["isConstructSignatureDeclaration"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isConstructorDeclaration(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isConstructorDeclaration"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dConstructorDeclaration> result;
+		if(emscripten::val::global("ts")["isConstructorDeclaration"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isConstructorTypeNode(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isConstructorTypeNode"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dConstructorTypeNode> result;
+		if(emscripten::val::global("ts")["isConstructorTypeNode"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isContinueStatement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isContinueStatement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dContinueStatement> result;
+		if(emscripten::val::global("ts")["isContinueStatement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isDebuggerStatement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isDebuggerStatement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dDebuggerStatement> result;
+		if(emscripten::val::global("ts")["isDebuggerStatement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isDecorator(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isDecorator"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dDecorator> result;
+		if(emscripten::val::global("ts")["isDecorator"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isDefaultClause(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isDefaultClause"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dDefaultClause> result;
+		if(emscripten::val::global("ts")["isDefaultClause"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isDeleteExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isDeleteExpression"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dDeleteExpression> result;
+		if(emscripten::val::global("ts")["isDeleteExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isDoStatement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isDoStatement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dDoStatement> result;
+		if(emscripten::val::global("ts")["isDoStatement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isElementAccessExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isElementAccessExpression"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dElementAccessExpression> result;
+		if(emscripten::val::global("ts")["isElementAccessExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isEmptyBindingElement(_js_jts_dBindingElement node) noexcept {
 		return emscripten::val::global("ts")["isEmptyBindingElement"](node).template as<bool /*false*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isEmptyBindingPattern(_js_jts_dBindingName node) noexcept {
-		return emscripten::val::global("ts")["isEmptyBindingPattern"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dBindingPattern> result;
+		if(emscripten::val::global("ts")["isEmptyBindingPattern"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isEmptyStatement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isEmptyStatement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dEmptyStatement> result;
+		if(emscripten::val::global("ts")["isEmptyStatement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isEntityName(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isEntityName"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dEntityName> result;
+		if(emscripten::val::global("ts")["isEntityName"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isEnumDeclaration(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isEnumDeclaration"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dEnumDeclaration> result;
+		if(emscripten::val::global("ts")["isEnumDeclaration"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isEnumMember(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isEnumMember"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dEnumMember> result;
+		if(emscripten::val::global("ts")["isEnumMember"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isExportAssignment(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isExportAssignment"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dExportAssignment> result;
+		if(emscripten::val::global("ts")["isExportAssignment"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isExportDeclaration(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isExportDeclaration"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dExportDeclaration> result;
+		if(emscripten::val::global("ts")["isExportDeclaration"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isExportSpecifier(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isExportSpecifier"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dExportSpecifier> result;
+		if(emscripten::val::global("ts")["isExportSpecifier"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isExpressionStatement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isExpressionStatement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dExpressionStatement> result;
+		if(emscripten::val::global("ts")["isExpressionStatement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isExpressionWithTypeArguments(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isExpressionWithTypeArguments"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dExpressionWithTypeArguments> result;
+		if(emscripten::val::global("ts")["isExpressionWithTypeArguments"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isExternalModule(_js_jts_dSourceFile file) noexcept {
 		return emscripten::val::global("ts")["isExternalModule"](file).template as<bool /*false*/>();
@@ -9025,43 +9233,95 @@ namespace tc::js_defs {
 		return emscripten::val::global("ts")["isExternalModuleNameRelative"](moduleName).template as<bool /*false*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isExternalModuleReference(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isExternalModuleReference"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dExternalModuleReference> result;
+		if(emscripten::val::global("ts")["isExternalModuleReference"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isForInStatement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isForInStatement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dForInStatement> result;
+		if(emscripten::val::global("ts")["isForInStatement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isForOfStatement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isForOfStatement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dForOfStatement> result;
+		if(emscripten::val::global("ts")["isForOfStatement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isForStatement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isForStatement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dForStatement> result;
+		if(emscripten::val::global("ts")["isForStatement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isFunctionDeclaration(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isFunctionDeclaration"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dFunctionDeclaration> result;
+		if(emscripten::val::global("ts")["isFunctionDeclaration"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isFunctionExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isFunctionExpression"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dFunctionExpression> result;
+		if(emscripten::val::global("ts")["isFunctionExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isFunctionLike(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isFunctionLike"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dSignatureDeclaration> result;
+		if(emscripten::val::global("ts")["isFunctionLike"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isFunctionOrConstructorTypeNode(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isFunctionOrConstructorTypeNode"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dFunctionOrConstructorTypeNode> result;
+		if(emscripten::val::global("ts")["isFunctionOrConstructorTypeNode"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isFunctionTypeNode(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isFunctionTypeNode"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dFunctionTypeNode> result;
+		if(emscripten::val::global("ts")["isFunctionTypeNode"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isGetAccessor(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isGetAccessor"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dGetAccessorDeclaration> result;
+		if(emscripten::val::global("ts")["isGetAccessor"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isGetAccessorDeclaration(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isGetAccessorDeclaration"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dGetAccessorDeclaration> result;
+		if(emscripten::val::global("ts")["isGetAccessorDeclaration"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isHeritageClause(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isHeritageClause"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dHeritageClause> result;
+		if(emscripten::val::global("ts")["isHeritageClause"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isIdentifier(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isIdentifier"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dIdentifier> result;
+		if(emscripten::val::global("ts")["isIdentifier"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isIdentifierPart(double ch, js_union<_js_jts_dScriptTarget /*ScriptTarget.ES2017*/, js_undefined> languageVersion) noexcept {
 		return emscripten::val::global("ts")["isIdentifierPart"](ch, languageVersion).template as<bool /*false*/>();
@@ -9070,415 +9330,947 @@ namespace tc::js_defs {
 		return emscripten::val::global("ts")["isIdentifierStart"](ch, languageVersion).template as<bool /*false*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isIfStatement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isIfStatement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dIfStatement> result;
+		if(emscripten::val::global("ts")["isIfStatement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isImportClause(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isImportClause"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dImportClause> result;
+		if(emscripten::val::global("ts")["isImportClause"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isImportDeclaration(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isImportDeclaration"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dImportDeclaration> result;
+		if(emscripten::val::global("ts")["isImportDeclaration"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isImportEqualsDeclaration(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isImportEqualsDeclaration"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dImportEqualsDeclaration> result;
+		if(emscripten::val::global("ts")["isImportEqualsDeclaration"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isImportOrExportSpecifier(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isImportOrExportSpecifier"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dImportOrExportSpecifier> result;
+		if(emscripten::val::global("ts")["isImportOrExportSpecifier"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isImportSpecifier(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isImportSpecifier"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dImportSpecifier> result;
+		if(emscripten::val::global("ts")["isImportSpecifier"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isImportTypeNode(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isImportTypeNode"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dImportTypeNode> result;
+		if(emscripten::val::global("ts")["isImportTypeNode"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isIndexSignatureDeclaration(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isIndexSignatureDeclaration"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dIndexSignatureDeclaration> result;
+		if(emscripten::val::global("ts")["isIndexSignatureDeclaration"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isIndexedAccessTypeNode(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isIndexedAccessTypeNode"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dIndexedAccessTypeNode> result;
+		if(emscripten::val::global("ts")["isIndexedAccessTypeNode"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isInferTypeNode(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isInferTypeNode"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dInferTypeNode> result;
+		if(emscripten::val::global("ts")["isInferTypeNode"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isInterfaceDeclaration(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isInterfaceDeclaration"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dInterfaceDeclaration> result;
+		if(emscripten::val::global("ts")["isInterfaceDeclaration"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isIntersectionTypeNode(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isIntersectionTypeNode"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dIntersectionTypeNode> result;
+		if(emscripten::val::global("ts")["isIntersectionTypeNode"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isIterationStatement(_js_jts_dNode node, bool /*false*/ lookInLabeledStatements) noexcept {
-		return emscripten::val::global("ts")["isIterationStatement"](node, lookInLabeledStatements).template as<bool /*false*/>();
+		std::optional<_js_jts_dIterationStatement> result;
+		if(emscripten::val::global("ts")["isIterationStatement"](node, lookInLabeledStatements).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDoc(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJSDoc"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJSDoc> result;
+		if(emscripten::val::global("ts")["isJSDoc"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocAllType(_js_jts_dJSDocAllType node) noexcept {
-		return emscripten::val::global("ts")["isJSDocAllType"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJSDocAllType> result;
+		if(emscripten::val::global("ts")["isJSDocAllType"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocAugmentsTag(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJSDocAugmentsTag"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJSDocAugmentsTag> result;
+		if(emscripten::val::global("ts")["isJSDocAugmentsTag"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocCallbackTag(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJSDocCallbackTag"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJSDocCallbackTag> result;
+		if(emscripten::val::global("ts")["isJSDocCallbackTag"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocClassTag(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJSDocClassTag"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJSDocClassTag> result;
+		if(emscripten::val::global("ts")["isJSDocClassTag"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocCommentContainingNode(_js_jts_dNode node) noexcept {
 		return emscripten::val::global("ts")["isJSDocCommentContainingNode"](node).template as<bool /*false*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocEnumTag(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJSDocEnumTag"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJSDocEnumTag> result;
+		if(emscripten::val::global("ts")["isJSDocEnumTag"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocFunctionType(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJSDocFunctionType"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJSDocFunctionType> result;
+		if(emscripten::val::global("ts")["isJSDocFunctionType"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocNonNullableType(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJSDocNonNullableType"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJSDocNonNullableType> result;
+		if(emscripten::val::global("ts")["isJSDocNonNullableType"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocNullableType(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJSDocNullableType"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJSDocNullableType> result;
+		if(emscripten::val::global("ts")["isJSDocNullableType"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocOptionalType(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJSDocOptionalType"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJSDocOptionalType> result;
+		if(emscripten::val::global("ts")["isJSDocOptionalType"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocParameterTag(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJSDocParameterTag"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJSDocParameterTag> result;
+		if(emscripten::val::global("ts")["isJSDocParameterTag"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocPropertyLikeTag(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJSDocPropertyLikeTag"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJSDocPropertyLikeTag> result;
+		if(emscripten::val::global("ts")["isJSDocPropertyLikeTag"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocPropertyTag(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJSDocPropertyTag"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJSDocPropertyTag> result;
+		if(emscripten::val::global("ts")["isJSDocPropertyTag"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocReturnTag(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJSDocReturnTag"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJSDocReturnTag> result;
+		if(emscripten::val::global("ts")["isJSDocReturnTag"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocSignature(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJSDocSignature"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJSDocSignature> result;
+		if(emscripten::val::global("ts")["isJSDocSignature"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocTemplateTag(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJSDocTemplateTag"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJSDocTemplateTag> result;
+		if(emscripten::val::global("ts")["isJSDocTemplateTag"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocThisTag(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJSDocThisTag"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJSDocThisTag> result;
+		if(emscripten::val::global("ts")["isJSDocThisTag"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocTypeExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJSDocTypeExpression"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJSDocTypeExpression> result;
+		if(emscripten::val::global("ts")["isJSDocTypeExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocTypeLiteral(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJSDocTypeLiteral"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJSDocTypeLiteral> result;
+		if(emscripten::val::global("ts")["isJSDocTypeLiteral"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocTypeTag(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJSDocTypeTag"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJSDocTypeTag> result;
+		if(emscripten::val::global("ts")["isJSDocTypeTag"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocTypedefTag(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJSDocTypedefTag"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJSDocTypedefTag> result;
+		if(emscripten::val::global("ts")["isJSDocTypedefTag"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocUnknownType(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJSDocUnknownType"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJSDocUnknownType> result;
+		if(emscripten::val::global("ts")["isJSDocUnknownType"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocVariadicType(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJSDocVariadicType"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJSDocVariadicType> result;
+		if(emscripten::val::global("ts")["isJSDocVariadicType"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJsxAttribute(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJsxAttribute"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJsxAttribute> result;
+		if(emscripten::val::global("ts")["isJsxAttribute"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJsxAttributes(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJsxAttributes"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJsxAttributes> result;
+		if(emscripten::val::global("ts")["isJsxAttributes"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJsxClosingElement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJsxClosingElement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJsxClosingElement> result;
+		if(emscripten::val::global("ts")["isJsxClosingElement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJsxClosingFragment(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJsxClosingFragment"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJsxClosingFragment> result;
+		if(emscripten::val::global("ts")["isJsxClosingFragment"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJsxElement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJsxElement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJsxElement> result;
+		if(emscripten::val::global("ts")["isJsxElement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJsxExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJsxExpression"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJsxExpression> result;
+		if(emscripten::val::global("ts")["isJsxExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJsxFragment(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJsxFragment"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJsxFragment> result;
+		if(emscripten::val::global("ts")["isJsxFragment"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJsxOpeningElement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJsxOpeningElement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJsxOpeningElement> result;
+		if(emscripten::val::global("ts")["isJsxOpeningElement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJsxOpeningFragment(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJsxOpeningFragment"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJsxOpeningFragment> result;
+		if(emscripten::val::global("ts")["isJsxOpeningFragment"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJsxOpeningLikeElement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJsxOpeningLikeElement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJsxOpeningLikeElement> result;
+		if(emscripten::val::global("ts")["isJsxOpeningLikeElement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJsxSelfClosingElement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJsxSelfClosingElement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJsxSelfClosingElement> result;
+		if(emscripten::val::global("ts")["isJsxSelfClosingElement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJsxSpreadAttribute(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJsxSpreadAttribute"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJsxSpreadAttribute> result;
+		if(emscripten::val::global("ts")["isJsxSpreadAttribute"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJsxText(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isJsxText"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dJsxText> result;
+		if(emscripten::val::global("ts")["isJsxText"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isLabeledStatement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isLabeledStatement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dLabeledStatement> result;
+		if(emscripten::val::global("ts")["isLabeledStatement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isLineBreak(double ch) noexcept {
 		return emscripten::val::global("ts")["isLineBreak"](ch).template as<bool /*false*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isLiteralExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isLiteralExpression"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dLiteralExpression> result;
+		if(emscripten::val::global("ts")["isLiteralExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isLiteralTypeNode(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isLiteralTypeNode"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dLiteralTypeNode> result;
+		if(emscripten::val::global("ts")["isLiteralTypeNode"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isMappedTypeNode(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isMappedTypeNode"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dMappedTypeNode> result;
+		if(emscripten::val::global("ts")["isMappedTypeNode"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isMetaProperty(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isMetaProperty"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dMetaProperty> result;
+		if(emscripten::val::global("ts")["isMetaProperty"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isMethodDeclaration(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isMethodDeclaration"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dMethodDeclaration> result;
+		if(emscripten::val::global("ts")["isMethodDeclaration"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isMethodSignature(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isMethodSignature"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dMethodSignature> result;
+		if(emscripten::val::global("ts")["isMethodSignature"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isMissingDeclaration(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isMissingDeclaration"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dMissingDeclaration> result;
+		if(emscripten::val::global("ts")["isMissingDeclaration"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isModifier(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isModifier"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dModifier> result;
+		if(emscripten::val::global("ts")["isModifier"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isModuleBlock(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isModuleBlock"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dModuleBlock> result;
+		if(emscripten::val::global("ts")["isModuleBlock"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isModuleDeclaration(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isModuleDeclaration"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dModuleDeclaration> result;
+		if(emscripten::val::global("ts")["isModuleDeclaration"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isNamedExports(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isNamedExports"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dNamedExports> result;
+		if(emscripten::val::global("ts")["isNamedExports"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isNamedImports(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isNamedImports"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dNamedImports> result;
+		if(emscripten::val::global("ts")["isNamedImports"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isNamespaceExportDeclaration(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isNamespaceExportDeclaration"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dNamespaceExportDeclaration> result;
+		if(emscripten::val::global("ts")["isNamespaceExportDeclaration"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isNamespaceImport(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isNamespaceImport"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dNamespaceImport> result;
+		if(emscripten::val::global("ts")["isNamespaceImport"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isNewExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isNewExpression"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dNewExpression> result;
+		if(emscripten::val::global("ts")["isNewExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isNoSubstitutionTemplateLiteral(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isNoSubstitutionTemplateLiteral"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dNoSubstitutionTemplateLiteral> result;
+		if(emscripten::val::global("ts")["isNoSubstitutionTemplateLiteral"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isNonNullExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isNonNullExpression"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dNonNullExpression> result;
+		if(emscripten::val::global("ts")["isNonNullExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isNumericLiteral(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isNumericLiteral"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dNumericLiteral> result;
+		if(emscripten::val::global("ts")["isNumericLiteral"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isObjectBindingPattern(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isObjectBindingPattern"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dObjectBindingPattern> result;
+		if(emscripten::val::global("ts")["isObjectBindingPattern"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isObjectLiteralElement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isObjectLiteralElement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dObjectLiteralElement> result;
+		if(emscripten::val::global("ts")["isObjectLiteralElement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isObjectLiteralElementLike(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isObjectLiteralElementLike"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dObjectLiteralElementLike> result;
+		if(emscripten::val::global("ts")["isObjectLiteralElementLike"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isObjectLiteralExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isObjectLiteralExpression"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dObjectLiteralExpression> result;
+		if(emscripten::val::global("ts")["isObjectLiteralExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isOmittedExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isOmittedExpression"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dOmittedExpression> result;
+		if(emscripten::val::global("ts")["isOmittedExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isParameter(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isParameter"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dParameterDeclaration> result;
+		if(emscripten::val::global("ts")["isParameter"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isParameterPropertyDeclaration(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isParameterPropertyDeclaration"](node).template as<bool /*false*/>();
+		std::optional<js_unknown /*flags=2097152: ParameterPropertyDeclaration ()*/> result;
+		if(emscripten::val::global("ts")["isParameterPropertyDeclaration"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isParenthesizedExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isParenthesizedExpression"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dParenthesizedExpression> result;
+		if(emscripten::val::global("ts")["isParenthesizedExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isParenthesizedTypeNode(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isParenthesizedTypeNode"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dParenthesizedTypeNode> result;
+		if(emscripten::val::global("ts")["isParenthesizedTypeNode"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isParseTreeNode(_js_jts_dNode node) noexcept {
 		return emscripten::val::global("ts")["isParseTreeNode"](node).template as<bool /*false*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isPostfixUnaryExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isPostfixUnaryExpression"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dPostfixUnaryExpression> result;
+		if(emscripten::val::global("ts")["isPostfixUnaryExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isPrefixUnaryExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isPrefixUnaryExpression"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dPrefixUnaryExpression> result;
+		if(emscripten::val::global("ts")["isPrefixUnaryExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isPropertyAccessExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isPropertyAccessExpression"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dPropertyAccessExpression> result;
+		if(emscripten::val::global("ts")["isPropertyAccessExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isPropertyAccessOrQualifiedName(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isPropertyAccessOrQualifiedName"](node).template as<bool /*false*/>();
+		std::optional<js_union<_js_jts_dPropertyAccessExpression, _js_jts_dQualifiedName>> result;
+		if(emscripten::val::global("ts")["isPropertyAccessOrQualifiedName"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isPropertyAssignment(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isPropertyAssignment"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dPropertyAssignment> result;
+		if(emscripten::val::global("ts")["isPropertyAssignment"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isPropertyDeclaration(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isPropertyDeclaration"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dPropertyDeclaration> result;
+		if(emscripten::val::global("ts")["isPropertyDeclaration"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isPropertyName(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isPropertyName"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dPropertyName> result;
+		if(emscripten::val::global("ts")["isPropertyName"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isPropertySignature(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isPropertySignature"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dPropertySignature> result;
+		if(emscripten::val::global("ts")["isPropertySignature"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isQualifiedName(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isQualifiedName"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dQualifiedName> result;
+		if(emscripten::val::global("ts")["isQualifiedName"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isRegularExpressionLiteral(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isRegularExpressionLiteral"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dRegularExpressionLiteral> result;
+		if(emscripten::val::global("ts")["isRegularExpressionLiteral"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isReturnStatement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isReturnStatement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dReturnStatement> result;
+		if(emscripten::val::global("ts")["isReturnStatement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isSemicolonClassElement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isSemicolonClassElement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dSemicolonClassElement> result;
+		if(emscripten::val::global("ts")["isSemicolonClassElement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isSetAccessor(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isSetAccessor"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dSetAccessorDeclaration> result;
+		if(emscripten::val::global("ts")["isSetAccessor"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isSetAccessorDeclaration(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isSetAccessorDeclaration"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dSetAccessorDeclaration> result;
+		if(emscripten::val::global("ts")["isSetAccessorDeclaration"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isShorthandPropertyAssignment(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isShorthandPropertyAssignment"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dShorthandPropertyAssignment> result;
+		if(emscripten::val::global("ts")["isShorthandPropertyAssignment"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isSourceFile(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isSourceFile"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dSourceFile> result;
+		if(emscripten::val::global("ts")["isSourceFile"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isSpreadAssignment(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isSpreadAssignment"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dSpreadAssignment> result;
+		if(emscripten::val::global("ts")["isSpreadAssignment"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isSpreadElement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isSpreadElement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dSpreadElement> result;
+		if(emscripten::val::global("ts")["isSpreadElement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isStringLiteral(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isStringLiteral"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dStringLiteral> result;
+		if(emscripten::val::global("ts")["isStringLiteral"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isStringLiteralLike(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isStringLiteralLike"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dStringLiteralLike> result;
+		if(emscripten::val::global("ts")["isStringLiteralLike"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isStringTextContainingNode(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isStringTextContainingNode"](node).template as<bool /*false*/>();
+		std::optional<js_union<_js_jts_dNoSubstitutionTemplateLiteral, _js_jts_dStringLiteral, _js_jts_dTemplateHead, _js_jts_dTemplateMiddle, _js_jts_dTemplateTail>> result;
+		if(emscripten::val::global("ts")["isStringTextContainingNode"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isSwitchStatement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isSwitchStatement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dSwitchStatement> result;
+		if(emscripten::val::global("ts")["isSwitchStatement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTaggedTemplateExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isTaggedTemplateExpression"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dTaggedTemplateExpression> result;
+		if(emscripten::val::global("ts")["isTaggedTemplateExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTemplateExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isTemplateExpression"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dTemplateExpression> result;
+		if(emscripten::val::global("ts")["isTemplateExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTemplateHead(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isTemplateHead"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dTemplateHead> result;
+		if(emscripten::val::global("ts")["isTemplateHead"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTemplateLiteral(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isTemplateLiteral"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dTemplateLiteral> result;
+		if(emscripten::val::global("ts")["isTemplateLiteral"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTemplateLiteralToken(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isTemplateLiteralToken"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dTemplateLiteralToken> result;
+		if(emscripten::val::global("ts")["isTemplateLiteralToken"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTemplateMiddle(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isTemplateMiddle"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dTemplateMiddle> result;
+		if(emscripten::val::global("ts")["isTemplateMiddle"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTemplateMiddleOrTemplateTail(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isTemplateMiddleOrTemplateTail"](node).template as<bool /*false*/>();
+		std::optional<js_union<_js_jts_dTemplateMiddle, _js_jts_dTemplateTail>> result;
+		if(emscripten::val::global("ts")["isTemplateMiddleOrTemplateTail"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTemplateSpan(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isTemplateSpan"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dTemplateSpan> result;
+		if(emscripten::val::global("ts")["isTemplateSpan"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTemplateTail(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isTemplateTail"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dTemplateTail> result;
+		if(emscripten::val::global("ts")["isTemplateTail"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isThisTypeNode(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isThisTypeNode"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dThisTypeNode> result;
+		if(emscripten::val::global("ts")["isThisTypeNode"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isThrowStatement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isThrowStatement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dThrowStatement> result;
+		if(emscripten::val::global("ts")["isThrowStatement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isToken(_js_jts_dNode n) noexcept {
 		return emscripten::val::global("ts")["isToken"](n).template as<bool /*false*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTryStatement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isTryStatement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dTryStatement> result;
+		if(emscripten::val::global("ts")["isTryStatement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTupleTypeNode(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isTupleTypeNode"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dTupleTypeNode> result;
+		if(emscripten::val::global("ts")["isTupleTypeNode"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTypeAliasDeclaration(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isTypeAliasDeclaration"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dTypeAliasDeclaration> result;
+		if(emscripten::val::global("ts")["isTypeAliasDeclaration"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTypeAssertion(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isTypeAssertion"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dTypeAssertion> result;
+		if(emscripten::val::global("ts")["isTypeAssertion"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTypeElement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isTypeElement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dTypeElement> result;
+		if(emscripten::val::global("ts")["isTypeElement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTypeLiteralNode(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isTypeLiteralNode"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dTypeLiteralNode> result;
+		if(emscripten::val::global("ts")["isTypeLiteralNode"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTypeNode(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isTypeNode"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dTypeNode> result;
+		if(emscripten::val::global("ts")["isTypeNode"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTypeOfExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isTypeOfExpression"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dTypeOfExpression> result;
+		if(emscripten::val::global("ts")["isTypeOfExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTypeOperatorNode(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isTypeOperatorNode"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dTypeOperatorNode> result;
+		if(emscripten::val::global("ts")["isTypeOperatorNode"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTypeParameterDeclaration(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isTypeParameterDeclaration"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dTypeParameterDeclaration> result;
+		if(emscripten::val::global("ts")["isTypeParameterDeclaration"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTypePredicateNode(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isTypePredicateNode"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dTypePredicateNode> result;
+		if(emscripten::val::global("ts")["isTypePredicateNode"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTypeQueryNode(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isTypeQueryNode"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dTypeQueryNode> result;
+		if(emscripten::val::global("ts")["isTypeQueryNode"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTypeReferenceNode(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isTypeReferenceNode"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dTypeReferenceNode> result;
+		if(emscripten::val::global("ts")["isTypeReferenceNode"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isUnionTypeNode(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isUnionTypeNode"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dUnionTypeNode> result;
+		if(emscripten::val::global("ts")["isUnionTypeNode"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isUnparsedNode(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isUnparsedNode"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dUnparsedNode> result;
+		if(emscripten::val::global("ts")["isUnparsedNode"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isUnparsedPrepend(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isUnparsedPrepend"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dUnparsedPrepend> result;
+		if(emscripten::val::global("ts")["isUnparsedPrepend"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isUnparsedSource(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isUnparsedSource"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dUnparsedSource> result;
+		if(emscripten::val::global("ts")["isUnparsedSource"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isUnparsedTextLike(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isUnparsedTextLike"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dUnparsedTextLike> result;
+		if(emscripten::val::global("ts")["isUnparsedTextLike"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isVariableDeclaration(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isVariableDeclaration"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dVariableDeclaration> result;
+		if(emscripten::val::global("ts")["isVariableDeclaration"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isVariableDeclarationList(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isVariableDeclarationList"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dVariableDeclarationList> result;
+		if(emscripten::val::global("ts")["isVariableDeclarationList"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isVariableStatement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isVariableStatement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dVariableStatement> result;
+		if(emscripten::val::global("ts")["isVariableStatement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isVoidExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isVoidExpression"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dVoidExpression> result;
+		if(emscripten::val::global("ts")["isVoidExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isWhileStatement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isWhileStatement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dWhileStatement> result;
+		if(emscripten::val::global("ts")["isWhileStatement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isWhiteSpaceLike(double ch) noexcept {
 		return emscripten::val::global("ts")["isWhiteSpaceLike"](ch).template as<bool /*false*/>();
@@ -9487,13 +10279,21 @@ namespace tc::js_defs {
 		return emscripten::val::global("ts")["isWhiteSpaceSingleLine"](ch).template as<bool /*false*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isWithStatement(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isWithStatement"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dWithStatement> result;
+		if(emscripten::val::global("ts")["isWithStatement"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isYieldExpression(_js_jts_dNode node) noexcept {
-		return emscripten::val::global("ts")["isYieldExpression"](node).template as<bool /*false*/>();
+		std::optional<_js_jts_dYieldExpression> result;
+		if(emscripten::val::global("ts")["isYieldExpression"](node).template as<bool /*false*/>()) {
+			result.emplace(js_unknown(node));
+		}
+		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::moveEmitHelpers(_js_jts_dNode source, _js_jts_dNode target, js_function<bool /*false*/(_js_jts_dEmitHelper)> predicate) noexcept {
-		emscripten::val::global("ts")["moveEmitHelpers"](source, target, predicate);
+		 emscripten::val::global("ts")["moveEmitHelpers"](source, target, predicate);
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::moveSyntheticComments(js_unknown /*flags=262144: T ()*/ node, _js_jts_dNode original) noexcept {
 		return emscripten::val::global("ts")["moveSyntheticComments"](node, original).template as<js_unknown /*flags=262144: T ()*/>();
@@ -10042,7 +10842,7 @@ namespace tc::js_defs {
 		return emscripten::val::global("ts")["updateYield"](node, asteriskToken, expression).template as<_js_jts_dYieldExpression>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::validateLocaleAndSetLanguage(js_string locale, js_unknown /*flags=524288: { getExecutingFilePath(): string; resolvePath(path: string): string; fileExists(fileName: string): boolean; readFile(fileName: string): string | undefined; } (AnonymousTypeWithTypeLiteral(members:[getExecutingFilePath, resolvePath, fileExists, readFile]))*/ sys, js_unknown /*flags=1048576: Push<Diagnostic> | undefined ()*/ errors) noexcept {
-		emscripten::val::global("ts")["validateLocaleAndSetLanguage"](locale, sys, errors);
+		 emscripten::val::global("ts")["validateLocaleAndSetLanguage"](locale, sys, errors);
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::visitEachChild(js_unknown /*flags=262144: T ()*/ node, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context) noexcept {
 		return emscripten::val::global("ts")["visitEachChild"](node, visitor, context).template as<js_unknown /*flags=262144: T ()*/>();
@@ -10315,31 +11115,67 @@ namespace tc::js_defs {
 		return _call<js_union<_js_jts_dSymbol, js_undefined>>("getSymbol");
 	}
 	inline auto _impl_js_jts_dType::isClass() noexcept {
-		return _call<bool /*false*/>("isClass");
+		std::optional<_js_jts_dInterfaceType> result;
+		if(_call<bool /*false*/>("isClass")) {
+			result.emplace(_this<js_unknown>());
+		}
+		return result;
 	}
 	inline auto _impl_js_jts_dType::isClassOrInterface() noexcept {
-		return _call<bool /*false*/>("isClassOrInterface");
+		std::optional<_js_jts_dInterfaceType> result;
+		if(_call<bool /*false*/>("isClassOrInterface")) {
+			result.emplace(_this<js_unknown>());
+		}
+		return result;
 	}
 	inline auto _impl_js_jts_dType::isIntersection() noexcept {
-		return _call<bool /*false*/>("isIntersection");
+		std::optional<_js_jts_dIntersectionType> result;
+		if(_call<bool /*false*/>("isIntersection")) {
+			result.emplace(_this<js_unknown>());
+		}
+		return result;
 	}
 	inline auto _impl_js_jts_dType::isLiteral() noexcept {
-		return _call<bool /*false*/>("isLiteral");
+		std::optional<_js_jts_dLiteralType> result;
+		if(_call<bool /*false*/>("isLiteral")) {
+			result.emplace(_this<js_unknown>());
+		}
+		return result;
 	}
 	inline auto _impl_js_jts_dType::isNumberLiteral() noexcept {
-		return _call<bool /*false*/>("isNumberLiteral");
+		std::optional<_js_jts_dNumberLiteralType> result;
+		if(_call<bool /*false*/>("isNumberLiteral")) {
+			result.emplace(_this<js_unknown>());
+		}
+		return result;
 	}
 	inline auto _impl_js_jts_dType::isStringLiteral() noexcept {
-		return _call<bool /*false*/>("isStringLiteral");
+		std::optional<_js_jts_dStringLiteralType> result;
+		if(_call<bool /*false*/>("isStringLiteral")) {
+			result.emplace(_this<js_unknown>());
+		}
+		return result;
 	}
 	inline auto _impl_js_jts_dType::isTypeParameter() noexcept {
-		return _call<bool /*false*/>("isTypeParameter");
+		std::optional<_js_jts_dTypeParameter> result;
+		if(_call<bool /*false*/>("isTypeParameter")) {
+			result.emplace(_this<js_unknown>());
+		}
+		return result;
 	}
 	inline auto _impl_js_jts_dType::isUnion() noexcept {
-		return _call<bool /*false*/>("isUnion");
+		std::optional<_js_jts_dUnionType> result;
+		if(_call<bool /*false*/>("isUnion")) {
+			result.emplace(_this<js_unknown>());
+		}
+		return result;
 	}
 	inline auto _impl_js_jts_dType::isUnionOrIntersection() noexcept {
-		return _call<bool /*false*/>("isUnionOrIntersection");
+		std::optional<_js_jts_dUnionOrIntersectionType> result;
+		if(_call<bool /*false*/>("isUnionOrIntersection")) {
+			result.emplace(_this<js_unknown>());
+		}
+		return result;
 	}
 	inline auto _impl_js_jts_dLiteralType::value() noexcept { return _getProperty<js_union<_js_jts_dPseudoBigInt, double, js_string>>("value"); }
 	inline void _impl_js_jts_dLiteralType::value(js_union<_js_jts_dPseudoBigInt, double, js_string> v) noexcept { _setProperty("value", v); }
@@ -10445,7 +11281,7 @@ namespace tc::js_defs {
 		return _call<bool /*false*/>("isCancellationRequested");
 	}
 	inline auto _impl_js_jts_dCancellationToken::throwIfCancellationRequested() noexcept {
-		return _call<void>("throwIfCancellationRequested");
+		 _call<void>("throwIfCancellationRequested");
 	}
 	inline auto _impl_js_jts_dCaseBlock::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.CaseBlock*/>("kind"); }
 	inline void _impl_js_jts_dCaseBlock::kind(_js_jts_dSyntaxKind /*SyntaxKind.CaseBlock*/ v) noexcept { _setProperty("kind", v); }
@@ -10973,10 +11809,10 @@ namespace tc::js_defs {
 		return _call<js_unknown /*flags=2097152: DocumentRegistryBucketKey ()*/>("getKeyForCompilationSettings", settings);
 	}
 	inline auto _impl_js_jts_dDocumentRegistry::releaseDocument(js_string fileName, _js_jts_dCompilerOptions compilationSettings) noexcept {
-		return _call<void>("releaseDocument", fileName, compilationSettings);
+		 _call<void>("releaseDocument", fileName, compilationSettings);
 	}
 	inline auto _impl_js_jts_dDocumentRegistry::releaseDocumentWithKey(js_unknown /*flags=2097152: Path ()*/ path, js_unknown /*flags=2097152: DocumentRegistryBucketKey ()*/ key) noexcept {
-		return _call<void>("releaseDocumentWithKey", path, key);
+		 _call<void>("releaseDocumentWithKey", path, key);
 	}
 	inline auto _impl_js_jts_dDocumentRegistry::reportStats() noexcept {
 		return _call<js_string>("reportStats");
@@ -11121,7 +11957,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_jts_dFileTextChanges::isNewFile() noexcept { return _getProperty<js_union<bool /*false*/, js_undefined>>("isNewFile"); }
 	inline void _impl_js_jts_dFileTextChanges::isNewFile(js_union<bool /*false*/, js_undefined> v) noexcept { _setProperty("isNewFile", v); }
 	inline auto _impl_js_jts_dFileWatcher::close() noexcept {
-		return _call<void>("close");
+		 _call<void>("close");
 	}
 	inline auto _impl_js_jts_dFlowArrayMutation::node() noexcept { return _getProperty<js_union<_js_jts_dBinaryExpression, _js_jts_dCallExpression>>("node"); }
 	inline void _impl_js_jts_dFlowArrayMutation::node(js_union<_js_jts_dBinaryExpression, _js_jts_dCallExpression> v) noexcept { _setProperty("node", v); }
@@ -11778,10 +12614,10 @@ namespace tc::js_defs {
 		return _call<js::Promise<js_union<_js_jts_dApplyCodeActionCommandResult, js::Array<_js_jts_dApplyCodeActionCommandResult>>>>("applyCodeActionCommand", action, formatSettings);
 	}
 	inline auto _impl_js_jts_dLanguageService::cleanupSemanticCache() noexcept {
-		return _call<void>("cleanupSemanticCache");
+		 _call<void>("cleanupSemanticCache");
 	}
 	inline auto _impl_js_jts_dLanguageService::dispose() noexcept {
-		return _call<void>("dispose");
+		 _call<void>("dispose");
 	}
 	inline auto _impl_js_jts_dLanguageService::findReferences(js_string fileName, double position) noexcept {
 		return _call<js_union<js::Array<_js_jts_dReferencedSymbol>, js_undefined>>("findReferences", fileName, position);
@@ -11954,7 +12790,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_jts_dLiteralTypeNode::literal() noexcept { return _getProperty<js_union<_js_jts_dBooleanLiteral, _js_jts_dLiteralExpression, _js_jts_dPrefixUnaryExpression>>("literal"); }
 	inline void _impl_js_jts_dLiteralTypeNode::literal(js_union<_js_jts_dBooleanLiteral, _js_jts_dLiteralExpression, _js_jts_dPrefixUnaryExpression> v) noexcept { _setProperty("literal", v); }
 	inline auto _impl_js_jts_dMap::clear() noexcept {
-		return _call<void>("clear");
+		 _call<void>("clear");
 	}
 	inline auto _impl_js_jts_dMap::delete_(js_string key) noexcept {
 		return _call<bool /*false*/>("delete", key);
@@ -12215,7 +13051,7 @@ namespace tc::js_defs {
 		return _call<js_union<_js_jts_dResolvedModuleWithFailedLookupLocations, js_undefined>>("get", directory);
 	}
 	inline auto _impl_js_jts_dPerModuleNameCache::set(js_string directory, _js_jts_dResolvedModuleWithFailedLookupLocations result) noexcept {
-		return _call<void>("set", directory, result);
+		 _call<void>("set", directory, result);
 	}
 	inline auto _impl_js_jts_dPluginImport::name() noexcept { return _getProperty<js_string>("name"); }
 	inline void _impl_js_jts_dPluginImport::name(js_string v) noexcept { _setProperty("name", v); }
@@ -12388,7 +13224,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_jts_dPseudoBigInt::base10Value() noexcept { return _getProperty<js_string>("base10Value"); }
 	inline void _impl_js_jts_dPseudoBigInt::base10Value(js_string v) noexcept { _setProperty("base10Value", v); }
 	inline auto _impl_js_jts_dPush::push(js::Array<js_unknown /*flags=262144: T ()*/> values) noexcept {
-		return _call<void>("push", values);
+		 _call<void>("push", values);
 	}
 	inline auto _impl_js_jts_dQualifiedName::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.QualifiedName*/>("kind"); }
 	inline void _impl_js_jts_dQualifiedName::kind(_js_jts_dSyntaxKind /*SyntaxKind.QualifiedName*/ v) noexcept { _setProperty("kind", v); }
@@ -12413,7 +13249,7 @@ namespace tc::js_defs {
 		return _call<js_unknown /*flags=524288: Iterator<[string, T]> (TypeReference=ts.Iterator)*/>("entries");
 	}
 	inline auto _impl_js_jts_dReadonlyMap::forEach(js_function<void(js_unknown /*flags=262144: T ()*/, js_string)> action) noexcept {
-		return _call<void>("forEach", action);
+		 _call<void>("forEach", action);
 	}
 	inline auto _impl_js_jts_dReadonlyMap::get(js_string key) noexcept {
 		return _call<js_unknown /*flags=1048576: T | undefined ()*/>("get", key);
@@ -12432,7 +13268,7 @@ namespace tc::js_defs {
 		return _call<js_unknown /*flags=524288: Iterator<[__String, T]> (TypeReference=ts.Iterator)*/>("entries");
 	}
 	inline auto _impl_js_jts_dReadonlyUnderscoreEscapedMap::forEach(js_function<void(js_unknown /*flags=262144: T ()*/, js_unknown /*flags=1048576: __String ()*/)> action) noexcept {
-		return _call<void>("forEach", action);
+		 _call<void>("forEach", action);
 	}
 	inline auto _impl_js_jts_dReadonlyUnderscoreEscapedMap::get(js_unknown /*flags=1048576: __String ()*/ key) noexcept {
 		return _call<js_unknown /*flags=1048576: T | undefined ()*/>("get", key);
@@ -12602,19 +13438,19 @@ namespace tc::js_defs {
 		return _call<js_unknown /*flags=262144: T ()*/>("scanRange", start, length, callback);
 	}
 	inline auto _impl_js_jts_dScanner::setLanguageVariant(_js_jts_dLanguageVariant /*LanguageVariant.Standard*/ variant) noexcept {
-		return _call<void>("setLanguageVariant", variant);
+		 _call<void>("setLanguageVariant", variant);
 	}
 	inline auto _impl_js_jts_dScanner::setOnError(js_union<_js_jts_dErrorCallback, js_undefined> onError) noexcept {
-		return _call<void>("setOnError", onError);
+		 _call<void>("setOnError", onError);
 	}
 	inline auto _impl_js_jts_dScanner::setScriptTarget(_js_jts_dScriptTarget /*ScriptTarget.ES3*/ scriptTarget) noexcept {
-		return _call<void>("setScriptTarget", scriptTarget);
+		 _call<void>("setScriptTarget", scriptTarget);
 	}
 	inline auto _impl_js_jts_dScanner::setText(js_union<js_string, js_undefined> text, js_union<double, js_undefined> start, js_union<double, js_undefined> length) noexcept {
-		return _call<void>("setText", text, start, length);
+		 _call<void>("setText", text, start, length);
 	}
 	inline auto _impl_js_jts_dScanner::setTextPos(double textPos) noexcept {
-		return _call<void>("setTextPos", textPos);
+		 _call<void>("setTextPos", textPos);
 	}
 	inline auto _impl_js_jts_dScanner::tryScan(js_function<js_unknown /*flags=262144: T ()*/()> callback) noexcept {
 		return _call<js_unknown /*flags=262144: T ()*/>("tryScan", callback);
@@ -12849,13 +13685,13 @@ namespace tc::js_defs {
 	inline auto _impl_js_jts_dSystem::useCaseSensitiveFileNames() noexcept { return _getProperty<bool /*false*/>("useCaseSensitiveFileNames"); }
 	inline void _impl_js_jts_dSystem::useCaseSensitiveFileNames(bool /*false*/ v) noexcept { _setProperty("useCaseSensitiveFileNames", v); }
 	inline auto _impl_js_jts_dSystem::createDirectory(js_string path) noexcept {
-		return _call<void>("createDirectory", path);
+		 _call<void>("createDirectory", path);
 	}
 	inline auto _impl_js_jts_dSystem::directoryExists(js_string path) noexcept {
 		return _call<bool /*false*/>("directoryExists", path);
 	}
 	inline auto _impl_js_jts_dSystem::exit(js_union<double, js_undefined> exitCode) noexcept {
-		return _call<void>("exit", exitCode);
+		 _call<void>("exit", exitCode);
 	}
 	inline auto _impl_js_jts_dSystem::fileExists(js_string path) noexcept {
 		return _call<bool /*false*/>("fileExists", path);
@@ -12879,10 +13715,10 @@ namespace tc::js_defs {
 		return _call<js_string>("resolvePath", path);
 	}
 	inline auto _impl_js_jts_dSystem::write(js_string s) noexcept {
-		return _call<void>("write", s);
+		 _call<void>("write", s);
 	}
 	inline auto _impl_js_jts_dSystem::writeFile(js_string path, js_string data, js_union<bool /*false*/, js_undefined> writeByteOrderMark) noexcept {
-		return _call<void>("writeFile", path, data, writeByteOrderMark);
+		 _call<void>("writeFile", path, data, writeByteOrderMark);
 	}
 	inline auto _impl_js_jts_dTaggedTemplateExpression::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.TaggedTemplateExpression*/>("kind"); }
 	inline void _impl_js_jts_dTaggedTemplateExpression::kind(_js_jts_dSyntaxKind /*SyntaxKind.TaggedTemplateExpression*/ v) noexcept { _setProperty("kind", v); }
@@ -12961,10 +13797,10 @@ namespace tc::js_defs {
 	inline auto _impl_js_jts_dTransformationContext::onEmitNode() noexcept { return _getProperty<js_function<void(_js_jts_dEmitHint /*EmitHint.SourceFile*/, _js_jts_dNode, js_function<void(_js_jts_dEmitHint /*EmitHint.SourceFile*/, _js_jts_dNode)>)>>("onEmitNode"); }
 	inline void _impl_js_jts_dTransformationContext::onEmitNode(js_function<void(_js_jts_dEmitHint /*EmitHint.SourceFile*/, _js_jts_dNode, js_function<void(_js_jts_dEmitHint /*EmitHint.SourceFile*/, _js_jts_dNode)>)> v) noexcept { _setProperty("onEmitNode", v); }
 	inline auto _impl_js_jts_dTransformationContext::enableEmitNotification(_js_jts_dSyntaxKind /*SyntaxKind.Unknown*/ kind) noexcept {
-		return _call<void>("enableEmitNotification", kind);
+		 _call<void>("enableEmitNotification", kind);
 	}
 	inline auto _impl_js_jts_dTransformationContext::enableSubstitution(_js_jts_dSyntaxKind /*SyntaxKind.Unknown*/ kind) noexcept {
-		return _call<void>("enableSubstitution", kind);
+		 _call<void>("enableSubstitution", kind);
 	}
 	inline auto _impl_js_jts_dTransformationContext::endLexicalEnvironment() noexcept {
 		return _call<js_union<js::Array<_js_jts_dStatement>, js_undefined>>("endLexicalEnvironment");
@@ -12973,10 +13809,10 @@ namespace tc::js_defs {
 		return _call<_js_jts_dCompilerOptions>("getCompilerOptions");
 	}
 	inline auto _impl_js_jts_dTransformationContext::hoistFunctionDeclaration(_js_jts_dFunctionDeclaration node) noexcept {
-		return _call<void>("hoistFunctionDeclaration", node);
+		 _call<void>("hoistFunctionDeclaration", node);
 	}
 	inline auto _impl_js_jts_dTransformationContext::hoistVariableDeclaration(_js_jts_dIdentifier node) noexcept {
-		return _call<void>("hoistVariableDeclaration", node);
+		 _call<void>("hoistVariableDeclaration", node);
 	}
 	inline auto _impl_js_jts_dTransformationContext::isEmitNotificationEnabled(_js_jts_dNode node) noexcept {
 		return _call<bool /*false*/>("isEmitNotificationEnabled", node);
@@ -12988,26 +13824,26 @@ namespace tc::js_defs {
 		return _call<js_union<js::Array<_js_jts_dEmitHelper>, js_undefined>>("readEmitHelpers");
 	}
 	inline auto _impl_js_jts_dTransformationContext::requestEmitHelper(_js_jts_dEmitHelper helper) noexcept {
-		return _call<void>("requestEmitHelper", helper);
+		 _call<void>("requestEmitHelper", helper);
 	}
 	inline auto _impl_js_jts_dTransformationContext::resumeLexicalEnvironment() noexcept {
-		return _call<void>("resumeLexicalEnvironment");
+		 _call<void>("resumeLexicalEnvironment");
 	}
 	inline auto _impl_js_jts_dTransformationContext::startLexicalEnvironment() noexcept {
-		return _call<void>("startLexicalEnvironment");
+		 _call<void>("startLexicalEnvironment");
 	}
 	inline auto _impl_js_jts_dTransformationContext::suspendLexicalEnvironment() noexcept {
-		return _call<void>("suspendLexicalEnvironment");
+		 _call<void>("suspendLexicalEnvironment");
 	}
 	inline auto _impl_js_jts_dTransformationResult::transformed() noexcept { return _getProperty<js::Array<js_unknown /*flags=262144: T ()*/>>("transformed"); }
 	inline void _impl_js_jts_dTransformationResult::transformed(js::Array<js_unknown /*flags=262144: T ()*/> v) noexcept { _setProperty("transformed", v); }
 	inline auto _impl_js_jts_dTransformationResult::diagnostics() noexcept { return _getProperty<js_union<js::Array<_js_jts_dDiagnosticWithLocation>, js_undefined>>("diagnostics"); }
 	inline void _impl_js_jts_dTransformationResult::diagnostics(js_union<js::Array<_js_jts_dDiagnosticWithLocation>, js_undefined> v) noexcept { _setProperty("diagnostics", v); }
 	inline auto _impl_js_jts_dTransformationResult::dispose() noexcept {
-		return _call<void>("dispose");
+		 _call<void>("dispose");
 	}
 	inline auto _impl_js_jts_dTransformationResult::emitNodeWithNotification(_js_jts_dEmitHint /*EmitHint.SourceFile*/ hint, _js_jts_dNode node, js_function<void(_js_jts_dEmitHint /*EmitHint.SourceFile*/, _js_jts_dNode)> emitCallback) noexcept {
-		return _call<void>("emitNodeWithNotification", hint, node, emitCallback);
+		 _call<void>("emitNodeWithNotification", hint, node, emitCallback);
 	}
 	inline auto _impl_js_jts_dTransformationResult::substituteNode(_js_jts_dEmitHint /*EmitHint.SourceFile*/ hint, _js_jts_dNode node) noexcept {
 		return _call<_js_jts_dNode>("substituteNode", hint, node);
@@ -13292,7 +14128,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_jts_dTypeReferenceNode::typeName() noexcept { return _getProperty<_js_jts_dEntityName>("typeName"); }
 	inline void _impl_js_jts_dTypeReferenceNode::typeName(_js_jts_dEntityName v) noexcept { _setProperty("typeName", v); }
 	inline auto _impl_js_jts_dUnderscoreEscapedMap::clear() noexcept {
-		return _call<void>("clear");
+		 _call<void>("clear");
 	}
 	inline auto _impl_js_jts_dUnderscoreEscapedMap::delete_(js_unknown /*flags=1048576: __String ()*/ key) noexcept {
 		return _call<bool /*false*/>("delete", key);
@@ -13413,7 +14249,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_jts_dWatchCompilerHostOfFilesAndCompilerOptions::projectReferences() noexcept { return _getProperty<js_union<js::ReadonlyArray<_js_jts_dProjectReference>, js_undefined>>("projectReferences"); }
 	inline void _impl_js_jts_dWatchCompilerHostOfFilesAndCompilerOptions::projectReferences(js_union<js::ReadonlyArray<_js_jts_dProjectReference>, js_undefined> v) noexcept { _setProperty("projectReferences", v); }
 	inline auto _impl_js_jts_dWatchOfFilesAndCompilerOptions::updateRootFileNames(js::Array<js_string> fileNames) noexcept {
-		return _call<void>("updateRootFileNames", fileNames);
+		 _call<void>("updateRootFileNames", fileNames);
 	}
 	inline auto _impl_js_jts_dWhileStatement::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.WhileStatement*/>("kind"); }
 	inline void _impl_js_jts_dWhileStatement::kind(_js_jts_dSyntaxKind /*SyntaxKind.WhileStatement*/ v) noexcept { _setProperty("kind", v); }
@@ -13467,5 +14303,5 @@ namespace tc::js_defs {
 	inline auto _impl_js_jts_dserver_dTypesRegistryRequest::kind() noexcept { return _getProperty<js_string /*"typesRegistry"*/>("kind"); }
 }; // namespace tc::js_defs
 namespace tc::js {
-	using ts = js_defs::_js_j_qts_q;
+			using ts = js_defs::_js_j_qts_q;
 } // namespace tc::js
