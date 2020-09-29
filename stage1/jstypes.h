@@ -94,15 +94,7 @@ public:
 
     std::string CppifiedParametersWithCommentsDecl() const noexcept;
     std::string CppifiedParametersWithCommentsDef() const noexcept;
-    auto CppifiedArgumentRange() const noexcept { 
-        return tc::transform(
-            m_jsignature->getParameters(),
-            [](tc::js::ts::Symbol const jsymParameter) noexcept {
-                return CppifyName(jsymParameter, enamectxNONE);
-            }
-        );
-    }
-
+   
     static bool LessCppSignature(SJsFunctionLike const& a, SJsFunctionLike const& b) noexcept;
 };
 static_assert(std::is_nothrow_move_constructible<SJsFunctionLike>::value);

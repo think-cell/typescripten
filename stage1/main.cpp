@@ -219,31 +219,71 @@ int main(int argc, char* argv[]) {
 			}
 		);
 
-		auto ExportFunctionImpl = [](auto const& rngstrNamespace, SJsFunctionLike const& jsfunction) noexcept {
-			auto const rngchCallArguments = tc::join_separated(
-				tc::transform(
-					jsfunction.m_jsignature->getParameters(),
-					[](ts::Symbol const jsymParameter) noexcept {
-						return CppifyName(jsymParameter, enamectxNONE);
-					}
-				),
-				", "
-			);
-			auto const rngchFunctionCall = tc::concat(
-				RetrieveSymbolFromCpp(jsfunction.m_jsym), "(", rngchCallArguments, ")"
-			);
-			return tc::explicit_cast<std::string>(tc::concat(
-				"	inline auto ", rngstrNamespace,
-				jsfunction.m_strCppifiedName, "(", jsfunction.CppifiedParametersWithCommentsDef(), ") noexcept {\n",
+		auto FunctionImpl = [](auto&& rngstrNamespace, auto const& CallExpression, SJsFunctionLike const& jsfunctionlike) noexcept {
+			auto ojstypenode = ts::SignatureDeclarationBase(jsfunctionlike.m_jsignature->getDeclaration())->type();
+			return tc::concat(
+				"\tinline auto ", std::forward<decltype(rngstrNamespace)>(rngstrNamespace), jsfunctionlike.m_strCppifiedName, "(", jsfunctionlike.CppifiedParametersWithCommentsDef(), ") noexcept {\n",
 				tc_conditional_range(
-					ts::TypeFlags::Void == jsfunction.m_jsignature->getReturnType()->flags(),
-					tc::concat("		", rngchFunctionCall, ";\n"),
+					ojstypenode && ts::SyntaxKind::TypePredicate==(*ojstypenode)->kind(),
 					tc::concat(
-						"		return ", rngchFunctionCall, ".template as<", MangleType(jsfunction.m_jsignature->getReturnType()).m_strWithComments, ">();\n"
+						"\t\tstd::optional<", MangleType((*g_ojtsTypeChecker)->getTypeFromTypeNode(ts::TypePredicateNode(*ojstypenode)->type())).m_strWithComments ,"> result;\n"
+						"\t\tif(", CallExpression(), ") {\n"
+							"\t\t\tresult.emplace(", 
+								tc_conditional_range(
+									ts::SyntaxKind::ThisType==ts::Node(ts::TypePredicateNode(*ojstypenode)->parameterName())->kind(),
+									"_this<js_unknown>()",
+									tc::concat(
+										"js_unknown(",
+										tc::find_first_if<tc::return_element>(
+											jsfunctionlike.m_vecjsvariablelikeParameters,
+											[&](auto const& jsvariable) noexcept {
+												return jsvariable.m_strJsName==tc::explicit_cast<std::string>(ts::idText(ts::Identifier(ts::TypePredicateNode(*ojstypenode)->parameterName())));
+											}
+										)->m_strCppifiedName,
+										")"
+									)
+								),
+							");\n"
+						"\t\t}\n"
+						"\t\treturn result;\n"
+					),
+					tc::concat(
+						"\t\t",
+						tc_conditional_range(
+							ts::TypeFlags::Void!=jsfunctionlike.m_jsignature->getReturnType()->flags(),
+							"return"
+						),
+						" ", CallExpression(), ";\n"
 					)
 				),
-				"	}\n"
-			));
+				"\t}\n"
+			);
+		};
+
+		auto ExportFunctionImpl = [&](auto&& rngstrNamespace, SJsFunctionLike const& jsfunctionlike) noexcept {
+			return FunctionImpl(
+					std::forward<decltype(rngstrNamespace)>(rngstrNamespace),
+					[&]() noexcept {
+						auto FunctionCall = [&]() noexcept {
+							return tc::concat(
+								RetrieveSymbolFromCpp(jsfunctionlike.m_jsym), "(", 
+									tc::join_separated(
+										tc::transform(jsfunctionlike.m_vecjsvariablelikeParameters, TC_MEMBER(.m_strCppifiedName)),
+										", "
+									), 
+								")"
+							);
+						};
+						return tc_conditional_range(
+							ts::TypeFlags::Void == jsfunctionlike.m_jsignature->getReturnType()->flags(),
+							tc::concat(FunctionCall()),
+							tc::concat(
+								FunctionCall(), ".template as<", MangleType(jsfunctionlike.m_jsignature->getReturnType()).m_strWithComments, ">()"
+							)
+						);
+					},
+					jsfunctionlike
+			);
 		};
 
 		auto ClassExportTypeUsingDecl = [](auto const& js) noexcept {
@@ -380,9 +420,9 @@ int main(int argc, char* argv[]) {
 					)),
 					tc::join(tc::transform(
 						pjsclass->m_vecjsfunctionlikeExportFunction,
-						[](SJsFunctionLike const& jsfunction) noexcept {
+						[](SJsFunctionLike const& jsfunctionlike) noexcept {
 							return tc::concat(
-								"			static auto ", jsfunction.m_strCppifiedName, "(", jsfunction.CppifiedParametersWithCommentsDecl(), ") noexcept;\n"
+								"			static auto ", jsfunctionlike.m_strCppifiedName, "(", jsfunctionlike.CppifiedParametersWithCommentsDecl(), ") noexcept;\n"
 							);
 						}
 					)),
@@ -448,8 +488,8 @@ int main(int argc, char* argv[]) {
 				return tc::explicit_cast<std::string>(tc::concat(
 					tc::join(tc::transform(
 						pjsclass->m_vecjsfunctionlikeExportFunction,
-						[&](SJsFunctionLike const& jsfunction) noexcept {
-							return ExportFunctionImpl(tc::concat(strClassNamespace, "_tcjs_definitions::"), jsfunction);
+						[&](SJsFunctionLike const& jsfunctionlike) noexcept {
+							return ExportFunctionImpl(tc::concat(strClassNamespace, "_tcjs_definitions::"), jsfunctionlike);
 						}
 					)),
 					tc::join(tc::transform(
@@ -491,7 +531,10 @@ int main(int argc, char* argv[]) {
 						[&pjsclass, &strClassNamespace](SJsFunctionLike const& jsfunctionlike) noexcept {
 							return tc::concat(
 								"	inline auto ", strClassNamespace, "_tcjs_construct(", jsfunctionlike.CppifiedParametersWithCommentsDef(), ") noexcept {\n",
-								"		return ", pjsclass->m_strMangledName, "(", RetrieveSymbolFromCpp(pjsclass->m_jsym), ".new_(", tc::join_separated(jsfunctionlike.CppifiedArgumentRange(), ", "), "));\n",
+								"		return ", pjsclass->m_strMangledName, "(", 
+											strClassInstanceRetrieve, ".new_(", 
+												tc::join_separated(tc::transform(jsfunctionlike.m_vecjsvariablelikeParameters, TC_MEMBER(.m_strCppifiedName)), ", "), 
+										"));\n",
 								"	}\n"
 							);
 						}
@@ -500,25 +543,28 @@ int main(int argc, char* argv[]) {
 						pjsclass->m_bHasImplicitDefaultConstructor,
 						tc::concat(
 							"	inline auto ", strClassNamespace, "_tcjs_construct() noexcept {\n",
-							"		return ", pjsclass->m_strMangledName, "(", RetrieveSymbolFromCpp(pjsclass->m_jsym), ".new_());\n",
+							"		return ", pjsclass->m_strMangledName, "(", strClassInstanceRetrieve, ".new_());\n",
 							"	}\n"
 						)
 					),
 					tc::join(tc::transform(
 						pjsclass->m_vecjsfunctionlikeMethod,
-						[&strClassNamespace](SJsFunctionLike const& jsfunctionlike) noexcept {
-							return tc::concat(
-								"	inline auto ", strClassNamespace, jsfunctionlike.m_strCppifiedName, "(", jsfunctionlike.CppifiedParametersWithCommentsDef(), ") noexcept {\n",
-								"		return _call<", MangleType(jsfunctionlike.m_jsignature->getReturnType()).m_strWithComments, ">(", 
-											tc::join_separated(
-												tc::concat(
-													tc::single(tc::concat("\"", tc::explicit_cast<std::string>(jsfunctionlike.m_jsym->getName()), "\"")),
-													jsfunctionlike.CppifiedArgumentRange()
-												),
-												", "
-											), 
-										");\n",
-								"	}\n"
+						[&strClassNamespace, &FunctionImpl](SJsFunctionLike const& jsfunctionlike) noexcept {
+							return FunctionImpl(
+								strClassNamespace,
+								[&]() noexcept {
+									return tc::concat("_call<", MangleType(jsfunctionlike.m_jsignature->getReturnType()).m_strWithComments, ">(", 
+										tc::join_separated(
+											tc::concat(
+												tc::single(tc::concat("\"", tc::explicit_cast<std::string>(jsfunctionlike.m_jsym->getName()), "\"")),
+												tc::transform(jsfunctionlike.m_vecjsvariablelikeParameters, TC_MEMBER(.m_strCppifiedName))
+											),
+											", "
+										), 
+										")"
+									);
+								},
+								jsfunctionlike
 							);
 						}
 					))
@@ -529,8 +575,8 @@ int main(int argc, char* argv[]) {
 		tc::append(std::cout,
 			tc::join(tc::transform(
 				scopeGlobal.m_vecjsfunctionlikeExportFunction,
-				[&](SJsFunctionLike& jsfunction) {
-					return ExportFunctionImpl(tc::empty_range(), jsfunction);
+				[&](SJsFunctionLike& jsfunctionlike) {
+					return ExportFunctionImpl(tc::empty_range(), jsfunctionlike);
 				}
 			)),
 			tc::join(tc::transform(
@@ -579,8 +625,8 @@ int main(int argc, char* argv[]) {
 			)),
 			tc::join(tc::transform(
 				scopeGlobal.m_vecjsfunctionlikeExportFunction,
-				[](SJsFunctionLike& jsfunction) {
-					return tc::concat("	using js_defs::", jsfunction.m_strCppifiedName, ";\n");
+				[](SJsFunctionLike& jsfunctionlike) {
+					return tc::concat("	using js_defs::", jsfunctionlike.m_strCppifiedName, ";\n");
 				}
 			)),
 			tc::join(tc::transform(
