@@ -225,6 +225,9 @@ int main(int argc, char* argv[]) {
 				"\tinline auto ", std::forward<decltype(rngstrNamespace)>(rngstrNamespace), jsfunctionlike.m_strCppifiedName, "(", jsfunctionlike.CppifiedParametersWithCommentsDef(), ") noexcept {\n",
 				tc_conditional_range(
 					ojstypenode && ts::SyntaxKind::TypePredicate==(*ojstypenode)->kind(),
+					// Functions may be type guards https://www.typescriptlang.org/docs/handbook/advanced-types.html
+					// The actual callable JS function printed by CallExpession() returns a bool. Usually, the typescript compiler uses the function return value to perform a cast for us.
+					// Here we do this in C++
 					tc::concat(
 						"\t\tstd::optional<", MangleType((*g_ojtsTypeChecker)->getTypeFromTypeNode(ts::TypePredicateNode(*ojstypenode)->type())).m_strWithComments ,"> result;\n"
 						"\t\tif(", CallExpression(), ") {\n"
@@ -247,6 +250,7 @@ int main(int argc, char* argv[]) {
 						"\t\t}\n"
 						"\t\treturn result;\n"
 					),
+					// Normal function: Just insert function call and optional return
 					tc::concat(
 						"\t\t",
 						tc_conditional_range(
