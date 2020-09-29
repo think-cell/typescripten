@@ -360,7 +360,7 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
                         } else if (auto const jotsMethodDeclaration = tc::js::ts_ext::isMethodDeclaration(jdecl)) { // In classes.
                             tc::cont_emplace_back(m_vecjsfunctionlikeMethod, SJsFunctionLike(jsymMethod, *jotsMethodDeclaration));
                         } else if (auto const jotsConstructorDeclaration = tc::js::ts_ext::isConstructorDeclaration(jdecl)) {
-                             tc::cont_emplace_back(m_vecjsfunctionlikeMethod, SJsFunctionLike(jsymMethod, *jotsConstructorDeclaration));
+                             tc::cont_emplace_back(m_vecjsfunctionlikeCtor, SJsFunctionLike(jsymMethod, *jotsConstructorDeclaration));
                         }
                     }
                 );
@@ -381,12 +381,7 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
      if((*g_ojtsTypeChecker)->getDeclaredTypeOfSymbol(m_jsym)->isClass()) {
         // See logic at `src/compiler/transformers/es2015.ts`, `addConstructor`, `transformConstructorBody` and `createDefaultConstructorBody`:
         // if no constructrs are defined, we add a "default" constructor with no parameters.
-        m_bHasImplicitDefaultConstructor = !tc::find_first_if<tc::return_bool>(
-            m_vecjsfunctionlikeMethod,
-            [](SJsFunctionLike const& jsfunctionlikeMethod) noexcept {
-                return ts::SymbolFlags::Constructor == jsfunctionlikeMethod.m_jsym->getFlags();
-            }
-        );
+        m_bHasImplicitDefaultConstructor = tc::empty(m_vecjsfunctionlikeCtor);
     }
 }
 

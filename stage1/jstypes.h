@@ -94,6 +94,14 @@ public:
 
     std::string CppifiedParametersWithCommentsDecl() const noexcept;
     std::string CppifiedParametersWithCommentsDef() const noexcept;
+    auto CppifiedArgumentRange() const noexcept { 
+        return tc::transform(
+            m_jsignature->getParameters(),
+            [](tc::js::ts::Symbol const jsymParameter) noexcept {
+                return CppifyName(jsymParameter, enamectxNONE);
+            }
+        );
+    }
 
     static bool LessCppSignature(SJsFunctionLike const& a, SJsFunctionLike const& b) noexcept;
 };
@@ -139,6 +147,7 @@ struct SJsClass final : public SJsScope, public boost::intrusive::set_base_hook<
     std::string m_strCppifiedName;
     std::string m_strMangledName;
 
+    std::vector<SJsFunctionLike> m_vecjsfunctionlikeCtor;
     std::vector<SJsFunctionLike> m_vecjsfunctionlikeMethod;
     std::vector<SJsVariableLike> m_vecjsvariablelikeProperty;
     std::vector<SJsClass const*> m_vecpjsclassBase;
