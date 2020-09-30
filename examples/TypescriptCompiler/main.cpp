@@ -14,7 +14,7 @@ using tc::js::ReadonlyArray;
 int main(int argc, char* argv[]) {
 	_ASSERT(2 <= argc);
 
-	tc::js::ts_ext::CompilerOptions const jsCompilerOptions(create_js_object);
+	ts::CompilerOptions const jsCompilerOptions(create_js_object);
 	jsCompilerOptions->noEmitOnError(true);
 	jsCompilerOptions->strict(true);
 	jsCompilerOptions->target(ts::ScriptTarget::ES5);

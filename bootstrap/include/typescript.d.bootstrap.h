@@ -76,12 +76,6 @@ namespace tc::js::ts_ext {
 		auto heritageClauses() noexcept { return _getProperty<tc::jst::js_optional<ReadonlyArray<tc::js::ts::HeritageClause>>>("heritageClauses"); }
 	};
 	using ClassLikeDeclaration = tc::jst::js_ref<_js_ClassLikeDeclaration>;
-
-	// Ctor generation
-	struct _js_CompilerOptions : virtual tc::js_defs::_impl_js_jts_dCompilerOptions {
-		static auto _tcjs_construct() noexcept { return emscripten::val::object(); }
-	};
-	using CompilerOptions = tc::jst::js_ref<_js_CompilerOptions>;
 }
 
 namespace tc::js_defs {

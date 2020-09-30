@@ -64,7 +64,7 @@ SetJsTypeAlias g_setjstypealias;
 int main(int argc, char* argv[]) {
 	_ASSERT(2 <= argc);
 
-	tc::js::ts_ext::CompilerOptions const jtsCompilerOptions(create_js_object);
+	ts::CompilerOptions const jtsCompilerOptions(create_js_object);
 	jtsCompilerOptions->strict(true);
 	jtsCompilerOptions->target(ts::ScriptTarget::ES5);
 	jtsCompilerOptions->module(ts::ModuleKind::CommonJS);
