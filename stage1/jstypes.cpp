@@ -378,10 +378,36 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
         ));
     }
 
-     if((*g_ojtsTypeChecker)->getDeclaredTypeOfSymbol(m_jsym)->isClass()) {
+    auto jstype = (*g_ojtsTypeChecker)->getDeclaredTypeOfSymbol(m_jsym);
+    if(jstype->isClass()) {
         // See logic at `src/compiler/transformers/es2015.ts`, `addConstructor`, `transformConstructorBody` and `createDefaultConstructorBody`:
         // if no constructrs are defined, we add a "default" constructor with no parameters.
         m_bHasImplicitDefaultConstructor = tc::empty(m_vecjsfunctionlikeCtor);
+    } else if(jstype->isClassOrInterface()) {
+        // Generate default constructor interfaces containing only optional properties, e.g., 
+        // interface TypeAcquisition {
+        //     enableAutoDiscovery?: boolean;
+        //     enable?: boolean;
+        //     include?: string[];
+        //     exclude?: string[];
+        //     [option: string]: string[] | boolean | undefined;
+        // }
+        m_bHasImplicitDefaultConstructor = tc::all_of(
+            // Type::getProperties will include properties (and member functions) of base classes
+            tc::transform(jstype->getProperties(), [](ts::Symbol jsymMember) noexcept {
+                return ((ts::SymbolFlags::Property|ts::SymbolFlags::Optional) == ((ts::SymbolFlags::Property|ts::SymbolFlags::Optional) & jsymMember->getFlags()))
+                || tc::all_of(jsymMember->declarations(), [](auto const& jsdecl) noexcept {
+                    if(auto ojsindexdecl = ts::isIndexSignatureDeclaration(jsdecl)) {
+                        if(auto ojstypenode = (*ojsindexdecl)->type()) {
+                            if(auto ojsuniontypenode = ts::isUnionTypeNode(*ojstypenode)) {
+                                return tc::any_of(tc::js::ts_ext::MakeReadOnlyArray<ts::TypeNode>((*ojsuniontypenode)->types()), [](auto const& typenode) noexcept { return ts::SyntaxKind::UndefinedKeyword==typenode->kind(); }); 
+                            }
+                        }
+                    }
+                    return false;
+                });
+            })
+        );
     }
 }
 

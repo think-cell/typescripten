@@ -546,9 +546,15 @@ int main(int argc, char* argv[]) {
 					tc_conditional_range(
 						pjsclass->m_bHasImplicitDefaultConstructor,
 						tc::concat(
-							"	inline auto ", strClassNamespace, "_tcjs_construct() noexcept {\n",
-							"		return ", pjsclass->m_strMangledName, "(", strClassInstanceRetrieve, ".new_());\n",
-							"	}\n"
+							"\tinline auto ", strClassNamespace, "_tcjs_construct() noexcept {\n"
+							"\t\treturn ",
+								tc_conditional_range(
+									static_cast<bool>(ts::SymbolFlags::Interface & pjsclass->m_jsym->getFlags()),
+									"emscripten::val::object()",
+									tc::concat(pjsclass->m_strMangledName, "(", strClassInstanceRetrieve, ".new_())")
+								),
+								";\n"
+							"\t}\n"
 						)
 					),
 					tc::join(tc::transform(
