@@ -378,12 +378,41 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
         ));
     }
 
-    auto jstype = (*g_ojtsTypeChecker)->getDeclaredTypeOfSymbol(m_jsym);
-    if(jstype->isClass()) {
+    if(static_cast<bool>(ts::SymbolFlags::Class&m_jsym->getFlags())) {
         // See logic at `src/compiler/transformers/es2015.ts`, `addConstructor`, `transformConstructorBody` and `createDefaultConstructorBody`:
         // if no constructrs are defined, we add a "default" constructor with no parameters.
         m_bHasImplicitDefaultConstructor = tc::empty(m_vecjsfunctionlikeCtor);
-    } else if(jstype->isClassOrInterface()) {
+    } else if(static_cast<bool>(ts::SymbolFlags::Interface&m_jsym->getFlags())) {
+        // In Typescript, symbols can be "types" or "values". The types do not exist in JavaScript. The values do. 
+        // A typescript class is both because the class constructor exists in JavaScript.
+        // An interface is just a type. 
+        // The "value" belonging to an interface is sometimes declared separately in a variable, e.g.,
+
+        // interface CSSConditionRule extends CSSGroupingRule {
+        //     conditionText: string;
+        // }
+
+        // declare var CSSConditionRule: {
+        //     prototype: CSSConditionRule;
+        //     new(): CSSConditionRule;
+        // };
+
+        // Generate a constructor if we find such a value declaration
+        if(auto ojdecl = m_jsym->valueDeclaration()) {
+            if(auto ojvardecl = ts::isVariableDeclaration(*ojdecl)) {
+                if(auto ojtypenode = (*ojvardecl)->type()) {
+                    auto jstypeVariable = (*g_ojtsTypeChecker)->getTypeFromTypeNode(*ojtypenode);
+                    tc::for_each(*(tc::js::ts_ext::Symbol(jstypeVariable->symbol())->members()), [&](ts::Symbol jsymMember) noexcept {
+                         tc::for_each(jsymMember->declarations(), [&](ts::Declaration jdecl) noexcept {
+                             if(auto ojctorsignature = ts::isConstructSignatureDeclaration(jdecl)) {
+                                  tc::cont_emplace_back(m_vecjsfunctionlikeCtor, SJsFunctionLike(jsymMember, *ojctorsignature));
+                             }
+                         });
+                    });
+                }
+            }
+        }
+
         // Generate default constructor interfaces containing only optional properties, e.g., 
         // interface TypeAcquisition {
         //     enableAutoDiscovery?: boolean;
@@ -392,22 +421,24 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
         //     exclude?: string[];
         //     [option: string]: string[] | boolean | undefined;
         // }
-        m_bHasImplicitDefaultConstructor = tc::all_of(
-            // Type::getProperties will include properties (and member functions) of base classes
-            tc::transform(jstype->getProperties(), [](ts::Symbol jsymMember) noexcept {
-                return ((ts::SymbolFlags::Property|ts::SymbolFlags::Optional) == ((ts::SymbolFlags::Property|ts::SymbolFlags::Optional) & jsymMember->getFlags()))
-                || tc::all_of(jsymMember->declarations(), [](auto const& jsdecl) noexcept {
-                    if(auto ojsindexdecl = ts::isIndexSignatureDeclaration(jsdecl)) {
-                        if(auto ojstypenode = (*ojsindexdecl)->type()) {
-                            if(auto ojsuniontypenode = ts::isUnionTypeNode(*ojstypenode)) {
-                                return tc::any_of(tc::js::ts_ext::MakeReadOnlyArray<ts::TypeNode>((*ojsuniontypenode)->types()), [](auto const& typenode) noexcept { return ts::SyntaxKind::UndefinedKeyword==typenode->kind(); }); 
+        auto jstype = (*g_ojtsTypeChecker)->getDeclaredTypeOfSymbol(m_jsym);
+        m_bHasImplicitDefaultConstructor = tc::empty(m_vecjsfunctionlikeCtor) 
+            && tc::all_of(
+                // Type::getProperties will include properties (and member functions) of base classes
+                tc::transform(jstype->getProperties(), [](ts::Symbol jsymMember) noexcept {
+                    return ((ts::SymbolFlags::Property|ts::SymbolFlags::Optional) == ((ts::SymbolFlags::Property|ts::SymbolFlags::Optional) & jsymMember->getFlags()))
+                    || tc::all_of(jsymMember->declarations(), [](auto const& jsdecl) noexcept {
+                        if(auto ojsindexdecl = ts::isIndexSignatureDeclaration(jsdecl)) {
+                            if(auto ojstypenode = (*ojsindexdecl)->type()) {
+                                if(auto ojsuniontypenode = ts::isUnionTypeNode(*ojstypenode)) {
+                                    return tc::any_of(tc::js::ts_ext::MakeReadOnlyArray<ts::TypeNode>((*ojsuniontypenode)->types()), [](auto const& typenode) noexcept { return ts::SyntaxKind::UndefinedKeyword==typenode->kind(); }); 
+                                }
                             }
                         }
-                    }
-                    return false;
-                });
-            })
-        );
+                        return false;
+                    });
+                })
+            );
     }
 }
 

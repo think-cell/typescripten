@@ -7167,7 +7167,7 @@ namespace tc::js_defs {
 		auto declarations() noexcept;
 		void declarations(js::Array<_js_jts_dDeclaration> v) noexcept;
 		auto valueDeclaration() noexcept;
-		void valueDeclaration(_js_jts_dDeclaration v) noexcept;
+		void valueDeclaration(js_union<_js_jts_dDeclaration, js_undefined> v) noexcept;
 		auto members() noexcept;
 		void members(js_unknown /*flags=1048576: UnderscoreEscapedMap<Symbol> | undefined ()*/ v) noexcept;
 		auto exports() noexcept;
@@ -13687,8 +13687,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dSymbol::escapedName(js_unknown /*flags=1048576: __String ()*/ v) noexcept { _setProperty("escapedName", v); }
 	inline auto _impl_js_jts_dSymbol::declarations() noexcept { return _getProperty<js::Array<_js_jts_dDeclaration>>("declarations"); }
 	inline void _impl_js_jts_dSymbol::declarations(js::Array<_js_jts_dDeclaration> v) noexcept { _setProperty("declarations", v); }
-	inline auto _impl_js_jts_dSymbol::valueDeclaration() noexcept { return _getProperty<_js_jts_dDeclaration>("valueDeclaration"); }
-	inline void _impl_js_jts_dSymbol::valueDeclaration(_js_jts_dDeclaration v) noexcept { _setProperty("valueDeclaration", v); }
+	inline auto _impl_js_jts_dSymbol::valueDeclaration() noexcept { return _getProperty<js_union<_js_jts_dDeclaration, js_undefined>>("valueDeclaration"); }
+	inline void _impl_js_jts_dSymbol::valueDeclaration(js_union<_js_jts_dDeclaration, js_undefined> v) noexcept { _setProperty("valueDeclaration", v); }
 	inline auto _impl_js_jts_dSymbol::members() noexcept { return _getProperty<js_unknown /*flags=1048576: UnderscoreEscapedMap<Symbol> | undefined ()*/>("members"); }
 	inline void _impl_js_jts_dSymbol::members(js_unknown /*flags=1048576: UnderscoreEscapedMap<Symbol> | undefined ()*/ v) noexcept { _setProperty("members", v); }
 	inline auto _impl_js_jts_dSymbol::exports() noexcept { return _getProperty<js_unknown /*flags=1048576: UnderscoreEscapedMap<Symbol> | undefined ()*/>("exports"); }
