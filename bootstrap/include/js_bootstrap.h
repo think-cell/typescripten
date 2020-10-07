@@ -11,6 +11,8 @@
 #include "js_callback.h"
 #include "tc_move.h"
 
+#include <boost/range/iterator.hpp>
+
 namespace tc::js {
 
 namespace no_adl {
@@ -37,23 +39,11 @@ struct _js_Array : virtual ::tc::jst::IObject {
 	};
 
 	auto length() noexcept { return ::tc::explicit_cast<int>(_getProperty<double>("length")); }
+	auto operator[](int i) && noexcept { return _getProperty<T>(i); }
+	auto operator[](double i) && noexcept { return _getProperty<T>(tc::explicit_cast<int>(i)); } // See https://github.com/think-cell/tcjs/issues/8
 
 	auto push(T const& item) noexcept { return _call<void>("push", item); }
-
-	auto operator[](int i) && noexcept { return _getProperty<T>(::tc::as_dec(i)); }
-
-	void _setIndex(int i, T value) noexcept { _setProperty(::tc::as_dec(i), tc_move(value)); }
-
-	// Generator range. This adds operator() to array interface (which did not exist before), but it's ok.
-	template<typename Fn>
-	auto operator()(Fn fn) noexcept {
-		if (_call<bool>("some", ::tc::jst::js_lambda_wrap([&](T value, ::tc::jst::js_unknown, ::tc::jst::js_unknown) noexcept {
-			return ::tc::break_ == tc::continue_if_not_break(fn, tc_move(value));
-		})))
-			return ::tc::break_;
-		else
-			return ::tc::continue_;
-	}
+	void _setIndex(int i, T value) noexcept { _setProperty(i, tc_move(value)); }
 
 	static Array<T> _tcjs_construct() noexcept {
 		return Array<T>(::emscripten::val::array());
@@ -67,42 +57,12 @@ struct _js_Array : virtual ::tc::jst::IObject {
 		});
 		return result;
 	}
-
 };
 
 template<typename T>
-struct _js_ReadonlyArray : virtual ::tc::jst::IObject {
-	static_assert(::tc::jst::IsJsInteropable<T>::value);
-
-	struct _tcjs_definitions {
-		using value_type = T;
-	};
-
-	auto length() noexcept { return ::tc::explicit_cast<int>(_getProperty<double>("length")); }
-
-	auto operator[](int i) noexcept { return _getProperty<T>(::tc::as_dec(i)); }
-
-	// Generator range. This adds operator() to array interface (which did not exist before), but it's ok.
-	template<typename Fn>
-	auto operator()(Fn fn) noexcept {
-		if (_call<bool>("some", ::tc::jst::js_lambda_wrap([&](T value, ::tc::jst::js_unknown, ::tc::jst::js_unknown) noexcept {
-			return ::tc::break_ == ::tc::continue_if_not_break(fn, tc_move(value));
-		})))
-			return ::tc::break_;
-		else
-			return ::tc::continue_;
-	}
-
-	static ReadonlyArray<T> _tcjs_construct() noexcept {
-		return ReadonlyArray<T>(::emscripten::val::array());
-	}
-
-	template<typename Rng, typename = ::std::enable_if_t<::tc::is_explicit_castable<T, ::tc::range_reference_t<Rng>>::value>>
-	static ReadonlyArray<T> _tcjs_construct(Rng&& rng) noexcept {
-		return ReadonlyArray<T>(
-			Array<T>(::tc::jst::create_js_object, ::std::forward<Rng>(rng)).getEmval()
-		);
-	}
+struct _js_ReadonlyArray : _js_Array<T> {
+	auto push(T const& item) noexcept = delete;
+	void _setIndex(int i, T value) noexcept = delete;
 };
 
 template<typename K, typename V>
@@ -182,3 +142,52 @@ inline auto stackTrace() noexcept {  // Expects non-standard `stackTrace()` func
 }
 
 } // namespace tc::js
+
+// Define iterator types for tc::js::Array and tc::js::ReadonlyArray
+#define JS_RANGE_WITH_ITERATORS(JsNamespace, JsType) \
+	namespace tc::jst::range_detail { \
+		namespace no_adl { \
+			template<typename T> \
+			struct FGet ## JsType ## Index final { \
+			private: \
+				JsNamespace::JsType<T> m_t; \
+			public: \
+				FGet ## JsType ## Index (JsNamespace::JsType<T> t) : m_t(tc_move(t)) {}; \
+				T operator()(int i) const& noexcept { \
+					return m_t[i]; \
+				} \
+			}; \
+		} \
+		\
+		template<typename T> \
+		using JsType ## Iterator = boost::transform_iterator< \
+			no_adl::FGet ## JsType ## Index<T>, \
+			tc::counting_iterator<int> \
+		>; \
+	} \
+ 	\
+	namespace boost { \
+		template<typename T> \
+		struct range_mutable_iterator<JsNamespace::JsType<T>> { \
+			using type=tc::jst::range_detail::JsType ## Iterator<T>; \
+		}; \
+		template<typename T> \
+		struct range_const_iterator<JsNamespace::JsType<T>> { \
+			using type=tc::jst::range_detail::JsType ## Iterator<T>; \
+		}; \
+	} \
+	namespace tc { \
+		namespace begin_end_adl { \
+			template<typename T> \
+			tc::jst::range_detail::JsType ## Iterator<T> begin(begin_end_tag_t, JsNamespace::JsType<T> t) noexcept { \
+				return tc::jst::range_detail::JsType ## Iterator<T>(0, tc_move(t)); \
+			} \
+			template<typename T> \
+			tc::jst::range_detail::JsType ## Iterator<T> end(begin_end_tag_t, JsNamespace::JsType<T> t) noexcept { \
+				return tc::jst::range_detail::JsType ## Iterator<T>(t->length(), tc_move(t)); \
+			} \
+		} \
+	}
+
+JS_RANGE_WITH_ITERATORS(tc::js, ReadonlyArray)
+JS_RANGE_WITH_ITERATORS(tc::js, Array)

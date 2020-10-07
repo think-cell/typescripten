@@ -1,28 +1,42 @@
 #include "../../precompiled.h"
 #include "MyLib.d.h"
+#include <random>
 
-const int STEPS = 10;
+namespace {
+    constexpr int c_STEPS = 10;
 
-void timed(const auto &name, const auto &f) {
-    std::cout << "[" << name << "] ...\n";
-    for (int i = 0; i < STEPS; i++) {
-        auto start = std::chrono::steady_clock::now();
-        std::forward<decltype(f)>(f)();
-        auto duration = std::chrono::steady_clock::now() - start;
-        std::cout << "[" << name << "] Timed: " << std::chrono::duration_cast<std::chrono::microseconds>(duration).count() << " microseconds\n";
+    double timed(auto const& strName, auto fn) noexcept {
+        std::cout << "[" << strName << "] ...\n";
+        double fResult;
+        for (int i = 0; i < c_STEPS; ++i) {
+            auto const tpStart = std::chrono::steady_clock::now();
+            fResult = fn();
+            auto const dur = std::chrono::steady_clock::now() - tpStart;
+            std::cout << "[" << strName << "]\n\tTimed: " << std::chrono::duration_cast<std::chrono::microseconds>(dur).count() << " microseconds\n\tResult: " << fResult << "\n";
+        }
+        return fResult;
     }
 }
 
 int main() {
-    double resultJs = 0, resultCpp = 0;
     std::cout << "n = " << tc::js::MyLib::arr()->length() << "\n";
-    timed("JS", [&]() {
-        resultJs = tc::js::MyLib::calcArrSum();
+    {
+        std::vector<double> vecf;
+        timed("Wasm", [&]() {
+            if(tc::empty(vecf)) {
+                vecf = tc::make_vector(
+                    tc::transform(tc::iota(0, 100000), [&](int) noexcept { return static_cast<double>(std::rand())/RAND_MAX; })
+                );
+            }
+            return tc::accumulate(vecf, 0.0, fn_assign_plus());
+        });
+    }
+
+    double const fResultJs = timed("JS", []() {
+        return tc::js::MyLib::calcArrSum();
     });
-    timed("C++", [&]() {
-        resultCpp = tc::accumulate(tc::js::MyLib::arr(), 0.0, fn_assign_plus());
+    double const fResultCpp = timed("C++", []() {
+        return tc::accumulate(tc::js::MyLib::arr(), 0.0, fn_assign_plus());
     });
-    std::cout << "resultJs  = " << resultJs << "\n";
-    std::cout << "resultCpp = " << resultCpp << "\n";
-    _ASSERT(std::fabs(resultJs - resultCpp) < 1e-4);
+    _ASSERT(std::fabs(fResultJs - fResultCpp) < 1e-4);
 }
