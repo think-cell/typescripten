@@ -100,48 +100,54 @@ namespace {
             case '.': tc::append(strMangled, "_d"); break;
             case '-': tc::append(strMangled, "_m"); break;
             case '"': tc::append(strMangled, "_q"); break;
-            default: tc::cont_emplace_back(strMangled, c); break;
+            default: 
+                _ASSERT(tc::isasciidigit(c) || tc::isasciilower(c) || tc::isasciiupper(c));
+                tc::cont_emplace_back(strMangled, c); break;
             }
         });
-       return MakeUniqueName(jsymType, strMangled, enamectx);
+        return MakeUniqueName(jsymType, tc_move(strMangled), enamectx);
     }
 }
 
-// CppifyName returns the user-visible name that we export from namespaces/classes
-std::string CppifyName(ts::Symbol jsymSymbol, ENameContext enamectx) noexcept {
-    std::string strSourceName = tc::explicit_cast<std::string>(jsymSymbol->getName());
-    if ('"' == strSourceName.front() && '"' == strSourceName.back()) {
-        strSourceName = strSourceName.substr(1, strSourceName.length() - 2);
+tc::ptr_range<char const> StripQuotes(std::string const& str) noexcept {
+    _ASSERT(!tc::empty(str));
+    auto strNoQuotes = tc::as_pointers(str);
+    if ('"' == tc_front(strNoQuotes) && '"' == tc_back(strNoQuotes)) {
+        tc::drop_first_inplace(strNoQuotes);
+        tc::drop_last_inplace(strNoQuotes);
     }
+    return strNoQuotes;
+}
+
+namespace {
+   constexpr char const* c_apszReserved[] = {"alignas", "alignof", "and", "and_eq", "asm", "auto", "bitand", "bitor", "bool", "break", "case", "catch", "char", "char16_t", "char32_t", "class", "compl", "const", "constexpr", "const_cast", "continue", "decltype", "default", "delete", "do", "double", "dynamic_cast", "else", "enum", "explicit", "export", "extern", "false", "float", "for", "friend", "goto", "if", "inline", "int", "long", "mutable", "namespace", "new", "noexcept", "not", "not_eq", "nullptr", "operator", "or", "or_eq", "private", "protected", "public", "register", "reinterpret_cast", "return", "short", "signed", "sizeof", "static", "static_assert", "static_cast", "struct", "switch", "template", "this", "thread_local", "throw", "true", "try", "typedef", "typeid", "typename", "union", "unsigned", "using", "virtual", "void", "volatile", "wchar_t", "while", "xor", "xor_eq"};
+}
+
+// CppifyName returns the user-visible name that we export from namespaces/classes
+std::string CppifyName(ts::Symbol jsym, ENameContext enamectx) noexcept {
     // TODO: https://en.cppreference.com/w/cpp/language/identifiers
+    // JavaScript identifiers are actually Unicode and C++ compilers support Unicode, 
+    // so we are needlessly restrictive here. 
     std::string strResult;
-    bool bLastIsUnderscore = false;
     tc::for_each(
-        tc::transform(strSourceName, [&](char c) noexcept {
-            if(('a' <= c && c <= 'z')
-            || ('A' <= c && c <= 'Z')
-            || ('0' <= c && c <= '9')
-            || '_' == c) {
-                return c;
-            } else {
-                return '_';
-            }
-        }),
+        StripQuotes(tc::explicit_cast<std::string>(jsym->getName())),
         [&](char c) noexcept {
-            if (bLastIsUnderscore && c == '_') {
-                tc::append(strResult, "u_u"); // ABC__DEF --> ABC_u_uDEF
-                return;
+            if(tc::isasciidigit(c) || tc::isasciilower(c) || tc::isasciiupper(c)) {
+                tc::cont_emplace_back(strResult, c);
+            } else if(!tc::empty(strResult) && '_' == tc_back(strResult)) {
+                tc::append(strResult, "u_");
+            } else {
+                tc::append(strResult, "_");
             }
-            bLastIsUnderscore = c == '_';
-            strResult += c;
         }
     );
-    static std::unordered_set<std::string> usstrCppKeywords = {"alignas", "alignof", "and", "and_eq", "asm", "auto", "bitand", "bitor", "bool", "break", "case", "catch", "char", "char16_t", "char32_t", "class", "compl", "const", "constexpr", "const_cast", "continue", "decltype", "default", "delete", "do", "double", "dynamic_cast", "else", "enum", "explicit", "export", "extern", "false", "float", "for", "friend", "goto", "if", "inline", "int", "long", "mutable", "namespace", "new", "noexcept", "not", "not_eq", "nullptr", "operator", "or", "or_eq", "private", "protected", "public", "register", "reinterpret_cast", "return", "short", "signed", "sizeof", "static", "static_assert", "static_cast", "struct", "switch", "template", "this", "thread_local", "throw", "true", "try", "typedef", "typeid", "typename", "union", "unsigned", "using", "virtual", "void", "volatile", "wchar_t", "while", "xor", "xor_eq"};
-    if (usstrCppKeywords.count(strResult)) {
+
+    if(tc::binary_find_unique<tc::return_bool>(c_apszReserved, strResult)) {
+        _ASSERT('_'!=tc_back(strResult));
         tc::append(strResult, "_");
     }
-    _ASSERT(!strResult.empty());
-    return MakeUniqueName(jsymSymbol, strResult, enamectx);
+    _ASSERT(!tc::empty(strResult));
+    return MakeUniqueName(jsym, tc_move(strResult), enamectx);
 }
 
 SJsEnumOption::SJsEnumOption(ts::Symbol jsym) noexcept
@@ -151,25 +157,22 @@ SJsEnumOption::SJsEnumOption(ts::Symbol jsym) noexcept
     }())
     , m_strJsName(tc::explicit_cast<std::string>(jsym->getName()))
     , m_strCppifiedName(CppifyName(jsym, enamectxNONE))
-    , m_jtsEnumMember([&]() noexcept {
+    , m_jenummember([&]() noexcept {
         auto const jarrDeclaration = jsym->declarations();
         _ASSERTEQUAL(jarrDeclaration->length(), 1);
         return ts::EnumMember(jarrDeclaration[0]);
     }())
-    , m_ovardblstrValue([&]() noexcept -> decltype(m_ovardblstrValue) {
-        _ASSERTEQUAL(ts::getCombinedModifierFlags(m_jtsEnumMember), ts::ModifierFlags::None);
-        auto const junionOptionValue = (*g_ojtsTypeChecker)->getConstantValue(m_jtsEnumMember);
-        if (junionOptionValue.getEmval().isNumber()) {
-            return junionOptionValue.get<double>();
-        } else if (junionOptionValue.getEmval().isString()) {
-            return tc::explicit_cast<std::string>(junionOptionValue.get<js_string>());
-        } else if (junionOptionValue.getEmval().isUndefined()) {
-            return std::nullopt;  // Uncomputed value.
-        } else {
-            _ASSERTFALSE;
-        }
-    }())
-{}
+{    
+    _ASSERTEQUAL(ts::getCombinedModifierFlags(m_jenummember), ts::ModifierFlags::None);
+    auto const junionOptionValue = (*g_ojtsTypeChecker)->getConstantValue(m_jenummember);
+    if (junionOptionValue.getEmval().isNumber()) {
+        m_vardblstrValue = junionOptionValue.get<double>();
+    } else if (junionOptionValue.getEmval().isString()) {
+        m_vardblstrValue = tc::explicit_cast<std::string>(junionOptionValue.get<js_string>());
+    } else {
+        _ASSERT(junionOptionValue.getEmval().isUndefined());
+    }
+}
 
 SJsEnum::SJsEnum(ts::Symbol jsym) noexcept
     : m_jsym(jsym)
@@ -185,19 +188,19 @@ SJsEnum::SJsEnum(ts::Symbol jsym) noexcept
         ),
         tc::fn_explicit_cast<SJsEnumOption>()
     )))
-    , m_bIsIntegral(!tc::find_first_if<tc::return_bool>(
+    , m_bIsIntegral(tc::all_of(
         m_vecjsenumoption,
         [](SJsEnumOption const& opt) noexcept {
-            return opt.m_ovardblstrValue &&
-                tc::visit(*opt.m_ovardblstrValue,
-                    [](double dblValue) { return static_cast<int>(dblValue) != dblValue; },
-                    [](std::string const&) { return true; }
-                );
+            return tc::visit(opt.m_vardblstrValue,
+                [](double dblValue) { return static_cast<int>(dblValue) == dblValue; },
+                [](std::string const&) { return false; },
+                [](std::monostate const&) { return true; }
+            );
         }
     ))
 {}
 
-void SJsEnum::Initialize() noexcept {
+void SJsEnum::Initialize() & noexcept {
     tc::cont_must_insert(g_setjsenum, *this);
 }
 
@@ -206,7 +209,7 @@ SJsVariableLike::SJsVariableLike(ts::Symbol jsym) noexcept
     , m_strJsName(tc::explicit_cast<std::string>(m_jsym->getName()))
     , m_strCppifiedName(CppifyName(m_jsym, enamectxNONE))
     , m_jdeclVariableLike([&]() noexcept {
-        auto rngvariabledecl = tc::filter(tc::make_vector(m_jsym->declarations()), [](ts::Declaration decl) noexcept { // TODO: https://github.com/think-cell/tcjs/issues/5
+        auto rngvariabledecl = tc::filter(m_jsym->declarations(), [](ts::Declaration decl) noexcept { 
             return tc::js::ts::isVariableDeclaration(decl) || tc::js::ts::isParameter(decl) || tc::js::ts::isPropertySignature(decl) || tc::js::ts::isPropertyDeclaration(decl);;
         });
         _ASSERT(!tc::empty(rngvariabledecl));
@@ -246,7 +249,7 @@ SJsVariableLike::SJsVariableLike(ts::Symbol jsym) noexcept
     }
 }
 
-SMangledType const& SJsVariableLike::MangleType() const noexcept {
+SMangledType const& SJsVariableLike::MangleType() const& noexcept {
     if (!m_omtType) {
         m_omtType = ::MangleType(m_jtypeDeclared);
     }
@@ -259,7 +262,7 @@ SJsFunctionLike::SJsFunctionLike(ts::Symbol jsym, ts::SignatureDeclaration jsign
     , m_jsignature(*(*g_ojtsTypeChecker)->getSignatureFromDeclaration(jsigndecl))
     , m_vecjsvariablelikeParameters(tc::make_vector(tc::transform(
         m_jsignature->getParameters(),
-        [&](ts::Symbol const jsymParameter) noexcept {
+        [](ts::Symbol const jsymParameter) noexcept {
             return SJsVariableLike(jsymParameter);
         }
     )))
@@ -278,7 +281,7 @@ SJsFunctionLike::SJsFunctionLike(ts::Symbol jsym, ts::SignatureDeclaration jsign
     }
 }
 
-std::string SJsFunctionLike::CppifiedParametersWithCommentsDecl() const noexcept {
+std::string SJsFunctionLike::CppifiedParametersWithCommentsDecl() const& noexcept {
     // Trailing function arguments of type 'x | undefined' can be defaulted to undefined
     auto const itjsvariablelike = tc::find_last_if<tc::return_border_after_or_begin>(m_vecjsvariablelikeParameters, [](auto const& jsvariablelike) noexcept {
         if(auto ounion = jsvariablelike.m_jtypeDeclared->isUnion()) {
@@ -301,7 +304,7 @@ std::string SJsFunctionLike::CppifiedParametersWithCommentsDecl() const noexcept
     ));
 }
 
-std::string SJsFunctionLike::CppifiedParametersWithCommentsDef() const noexcept {
+std::string SJsFunctionLike::CppifiedParametersWithCommentsDef() const& noexcept {
     return tc::explicit_cast<std::string>(tc::join_separated(
         tc::transform(m_vecjsvariablelikeParameters, [&](SJsVariableLike const& jsvariablelikeParameter) noexcept {
             return tc::concat(jsvariablelikeParameter.MangleType().m_strWithComments, " ", jsvariablelikeParameter.m_strCppifiedName);
@@ -310,7 +313,7 @@ std::string SJsFunctionLike::CppifiedParametersWithCommentsDef() const noexcept 
     ));
 }
 
-std::string const& SJsFunctionLike::CanonizedParameterCppTypes() const noexcept {
+std::string const& SJsFunctionLike::CanonizedParameterCppTypes() const& noexcept {
     if(tc::empty(m_strCanonizedParameterCppTypes)) {
         m_strCanonizedParameterCppTypes = tc::explicit_cast<std::string>(tc::join_separated(
             tc::transform(m_vecjsvariablelikeParameters, [&](SJsVariableLike const& jsvariablelikeParameter) noexcept {
@@ -345,9 +348,8 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
     );
 
     if(auto ojarrsymMembers = tc::js::ts_ext::Symbol(m_jsym)->members()) { 
-        auto vecjsymMembers = tc::explicit_cast<std::vector<ts::Symbol>>(*ojarrsymMembers);
         tc::for_each(
-            tc::filter(vecjsymMembers, [](ts::Symbol jsymMember) noexcept {
+            tc::filter(*ojarrsymMembers, [](ts::Symbol jsymMember) noexcept {
                 // TODO: Support optional member functions
                 return static_cast<bool>((ts::SymbolFlags::Method|ts::SymbolFlags::Constructor) & jsymMember->getFlags())
                     && !static_cast<bool>(ts::SymbolFlags::Optional & jsymMember->getFlags());
@@ -368,7 +370,7 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
         );
 
         m_vecjsvariablelikeProperty = tc::make_vector(tc::transform(
-            tc::filter(vecjsymMembers, [](ts::Symbol jsymMember) noexcept {
+            tc::filter(*ojarrsymMembers, [](ts::Symbol jsymMember) noexcept {
                 _ASSERT(!static_cast<bool>(ts::SymbolFlags::Property & jsymMember->getFlags()) || !static_cast<bool>(~(ts::SymbolFlags::Property|ts::SymbolFlags::Optional) & jsymMember->getFlags()));
                 return static_cast<bool>(ts::SymbolFlags::Property & jsymMember->getFlags());
             }),
@@ -442,11 +444,11 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
     }
 }
 
-void SJsClass::Initialize() noexcept {
+void SJsClass::Initialize() & noexcept {
     tc::cont_must_insert(g_setjsclass, *this);
 }
 
-void SJsClass::ResolveBaseClasses() noexcept {
+void SJsClass::ResolveBaseClasses() & noexcept {
     auto AddBaseClass = [this](ts::Symbol jsymBase) noexcept {
         if(auto ojsclass = tc::cont_find<tc::return_element_or_null>(g_setjsclass, FullyQualifiedName(jsymBase))) {
             tc::cont_emplace_back(m_vecpjsclassBase, std::addressof(*ojsclass));
@@ -465,7 +467,7 @@ void SJsClass::ResolveBaseClasses() noexcept {
         );
         // See `utilities.ts:getAllSuperTypeNodes`. `extends` clause for classes is already covered by `getBaseTypes()`, as well as `implements` clause for interfaces.
         // The only missing part is `implements` for classes.
-        tc::for_each(m_jsym->declarations(), [&](ts::Declaration jdeclClass) {
+        tc::for_each(m_jsym->declarations(), [&](ts::Declaration jdeclClass) noexcept {
             if (auto joclassdeclarationClass = ts::isClassDeclaration(jdeclClass)) {
                 if (auto jorarrHeritageClause = tc::js::ts_ext::ClassLikeDeclaration(*joclassdeclarationClass)->heritageClauses()) {
                     tc::for_each(*jorarrHeritageClause, [&](ts::HeritageClause jtsHeritageClause) noexcept {
@@ -511,11 +513,11 @@ SJsTypeAlias::SJsTypeAlias(ts::Symbol jsym) noexcept
     , m_strMangledName(MangleSymbolName(m_jsym, enamectxTYPEALIAS))
 {}
 
-void SJsTypeAlias::Initialize() noexcept {
+void SJsTypeAlias::Initialize() & noexcept {
     tc::cont_must_insert(g_setjstypealias, *this);
 }
 
-SMangledType SJsTypeAlias::MangleType() const noexcept {
+SMangledType SJsTypeAlias::MangleType() const& noexcept {
     // If a type alias is defined by a union, we have to define it by the corresponding js_union<...> declaration
     // type FooBar = number | string;
     // using FooBar = js_union<js_number, js_string>;

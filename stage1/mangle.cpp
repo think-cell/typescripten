@@ -51,11 +51,11 @@ bool IsTrivialType(ts::InterfaceType jinterfacetypeRoot) noexcept {
 	return true;
 }
 
-SMangledType WrapType(std::string const strPrefix, tc::js::ReadonlyArray<ts::Type> atypeArguments, std::string const strSuffix) noexcept {
+SMangledType WrapType(std::string strPrefix, tc::js::ReadonlyArray<ts::Type> atypeArguments, std::string strSuffix) noexcept {
 	auto const rngmt = tc::transform(atypeArguments, [](ts::Type jtype) noexcept { return MangleType(jtype); });
 	return {
-		tc::explicit_cast<std::string>(tc::concat(strPrefix, tc::join_separated(tc::transform(rngmt, TC_MEMBER(.m_strWithComments)), ", "), strSuffix)),
-		tc::explicit_cast<std::string>(tc::concat(strPrefix, tc::join_separated(tc::transform(rngmt, TC_MEMBER(.m_strCppCanonized)), ", "), strSuffix)),
+		tc::make_str<char>(strPrefix, tc::join_separated(tc::transform(rngmt, TC_MEMBER(.m_strWithComments)), ", "), strSuffix),
+		tc::make_str<char>(strPrefix, tc::join_separated(tc::transform(rngmt, TC_MEMBER(.m_strCppCanonized)), ", "), strSuffix)
 	};
 }
 
@@ -82,12 +82,12 @@ std::optional<SMangledType> MangleBootstrapType(ts::Symbol jsym, tc::jst::js_uni
 
 SMangledType CommentType(std::string const strCppType, tc::js::ts::Type const jtypeRoot) noexcept {
 	return {
-		tc::explicit_cast<std::string>(tc::concat(
+		tc::make_str(
 			strCppType,
 			" /*",
 			tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->typeToString(jtypeRoot)),
 			"*/"
-		)),
+		),
 		strCppType
 	};
 }
@@ -129,7 +129,7 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 		return {mangled_no_comments, "js_null"};
 	}
 	if(bUseTypeAlias) {
-		if(auto ojsymAlias = jtypeRoot->aliasSymbol()) {
+		if(auto const ojsymAlias = jtypeRoot->aliasSymbol()) {
 			if(ecpptypeTYPEALIAS & CppType(*ojsymAlias)) {
 				if(auto omt = MangleBootstrapType(*ojsymAlias, jtypeRoot->aliasTypeArguments())) {
 					return *omt;
@@ -139,29 +139,31 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 			}
 		}	
 	}
-	if (auto jouniontypeRoot = jtypeRoot->isUnion()) {
+	if (auto const jouniontypeRoot = jtypeRoot->isUnion()) {
 		_ASSERT(1 < (*jouniontypeRoot)->types()->length());
 		auto vecmtType = tc::make_vector(tc::transform((*jouniontypeRoot)->types(), [&](ts::Type const jtypeUnionOption) noexcept {
 			return MangleType(jtypeUnionOption);
 		}));
-		auto isJsUnknown = [](SMangledType const& mt) noexcept { return mt.m_strCppCanonized == "js_unknown"; };
-		if (std::find_if(vecmtType.begin(), vecmtType.end(), isJsUnknown) == vecmtType.end()) {
+		if(!tc::find_first_if<tc::return_bool>(
+			vecmtType, 
+			[](SMangledType const& mt) noexcept { return tc::equal("js_unknown", mt.m_strCppCanonized); }
+		)) {
 			// NOTE: sort_unique works with final names which go to C++. It may potentially hide
 			// some errors in mangling (e.g. if two different types map to the same type in C++).
 			tc::sort_unique_inplace(vecmtType, [&](SMangledType const& a, SMangledType const& b) noexcept {
 				return a.m_strCppCanonized < b.m_strCppCanonized; // TODO: glue duplicates' m_strWithComments
 			});
-			_ASSERT(0 < vecmtType.size());
-			if (1 == vecmtType.size()) {
-				return vecmtType[0];
+			_ASSERT(!tc::empty(vecmtType));
+			if (1 == tc::size(vecmtType)) {
+				return tc_front(vecmtType);
 			} else {
 				return {
-					tc::explicit_cast<std::string>(tc::concat(
+					tc::make_str(
 						"js_union<", tc::join_separated(tc::transform(vecmtType, TC_MEMBER(.m_strWithComments)), ", "), ">"
-					)),
-					tc::explicit_cast<std::string>(tc::concat(
+					),
+					tc::make_str(
 						"js_union<", tc::join_separated(tc::transform(vecmtType, TC_MEMBER(.m_strCppCanonized)), ", "), ">"
-					))
+					)
 				};
 			}
 		}
@@ -181,11 +183,11 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 		std::vector<std::string> vecstrMemberName = tc::make_vector(tc::transform(vecjsymMember, [](ts::Symbol const& jsymMember) {
 			return tc::explicit_cast<std::string>(jsymMember->getName());
 		}));
-		tc::cont_emplace_back(vecstrExtraInfo, tc::explicit_cast<std::string>(tc::concat(
+		tc::cont_emplace_back(vecstrExtraInfo, tc::make_str(
 			"AnonymousTypeWithTypeLiteral(members:[",
 			tc::join_separated(vecstrMemberName, ", "),
 			"])"
-		)));
+		));
 		if (vecstrMemberName == std::vector<std::string>{"__call"}) {
 			ts::Symbol const& jsymSignature = vecjsymMember[0];
 			_ASSERTEQUAL(jsymSignature->getFlags(), ts::SymbolFlags::Signature);
@@ -203,12 +205,12 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 				}
 			));
 			return {
-				tc::explicit_cast<std::string>(tc::concat(
+				tc::make_str(
 					"js_function<", mtReturnType.m_strWithComments, "(", tc::join_separated(tc::transform(vecmtParameters, TC_MEMBER(.m_strWithComments)), ", "), ")>"
-				)),
-				tc::explicit_cast<std::string>(tc::concat(
+				),
+				tc::make_str(
 					"js_function<", mtReturnType.m_strCppCanonized, tc::join_separated(tc::transform(vecmtParameters, TC_MEMBER(.m_strCppCanonized)), ", "), ">"
-				))
+				)
 			};
 		}
 	}
@@ -249,14 +251,14 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 		}
 	}
 	return {
-		tc::explicit_cast<std::string>(tc::concat(
+		tc::make_str(
 			"js_unknown /*flags=",
 			tc::as_dec(static_cast<int>(jtypeRoot->flags())),
 			": ",
 			tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->typeToString(jtypeRoot)),
 			" (", tc::join_separated(vecstrExtraInfo, ","), ")",
 			"*/"
-		)),
+		),
 		"js_unknown"
 	};
 };

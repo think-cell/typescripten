@@ -4,11 +4,6 @@
 #include "mangle.h"
 #include "walk_symbol.h"
 
-#include <boost/multi_index_container.hpp>
-#include <boost/multi_index/ordered_index.hpp>
-#include <boost/multi_index/sequenced_index.hpp>
-#include <boost/multi_index/key.hpp>
-
 enum ECppType {
     ecpptypeIGNORE = 0,
     ecpptypeENUM = 1,
@@ -18,6 +13,8 @@ enum ECppType {
 BITMASK_OPS(ECppType);
 ECppType CppType(tc::js::ts::Symbol jsymType) noexcept;
 
+tc::ptr_range<char const> StripQuotes(std::string const& str) noexcept;
+
 DEFINE_ENUM(ENameContext, enamectx, (NONE)(ENUM)(CLASS)(TYPEALIAS)(FUNCTION));
 std::string CppifyName(tc::js::ts::Symbol jsymSymbol, ENameContext enamectx) noexcept;
 
@@ -25,8 +22,8 @@ struct SJsEnumOption final {
     tc::js::ts::Symbol m_jsym;
     std::string m_strJsName;
     std::string m_strCppifiedName;
-    tc::js::ts::EnumMember m_jtsEnumMember;
-    std::optional<std::variant<double, std::string>> m_ovardblstrValue;
+    tc::js::ts::EnumMember m_jenummember;
+    std::variant<std::monostate, double, std::string> m_vardblstrValue;
 
     SJsEnumOption() = delete;
     SJsEnumOption(tc::js::ts::Symbol jsym) noexcept;    
@@ -49,7 +46,7 @@ struct SJsEnum final : public boost::intrusive::set_base_hook<boost::intrusive::
     SJsEnum(SJsEnum&&) noexcept = default;
     SJsEnum& operator=(SJsEnum&&) noexcept = default;
 
-    void Initialize() noexcept;
+    void Initialize() & noexcept;
 };
 static_assert(std::is_nothrow_move_constructible<SJsEnum>::value);
 static_assert(std::is_nothrow_move_assignable<SJsEnum>::value);
@@ -71,7 +68,7 @@ public:
     SJsVariableLike(SJsVariableLike&&) noexcept = default;
     SJsVariableLike& operator=(SJsVariableLike&&) noexcept = default;
 
-    SMangledType const& MangleType() const noexcept;
+    SMangledType const& MangleType() const& noexcept;
 };
 static_assert(std::is_nothrow_move_constructible<SJsVariableLike>::value);
 static_assert(std::is_nothrow_move_assignable<SJsVariableLike>::value);
@@ -85,15 +82,15 @@ struct SJsFunctionLike final {
 private:
     // Cached
     std::string mutable m_strCanonizedParameterCppTypes;
-    std::string const& CanonizedParameterCppTypes() const noexcept;
+    std::string const& CanonizedParameterCppTypes() const& noexcept;
 
 public:
     SJsFunctionLike(tc::js::ts::Symbol jsym, tc::js::ts::SignatureDeclaration jsigndecl) noexcept;
     SJsFunctionLike(SJsFunctionLike&&) noexcept = default;
     SJsFunctionLike& operator=(SJsFunctionLike&&) noexcept = default;
 
-    std::string CppifiedParametersWithCommentsDecl() const noexcept;
-    std::string CppifiedParametersWithCommentsDef() const noexcept;
+    std::string CppifiedParametersWithCommentsDecl() const& noexcept;
+    std::string CppifiedParametersWithCommentsDef() const& noexcept;
    
     static bool LessCppSignature(SJsFunctionLike const& a, SJsFunctionLike const& b) noexcept;
 };
@@ -113,11 +110,11 @@ struct SJsClass;
 struct SJsTypeAlias;
 
 struct SJsScope {
-    std::vector<SJsEnum> m_vecvarjsExportEnum;
-    std::vector<SJsClass> m_vecvarjsExportClass;
-    std::vector<SJsTypeAlias> m_vecvarjsExportTypeAlias;
-    std::vector<SJsFunctionLike> m_vecjsfunctionlikeExportFunction;
-    std::vector<SJsVariableLike> m_vecjsvariablelikeExportVariable;
+    std::vector<SJsEnum> m_vecjsenumExport;
+    std::vector<SJsClass> m_vecjsclassExport;
+    std::vector<SJsTypeAlias> m_vecjstypealiasExport;
+    std::vector<SJsFunctionLike> m_vecjsfunctionlikeExport;
+    std::vector<SJsVariableLike> m_vecjsvariablelikeExport;
 
     template<typename Rng>
     SJsScope(Rng&& rngjsym) noexcept;
@@ -128,7 +125,7 @@ protected:
     SJsScope() noexcept = default;
 
     template<typename Rng>
-    void Initialize(Rng&& rngjsym) noexcept;
+    void Initialize(Rng&& rngjsym) & noexcept;
 };
 static_assert(std::is_nothrow_move_constructible<SJsScope>::value);
 static_assert(std::is_nothrow_move_assignable<SJsScope>::value);
@@ -151,8 +148,8 @@ struct SJsClass final : public SJsScope, public boost::intrusive::set_base_hook<
     SJsClass(SJsClass&&) noexcept = default;
     SJsClass& operator=(SJsClass&&) noexcept = default;
     
-    void Initialize() noexcept;
-    void ResolveBaseClasses() noexcept;
+    void Initialize() & noexcept;
+    void ResolveBaseClasses() & noexcept;
 };
 static_assert(std::is_nothrow_move_constructible<SJsClass>::value);
 static_assert(std::is_nothrow_move_assignable<SJsClass>::value);
@@ -170,9 +167,9 @@ struct SJsTypeAlias final : public boost::intrusive::set_base_hook<boost::intrus
     SJsTypeAlias(SJsTypeAlias&&) noexcept = default;
     SJsTypeAlias& operator=(SJsTypeAlias&&) noexcept = default;
 
-    void Initialize() noexcept;
+    void Initialize() & noexcept;
 
-    SMangledType MangleType() const noexcept;
+    SMangledType MangleType() const& noexcept;
 };
 static_assert(std::is_nothrow_move_constructible<SJsTypeAlias>::value);
 static_assert(std::is_nothrow_move_assignable<SJsTypeAlias>::value);
@@ -212,24 +209,24 @@ SJsScope::SJsScope(Rng&& rngjsym) noexcept {
 }
 
 template<typename Rng>
-void SJsScope::Initialize(Rng&& rngjsym) noexcept {
+void SJsScope::Initialize(Rng&& rngjsym) & noexcept {
      tc::for_each(rngjsym, [&](tc::js::ts::Symbol const& jsymType) noexcept {
         // Use tc::cont_must_emplace to make sure we only create a single enum/class/typealias per symbol.
         // We assume that ts::Symbol::exports() returns a symbol list without duplicates.
         auto const ecpptype = CppType(jsymType);
         if(ecpptypeENUM&ecpptype) {
-            m_vecvarjsExportEnum.emplace_back(jsymType);
+            m_vecjsenumExport.emplace_back(jsymType);
         }
         if(ecpptypeCLASS&ecpptype) {
-            m_vecvarjsExportClass.emplace_back(jsymType);
+            m_vecjsclassExport.emplace_back(jsymType);
         }
         if(ecpptypeTYPEALIAS&ecpptype) {
-            m_vecvarjsExportTypeAlias.emplace_back(jsymType); 
+            m_vecjstypealiasExport.emplace_back(jsymType); 
         }
     });
-    tc::for_each(m_vecvarjsExportEnum, TC_MEMBER(.Initialize()));
-    tc::for_each(m_vecvarjsExportClass, TC_MEMBER(.Initialize()));
-    tc::for_each(m_vecvarjsExportTypeAlias, TC_MEMBER(.Initialize()));
+    tc::for_each(m_vecjsenumExport, TC_MEMBER(.Initialize()));
+    tc::for_each(m_vecjsclassExport, TC_MEMBER(.Initialize()));
+    tc::for_each(m_vecjstypealiasExport, TC_MEMBER(.Initialize()));
     
     tc::for_each(
         tc::filter(
@@ -243,33 +240,32 @@ void SJsScope::Initialize(Rng&& rngjsym) noexcept {
                 jsymFunction->declarations(),
                 [=](tc::js::ts::Declaration jdeclFunction) noexcept {
                     if(auto const ojsfuncdecl = tc::js::ts::isFunctionDeclaration(jdeclFunction)) {
-                        tc::cont_emplace_back(m_vecjsfunctionlikeExportFunction, SJsFunctionLike(jsymFunction, *ojsfuncdecl));
+                        tc::cont_emplace_back(m_vecjsfunctionlikeExport, SJsFunctionLike(jsymFunction, *ojsfuncdecl));
                     }
                 }
             );
         }
     );
 
-    m_vecjsvariablelikeExportVariable = tc::make_vector(tc::transform(
+    m_vecjsvariablelikeExport = tc::make_vector(tc::transform(
         tc::filter(
             rngjsym,
             [](tc::js::ts::Symbol jsymExport) noexcept {
                 // TODO: Leave equality check here for now. 
                 // tc::js::ts::SymbolFlags::FunctionScopedVariable|tc::js::ts::SymbolFlags::Interface is not turned into a variable but is 
                 // merged into a class
-                return
-                    tc::js::ts::SymbolFlags::FunctionScopedVariable == jsymExport->getFlags() ||
-                    tc::js::ts::SymbolFlags::BlockScopedVariable == jsymExport->getFlags();
+                return tc::js::ts::SymbolFlags::FunctionScopedVariable == jsymExport->getFlags()
+                    || tc::js::ts::SymbolFlags::BlockScopedVariable == jsymExport->getFlags();
             }
         ),
-        [&](tc::js::ts::Symbol jsymVariable) noexcept {
+        [](tc::js::ts::Symbol jsymVariable) noexcept {
             return SJsVariableLike(jsymVariable);
         }
     ));
 
     // Merge variable redeclarations inplace 
     tc::sort_accumulate_each_unique_range(
-        m_vecjsvariablelikeExportVariable,
+        m_vecjsvariablelikeExport,
         [](SJsVariableLike const& a, SJsVariableLike const& b) { return a.m_strJsName < b.m_strJsName; },
         [](SJsVariableLike const& first, SJsVariableLike const& current) {
             _ASSERT(current.m_jsym.getEmval().strictlyEquals(first.m_jsym.getEmval()));

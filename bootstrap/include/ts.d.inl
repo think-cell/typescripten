@@ -7034,14 +7034,14 @@ namespace tc::js_defs {
 	struct _impl_js_jts_dSortedArray : virtual IObject {
 		struct _tcjs_definitions {
 		};
-		auto _u_uu_usortedArrayBrand() noexcept;
-		void _u_uu_usortedArrayBrand(js_unknown v) noexcept;
+		auto _u_u_sortedArrayBrand() noexcept;
+		void _u_u_sortedArrayBrand(js_unknown v) noexcept;
 	};
 	struct _impl_js_jts_dSortedReadonlyArray : virtual IObject {
 		struct _tcjs_definitions {
 		};
-		auto _u_uu_usortedArrayBrand() noexcept;
-		void _u_uu_usortedArrayBrand(js_unknown v) noexcept;
+		auto _u_u_sortedArrayBrand() noexcept;
+		void _u_u_sortedArrayBrand(js_unknown v) noexcept;
 	};
 	struct _impl_js_jts_dSourceFileLike : virtual IObject {
 		struct _tcjs_definitions {
@@ -13615,10 +13615,10 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dSignatureHelpRetriggeredReason::kind(js_string /*"retrigger"*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dSignatureHelpRetriggeredReason::triggerCharacter() noexcept { return _getProperty<js_union<js_string /*"<"*/, js_undefined>>("triggerCharacter"); }
 	inline void _impl_js_jts_dSignatureHelpRetriggeredReason::triggerCharacter(js_union<js_string /*"<"*/, js_undefined> v) noexcept { _setProperty("triggerCharacter", v); }
-	inline auto _impl_js_jts_dSortedArray::_u_uu_usortedArrayBrand() noexcept { return _getProperty<js_unknown>(" __sortedArrayBrand"); }
-	inline void _impl_js_jts_dSortedArray::_u_uu_usortedArrayBrand(js_unknown v) noexcept { _setProperty(" __sortedArrayBrand", v); }
-	inline auto _impl_js_jts_dSortedReadonlyArray::_u_uu_usortedArrayBrand() noexcept { return _getProperty<js_unknown>(" __sortedArrayBrand"); }
-	inline void _impl_js_jts_dSortedReadonlyArray::_u_uu_usortedArrayBrand(js_unknown v) noexcept { _setProperty(" __sortedArrayBrand", v); }
+	inline auto _impl_js_jts_dSortedArray::_u_u_sortedArrayBrand() noexcept { return _getProperty<js_unknown>(" __sortedArrayBrand"); }
+	inline void _impl_js_jts_dSortedArray::_u_u_sortedArrayBrand(js_unknown v) noexcept { _setProperty(" __sortedArrayBrand", v); }
+	inline auto _impl_js_jts_dSortedReadonlyArray::_u_u_sortedArrayBrand() noexcept { return _getProperty<js_unknown>(" __sortedArrayBrand"); }
+	inline void _impl_js_jts_dSortedReadonlyArray::_u_u_sortedArrayBrand(js_unknown v) noexcept { _setProperty(" __sortedArrayBrand", v); }
 	inline auto _impl_js_jts_dSourceFileLike::getLineAndCharacterOfPosition(double pos) noexcept {
 		return _call<_js_jts_dLineAndCharacter>("getLineAndCharacterOfPosition", pos);
 	}
