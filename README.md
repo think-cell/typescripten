@@ -63,7 +63,7 @@ Close analogues are Rust's [stdweb](https://github.com/koute/stdweb) and [wasm-b
 * Run `cd stage1` and `./build.sh` or `build.cmd` to build the **tcjs** compiler for typescript interface definition files.  
 
 # Misc thoughts
-* C++ callbacks passed to JS are always `noexpect` because exceptions cannot be passed between JS and C++ at the moment.
+* C++ callbacks passed to JS are always `noexcept` because exceptions cannot be passed between JS and C++ at the moment.
 * Member functions converted to callbacks are always called with a non-const-this.
 * Methods for `js_*` types do not have consistent const-qualifiers at the moment, so do not use const qualifiers on them.
 * `js_ref` may be inherited from, assuming you're ok with slicing (e.g. `CUniqueDetachableJsFunction`).
