@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string>
 #include "explicit_cast.h"
-#include "range_defines.h"
+#include "assert_defs.h"
 #include "range.h"
 #include "typescript.d.bootstrap.h"
 

@@ -24,7 +24,7 @@ and limitations under the License.
 #include <emscripten/val.h>
 #include <optional>
 #include "explicit_cast.h"
-#include "range_defines.h"
+#include "assert_defs.h"
 #include "js_types.h"
 #include "js_callback.h"
 #include "js_bootstrap.h"

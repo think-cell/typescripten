@@ -4,7 +4,7 @@ ninja_required_version = 1.10
 BOOST_PATH = <path-to-boost-includes>
 THINK_CELL_PUBLIC_PATH = <path-to-think-cell-public-library-includes>
 
-COMMON_CFLAGS = -std=c++20 -s DEMANGLE_SUPPORT=1 -s LLD_REPORT_UNDEFINED -fdiagnostics-absolute-paths -fno-char8_t -Wall -Wextra -Werror
+COMMON_CFLAGS = -std=c++2a -s DEMANGLE_SUPPORT=1 -fdiagnostics-absolute-paths -fno-char8_t -Wall -Wextra -Werror
 COMMON_LINK_FLAGS = -fno-char8_t --bind
 
 DEBUG_CFLAGS = -D_DEBUG -g4 -s SAFE_HEAP=1 -s ASSERTIONS=2

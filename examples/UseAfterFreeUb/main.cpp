@@ -1,6 +1,6 @@
 #include <emscripten/val.h>
 #include <emscripten/bind.h>
-#include "range_defines.h"
+#include "assert_defs.h"
 #include "js_types.h"
 
 using tc::jst::js_string;

@@ -211,7 +211,6 @@ SJsScope::SJsScope(Rng&& rngjsym) noexcept {
 template<typename Rng>
 void SJsScope::Initialize(Rng&& rngjsym) & noexcept {
      tc::for_each(rngjsym, [&](tc::js::ts::Symbol const& jsymType) noexcept {
-        // Use tc::cont_must_emplace to make sure we only create a single enum/class/typealias per symbol.
         // We assume that ts::Symbol::exports() returns a symbol list without duplicates.
         auto const ecpptype = CppType(jsymType);
         if(ecpptypeENUM&ecpptype) {

@@ -52,10 +52,10 @@ bool IsTrivialType(ts::InterfaceType jinterfacetypeRoot) noexcept {
 }
 
 SMangledType WrapType(std::string strPrefix, tc::js::ReadonlyArray<ts::Type> atypeArguments, std::string strSuffix) noexcept {
-	auto const rngmt = tc::transform(atypeArguments, [](ts::Type jtype) noexcept { return MangleType(jtype); });
+	auto const vecmt = tc::make_vector(tc::transform(atypeArguments, [](ts::Type jtype) noexcept { return MangleType(jtype); }));
 	return {
-		tc::make_str<char>(strPrefix, tc::join_separated(tc::transform(rngmt, TC_MEMBER(.m_strWithComments)), ", "), strSuffix),
-		tc::make_str<char>(strPrefix, tc::join_separated(tc::transform(rngmt, TC_MEMBER(.m_strCppCanonized)), ", "), strSuffix)
+		tc::make_str<char>(strPrefix, tc::join_separated(tc::transform(vecmt, TC_MEMBER(.m_strWithComments)), ", "), strSuffix),
+		tc::make_str<char>(strPrefix, tc::join_separated(tc::transform(vecmt, TC_MEMBER(.m_strCppCanonized)), ", "), strSuffix)
 	};
 }
 
@@ -155,7 +155,7 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 			});
 			_ASSERT(!tc::empty(vecmtType));
 			if (1 == tc::size(vecmtType)) {
-				return tc_front(vecmtType);
+				return tc::front(vecmtType);
 			} else {
 				return {
 					tc::make_str(

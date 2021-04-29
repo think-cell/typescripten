@@ -51,8 +51,8 @@ Close analogues are Rust's [stdweb](https://github.com/koute/stdweb) and [wasm-b
 # Dependencies
 
 * [Python 3](https://www.python.org/downloads/)
-* [Emscripten](https://emscripten.org/) 1.38.41 or newer (Node.js and NPM are included)
-* [think-cell public library](https://github.com/think-cell/range)
+* [Emscripten](https://emscripten.org/) 2.0.18 or newer (Node.js and NPM are included)
+* [think-cell public library](https://github.com/think-cell/range/tree/clang_12_cpp2a)
 * [boost 1.73.0](https://dl.bintray.com/boostorg/release/1.73.0/source/)
 * [ninja](https://ninja-build.org)
 

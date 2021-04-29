@@ -10,7 +10,7 @@
 #include <optional>
 #include "conditional_range.h"
 #include "explicit_cast.h"
-#include "range_defines.h"
+#include "assert_defs.h"
 #include "range.h"
 #include "join_adaptor.h"
 #include "js_bootstrap.h"
@@ -30,6 +30,3 @@ private:
 	std::ostream& m_os;
 };
 }; // namespace tc
-
-#define TC_MEMBER(...) \
-	[](auto&& _) return_decltype_xvalue_by_ref_noexcept(tc_move_if_owned(_)__VA_ARGS__)

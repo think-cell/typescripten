@@ -491,7 +491,7 @@ int main(int cArgs, char* apszArgs[]) {
 				auto const strClassNamespace = tc::concat("_impl", pjsclass->m_strMangledName, "::");
 				auto const strClassInstanceRetrieve = RetrieveSymbolFromCpp(pjsclass->m_jsym);
 
-				return tc::make_str(
+				return tc::make_str<char>(
 					tc::join(tc::transform(
 						pjsclass->m_vecjsfunctionlikeExport,
 						[&](SJsFunctionLike const& jsfunctionlike) noexcept {

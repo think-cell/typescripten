@@ -112,7 +112,7 @@ namespace {
 tc::ptr_range<char const> StripQuotes(std::string const& str) noexcept {
     _ASSERT(!tc::empty(str));
     auto strNoQuotes = tc::as_pointers(str);
-    if ('"' == tc_front(strNoQuotes) && '"' == tc_back(strNoQuotes)) {
+    if ('"' == tc::front(strNoQuotes) && '"' == tc::back(strNoQuotes)) {
         tc::drop_first_inplace(strNoQuotes);
         tc::drop_last_inplace(strNoQuotes);
     }
@@ -134,7 +134,7 @@ std::string CppifyName(ts::Symbol jsym, ENameContext enamectx) noexcept {
         [&](char c) noexcept {
             if(tc::isasciidigit(c) || tc::isasciilower(c) || tc::isasciiupper(c)) {
                 tc::cont_emplace_back(strResult, c);
-            } else if(!tc::empty(strResult) && '_' == tc_back(strResult)) {
+            } else if(!tc::empty(strResult) && '_' == tc::back(strResult)) {
                 tc::append(strResult, "u_");
             } else {
                 tc::append(strResult, "_");
@@ -143,7 +143,7 @@ std::string CppifyName(ts::Symbol jsym, ENameContext enamectx) noexcept {
     );
 
     if(tc::binary_find_unique<tc::return_bool>(c_apszReserved, strResult)) {
-        _ASSERT('_'!=tc_back(strResult));
+        _ASSERT('_'!=tc::back(strResult));
         tc::append(strResult, "_");
     }
     _ASSERT(!tc::empty(strResult));
@@ -201,7 +201,7 @@ SJsEnum::SJsEnum(ts::Symbol jsym) noexcept
 {}
 
 void SJsEnum::Initialize() & noexcept {
-    tc::cont_must_insert(g_setjsenum, *this);
+    tc::intrusive_cont_must_insert(g_setjsenum, *this);
 }
 
 SJsVariableLike::SJsVariableLike(ts::Symbol jsym) noexcept
@@ -216,7 +216,7 @@ SJsVariableLike::SJsVariableLike(ts::Symbol jsym) noexcept
         {
             // There may be multiple declarations, but they should have the same type (structurally).
             // We strengthen this requirement even more for now.
-            auto const jdeclFirst = tc_front(rngvariabledecl);
+            auto const jdeclFirst = tc::front(rngvariabledecl);
             auto const nModifierFlagsFirst = ts::getCombinedModifierFlags(jdeclFirst);
             auto const jtypeFirst = (*g_ojtsTypeChecker)->getTypeOfSymbolAtLocation(m_jsym, jdeclFirst);
             tc::for_each(rngvariabledecl, [&](ts::Declaration const jdeclCurrent) {
@@ -228,7 +228,7 @@ SJsVariableLike::SJsVariableLike(ts::Symbol jsym) noexcept
                 }
             });
         }
-        return tc_front(rngvariabledecl);
+        return tc::front(rngvariabledecl);
     }())
     , m_jtypeDeclared((*g_ojtsTypeChecker)->getTypeOfSymbolAtLocation(m_jsym, m_jdeclVariableLike))
     , m_bReadonly(static_cast<bool>(ts::getCombinedModifierFlags(m_jdeclVariableLike) & ts::ModifierFlags::Readonly))
@@ -445,7 +445,7 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
 }
 
 void SJsClass::Initialize() & noexcept {
-    tc::cont_must_insert(g_setjsclass, *this);
+    tc::intrusive_cont_must_insert(g_setjsclass, *this);
 }
 
 void SJsClass::ResolveBaseClasses() & noexcept {
@@ -514,7 +514,7 @@ SJsTypeAlias::SJsTypeAlias(ts::Symbol jsym) noexcept
 {}
 
 void SJsTypeAlias::Initialize() & noexcept {
-    tc::cont_must_insert(g_setjstypealias, *this);
+    tc::intrusive_cont_must_insert(g_setjstypealias, *this);
 }
 
 SMangledType SJsTypeAlias::MangleType() const& noexcept {

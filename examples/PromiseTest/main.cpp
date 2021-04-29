@@ -3,7 +3,7 @@
 #include <type_traits>
 #include "explicit_cast.h"
 #include "type_traits.h"
-#include "range_defines.h"
+#include "assert_defs.h"
 #include "js_callback.h"
 #include "js_bootstrap.h"
 

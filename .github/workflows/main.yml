@@ -24,7 +24,7 @@ jobs:
     - name: Setup think-cell/range
       shell: bash
       run: |
-        curl -L https://github.com/think-cell/range/archive/master.zip --output range.zip
+        curl -L https://github.com/think-cell/range/archive/refs/heads/clang_12_cpp2a.zip --output range.zip
         unzip range.zip
     - name: Setup Boost 1.68.0
       shell: bash

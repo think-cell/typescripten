@@ -6,7 +6,7 @@
 #include <type_traits>
 #include "type_traits.h"
 #include "tc_move.h"
-#include "range_defines.h"
+#include "assert_defs.h"
 #include "noncopyable.h"
 #include "js_types.h"
 
