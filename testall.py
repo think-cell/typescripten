@@ -44,7 +44,7 @@ if __name__ == "__main__":
     RunTests(os.path.join(strScriptPath, "examples"))
 
     try:
-        print("================= Building tcjs compiler")
+        print("================= Building typescripten compiler")
         os.chdir(os.path.join(strScriptPath, "stage1"))
         subprocess.check_output([os.path.join(strScriptPath, "stage1", "build.sh" if os.name=="posix" else "build.cmd")], stderr=subprocess.STDOUT)
         print("[SUCCESS]\n")

@@ -1,8 +1,8 @@
 ![CI](https://github.com/think-cell/tcjs/workflows/CI/badge.svg)
 
-# tcjs
+# typescripten
 
-Generate type-safe JavaScript bindings for C++/Emscripten from TypeScript declaration files. 
+Generate type-safe JavaScript bindings for C++/emscripten from TypeScript interface definition files. 
 
 If you have a typescript module `MyLib.d.ts`
 
@@ -10,7 +10,7 @@ If you have a typescript module `MyLib.d.ts`
         function appendNumber(a: string, b: number): string;
     }
 
-Running the **tcjs** compiler on this file will produce the C++ header `MyLib.d.h`
+Running the **typescripten** compiler on this file will produce the C++ header `MyLib.d.h`
 
     namespace tc::js_defs {
         using namespace jst; // no ADL
@@ -44,7 +44,7 @@ which lets us use `MyLib` from C++ in a type-safe way
         ) << std::endl;
     }
 
-See `stage1/tests` for more examples. Many TypeScript constructs are not yet supported. 
+See `stage1/tests` for more examples. Some TypeScript constructs are not yet supported. 
 
 Close analogues are Rust's [stdweb](https://github.com/koute/stdweb) and [wasm-bindgen](https://github.com/rustwasm/wasm-bindgen).
 
@@ -59,8 +59,8 @@ Close analogues are Rust's [stdweb](https://github.com/koute/stdweb) and [wasm-b
 # Setup
 
 * Copy `build-config-example.*` to `build-config.*` and edit the files to set the correct paths to emscripten, boost and the think-cell library
-* Run `examples/testall.py` to execute some test cases for the elementary **tcjs** C++/JavaScript interop classes in `bootstrap`
-* Run `cd stage1` and `./build.sh` or `build.cmd` to build the **tcjs** compiler for typescript interface definition files.  
+* Run `examples/testall.py` to execute some test cases for the elementary **typescripten** C++/JavaScript interop classes in `bootstrap`
+* Run `cd stage1` and `./build.sh` or `build.cmd` to build the **typescripten** compiler for typescript interface definition files.  
 
 # Misc thoughts
 * C++ callbacks passed to JS are always `noexcept` because exceptions cannot be passed between JS and C++ at the moment.
