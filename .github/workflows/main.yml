@@ -45,11 +45,11 @@ jobs:
     - name: Setup build config (Ubuntu)
       if: ${{ !contains(runner.os, 'windows') }}
       shell: bash
-      run: ./github_action_configure.py range-master/tc boost_1_73_0
+      run: ./github_action_configure.py range-clang_12_cpp2a/tc boost_1_73_0
     - name: Setup build config (Windows)
       if: ${{ contains(runner.os, 'windows') }}
       shell: cmd
-      run: python ./github_action_configure.py range-master/tc boost_1_73_0
+      run: python ./github_action_configure.py range-clang_12_cpp2a/tc boost_1_73_0
     - name: Run all library examples (Ubuntu)
       if: ${{ !contains(runner.os, 'windows') }}
       shell: bash
