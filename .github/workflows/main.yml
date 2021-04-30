@@ -12,6 +12,7 @@ jobs:
   build:
     # Build on multiple systems: https://docs.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow#configuring-a-build-matrix
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-18.04, windows-2019]
     # The type of runner that the job will run on
