@@ -71,7 +71,7 @@ int main() {
                     tc::transform(tc::iota(0, 100000), [&](int) noexcept { return static_cast<double>(std::rand())/RAND_MAX; })
                 );
             }
-            return tc::accumulate(vecf, 0.0, fn_assign_plus());
+            return tc::accumulate(vecf, 0.0, tc::fn_assign_plus());
         });
     }
 
@@ -80,7 +80,7 @@ int main() {
     });
 
     double const fResultCpp = timed("C++", []() {
-        return tc::accumulate(tc::js::MyLib::arr(), 0.0, fn_assign_plus());
+        return tc::accumulate(tc::js::MyLib::arr(), 0.0, tc::fn_assign_plus());
     });
 
     _ASSERT(std::fabs(fResultJs - fResultCpp) < 1e-4);
