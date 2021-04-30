@@ -21,12 +21,19 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
+    - name: Cleanup pre-installed tools
+        run: |
+          # This is a fix for https://github.com/actions/virtual-environments/issues/1918
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
     - name: Setup think-cell/range
       shell: bash
       run: |
         curl -L https://github.com/think-cell/range/archive/refs/heads/clang_12_cpp2a.zip --output range.zip
         unzip range.zip
-    - name: Setup Boost 1.68.0
+    - name: Setup Boost 1.73.0
       shell: bash
       run: |
         curl -L https://dl.bintray.com/boostorg/release/1.73.0/source/boost_1_73_0.zip --output boost_1_73_0.zip
