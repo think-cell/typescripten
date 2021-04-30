@@ -6,7 +6,7 @@
 #include "typescript.d.bootstrap.h"
 
 using tc::jst::create_js_object;
-using tc::jst::js_string;
+using tc::js::string;
 using tc::js::ts;
 using tc::js::Array;
 using tc::js::ReadonlyArray;
@@ -21,7 +21,7 @@ int main(int argc, char* argv[]) {
 	jsCompilerOptions->module(ts::ModuleKind::CommonJS);
 
 	ts::Program const jsProgram = ts::createProgram(
-		ReadonlyArray<js_string>(
+		ReadonlyArray<string>(
 			create_js_object,
 			tc::make_iterator_range(argv + 1, argv + argc)
 		),
@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
 		[](ts::Diagnostic const jsDiagnostic) noexcept {
 			if (jsDiagnostic->file()) {
 				ts::LineAndCharacter const jsLineAndCharacter = (*jsDiagnostic->file())->getLineAndCharacterOfPosition(*jsDiagnostic->start());
-				js_string const jsMessage = ts::flattenDiagnosticMessageText(jsDiagnostic->messageText(), js_string("\n"));
+				string const jsMessage = ts::flattenDiagnosticMessageText(jsDiagnostic->messageText(), string("\n"));
 				printf("%s (%d,%d): %s\n",
 					tc::explicit_cast<std::string>((*jsDiagnostic->file())->fileName()).c_str(),
 					tc::explicit_cast<int>(jsLineAndCharacter->line()) + 1,
@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
 					tc::explicit_cast<std::string>(jsMessage).c_str()
 				);
 			} else {
-				printf("%s\n", tc::explicit_cast<std::string>(ts::flattenDiagnosticMessageText(jsDiagnostic->messageText(), js_string("\n"))).c_str());
+				printf("%s\n", tc::explicit_cast<std::string>(ts::flattenDiagnosticMessageText(jsDiagnostic->messageText(), string("\n"))).c_str());
 			}
 		}
 	);

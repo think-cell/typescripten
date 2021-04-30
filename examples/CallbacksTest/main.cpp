@@ -9,7 +9,7 @@
 #include "js_bootstrap.h"
 
 using tc::jst::create_js_object;
-using tc::jst::js_string;
+using tc::js::string;
 using tc::jst::js_unknown;
 using tc::jst::js_function;
 using tc::jst::pass_this_t;
@@ -34,18 +34,18 @@ int callback_counter;
 		_ASSERTEQUAL(b, 20.0); \
 		return a + b; \
 	}) \
-	CreateCallback(TestStringPass, js_string, (js_string const sMessage), { \
+	CreateCallback(TestStringPass, string, (string const sMessage), { \
 		callback_counter++; \
 		_ASSERTEQUAL(tc::explicit_cast<std::string>(sMessage), "hello"); \
-		return js_string(tc::explicit_cast<std::string>(sMessage) + " world"); \
+		return string(tc::explicit_cast<std::string>(sMessage) + " world"); \
 	})\
 	CreateCallback(TestPassAllArguments, void, (pass_all_arguments_t, Array<js_unknown> const jsarrunkArgs, double a), { \
 		callback_counter++; \
 		_ASSERTEQUAL(a, 1.0); \
-		_ASSERTEQUAL(tc::explicit_cast<std::string>(js_string(jsarrunkArgs[1])), "message"); \
+		_ASSERTEQUAL(tc::explicit_cast<std::string>(string(jsarrunkArgs[1])), "message"); \
 		_ASSERTEQUAL(jsarrunkArgs->length(), 3); \
 	}) \
-	CreateCallback(TestPassThis, void, (pass_this_t, SomeJsClass const jssjcThis, double a, js_string const b, js_unknown const c), { \
+	CreateCallback(TestPassThis, void, (pass_this_t, SomeJsClass const jssjcThis, double a, string const b, js_unknown const c), { \
 		callback_counter++; \
 		_ASSERTEQUAL(jssjcThis->intValue(), 10); \
 		_ASSERTEQUAL(a, 1.0); \
@@ -56,17 +56,17 @@ int callback_counter;
 		callback_counter++; \
 		_ASSERTEQUAL(jssjcThis->intValue(), 10); \
 		_ASSERTEQUAL(a, 1.0); \
-		_ASSERTEQUAL(tc::explicit_cast<std::string>(js_string(jsarrunkArgs[1])), "message"); \
+		_ASSERTEQUAL(tc::explicit_cast<std::string>(string(jsarrunkArgs[1])), "message"); \
 		_ASSERTEQUAL(jsarrunkArgs->length(), 3); \
 	}) \
 	CreateCallback(TestPassAllArgumentsAndReturn, SomeJsClass, (pass_all_arguments_t, Array<js_unknown> const jsarrunkArgs, double a), { \
 		callback_counter++; \
 		_ASSERTEQUAL(a, 1.0); \
-		_ASSERTEQUAL(tc::explicit_cast<std::string>(js_string(jsarrunkArgs[1])), "message"); \
+		_ASSERTEQUAL(tc::explicit_cast<std::string>(string(jsarrunkArgs[1])), "message"); \
 		_ASSERTEQUAL(jsarrunkArgs->length(), 3); \
 		return SomeJsClass(create_js_object, 123); \
 	}) \
-	CreateCallback(TestPassThisAndReturn, SomeJsClass, (pass_this_t, SomeJsClass const jssjcThis, double a, js_string const b, js_unknown const c), { \
+	CreateCallback(TestPassThisAndReturn, SomeJsClass, (pass_this_t, SomeJsClass const jssjcThis, double a, string const b, js_unknown const c), { \
 		callback_counter++; \
 		_ASSERTEQUAL(jssjcThis->intValue(), 10); \
 		_ASSERTEQUAL(a, 1.0); \
@@ -78,7 +78,7 @@ int callback_counter;
 		callback_counter++; \
 		_ASSERTEQUAL(jssjcThis->intValue(), 10); \
 		_ASSERTEQUAL(a, 1.0); \
-		_ASSERTEQUAL(tc::explicit_cast<std::string>(js_string(jsarrunkArgs[1])), "message"); \
+		_ASSERTEQUAL(tc::explicit_cast<std::string>(string(jsarrunkArgs[1])), "message"); \
 		_ASSERTEQUAL(jsarrunkArgs->length(), 3); \
 		return SomeJsClass(create_js_object, 123); \
 	})
@@ -131,20 +131,20 @@ int main() {
 	}
 	{
 		std::cout << "Calling callbacks through js_function\n";
-		auto cbStorage = tc::jst::js_lambda_wrap([](js_string const str) noexcept {
-			return js_string(tc::concat("hello ", tc::explicit_cast<std::string>(str)));
+		auto cbStorage = tc::jst::js_lambda_wrap([](string const str) noexcept {
+			return string(tc::concat("hello ", tc::explicit_cast<std::string>(str)));
 		});
-		ensureJsFunctionDeduction<js_function<js_string(js_string const)>>(cbStorage);
-		js_function<js_string(js_string const)> cb = cbStorage;
-		_ASSERTEQUAL(tc::explicit_cast<std::string>(cb(js_string("world"))), "hello world");
+		ensureJsFunctionDeduction<js_function<string(string const)>>(cbStorage);
+		js_function<string(string const)> cb = cbStorage;
+		_ASSERTEQUAL(tc::explicit_cast<std::string>(cb(string("world"))), "hello world");
 	}
 	{
 		std::cout << "Passing callbacks as js_function parameter with temporary js_lambda_wrap\n";
-		auto test = [](js_function<js_string(js_string)> cb) {
-			_ASSERTEQUAL(tc::explicit_cast<std::string>(cb(js_string("world"))), "hello world");
+		auto test = [](js_function<string(string)> cb) {
+			_ASSERTEQUAL(tc::explicit_cast<std::string>(cb(string("world"))), "hello world");
 		};
-		test(tc::jst::js_lambda_wrap([](js_string const str) noexcept {
-			return js_string(tc::concat("hello ", tc::explicit_cast<std::string>(str)));
+		test(tc::jst::js_lambda_wrap([](string const str) noexcept {
+			return string(tc::concat("hello ", tc::explicit_cast<std::string>(str)));
 		}));
 	}
 	return 0;

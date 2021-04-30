@@ -6,7 +6,7 @@ int main() {
 	 static_assert(std::is_same<decltype(std::declval<tc::js::Test const&>()->isTypeAlias2()), std::optional<tc::js::FooBarNumber>>::value);
 	 static_assert(std::is_same<decltype(std::declval<tc::js::Test const&>()->isTypeAlias(0.0, std::declval<tc::jst::js_unknown>())), std::optional<tc::js::FooBarNumber>>::value);
 
-	 static_assert(std::is_same<decltype(std::declval<tc::js::Test const&>()->isFunction(std::declval<tc::jst::js_unknown>())), std::optional<tc::jst::js_function<double (tc::jst::js_string)> > >::value);
+	 static_assert(std::is_same<decltype(std::declval<tc::js::Test const&>()->isFunction(std::declval<tc::jst::js_unknown>())), std::optional<tc::jst::js_function<double (tc::js::string)> > >::value);
 
 	 static_assert(std::is_same<decltype(tc::js::g(std::declval<tc::jst::js_unknown>())), std::optional<tc::js::FooBarNumber>>::value);
 }

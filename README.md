@@ -18,11 +18,11 @@ Running the **typescripten** compiler on this file will produce the C++ header `
         using _js_jMyLib = js_ref<_impl_js_jMyLib>;
         struct _impl_js_jMyLib : virtual IObject {
             struct _tcjs_definitions {
-                static auto appendNumber(js_string a, double b) noexcept;
+                static auto appendNumber(string a, double b) noexcept;
             };
         };
-        inline auto _impl_js_jMyLib::_tcjs_definitions::appendNumber(js_string a, double b) noexcept {
-            return emscripten::val::global("MyLib")["appendNumber"](a, b).template as<js_string>();
+        inline auto _impl_js_jMyLib::_tcjs_definitions::appendNumber(string a, double b) noexcept {
+            return emscripten::val::global("MyLib")["appendNumber"](a, b).template as<string>();
         }
     }; // namespace tc::js_defs
     namespace tc::js {
@@ -38,7 +38,7 @@ which lets us use `MyLib` from C++ in a type-safe way
     int main() {
         std::cout << tc::explicit_cast<std::string>( // Unpack the JavaScript string 
             tc::js::MyLib::appendNumber(
-                tc::jst::js_string("foobar"), // Create a JavaScript string
+                tc::js::string("foobar"), // Create a JavaScript string
                 20 // JavaScript number type maps to double
             )
         ) << std::endl;

@@ -59,7 +59,7 @@ SMangledType WrapType(std::string strPrefix, tc::js::ReadonlyArray<ts::Type> aty
 	};
 }
 
-std::optional<SMangledType> MangleBootstrapType(ts::Symbol jsym, tc::jst::js_union<tc::js::ReadonlyArray<ts::Type>, tc::jst::js_undefined> jorarrtypeArguments) noexcept {
+std::optional<SMangledType> MangleBootstrapType(ts::Symbol jsym, tc::jst::js_union<tc::js::ReadonlyArray<ts::Type>, tc::js::undefined> jorarrtypeArguments) noexcept {
 	if(jorarrtypeArguments) {
 		std::string strTarget = FullyQualifiedName(jsym);
 		auto const jrarrTypeArguments = *jorarrtypeArguments;
@@ -102,10 +102,10 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 		return {mangled_no_comments, "js_unknown"};
 	}
 	if (ts::TypeFlags::String == jtypeRoot->flags()) {
-		return {mangled_no_comments, "js_string"};
+		return {mangled_no_comments, "tc::js::string"};
 	}
 	if (ts::TypeFlags::StringLiteral == jtypeRoot->flags()) {
-		return CommentType("js_string", jtypeRoot);
+		return CommentType("tc::js::string", jtypeRoot);
 	}
 	if (ts::TypeFlags::Number == jtypeRoot->flags()) {
 		return {mangled_no_comments, "double"};
@@ -123,10 +123,10 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 		return {mangled_no_comments, "void"};
 	}
 	if (ts::TypeFlags::Undefined == jtypeRoot->flags()) {
-		return {mangled_no_comments, "js_undefined"};
+		return {mangled_no_comments, "tc::js::undefined"};
 	}
 	if (ts::TypeFlags::Null == jtypeRoot->flags()) {
-		return {mangled_no_comments, "js_null"};
+		return {mangled_no_comments, "tc::js::null"};
 	}
 	if(bUseTypeAlias) {
 		if(auto const ojsymAlias = jtypeRoot->aliasSymbol()) {
@@ -224,7 +224,7 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 				tc::cont_emplace_back(vecstrExtraInfo, tc::concat("UnknownMangledClassOrInterface=", strName));
 			}
 		}
-		std::string strThisType = "undefined";
+		std::string strThisType = "tc::js::undefined";
 		if ((*jointerfacetypeRoot)->thisType()) {
 			strThisType = FullyQualifiedName(*(*(*jointerfacetypeRoot)->thisType())->getSymbol());
 		}

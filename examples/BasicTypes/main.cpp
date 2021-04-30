@@ -6,7 +6,7 @@
 #include "js_types.h"
 #include "js_ref.h"
 
-using tc::jst::js_string;
+using tc::js::string;
 using tc::jst::js_unknown;
 using tc::jst::js_optional;
 
@@ -16,14 +16,14 @@ struct ISomeObject : virtual tc::jst::IObject {
 	};
 
 	auto foo() {
-		return _call<js_string>("foo");
+		return _call<string>("foo");
 	}
 
 	auto operator()(double) {
 	    return _call_this<void>();
 	}
 
-	auto operator()(js_string) {
+	auto operator()(string) {
 	    return _call_this<double>();
 	}
 };
@@ -33,20 +33,20 @@ using SomeObject = tc::jst::js_ref<ISomeObject>;
 int main() {
 	{
 		static_assert(std::is_same<int, SomeObject::Foo>::value);
-		static_assert(std::is_same<js_string, decltype(std::declval<SomeObject>()->foo())>::value);
+		static_assert(std::is_same<string, decltype(std::declval<SomeObject>()->foo())>::value);
 		static_assert(std::is_same<void, decltype(std::declval<SomeObject>()(10.0))>::value);
-		static_assert(std::is_same<double, decltype(std::declval<SomeObject>()(js_string("hi")))>::value);
+		static_assert(std::is_same<double, decltype(std::declval<SomeObject>()(string("hi")))>::value);
 	}
 
 	{
-		auto const message = tc::explicit_cast<js_string>("Hello World");
-		static_assert(!std::is_constructible<js_string, double>::value);
+		auto const message = tc::explicit_cast<string>("Hello World");
+		static_assert(!std::is_constructible<string, double>::value);
 		_ASSERTEQUAL(message.length(), 11);
 		_ASSERTEQUAL(tc::explicit_cast<std::string>(message), "Hello World");
 
 		// Implicit basecast.
 		js_unknown anyMessage = message;
-		static_assert(std::is_convertible<js_string, js_unknown>::value);
+		static_assert(std::is_convertible<string, js_unknown>::value);
 		_ASSERTEQUAL(message.length(), 11);
 		_ASSERT(message.getEmval().strictlyEquals(anyMessage.getEmval()));
 		anyMessage = message;
@@ -54,28 +54,28 @@ int main() {
 		_ASSERT(message.getEmval().strictlyEquals(anyMessage.getEmval()));
 
 		// Explicit derivedcast.
-		js_string const message2(anyMessage);
-		static_assert(!std::is_convertible<js_unknown, js_string>::value);
+		string const message2(anyMessage);
+		static_assert(!std::is_convertible<js_unknown, string>::value);
 		_ASSERT(message.getEmval().strictlyEquals(message2.getEmval()));
 	}
 
 	{
-	    auto const message = tc::jst::make_js_string("Hello", tc::as_dec(10), "world");
-	    static_assert(std::is_same<const js_string, decltype(message)>::value);
+	    auto const message = tc::jst::make_string("Hello", tc::as_dec(10), "world");
+	    static_assert(std::is_same<const string, decltype(message)>::value);
 	    _ASSERTEQUAL(message.length(), 12);
 	    _ASSERTEQUAL(tc::explicit_cast<std::string>(message), "Hello10world");
 	}
 
 	{
-		emscripten::val const emval{tc::jst::js_undefined{}};
+		emscripten::val const emval{tc::js::undefined{}};
 		_ASSERTE(emval.isUndefined());
-		tc::jst::js_undefined{emval};
+		tc::js::undefined{emval};
 	}
 
 	{
-		emscripten::val const emval{tc::jst::js_null{}};
+		emscripten::val const emval{tc::js::null{}};
 		_ASSERTE(emval.isNull());
-		tc::jst::js_null{emval};
+		tc::js::null{emval};
 	}
 
 	{

@@ -3,10 +3,10 @@
 #include "assert_defs.h"
 #include "js_types.h"
 
-using tc::jst::js_string;
+using tc::js::string;
 
 int main() {
-	js_string* o = new js_string("foo");
+	string* o = new string("foo");
 	delete o;
 	// `o` is now dead, but it still keeps an emscripten::val's handle.
 	// In my test it was 5. Embind clears corresponding entry of the objects table.

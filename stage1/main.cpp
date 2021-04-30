@@ -5,7 +5,7 @@
 #include "jstypes.h"
 
 using tc::jst::create_js_object;
-using tc::jst::js_string;
+using tc::js::string;
 using tc::jst::js_optional;
 using tc::jst::js_unknown;
 using tc::js::console;
@@ -72,7 +72,7 @@ int main(int cArgs, char* apszArgs[]) {
 			if('\\'==ch) ch = '/'; // typescript createProgram does not support backslashes 
 		});
 	});
-	ts::Program const jtsProgram = ts::createProgram(ReadonlyArray<js_string>(create_js_object, rngstrFileNames), jtsCompilerOptions);
+	ts::Program const jtsProgram = ts::createProgram(ReadonlyArray<string>(create_js_object, rngstrFileNames), jtsCompilerOptions);
 	*g_ojtsTypeChecker = jtsProgram->getTypeChecker();
 
 	{
@@ -122,7 +122,7 @@ int main(int cArgs, char* apszArgs[]) {
 							} else {
 								tc::append(std::cerr, "Unknown source file-level child kind: ", tc::as_dec(static_cast<int>(jnodeChild->kind())), "\n");
 							}
-							return tc::jst::js_undefined();
+							return tc::js::undefined();
 						}));
 					}
 				}
@@ -351,7 +351,7 @@ int main(int cArgs, char* apszArgs[]) {
 												return tc::make_str("js_unknown(", std::to_string(dblValue), ")");
 											},
 											[](std::string const& strValue) noexcept {
-												return tc::make_str("js_string(\"", strValue, "\")");
+												return tc::make_str("tc::js::string(\"", strValue, "\")");
 											},
 											[](std::monostate const&) noexcept {
 												_ASSERTFALSE;

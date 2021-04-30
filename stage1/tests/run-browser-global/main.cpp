@@ -25,7 +25,7 @@ int main() {
 
 	_ASSERTEQUAL(tc::js::SomeModule::sumOfThree(10, 20, 30), 60);
 
-	tc::js::SomeObject obj2 = tc::js::createObject(tc::jst::js_string("foobar"));
+	tc::js::SomeObject obj2 = tc::js::createObject(tc::js::string("foobar"));
 	_ASSERTEQUAL(tc::explicit_cast<std::string>(obj2->str()), "foobar");
 	_ASSERTEQUAL(obj2->arr()->length(), 0);
 	_ASSERT(tc::empty(obj2->arr()));

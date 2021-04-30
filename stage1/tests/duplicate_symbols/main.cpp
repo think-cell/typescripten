@@ -3,7 +3,7 @@
 
 int main() {
     // X is both a type alias and a class
-    static_assert(std::is_same<tc::js::X_alias, tc::jst::js_string>::value);
+    static_assert(std::is_same<tc::js::X_alias, tc::js::string>::value);
 
     // X::Z declarations have been merged correctly
     static_assert(std::is_same<decltype(std::declval<tc::js::X_class::Z const&>()->b()), double>::value);
@@ -22,5 +22,5 @@ int main() {
     // Namespace + function
     static_assert(std::is_same<decltype(tc::js::test_class::T()), double>::value);
     static_assert(std::is_same<decltype(tc::js::test(std::declval<double>())), void>::value);
-    static_assert(std::is_same<decltype(tc::js::test(std::declval<tc::jst::js_string>())), void>::value);
+    static_assert(std::is_same<decltype(tc::js::test(std::declval<tc::js::string>())), void>::value);
 }

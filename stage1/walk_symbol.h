@@ -25,7 +25,7 @@ tc::break_or_continue ForEachChildTypeNode(tc::js::ts::Node jnode, Func fn) noex
                 if(tc::continue_==bc) {
                     bc = ForEachChildTypeNode(jnodeInner, fn); 
                 }
-                return tc::jst::js_undefined();
+                return tc::js::undefined();
             }));
             return bc;
         }

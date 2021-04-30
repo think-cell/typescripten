@@ -98,7 +98,7 @@ struct _js_Promise : virtual ::tc::jst::IObject {
 };
 
 template<>
-struct _js_Promise<void> : virtual _js_Promise<::tc::jst::js_undefined> {
+struct _js_Promise<void> : virtual _js_Promise<::tc::js::undefined> {
 	// JavaScript passes 'undefined' to what TypeScript calls 'void' promise.
 };
 
@@ -138,7 +138,7 @@ using no_adl::Record;
 using no_adl::console;
 
 inline auto stackTrace() noexcept {  // Expects non-standard `stackTrace()` function in JS to be available globally.
-	return ::emscripten::val::global("stackTrace")().template as<tc::jst::js_string>();
+	return ::emscripten::val::global("stackTrace")().template as<tc::js::string>();
 }
 
 } // namespace tc::js

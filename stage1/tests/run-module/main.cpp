@@ -41,13 +41,13 @@ int main() {
 
 	_ASSERTEQUAL(tc::js::MyLib::SomeModule::sumOfThree(10, 20, 30), 60);
 
-	tc::js::MyLib::SomeObject obj2 = tc::js::MyLib::createObject(tc::jst::js_string("foobar"));
+	tc::js::MyLib::SomeObject obj2 = tc::js::MyLib::createObject(tc::js::string("foobar"));
 	_ASSERTEQUAL(tc::explicit_cast<std::string>(obj2->str()), "foobar");
 	_ASSERTEQUAL(obj2->arr()->length(), 0);
 	_ASSERT(tc::empty(obj2->arr()));
 
-	_ASSERTEQUAL(tc::explicit_cast<std::string>(obj2->rec()[tc::jst::js_string("hello")]), "world");
-	_ASSERTEQUAL(obj2->rec2()[tc::jst::js_string("hello")], 1);
+	_ASSERTEQUAL(tc::explicit_cast<std::string>(obj2->rec()[tc::js::string("hello")]), "world");
+	_ASSERTEQUAL(obj2->rec2()[tc::js::string("hello")], 1);
 
 	tc::js::MyLib::SomeObject obj3 = tc::js::MyLib::ForwardReferencingNamespace::createSomeObject();
 	_ASSERTEQUAL(tc::explicit_cast<std::string>(obj3->str()), "foobar");
@@ -78,7 +78,7 @@ int main() {
 		_ASSERTEQUAL(tc::explicit_cast<std::string>(int6->func6()), "func6");
 	}
 
-	_ASSERTEQUAL(tc::js::MyLib::literalTypesFunction(10, tc::jst::js_string("str")), 20);
+	_ASSERTEQUAL(tc::js::MyLib::literalTypesFunction(10, tc::js::string("str")), 20);
 
 	{
 		tc::js::Promise<double> p1 = tc::js::MyLib::createPromise10();

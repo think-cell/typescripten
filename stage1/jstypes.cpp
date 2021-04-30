@@ -5,7 +5,7 @@ using tc::js::console;
 using tc::js::ReadonlyArray;
 using tc::js::ts;
 using tc::jst::js_optional;
-using tc::jst::js_string;
+using tc::js::string;
 using tc::jst::js_unknown;
 
 extern std::optional<tc::js::ts::TypeChecker> g_ojtsTypeChecker;
@@ -168,7 +168,7 @@ SJsEnumOption::SJsEnumOption(ts::Symbol jsym) noexcept
     if (junionOptionValue.getEmval().isNumber()) {
         m_vardblstrValue = junionOptionValue.get<double>();
     } else if (junionOptionValue.getEmval().isString()) {
-        m_vardblstrValue = tc::explicit_cast<std::string>(junionOptionValue.get<js_string>());
+        m_vardblstrValue = tc::explicit_cast<std::string>(junionOptionValue.get<string>());
     } else {
         _ASSERT(junionOptionValue.getEmval().isUndefined());
     }
@@ -297,7 +297,7 @@ std::string SJsFunctionLike::CppifiedParametersWithCommentsDecl() const& noexcep
                 return tc::concat(jsvariablelikeParameter.MangleType().m_strWithComments, " ", jsvariablelikeParameter.m_strCppifiedName);
             }),
             tc::transform(tc::drop(m_vecjsvariablelikeParameters, itjsvariablelike), [](SJsVariableLike const& jsvariablelikeParameter) noexcept {
-                return tc::concat(jsvariablelikeParameter.MangleType().m_strWithComments, " ", jsvariablelikeParameter.m_strCppifiedName, " = js_undefined()");
+                return tc::concat(jsvariablelikeParameter.MangleType().m_strWithComments, " ", jsvariablelikeParameter.m_strCppifiedName, " = tc::js::undefined()");
             })
         ),
         ", "
@@ -520,7 +520,7 @@ void SJsTypeAlias::Initialize() & noexcept {
 SMangledType SJsTypeAlias::MangleType() const& noexcept {
     // If a type alias is defined by a union, we have to define it by the corresponding js_union<...> declaration
     // type FooBar = number | string;
-    // using FooBar = js_union<js_number, js_string>;
+    // using FooBar = js_union<js_number, string>;
 
     // If is type alias is defined as another type or type alias, we do not want to repeat the js_union declaration
     // but try to keep referencing the type alias, so we call MangleType with bUseTypeAlias = true

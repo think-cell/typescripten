@@ -8,7 +8,7 @@
 #include "assert_defs.h"
 #include "js_bootstrap.h"
 
-using tc::jst::js_string;
+using tc::js::string;
 using tc::jst::js_unknown;
 using tc::js::Array;
 using tc::js::ReadonlyArray;
@@ -24,7 +24,7 @@ template<> struct IsJsHeterogeneousEnum<MyHeterogeneousEnum> : std::true_type {
 	static inline auto const& Values() {
 		static tc::unordered_map<MyHeterogeneousEnum, js_unknown> vals{
 			{MyHeterogeneousEnum::Foo, 23.0},
-			{MyHeterogeneousEnum::Bar, js_string("bar")}
+			{MyHeterogeneousEnum::Bar, string("bar")}
 		};
 		return vals;
 	}
@@ -54,8 +54,8 @@ int main() {
 	}
 
 	{
-		Array<js_string> const arr(tc::jst::create_js_object, std::initializer_list<char const*>{"Hello", "Hi!"});
-		static_assert(std::is_same_v<tc::range_value_t<decltype(arr)>, js_string>);
+		Array<string> const arr(tc::jst::create_js_object, std::initializer_list<char const*>{"Hello", "Hi!"});
+		static_assert(std::is_same_v<tc::range_value_t<decltype(arr)>, string>);
 		_ASSERTEQUAL(arr->length(), 2);
 		_ASSERTEQUAL(arr[0].length(), 5);
 		_ASSERTEQUAL(arr[1].length(), 3);
@@ -64,13 +64,13 @@ int main() {
 
 	{
 	    constexpr char str[] = "Test";
-        Array<js_string> const arr(tc::jst::create_js_object, tc::single(str));
+        Array<string> const arr(tc::jst::create_js_object, tc::single(str));
         _ASSERTEQUAL(arr->length(), 1);
         _ASSERTEQUAL(arr[0].length(), 4);
 	}
 	{
 	    constexpr char str[] = "Test";
-        ReadonlyArray<js_string> const arr(tc::jst::create_js_object, tc::single(str));
+        ReadonlyArray<string> const arr(tc::jst::create_js_object, tc::single(str));
         _ASSERTEQUAL(arr->length(), 1);
         _ASSERTEQUAL(arr[0].length(), 4);
 	}
