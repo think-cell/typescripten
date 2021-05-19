@@ -2,10 +2,10 @@
 #include <emscripten/bind.h>
 
 namespace tc::jst {
-namespace callback_detail {
-void EnsureJsCallbackCppIsLinked() {}
+	namespace callback_detail {
+		void EnsureJsCallbackCppIsLinked() {}
 
-/**
+		/**
  * [basic.compound] 6.7.2
  * (3) The type of a pointer to cv void or a pointer to an object type is called an object pointer type. ...
  *     ... The type of a pointer that can designate a function is called a function pointer type. A pointer to
@@ -27,21 +27,20 @@ void EnsureJsCallbackCppIsLinked() {}
  * We cannot guarantee that pointers are safely-derived unless emscripten passes us integer representation of
  * a safely-derived pointer, so we require relaxed pointer safety.
  */
-static_assert(sizeof(std::intptr_t) <= sizeof(PointerNumber));
-static_assert(sizeof(FunctionPointer) <= sizeof(PointerNumber), "PointerNumber is not large enough to hold FunctionPointer, cannot pass it to JavaScript");
-static_assert(sizeof(FirstArgument) <= sizeof(PointerNumber), "PointerNumber is not large enough to hold FirstArgument, cannot pass it to JavaScript");
+		static_assert(sizeof(std::intptr_t) <= sizeof(PointerNumber));
+		static_assert(sizeof(FunctionPointer) <= sizeof(PointerNumber), "PointerNumber is not large enough to hold FunctionPointer, cannot pass it to JavaScript");
+		static_assert(sizeof(FirstArgument) <= sizeof(PointerNumber), "PointerNumber is not large enough to hold FirstArgument, cannot pass it to JavaScript");
 
-emscripten::val Call(PointerNumber iFunctionPtr, PointerNumber iArg0, emscripten::val emvalThis, emscripten::val emvalArgs) noexcept {
-	return reinterpret_cast<FunctionPointer>(iFunctionPtr)(
-		reinterpret_cast<FirstArgument>(iArg0),
-		emvalThis,
-		emvalArgs
-	);
-}
+		emscripten::val Call(PointerNumber iFunctionPtr, PointerNumber iArg0, emscripten::val emvalThis, emscripten::val emvalArgs) noexcept {
+			return reinterpret_cast<FunctionPointer>(iFunctionPtr)(
+				reinterpret_cast<FirstArgument>(iArg0),
+				emvalThis,
+				emvalArgs);
+		}
 
-EMSCRIPTEN_BINDINGS(tc_js_callback_detail_bind) {
-	emscripten::function("tc_js_callback_detail_js_Call", &Call);
-}
+		EMSCRIPTEN_BINDINGS(tc_js_callback_detail_bind) {
+			emscripten::function("tc_js_callback_detail_js_Call", &Call);
+		}
 
-} // namespace callback_detail
+	} // namespace callback_detail
 } // namespace tc::jst

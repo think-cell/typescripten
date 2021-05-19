@@ -21,13 +21,13 @@ See the Apache Version 2.0 License for specific language governing permissions
 and limitations under the License.
 ***************************************************************************** */
 
+#include "assert_defs.h"
+#include "explicit_cast.h"
+#include "js_bootstrap.h"
+#include "js_callback.h"
+#include "js_types.h"
 #include <emscripten/val.h>
 #include <optional>
-#include "explicit_cast.h"
-#include "assert_defs.h"
-#include "js_types.h"
-#include "js_callback.h"
-#include "js_bootstrap.h"
 
 #include "ts.d.inl"
 
@@ -39,7 +39,7 @@ namespace tc::js::ts_ext {
 	};
 	using TypeParameter = tc::jst::js_ref<_js_TypeParameter>;
 
-	// TODO: Generics 
+	// TODO: Generics
 	struct _js_SymbolTable : virtual tc::jst::IObject {
 		struct _tcjs_definitions {
 			using value_type = tc::js::ts::Symbol;
@@ -76,7 +76,7 @@ namespace tc::js::ts_ext {
 		auto heritageClauses() noexcept { return _getProperty<tc::jst::js_optional<ReadonlyArray<tc::js::ts::HeritageClause>>>("heritageClauses"); }
 	};
 	using ClassLikeDeclaration = tc::jst::js_ref<_js_ClassLikeDeclaration>;
-}
+} // namespace tc::js::ts_ext
 
 namespace tc::js_defs {
 	// Manually implemented instead of DEFINE_CONTIGUOUS_ENUM + enumset to avoid manually checking that all enums are indeed contiguous.

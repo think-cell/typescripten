@@ -13,7 +13,7 @@
 #include <type_traits>
 #include <utility>
 
-namespace tc::jst { // Library helper types are in tc::jst namespace 
+namespace tc::jst { // Library helper types are in tc::jst namespace
 	namespace no_adl {
 		template<typename, typename = void>
 		struct IsJsInteropable : std::false_type {
@@ -71,7 +71,7 @@ namespace tc::jst { // Library helper types are in tc::jst namespace
 	using no_adl::IsJsIntegralEnum;
 	using no_adl::IsJsInteropable;
 	using no_adl::js_unknown;
-}
+} // namespace tc::jst
 
 namespace tc::js { // Implementations of TypeScript/JavaScript builtin types are in tc::js namespace
 	namespace no_adl {
@@ -90,7 +90,7 @@ namespace tc::js { // Implementations of TypeScript/JavaScript builtin types are
 			}
 			emscripten::val getEmval() const& noexcept { return emscripten::val::null(); }
 		};
-		
+
 		struct string final {
 			// There only way to change the underlying value (both in C++ and JS) is to reassign.
 			// There are no in-place modification methods in either C++ or JS.
@@ -125,10 +125,10 @@ namespace tc::js { // Implementations of TypeScript/JavaScript builtin types are
 			emscripten::val m_emval;
 		};
 	} // namespace no_adl
-	using no_adl::undefined;
 	using no_adl::null;
 	using no_adl::string;
-}
+	using no_adl::undefined;
+} // namespace tc::js
 
 namespace tc::jst {
 	template<typename... Rng>
