@@ -33,7 +33,7 @@ jobs:
         curl -L https://boostorg.jfrog.io/artifactory/main/release/1.73.0/source/boost_1_73_0.zip --output boost_1_73_0.zip
         unzip -q boost_1_73_0.zip
     - name: Install Emscripten
-      uses: mymindstorm/setup-emsdk@v9
+      uses: mymindstorm/setup-emsdk@v10
       with:
         version: 2.0.27
         actions-cache-folder: 'emsdk-cache'
