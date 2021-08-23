@@ -4,11 +4,11 @@ ninja_required_version = 1.10
 BOOST_PATH = <path-to-boost-includes>
 THINK_CELL_PUBLIC_PATH = <path-to-think-cell-public-library-includes>
 
-COMMON_CFLAGS = -std=c++2a -s DEMANGLE_SUPPORT=1 -fdiagnostics-absolute-paths -fno-char8_t -Wall -Wextra -Werror
-COMMON_LINK_FLAGS = -fno-char8_t --bind
+COMMON_CFLAGS = -std=c++2a -fdiagnostics-absolute-paths -fno-char8_t -Wall -Wextra -Werror
+COMMON_LINK_FLAGS = -fno-char8_t --bind -s DEMANGLE_SUPPORT=1 
 
-DEBUG_CFLAGS = -D_DEBUG -g4 -s SAFE_HEAP=1 -s ASSERTIONS=2
-DEBUG_LINK_FLAGS = -g4 --source-map-base http://localhost:8000/
+DEBUG_CFLAGS = -D_DEBUG -gsource-map
+DEBUG_LINK_FLAGS = -gsource-map --source-map-base http://localhost:8000/ -s SAFE_HEAP=1 -s ASSERTIONS=2
 
 RELEASE_CFLAGS = -Oz -flto -g0
 RELEASE_LINK_FLAGS = -Oz -flto -g0 --emit-symbol-map
