@@ -120,7 +120,29 @@ tc::ptr_range<char const> StripQuotes(std::string const& str) noexcept {
 }
 
 namespace {
-   constexpr char const* c_apszReserved[] = {"alignas", "alignof", "and", "and_eq", "asm", "auto", "bitand", "bitor", "bool", "break", "case", "catch", "char", "char16_t", "char32_t", "class", "compl", "const", "constexpr", "const_cast", "continue", "decltype", "default", "delete", "do", "double", "dynamic_cast", "else", "enum", "explicit", "export", "extern", "false", "float", "for", "friend", "goto", "if", "inline", "int", "long", "mutable", "namespace", "new", "noexcept", "not", "not_eq", "nullptr", "operator", "or", "or_eq", "private", "protected", "public", "register", "reinterpret_cast", "return", "short", "signed", "sizeof", "static", "static_assert", "static_cast", "struct", "switch", "template", "this", "thread_local", "throw", "true", "try", "typedef", "typeid", "typename", "union", "unsigned", "using", "virtual", "void", "volatile", "wchar_t", "while", "xor", "xor_eq"};
+   constexpr char const* c_apszReserved[] = {
+       "alignas", "alignof", "and", "and_eq", "asm", "auto", 
+       "bitand", "bitor", "bool", "break", 
+       "case", "catch", "char", "char16_t", "char32_t", "class", "compl", "const", "const_cast", "constexpr", "continue", 
+       "decltype", "default", "delete", "do", "double", "dynamic_cast", 
+       "else", "enum", "explicit", "export", "extern", 
+       "false", "float", "for", "friend", 
+       "goto", 
+       "if", "inline", "int", 
+       "long", 
+       "mutable", 
+       "namespace", "new", "noexcept", "not", "not_eq", "nullptr", 
+       "operator", "or", "or_eq", 
+       "private", "protected", "public", 
+       "register", "reinterpret_cast", "return", 
+       "short", "signed", "sizeof", "static", "static_assert", "static_cast", "struct", "switch", 
+       "template", "this", "thread_local", "throw", "true", "try", "typedef", "typeid", "typename", 
+       "union", "unsigned", "using", 
+       "virtual", "void", "volatile", 
+       "wchar_t", "while", 
+       "xor", "xor_eq"
+    };
+    static_assert(tc::is_sorted(c_apszReserved, tc::lessfrom3way(tc::fn_lexicographical_compare_3way())));
 }
 
 // CppifyName returns the user-visible name that we export from namespaces/classes
@@ -142,7 +164,7 @@ std::string CppifyName(ts::Symbol jsym, ENameContext enamectx) noexcept {
         }
     );
 
-    if(tc::binary_find_unique<tc::return_bool>(c_apszReserved, strResult)) {
+    if(tc::binary_find_unique<tc::return_bool>(c_apszReserved, strResult, tc::lessfrom3way(tc::fn_lexicographical_compare_3way()))) {
         _ASSERT('_'!=tc::back(strResult));
         tc::append(strResult, "_");
     }
