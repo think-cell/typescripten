@@ -4,7 +4,7 @@ using tc::js::Array;
 using tc::js::console;
 using tc::js::ReadonlyArray;
 using tc::js::ts;
-using tc::jst::js_optional;
+using tc::jst::optional;
 using tc::js::string;
 using tc::js::any;
 

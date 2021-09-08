@@ -65,15 +65,15 @@ namespace tc::js::ts_ext {
 	using HeritageClause = tc::jst::js_ref<_js_HeritageClause>;
 
 	struct _js_Symbol : virtual tc::js_defs::_impl_js_jts_dSymbol {
-		inline auto parent() noexcept { return _getProperty<tc::jst::js_optional<tc::js::ts::Symbol>>("parent"); }
-		inline auto members() noexcept { return _getProperty<tc::jst::js_optional<tc::js::ts_ext::SymbolTable>>("members"); }
-		inline auto exports() noexcept { return _getProperty<tc::jst::js_optional<tc::js::ts_ext::SymbolTable>>("exports"); }
-		inline auto globalExports() noexcept { return _getProperty<tc::jst::js_optional<tc::js::ts_ext::SymbolTable>>("globalExports"); }
+		inline auto parent() noexcept { return _getProperty<tc::jst::optional<tc::js::ts::Symbol>>("parent"); }
+		inline auto members() noexcept { return _getProperty<tc::jst::optional<tc::js::ts_ext::SymbolTable>>("members"); }
+		inline auto exports() noexcept { return _getProperty<tc::jst::optional<tc::js::ts_ext::SymbolTable>>("exports"); }
+		inline auto globalExports() noexcept { return _getProperty<tc::jst::optional<tc::js::ts_ext::SymbolTable>>("globalExports"); }
 	};
 	using Symbol = tc::jst::js_ref<_js_Symbol>;
 
 	struct _js_ClassLikeDeclaration : virtual tc::js_defs::_impl_js_jts_dClassDeclaration {
-		auto heritageClauses() noexcept { return _getProperty<tc::jst::js_optional<ReadonlyArray<tc::js::ts::HeritageClause>>>("heritageClauses"); }
+		auto heritageClauses() noexcept { return _getProperty<tc::jst::optional<ReadonlyArray<tc::js::ts::HeritageClause>>>("heritageClauses"); }
 	};
 	using ClassLikeDeclaration = tc::jst::js_ref<_js_ClassLikeDeclaration>;
 } // namespace tc::js::ts_ext

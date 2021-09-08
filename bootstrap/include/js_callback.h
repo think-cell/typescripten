@@ -153,7 +153,7 @@ namespace tc::jst {
 	} // namespace no_adl
 	using no_adl::IJsFunction;
 	template<typename T>
-	using js_function = js_ref<IJsFunction<T>>;
+	using function = js_ref<IJsFunction<T>>;
 
 	namespace callback_detail {
 		using FirstArgument = void*;
@@ -173,9 +173,9 @@ namespace tc::jst {
 			template<typename T>
 			struct CUniqueDetachableJsFunction : private tc::nonmovable
 				, private RequireRelaxedPointerSafety
-				, js_function<T> {
+				, function<T> {
 				CUniqueDetachableJsFunction(FunctionPointer pfunc, FirstArgument arg0) noexcept
-					: js_function<T>([&]() {
+					: function<T>([&]() {
 						static auto creator = []() {
 							EnsureJsCallbackCppIsLinked();
 							auto creator = emscripten::val::module_property("tc_js_callback_detail_js_CreateJsFunction");
@@ -209,7 +209,7 @@ namespace tc::jst {
 	ReturnType ClassName::FieldName##_tc_js_impl Arguments noexcept
 
 	// ---------------------------------------- Lambda wrapper callback ----------------------------------------
-	// This callback wraps lambda (or any callable) so it can be immediately passed as js_function<...>.
+	// This callback wraps lambda (or any callable) so it can be immediately passed as function<...>.
 	// It takes ownership of the lambda. Whenever the wrapper is destroyed, corresponding JS function is turned
 	// into no-op.
 	//
@@ -219,7 +219,7 @@ namespace tc::jst {
 	namespace callback_detail {
 		namespace no_adl {
 			// Helper class, should always be passed as a const value to avoid
-			// js_function(js_function&&) binding to it and moving out.
+			// function(function&&) binding to it and moving out.
 			template<typename Fn>
 			struct js_lambda_wrap_impl final : CUniqueDetachableJsFunction<boost::callable_traits::function_type_t<Fn>> {
 				using function_type = boost::callable_traits::function_type_t<Fn>;

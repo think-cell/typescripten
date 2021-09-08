@@ -11,7 +11,7 @@
 using tc::jst::create_js_object;
 using tc::js::string;
 using tc::js::any;
-using tc::jst::js_function;
+using tc::jst::function;
 using tc::jst::pass_this_t;
 using tc::jst::pass_all_arguments_t;
 using tc::js::Array;
@@ -84,8 +84,8 @@ int callback_counter;
 	})
 
 template<typename T, typename U>
-void ensureJsFunctionDeduction(js_function<U>) {
-	static_assert(std::is_same<T, js_function<U>>::value);
+void ensureJsFunctionDeduction(function<U>) {
+	static_assert(std::is_same<T, function<U>>::value);
 }
 
 // Macro so callback creation is performed between "start" and "end".
@@ -113,7 +113,7 @@ int main() {
 	{
 		std::cout << "===== js_lambda_wrap =====\n";
 		#define CALL_SCOPED_CALLBACK(Name, ReturnType, Arguments, Body) \
-			RUN_TEST(Name, js_function<ReturnType Arguments>, tc::jst::js_lambda_wrap([]Arguments noexcept -> ReturnType Body));
+			RUN_TEST(Name, function<ReturnType Arguments>, tc::jst::js_lambda_wrap([]Arguments noexcept -> ReturnType Body));
 		FOR_ALL_CALLBACKS(CALL_SCOPED_CALLBACK)
 		#undef CALL_SCOPED_CALLBACK
 	}
@@ -125,22 +125,22 @@ int main() {
 		} obj;
 		#undef DEFINE_MEMBER
 		#define CALL_MEMBER(Name, ReturnType, Arguments, Body) \
-			RUN_TEST(Name, js_function<ReturnType Arguments>, obj.m_jsfn##Name);
+			RUN_TEST(Name, function<ReturnType Arguments>, obj.m_jsfn##Name);
 		FOR_ALL_CALLBACKS(CALL_MEMBER)
 		#undef CALL_MEMBER
 	}
 	{
-		std::cout << "Calling callbacks through js_function\n";
+		std::cout << "Calling callbacks through function\n";
 		auto cbStorage = tc::jst::js_lambda_wrap([](string const str) noexcept {
 			return string(tc::concat("hello ", tc::explicit_cast<std::string>(str)));
 		});
-		ensureJsFunctionDeduction<js_function<string(string const)>>(cbStorage);
-		js_function<string(string const)> cb = cbStorage;
+		ensureJsFunctionDeduction<function<string(string const)>>(cbStorage);
+		function<string(string const)> cb = cbStorage;
 		_ASSERTEQUAL(tc::explicit_cast<std::string>(cb(string("world"))), "hello world");
 	}
 	{
-		std::cout << "Passing callbacks as js_function parameter with temporary js_lambda_wrap\n";
-		auto test = [](js_function<string(string)> cb) {
+		std::cout << "Passing callbacks as function parameter with temporary js_lambda_wrap\n";
+		auto test = [](function<string(string)> cb) {
 			_ASSERTEQUAL(tc::explicit_cast<std::string>(cb(string("world"))), "hello world");
 		};
 		test(tc::jst::js_lambda_wrap([](string const str) noexcept {

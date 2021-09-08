@@ -135,6 +135,7 @@ namespace tc::jst {
 		return tc::js::string(::tc::make_str(std::forward<Rng>(rng)...));
 	}
 
+	// Any union of null|T T|null undefined|T or T|undefined behaves like a optional<T>
 	namespace js_union_detail {
 		namespace no_adl {
 			template<typename, typename... Ts>
@@ -333,7 +334,7 @@ namespace tc::jst {
 	} // namespace no_adl
 	using no_adl::js_union;
 	template<typename T>
-	using js_optional = js_union<tc::js::undefined, T>;
+	using optional = js_union<tc::js::undefined, T>;
 
 	template<>
 	struct IsJsInteropable<tc::js::any> : std::true_type {

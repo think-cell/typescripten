@@ -6,7 +6,7 @@
 
 using tc::jst::create_js_object;
 using tc::js::string;
-using tc::jst::js_optional;
+using tc::jst::optional;
 using tc::js::any;
 using tc::js::console;
 using tc::js::ts;

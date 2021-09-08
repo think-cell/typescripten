@@ -151,8 +151,8 @@ As `Bar` for interfaces is an alias for `js_ref<>`, we should make sure
 * `std::vector<T>`'s type tag is `vec<type-tag-of-T>`, name is singular, e.g. `vecstrArguments`.
 * `js_ref<T>`'s type tag is `j<type-tag-of-T>`
     * `ts::Symbol`'s type tag is `sym`.
-    * `js_optional<T>`'s type tag is `o<type-tag-of-T>`.
-    * E.g. `js_ref<js_optional<ts::Symbol>> josymDeclaration;`
+    * `optional<T>`'s type tag is `o<type-tag-of-T>`.
+    * E.g. `js_ref<optional<ts::Symbol>> josymDeclaration;`
 * For (almost) singleton objects from TypeScript Compiler API: `jts<exact-type-name-from-typescript>`.
     * "Almost singleton" ~ "does not require any name in local scope, type is enough".
     * The decision is made on a per-class basis, e.g. `Symbol` is never "almost singleton" to avoid confusion.

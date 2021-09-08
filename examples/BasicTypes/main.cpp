@@ -8,7 +8,7 @@
 
 using tc::js::string;
 using tc::js::any;
-using tc::jst::js_optional;
+using tc::jst::optional;
 
 struct ISomeObject : virtual tc::jst::IObject {
 	struct _tcjs_definitions { // Optional
@@ -80,7 +80,7 @@ int main() {
 
 	{
 		// Test optional of object.
-		using OptionalUnknown = js_optional<tc::jst::js_object>;
+		using OptionalUnknown = optional<tc::jst::js_object>;
 		static_assert(
 			std::is_same<
 				typename emscripten::internal::BindingType<OptionalUnknown>::WireType,
@@ -112,13 +112,13 @@ int main() {
 	{
 		// Test optional of double.
 		{
-			js_optional<double> const iValue;
+			optional<double> const iValue;
 			emscripten::val const emval(iValue);
 			_ASSERT(emval.isUndefined());
 			_ASSERT(!emval.isNumber());
 		}
 		{
-			js_optional<double> const iValue(123.5);
+			optional<double> const iValue(123.5);
 			emscripten::val const emval(iValue);
 			_ASSERT(!emval.isUndefined());
 			_ASSERT(emval.isNumber());
