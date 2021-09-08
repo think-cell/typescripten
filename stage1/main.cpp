@@ -7,7 +7,7 @@
 using tc::jst::create_js_object;
 using tc::js::string;
 using tc::jst::js_optional;
-using tc::jst::js_unknown;
+using tc::js::any;
 using tc::js::console;
 using tc::js::ts;
 using tc::js::Array;
@@ -100,7 +100,7 @@ int main(int cArgs, char* apszArgs[]) {
 						tc::cont_emplace_back(vecjsymExportedSymbol, *josymSourceFile);
 					} else {
 						tc::append(std::cerr, "Module not found for ", tc::explicit_cast<std::string>(jtsSourceFile->fileName()), ", treating at as a global library\n");
-						ts::forEachChild(jtsSourceFile, tc::jst::js_lambda_wrap([&](ts::Node jnodeChild) noexcept -> tc::jst::js_unknown {
+						ts::forEachChild(jtsSourceFile, tc::jst::js_lambda_wrap([&](ts::Node jnodeChild) noexcept -> tc::js::any {
 							if (auto const jotsFunctionDeclaration = ts::isFunctionDeclaration(jnodeChild)) {
 								tc::cont_emplace_back(vecjsymExportedSymbol, (*g_ojtsTypeChecker)->getSymbolAtLocation(*(*jotsFunctionDeclaration)->name()));
 							} else if (auto const jotsVariableStatement = ts::isVariableStatement(jnodeChild)) {
@@ -231,9 +231,9 @@ int main(int cArgs, char* apszArgs[]) {
 							"\t\t\tresult.emplace(", 
 								tc_conditional_range(
 									ts::SyntaxKind::ThisType==ts::Node(ts::TypePredicateNode(*ojstypenode)->parameterName())->kind(),
-									"_this<js_unknown>()",
+									"_this<tc::js::any>()",
 									tc::concat(
-										"js_unknown(",
+										"tc::js::any(",
 										tc::find_first_if<tc::return_element>(
 											jsfunctionlike.m_vecjsvariablelikeParameters,
 											[&](auto const& jsvariable) noexcept {
@@ -335,7 +335,7 @@ int main(int cArgs, char* apszArgs[]) {
 						"template<> struct IsJsHeterogeneousEnum<js_defs::", jsenumEnum.m_strMangledName, "> : std::true_type {\n"
 						"\tstatic inline auto const& Values() {\n"
 						"\t\tusing E = js_defs::", jsenumEnum.m_strMangledName, ";\n"
-						"\t\tstatic tc::unordered_map<E, jst::js_unknown> vals{\n",
+						"\t\tstatic tc::unordered_map<E, js::any> vals{\n",
 						tc::join_separated(
 							tc::transform(
 								tc::filter(
@@ -348,7 +348,7 @@ int main(int cArgs, char* apszArgs[]) {
 										tc::visit(jsenumoption.m_vardblstrValue,
 											[](double dblValue) noexcept {
 												// TODO: std::to_string because of floating-point numbers. May be not enough precision.
-												return tc::make_str("js_unknown(", std::to_string(dblValue), ")");
+												return tc::make_str("tc::js::any(", std::to_string(dblValue), ")");
 											},
 											[](std::string const& strValue) noexcept {
 												return tc::make_str("tc::js::string(\"", strValue, "\")");

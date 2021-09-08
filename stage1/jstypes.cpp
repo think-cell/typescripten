@@ -6,7 +6,7 @@ using tc::js::ReadonlyArray;
 using tc::js::ts;
 using tc::jst::js_optional;
 using tc::js::string;
-using tc::jst::js_unknown;
+using tc::js::any;
 
 extern std::optional<tc::js::ts::TypeChecker> g_ojtsTypeChecker;
 

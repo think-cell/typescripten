@@ -10,7 +10,7 @@
 
 using tc::jst::create_js_object;
 using tc::js::string;
-using tc::jst::js_unknown;
+using tc::js::any;
 using tc::jst::js_function;
 using tc::jst::pass_this_t;
 using tc::jst::pass_all_arguments_t;
@@ -39,34 +39,34 @@ int callback_counter;
 		_ASSERTEQUAL(tc::explicit_cast<std::string>(sMessage), "hello"); \
 		return string(tc::explicit_cast<std::string>(sMessage) + " world"); \
 	})\
-	CreateCallback(TestPassAllArguments, void, (pass_all_arguments_t, Array<js_unknown> const jsarrunkArgs, double a), { \
+	CreateCallback(TestPassAllArguments, void, (pass_all_arguments_t, Array<any> const jsarrunkArgs, double a), { \
 		callback_counter++; \
 		_ASSERTEQUAL(a, 1.0); \
 		_ASSERTEQUAL(tc::explicit_cast<std::string>(string(jsarrunkArgs[1])), "message"); \
 		_ASSERTEQUAL(jsarrunkArgs->length(), 3); \
 	}) \
-	CreateCallback(TestPassThis, void, (pass_this_t, SomeJsClass const jssjcThis, double a, string const b, js_unknown const c), { \
+	CreateCallback(TestPassThis, void, (pass_this_t, SomeJsClass const jssjcThis, double a, string const b, any const c), { \
 		callback_counter++; \
 		_ASSERTEQUAL(jssjcThis->intValue(), 10); \
 		_ASSERTEQUAL(a, 1.0); \
 		_ASSERTEQUAL(tc::explicit_cast<std::string>(b), "message"); \
 		_ASSERT(c.getEmval().isUndefined()); \
 	}) \
-	CreateCallback(TestPassThisPassAllArguments, void, (pass_this_t, SomeJsClass const jssjcThis, pass_all_arguments_t, Array<js_unknown> const jsarrunkArgs, double a), { \
+	CreateCallback(TestPassThisPassAllArguments, void, (pass_this_t, SomeJsClass const jssjcThis, pass_all_arguments_t, Array<any> const jsarrunkArgs, double a), { \
 		callback_counter++; \
 		_ASSERTEQUAL(jssjcThis->intValue(), 10); \
 		_ASSERTEQUAL(a, 1.0); \
 		_ASSERTEQUAL(tc::explicit_cast<std::string>(string(jsarrunkArgs[1])), "message"); \
 		_ASSERTEQUAL(jsarrunkArgs->length(), 3); \
 	}) \
-	CreateCallback(TestPassAllArgumentsAndReturn, SomeJsClass, (pass_all_arguments_t, Array<js_unknown> const jsarrunkArgs, double a), { \
+	CreateCallback(TestPassAllArgumentsAndReturn, SomeJsClass, (pass_all_arguments_t, Array<any> const jsarrunkArgs, double a), { \
 		callback_counter++; \
 		_ASSERTEQUAL(a, 1.0); \
 		_ASSERTEQUAL(tc::explicit_cast<std::string>(string(jsarrunkArgs[1])), "message"); \
 		_ASSERTEQUAL(jsarrunkArgs->length(), 3); \
 		return SomeJsClass(create_js_object, 123); \
 	}) \
-	CreateCallback(TestPassThisAndReturn, SomeJsClass, (pass_this_t, SomeJsClass const jssjcThis, double a, string const b, js_unknown const c), { \
+	CreateCallback(TestPassThisAndReturn, SomeJsClass, (pass_this_t, SomeJsClass const jssjcThis, double a, string const b, any const c), { \
 		callback_counter++; \
 		_ASSERTEQUAL(jssjcThis->intValue(), 10); \
 		_ASSERTEQUAL(a, 1.0); \
@@ -74,7 +74,7 @@ int callback_counter;
 		_ASSERT(c.getEmval().isUndefined()); \
 		return SomeJsClass(create_js_object, 123); \
 	}) \
-	CreateCallback(TestPassThisPassAllArgumentsAndReturn, SomeJsClass, (pass_this_t, SomeJsClass const jssjcThis, pass_all_arguments_t, Array<js_unknown> const jsarrunkArgs, double a), { \
+	CreateCallback(TestPassThisPassAllArgumentsAndReturn, SomeJsClass, (pass_this_t, SomeJsClass const jssjcThis, pass_all_arguments_t, Array<any> const jsarrunkArgs, double a), { \
 		callback_counter++; \
 		_ASSERTEQUAL(jssjcThis->intValue(), 10); \
 		_ASSERTEQUAL(a, 1.0); \

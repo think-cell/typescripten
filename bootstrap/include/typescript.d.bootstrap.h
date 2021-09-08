@@ -47,7 +47,7 @@ namespace tc::js::ts_ext {
 
 		template<typename Fn>
 		auto operator()(Fn fn) noexcept {
-			return _call<void>("forEach", tc::jst::js_lambda_wrap([&](tc::js::ts::Symbol value, tc::jst::js_unknown, tc::jst::js_unknown) noexcept {
+			return _call<void>("forEach", tc::jst::js_lambda_wrap([&](tc::js::ts::Symbol value, tc::js::any, tc::js::any) noexcept {
 				fn(tc_move(value));
 			}));
 		}
@@ -55,7 +55,7 @@ namespace tc::js::ts_ext {
 	using SymbolTable = tc::jst::js_ref<_js_SymbolTable>;
 
 	template<typename T>
-	ReadonlyArray<T> MakeReadOnlyArray(tc::jst::js_unknown unk) noexcept {
+	ReadonlyArray<T> MakeReadOnlyArray(tc::js::any unk) noexcept {
 		return ReadonlyArray<T>(unk);
 	}
 

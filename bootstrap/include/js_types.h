@@ -40,18 +40,25 @@ namespace tc::jst { // Library helper types are in tc::jst namespace
 
 		template<typename T>
 		struct js_ref;
+	} // namespace no_adl
+	using no_adl::IsJsHeterogeneousEnum;
+	using no_adl::IsJsIntegralEnum;
+	using no_adl::IsJsInteropable;
+} // namespace tc::jst
 
-		struct js_unknown {
-			explicit js_unknown(emscripten::val const& _emval) noexcept
+namespace tc::js { // Implementations of TypeScript/JavaScript builtin types are in tc::js namespace
+	namespace no_adl {
+		struct any final {
+			explicit any(emscripten::val const& _emval) noexcept
 				: m_emval(_emval) {}
-			explicit js_unknown(emscripten::val&& _emval) noexcept
+			explicit any(emscripten::val&& _emval) noexcept
 				: m_emval(tc_move(_emval)) {}
 
 			emscripten::val const& getEmval() const& noexcept { return m_emval; }
 			emscripten::val&& getEmval() && noexcept { return tc_move(m_emval); }
 
-			template<typename T, typename = std::enable_if_t<IsJsInteropable<tc::remove_cvref_t<T>>::value>>
-			js_unknown(T&& value) noexcept
+			template<typename T, typename = std::enable_if_t<tc::jst::IsJsInteropable<tc::remove_cvref_t<T>>::value>>
+			any(T&& value) noexcept
 				: m_emval(std::forward<T>(value)) {
 			}
 
@@ -60,22 +67,14 @@ namespace tc::jst { // Library helper types are in tc::jst namespace
 			// JS: undefined/null/NaN/0/""
 			// So we disable it altogether.
 
-			template<typename U, typename = std::enable_if_t<IsJsInteropable<tc::remove_cvref_t<U>>::value && !std::is_same<tc::remove_cvref_t<U>, bool>::value>>
+			template<typename U, typename = std::enable_if_t<tc::jst::IsJsInteropable<tc::remove_cvref_t<U>>::value && !std::is_same<tc::remove_cvref_t<U>, bool>::value>>
 			explicit operator U() const& noexcept { return m_emval.template as<U>(); }
 
 		  private:
 			emscripten::val m_emval;
 		};
-	} // namespace no_adl
-	using no_adl::IsJsHeterogeneousEnum;
-	using no_adl::IsJsIntegralEnum;
-	using no_adl::IsJsInteropable;
-	using no_adl::js_unknown;
-} // namespace tc::jst
 
-namespace tc::js { // Implementations of TypeScript/JavaScript builtin types are in tc::js namespace
-	namespace no_adl {
-		struct undefined {
+		struct undefined final {
 			undefined() noexcept {}
 			explicit undefined(emscripten::val const& IF_TC_CHECKS(emval)) noexcept {
 				_ASSERT(emval.isUndefined());
@@ -83,7 +82,7 @@ namespace tc::js { // Implementations of TypeScript/JavaScript builtin types are
 			emscripten::val getEmval() const& noexcept { return emscripten::val::undefined(); }
 		};
 
-		struct null {
+		struct null final {
 			null() noexcept {}
 			explicit null(emscripten::val const& IF_TC_CHECKS(emval)) noexcept {
 				_ASSERT(emval.isNull());
@@ -108,10 +107,9 @@ namespace tc::js { // Implementations of TypeScript/JavaScript builtin types are
 
 			template<typename Rng, typename = std::enable_if_t<tc::is_explicit_castable<std::string, Rng&&>::value>>
 			explicit string(Rng&& rng) noexcept
-				: m_emval(
-					  // TODO: avoid allocating std::string (we may have to duplicate parts of embind)
-					  tc::explicit_cast<std::string>(std::forward<Rng>(rng))) {
-			}
+				// TODO: avoid allocating std::string (we may have to duplicate parts of embind)
+				: m_emval(tc::explicit_cast<std::string>(std::forward<Rng>(rng))) 
+			{}
 
 			int length() const& noexcept { return m_emval["length"].as<int>(); }
 
@@ -128,6 +126,7 @@ namespace tc::js { // Implementations of TypeScript/JavaScript builtin types are
 	using no_adl::null;
 	using no_adl::string;
 	using no_adl::undefined;
+	using no_adl::any;
 } // namespace tc::js
 
 namespace tc::jst {
@@ -199,7 +198,7 @@ namespace tc::jst {
 
 			static_assert(1 < sizeof...(Ts));
 			static_assert((IsJsInteropable<Ts>::value && ...));
-			static_assert((!std::is_same<Ts, js_unknown>::value && ...));
+			static_assert((!std::is_same<Ts, tc::js::any>::value && ...));
 			static_assert((!std::is_void<Ts>::value && ...));
 
 			using ListTs = tc::type::list<Ts...>;
@@ -245,7 +244,7 @@ namespace tc::jst {
 						  std::forward<Args>(args)...)) {}
 
 			// Basecast to a common type. Assumption: the underlying representation does not depend on what element of ListTs is chosen.
-			template<typename T, std::enable_if_t<!std::is_same<bool, tc::remove_cvref_t<T>>::value && !std::is_same<js_unknown, tc::remove_cvref_t<T>>::value && // js_unkown(T&&) ctor takes care of that.
+			template<typename T, std::enable_if_t<!std::is_same<bool, tc::remove_cvref_t<T>>::value && !std::is_same<tc::js::any, tc::remove_cvref_t<T>>::value && // js_unkown(T&&) ctor takes care of that.
 									 (std::is_convertible<Ts, T>::value && ...)>* = nullptr>
 			operator T() const& noexcept {
 				return m_emval.template as<T>();
@@ -337,7 +336,7 @@ namespace tc::jst {
 	using js_optional = js_union<tc::js::undefined, T>;
 
 	template<>
-	struct IsJsInteropable<js_unknown> : std::true_type {
+	struct IsJsInteropable<tc::js::any> : std::true_type {
 	};
 
 	template<>
@@ -372,7 +371,7 @@ namespace tc::jst {
 			};
 
 			template<typename T>
-			struct IsEmvalWrapper<T, std::enable_if_t<tc::type::find_unique<tc::type::list<js_unknown, tc::js::undefined, tc::js::null, tc::js::string>, T>::found>> : std::true_type {
+			struct IsEmvalWrapper<T, std::enable_if_t<tc::type::find_unique<tc::type::list<tc::js::any, tc::js::undefined, tc::js::null, tc::js::string>, T>::found>> : std::true_type {
 			};
 
 			template<typename... Ts>

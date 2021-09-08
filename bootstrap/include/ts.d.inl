@@ -1026,7 +1026,7 @@ namespace tc::jst {
 template<> struct IsJsHeterogeneousEnum<js_defs::_js_jts_dClassificationTypeNames> : std::true_type {
 	static inline auto const& Values() {
 		using E = js_defs::_js_jts_dClassificationTypeNames;
-		static tc::unordered_map<E, jst::js_unknown> vals{
+		static tc::unordered_map<E, tc::js::any> vals{
 			{E::comment, tc::js::string("comment")},
 			{E::identifier, tc::js::string("identifier")},
 			{E::keyword, tc::js::string("keyword")},
@@ -1063,7 +1063,7 @@ template<> struct IsJsHeterogeneousEnum<js_defs::_js_jts_dClassificationTypeName
 template<> struct IsJsHeterogeneousEnum<js_defs::_js_jts_dExtension> : std::true_type {
 	static inline auto const& Values() {
 		using E = js_defs::_js_jts_dExtension;
-		static tc::unordered_map<E, jst::js_unknown> vals{
+		static tc::unordered_map<E, tc::js::any> vals{
 			{E::Ts, tc::js::string(".ts")},
 			{E::Tsx, tc::js::string(".tsx")},
 			{E::Dts, tc::js::string(".d.ts")},
@@ -1080,7 +1080,7 @@ template<> struct IsJsHeterogeneousEnum<js_defs::_js_jts_dExtension> : std::true
 template<> struct IsJsHeterogeneousEnum<js_defs::_js_jts_dHighlightSpanKind> : std::true_type {
 	static inline auto const& Values() {
 		using E = js_defs::_js_jts_dHighlightSpanKind;
-		static tc::unordered_map<E, jst::js_unknown> vals{
+		static tc::unordered_map<E, tc::js::any> vals{
 			{E::none, tc::js::string("none")},
 			{E::definition, tc::js::string("definition")},
 			{E::reference, tc::js::string("reference")},
@@ -1095,7 +1095,7 @@ template<> struct IsJsHeterogeneousEnum<js_defs::_js_jts_dHighlightSpanKind> : s
 template<> struct IsJsHeterogeneousEnum<js_defs::_js_jts_dInternalSymbolName> : std::true_type {
 	static inline auto const& Values() {
 		using E = js_defs::_js_jts_dInternalSymbolName;
-		static tc::unordered_map<E, jst::js_unknown> vals{
+		static tc::unordered_map<E, tc::js::any> vals{
 			{E::Call, tc::js::string("__call")},
 			{E::Constructor, tc::js::string("__constructor")},
 			{E::New, tc::js::string("__new")},
@@ -1131,7 +1131,7 @@ template<> struct IsJsHeterogeneousEnum<js_defs::_js_jts_dInternalSymbolName> : 
 template<> struct IsJsHeterogeneousEnum<js_defs::_js_jts_dOutliningSpanKind> : std::true_type {
 	static inline auto const& Values() {
 		using E = js_defs::_js_jts_dOutliningSpanKind;
-		static tc::unordered_map<E, jst::js_unknown> vals{
+		static tc::unordered_map<E, tc::js::any> vals{
 			{E::Comment, tc::js::string("comment")},
 			{E::Region, tc::js::string("region")},
 			{E::Code, tc::js::string("code")},
@@ -1144,7 +1144,7 @@ template<> struct IsJsHeterogeneousEnum<js_defs::_js_jts_dOutliningSpanKind> : s
 template<> struct IsJsHeterogeneousEnum<js_defs::_js_jts_dScriptElementKind> : std::true_type {
 	static inline auto const& Values() {
 		using E = js_defs::_js_jts_dScriptElementKind;
-		static tc::unordered_map<E, jst::js_unknown> vals{
+		static tc::unordered_map<E, tc::js::any> vals{
 			{E::unknown, tc::js::string("")},
 			{E::warning, tc::js::string("warning")},
 			{E::keyword, tc::js::string("keyword")},
@@ -1186,7 +1186,7 @@ template<> struct IsJsHeterogeneousEnum<js_defs::_js_jts_dScriptElementKind> : s
 template<> struct IsJsHeterogeneousEnum<js_defs::_js_jts_dScriptElementKindModifier> : std::true_type {
 	static inline auto const& Values() {
 		using E = js_defs::_js_jts_dScriptElementKindModifier;
-		static tc::unordered_map<E, jst::js_unknown> vals{
+		static tc::unordered_map<E, tc::js::any> vals{
 			{E::none, tc::js::string("")},
 			{E::publicMemberModifier, tc::js::string("public")},
 			{E::privateMemberModifier, tc::js::string("private")},
@@ -2109,20 +2109,20 @@ namespace tc::js_defs {
 	struct _impl_js_jts_dserver_dTypesRegistryRequest;
 	using _js_jts_dserver_dTypesRegistryRequest = js_ref<_impl_js_jts_dserver_dTypesRegistryRequest>;
 	using _js_jts_dAccessorDeclaration = js_union<_js_jts_dGetAccessorDeclaration, _js_jts_dSetAccessorDeclaration>;
-	using _js_jts_dAffectedFileResult = js_unknown /*flags=1048576: AffectedFileResult<T> ()*/;
+	using _js_jts_dAffectedFileResult = tc::js::any /*flags=1048576: AffectedFileResult<T> ()*/;
 	using _js_jts_dArrayBindingElement = js_union<_js_jts_dBindingElement, _js_jts_dOmittedExpression>;
 	using _js_jts_dArrayBindingOrAssignmentPattern = js_union<_js_jts_dArrayBindingPattern, _js_jts_dArrayLiteralExpression>;
 	using _js_jts_dAssertionExpression = js_union<_js_jts_dAsExpression, _js_jts_dTypeAssertion>;
-	using _js_jts_dAssignmentOperatorToken = js_unknown /*flags=524288: Token<AssignmentOperator> (TypeReference=ts.Token)*/;
+	using _js_jts_dAssignmentOperatorToken = tc::js::any /*flags=524288: Token<AssignmentOperator> (TypeReference=ts.Token)*/;
 	using _js_jts_dAssignmentPattern = js_union<_js_jts_dArrayLiteralExpression, _js_jts_dObjectLiteralExpression>;
-	using _js_jts_dAsteriskToken = js_unknown /*flags=524288: Token<SyntaxKind.AsteriskToken> (TypeReference=ts.Token)*/;
-	using _js_jts_dAwaitKeywordToken = js_unknown /*flags=524288: Token<SyntaxKind.AwaitKeyword> (TypeReference=ts.Token)*/;
+	using _js_jts_dAsteriskToken = tc::js::any /*flags=524288: Token<SyntaxKind.AsteriskToken> (TypeReference=ts.Token)*/;
+	using _js_jts_dAwaitKeywordToken = tc::js::any /*flags=524288: Token<SyntaxKind.AwaitKeyword> (TypeReference=ts.Token)*/;
 	using _js_jts_dBaseType = js_union<_js_jts_dIntersectionType, _js_jts_dObjectType>;
-	using _js_jts_dBinaryOperatorToken = js_unknown /*flags=524288: Token<BinaryOperator> (TypeReference=ts.Token)*/;
+	using _js_jts_dBinaryOperatorToken = tc::js::any /*flags=524288: Token<BinaryOperator> (TypeReference=ts.Token)*/;
 	using _js_jts_dBindingPattern = js_union<_js_jts_dArrayBindingPattern, _js_jts_dObjectBindingPattern>;
 	using _js_jts_dBindingName = js_union<_js_jts_dArrayBindingPattern, _js_jts_dIdentifier, _js_jts_dObjectBindingPattern>;
-	using _js_jts_dBindingOrAssignmentElement = js_unknown /*flags=1048576: BindingOrAssignmentElement ()*/;
-	using _js_jts_dBindingOrAssignmentElementRestIndicator = js_unknown /*flags=1048576: BindingOrAssignmentElementRestIndicator ()*/;
+	using _js_jts_dBindingOrAssignmentElement = tc::js::any /*flags=1048576: BindingOrAssignmentElement ()*/;
+	using _js_jts_dBindingOrAssignmentElementRestIndicator = tc::js::any /*flags=1048576: BindingOrAssignmentElementRestIndicator ()*/;
 	using _js_jts_dObjectBindingOrAssignmentPattern = js_union<_js_jts_dObjectBindingPattern, _js_jts_dObjectLiteralExpression>;
 	using _js_jts_dBindingOrAssignmentPattern = js_union<_js_jts_dArrayBindingPattern, _js_jts_dArrayLiteralExpression, _js_jts_dObjectBindingPattern, _js_jts_dObjectLiteralExpression>;
 	using _js_jts_dBindingOrAssignmentElementTarget = js_union<_js_jts_dArrayBindingPattern, _js_jts_dArrayLiteralExpression, _js_jts_dElementAccessExpression, _js_jts_dIdentifier, _js_jts_dObjectBindingPattern, _js_jts_dObjectLiteralExpression, _js_jts_dOmittedExpression, _js_jts_dPropertyAccessExpression>;
@@ -2133,9 +2133,9 @@ namespace tc::js_defs {
 	using _js_jts_dCallLikeExpression = js_union<_js_jts_dCallExpression, _js_jts_dDecorator, _js_jts_dJsxOpeningElement, _js_jts_dJsxSelfClosingElement, _js_jts_dNewExpression, _js_jts_dTaggedTemplateExpression>;
 	using _js_jts_dClassLikeDeclaration = js_union<_js_jts_dClassDeclaration, _js_jts_dClassExpression>;
 	using _js_jts_dCodeActionCommand = _js_jts_dInstallPackageAction;
-	using _js_jts_dColonToken = js_unknown /*flags=524288: Token<SyntaxKind.ColonToken> (TypeReference=ts.Token)*/;
+	using _js_jts_dColonToken = tc::js::any /*flags=524288: Token<SyntaxKind.ColonToken> (TypeReference=ts.Token)*/;
 	using _js_jts_dConciseBody = js_union<_js_jts_dBlock, _js_jts_dExpression>;
-	using _js_jts_dCreateProgram = js_function<js_unknown /*flags=262144: T ()*/(js_union<js::ReadonlyArray<tc::js::string>, tc::js::undefined>, js_union<_js_jts_dCompilerOptions, tc::js::undefined>, js_union<_js_jts_dCompilerHost, tc::js::undefined>, js_unknown /*flags=1048576: T | tc::js::undefined ()*/, js_union<js::ReadonlyArray<_js_jts_dDiagnostic>, tc::js::undefined>, js_union<js::ReadonlyArray<_js_jts_dProjectReference>, tc::js::undefined>)>;
+	using _js_jts_dCreateProgram = js_function<tc::js::any /*flags=262144: T ()*/(js_union<js::ReadonlyArray<tc::js::string>, tc::js::undefined>, js_union<_js_jts_dCompilerOptions, tc::js::undefined>, js_union<_js_jts_dCompilerHost, tc::js::undefined>, tc::js::any /*flags=1048576: T | tc::js::undefined ()*/, js_union<js::ReadonlyArray<_js_jts_dDiagnostic>, tc::js::undefined>, js_union<js::ReadonlyArray<_js_jts_dProjectReference>, tc::js::undefined>)>;
 	using _js_jts_dCustomTransformerFactory = js_function<_js_jts_dCustomTransformer(_js_jts_dTransformationContext)>;
 	using _js_jts_dStringLiteralLike = js_union<_js_jts_dNoSubstitutionTemplateLiteral, _js_jts_dStringLiteral>;
 	using _js_jts_dDeclarationName = js_union<_js_jts_dArrayBindingPattern, _js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNoSubstitutionTemplateLiteral, _js_jts_dNumericLiteral, _js_jts_dObjectBindingPattern, _js_jts_dStringLiteral>;
@@ -2146,15 +2146,15 @@ namespace tc::js_defs {
 	using _js_jts_dDestructuringPattern = _js_jts_dBindingOrAssignmentPattern;
 	using _js_jts_dDiagnosticReporter = js_function<void(_js_jts_dDiagnostic)>;
 	using _js_jts_dDirectoryWatcherCallback = js_function<void(tc::js::string)>;
-	using _js_jts_dDotDotDotToken = js_unknown /*flags=524288: Token<SyntaxKind.DotDotDotToken> (TypeReference=ts.Token)*/;
+	using _js_jts_dDotDotDotToken = tc::js::any /*flags=524288: Token<SyntaxKind.DotDotDotToken> (TypeReference=ts.Token)*/;
 	using _js_jts_dEmitHelperUniqueNameCallback = js_function<tc::js::string(tc::js::string)>;
 	using _js_jts_dEntityName = js_union<_js_jts_dIdentifier, _js_jts_dQualifiedName>;
 	using _js_jts_dEntityNameExpression = js_union<_js_jts_dIdentifier, _js_jts_dPropertyAccessEntityNameExpression>;
 	using _js_jts_dEntityNameOrEntityNameExpression = js_union<_js_jts_dIdentifier, _js_jts_dPropertyAccessEntityNameExpression, _js_jts_dQualifiedName>;
-	using _js_jts_dEqualsGreaterThanToken = js_unknown /*flags=524288: Token<SyntaxKind.EqualsGreaterThanToken> (TypeReference=ts.Token)*/;
-	using _js_jts_dEqualsToken = js_unknown /*flags=524288: Token<SyntaxKind.EqualsToken> (TypeReference=ts.Token)*/;
+	using _js_jts_dEqualsGreaterThanToken = tc::js::any /*flags=524288: Token<SyntaxKind.EqualsGreaterThanToken> (TypeReference=ts.Token)*/;
+	using _js_jts_dEqualsToken = tc::js::any /*flags=524288: Token<SyntaxKind.EqualsToken> (TypeReference=ts.Token)*/;
 	using _js_jts_dErrorCallback = js_function<void(_js_jts_dDiagnosticMessage, double)>;
-	using _js_jts_dExclamationToken = js_unknown /*flags=524288: Token<SyntaxKind.ExclamationToken> (TypeReference=ts.Token)*/;
+	using _js_jts_dExclamationToken = tc::js::any /*flags=524288: Token<SyntaxKind.ExclamationToken> (TypeReference=ts.Token)*/;
 	using _js_jts_dFileWatcherCallback = js_function<void(tc::js::string, _js_jts_dFileWatcherEventKind /*FileWatcherEventKind.Created*/)>;
 	using _js_jts_dFlowNode = js_union<_js_jts_dAfterFinallyFlow, _js_jts_dFlowArrayMutation, _js_jts_dFlowAssignment, _js_jts_dFlowCondition, _js_jts_dFlowLabel, _js_jts_dFlowStart, _js_jts_dFlowSwitchClause, _js_jts_dPreFinallyFlow>;
 	using _js_jts_dFlowType = js_union<_js_jts_dIncompleteType, _js_jts_dType>;
@@ -2175,9 +2175,9 @@ namespace tc::js_defs {
 	using _js_jts_dJsxAttributeLike = js_union<_js_jts_dJsxAttribute, _js_jts_dJsxSpreadAttribute>;
 	using _js_jts_dJsxChild = js_union<_js_jts_dJsxElement, _js_jts_dJsxExpression, _js_jts_dJsxFragment, _js_jts_dJsxSelfClosingElement, _js_jts_dJsxText>;
 	using _js_jts_dJsxTagNameExpression = js_union<_js_jts_dIdentifier, _js_jts_dJsxTagNamePropertyAccess, _js_jts_dThisExpression>;
-	using _js_jts_dMinusToken = js_unknown /*flags=524288: Token<SyntaxKind.MinusToken> (TypeReference=ts.Token)*/;
-	using _js_jts_dModifier = js_unknown /*flags=1048576: Modifier ()*/;
-	using _js_jts_dModifiersArray = js_unknown /*flags=524288: NodeArray<Modifier> (TypeReference=ts.NodeArray)*/;
+	using _js_jts_dMinusToken = tc::js::any /*flags=524288: Token<SyntaxKind.MinusToken> (TypeReference=ts.Token)*/;
+	using _js_jts_dModifier = tc::js::any /*flags=1048576: Modifier ()*/;
+	using _js_jts_dModifiersArray = tc::js::any /*flags=524288: NodeArray<Modifier> (TypeReference=ts.NodeArray)*/;
 	using _js_jts_dNamespaceBody = js_union<_js_jts_dModuleBlock, _js_jts_dNamespaceDeclaration>;
 	using _js_jts_dModuleBody = js_union<_js_jts_dIdentifier, _js_jts_dJSDocNamespaceDeclaration, _js_jts_dModuleBlock, _js_jts_dNamespaceDeclaration>;
 	using _js_jts_dModuleName = js_union<_js_jts_dIdentifier, _js_jts_dStringLiteral>;
@@ -2187,18 +2187,18 @@ namespace tc::js_defs {
 	using _js_jts_dObjectLiteralElementLike = js_union<_js_jts_dGetAccessorDeclaration, _js_jts_dMethodDeclaration, _js_jts_dPropertyAssignment, _js_jts_dSetAccessorDeclaration, _js_jts_dShorthandPropertyAssignment, _js_jts_dSpreadAssignment>;
 	using _js_jts_dObjectTypeDeclaration = js_union<_js_jts_dClassDeclaration, _js_jts_dClassExpression, _js_jts_dInterfaceDeclaration, _js_jts_dTypeLiteralNode>;
 	using _js_jts_dOrganizeImportsScope = _js_jts_dCombinedCodeFixScope;
-	using _js_jts_dPlusToken = js_unknown /*flags=524288: Token<SyntaxKind.PlusToken> (TypeReference=ts.Token)*/;
+	using _js_jts_dPlusToken = tc::js::any /*flags=524288: Token<SyntaxKind.PlusToken> (TypeReference=ts.Token)*/;
 	using _js_jts_dPropertyName = js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral>;
-	using _js_jts_dQuestionToken = js_unknown /*flags=524288: Token<SyntaxKind.QuestionToken> (TypeReference=ts.Token)*/;
-	using _js_jts_dReadonlyToken = js_unknown /*flags=524288: Token<SyntaxKind.ReadonlyKeyword> (TypeReference=ts.Token)*/;
+	using _js_jts_dQuestionToken = tc::js::any /*flags=524288: Token<SyntaxKind.QuestionToken> (TypeReference=ts.Token)*/;
+	using _js_jts_dReadonlyToken = tc::js::any /*flags=524288: Token<SyntaxKind.ReadonlyKeyword> (TypeReference=ts.Token)*/;
 	using _js_jts_dRenameInfo = js_union<_js_jts_dRenameInfoFailure, _js_jts_dRenameInfoSuccess>;
 	using _js_jts_dSignatureHelpTriggerReason = js_union<_js_jts_dSignatureHelpCharacterTypedReason, _js_jts_dSignatureHelpInvokedReason, _js_jts_dSignatureHelpRetriggeredReason>;
 	using _js_jts_dStructuredType = js_union<_js_jts_dIntersectionType, _js_jts_dObjectType, _js_jts_dUnionType>;
 	using _js_jts_dSuperProperty = js_union<_js_jts_dSuperElementAccessExpression, _js_jts_dSuperPropertyAccessExpression>;
-	using _js_jts_dSymbolTable = js_unknown /*flags=524288: UnderscoreEscapedMap<Symbol> (TypeReference=ts.UnderscoreEscapedMap)*/;
+	using _js_jts_dSymbolTable = tc::js::any /*flags=524288: UnderscoreEscapedMap<Symbol> (TypeReference=ts.UnderscoreEscapedMap)*/;
 	using _js_jts_dTemplateLiteral = js_union<_js_jts_dNoSubstitutionTemplateLiteral, _js_jts_dTemplateExpression>;
 	using _js_jts_dTemplateLiteralToken = js_union<_js_jts_dNoSubstitutionTemplateLiteral, _js_jts_dTemplateHead, _js_jts_dTemplateMiddle, _js_jts_dTemplateTail>;
-	using _js_jts_dTransformer = js_function<js_unknown /*flags=262144: T ()*/(js_unknown /*flags=262144: T ()*/)>;
+	using _js_jts_dTransformer = js_function<tc::js::any /*flags=262144: T ()*/(tc::js::any /*flags=262144: T ()*/)>;
 	using _js_jts_dTransformerFactory = js_function<_js_jts_dTransformer(_js_jts_dTransformationContext)>;
 	using _js_jts_dTypePredicate = js_union<_js_jts_dIdentifierTypePredicate, _js_jts_dThisTypePredicate>;
 	using _js_jts_dTypeReferenceType = js_union<_js_jts_dExpressionWithTypeArguments, _js_jts_dTypeReferenceNode>;
@@ -2785,15 +2785,15 @@ namespace tc::js_defs {
 	using SignatureHelpTriggerReason = _js_jts_dSignatureHelpTriggerReason;
 	using CodeActionCommand = _js_jts_dCodeActionCommand;
 	using RenameInfo = _js_jts_dRenameInfo;
-			static auto addEmitHelper(js_unknown /*flags=262144: T ()*/ node, _js_jts_dEmitHelper helper) noexcept;
-			static auto addEmitHelpers(js_unknown /*flags=262144: T ()*/ node, js_union<js::Array<_js_jts_dEmitHelper>, tc::js::undefined> helpers = tc::js::undefined()) noexcept;
-			static auto addSyntheticLeadingComment(js_unknown /*flags=262144: T ()*/ node, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/ kind, tc::js::string text, js_union<bool /*false*/, tc::js::undefined> hasTrailingNewLine = tc::js::undefined()) noexcept;
-			static auto addSyntheticTrailingComment(js_unknown /*flags=262144: T ()*/ node, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/ kind, tc::js::string text, js_union<bool /*false*/, tc::js::undefined> hasTrailingNewLine = tc::js::undefined()) noexcept;
+			static auto addEmitHelper(tc::js::any /*flags=262144: T ()*/ node, _js_jts_dEmitHelper helper) noexcept;
+			static auto addEmitHelpers(tc::js::any /*flags=262144: T ()*/ node, js_union<js::Array<_js_jts_dEmitHelper>, tc::js::undefined> helpers = tc::js::undefined()) noexcept;
+			static auto addSyntheticLeadingComment(tc::js::any /*flags=262144: T ()*/ node, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/ kind, tc::js::string text, js_union<bool /*false*/, tc::js::undefined> hasTrailingNewLine = tc::js::undefined()) noexcept;
+			static auto addSyntheticTrailingComment(tc::js::any /*flags=262144: T ()*/ node, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/ kind, tc::js::string text, js_union<bool /*false*/, tc::js::undefined> hasTrailingNewLine = tc::js::undefined()) noexcept;
 			static auto classicNameResolver(tc::js::string moduleName, tc::js::string containingFile, _js_jts_dCompilerOptions compilerOptions, _js_jts_dModuleResolutionHost host, js_union<_js_jts_dNonRelativeModuleNameResolutionCache, tc::js::undefined> cache = tc::js::undefined(), js_union<_js_jts_dResolvedProjectReference, tc::js::undefined> redirectedReference = tc::js::undefined()) noexcept;
 			static auto collapseTextChangeRangesAcrossMultipleVersions(js::ReadonlyArray<_js_jts_dTextChangeRange> changes) noexcept;
-			static auto convertCompilerOptionsFromJson(js_unknown jsonOptions, tc::js::string basePath, js_union<tc::js::string, tc::js::undefined> configFileName = tc::js::undefined()) noexcept;
-			static auto convertToObject(_js_jts_dJsonSourceFile sourceFile, js_unknown /*flags=524288: Push<Diagnostic> (TypeReference=ts.Push)*/ errors) noexcept;
-			static auto convertTypeAcquisitionFromJson(js_unknown jsonOptions, tc::js::string basePath, js_union<tc::js::string, tc::js::undefined> configFileName = tc::js::undefined()) noexcept;
+			static auto convertCompilerOptionsFromJson(tc::js::any jsonOptions, tc::js::string basePath, js_union<tc::js::string, tc::js::undefined> configFileName = tc::js::undefined()) noexcept;
+			static auto convertToObject(_js_jts_dJsonSourceFile sourceFile, tc::js::any /*flags=524288: Push<Diagnostic> (TypeReference=ts.Push)*/ errors) noexcept;
+			static auto convertTypeAcquisitionFromJson(tc::js::any jsonOptions, tc::js::string basePath, js_union<tc::js::string, tc::js::undefined> configFileName = tc::js::undefined()) noexcept;
 			static auto couldStartTrivia(tc::js::string text, double pos) noexcept;
 			static auto createAbstractBuilder(_js_jts_dProgram newProgram, _js_jts_dBuilderProgramHost host, js_union<_js_jts_dBuilderProgram, tc::js::undefined> oldProgram = tc::js::undefined(), js_union<js::ReadonlyArray<_js_jts_dDiagnostic>, tc::js::undefined> configFileParsingDiagnostics = tc::js::undefined()) noexcept;
 			static auto createAbstractBuilder(js_union<js::ReadonlyArray<tc::js::string>, tc::js::undefined> rootNames = tc::js::undefined(), js_union<_js_jts_dCompilerOptions, tc::js::undefined> options = tc::js::undefined(), js_union<_js_jts_dCompilerHost, tc::js::undefined> host = tc::js::undefined(), js_union<_js_jts_dBuilderProgram, tc::js::undefined> oldProgram = tc::js::undefined(), js_union<js::ReadonlyArray<_js_jts_dDiagnostic>, tc::js::undefined> configFileParsingDiagnostics = tc::js::undefined(), js_union<js::ReadonlyArray<_js_jts_dProjectReference>, tc::js::undefined> projectReferences = tc::js::undefined()) noexcept;
@@ -2801,14 +2801,14 @@ namespace tc::js_defs {
 			static auto createArrayBindingPattern(js::ReadonlyArray<_js_jts_dArrayBindingElement> elements) noexcept;
 			static auto createArrayLiteral(js_union<js::ReadonlyArray<_js_jts_dExpression>, tc::js::undefined> elements = tc::js::undefined(), js_union<bool /*false*/, tc::js::undefined> multiLine = tc::js::undefined()) noexcept;
 			static auto createArrayTypeNode(_js_jts_dTypeNode elementType) noexcept;
-			static auto createArrowFunction(js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_unknown /*flags=1048576: Token<SyntaxKind.EqualsGreaterThanToken> | tc::js::undefined ()*/ equalsGreaterThanToken, _js_jts_dConciseBody body) noexcept;
+			static auto createArrowFunction(js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, tc::js::any /*flags=1048576: Token<SyntaxKind.EqualsGreaterThanToken> | tc::js::undefined ()*/ equalsGreaterThanToken, _js_jts_dConciseBody body) noexcept;
 			static auto createAsExpression(_js_jts_dExpression expression, _js_jts_dTypeNode type) noexcept;
 			static auto createAssignment(_js_jts_dAssignmentPattern left, _js_jts_dExpression right) noexcept;
 			static auto createAssignment(_js_jts_dExpression left, _js_jts_dExpression right) noexcept;
 			static auto createAwait(_js_jts_dExpression expression) noexcept;
 			static auto createBigIntLiteral(tc::js::string value) noexcept;
-			static auto createBinary(_js_jts_dExpression left, js_unknown /*flags=1048576: SyntaxKind.CommaToken | SyntaxKind.LessThanToken | SyntaxKind.GreaterThanToken | SyntaxKind.LessThanEqualsToken | SyntaxKind.GreaterThanEqualsToken | SyntaxKind.EqualsEqualsToken | SyntaxKind.ExclamationEqualsToken | SyntaxKind.EqualsEqualsEqualsToken | SyntaxKind.ExclamationEqualsEqualsToken | SyntaxKind.PlusToken ... ()*/ operator_, _js_jts_dExpression right) noexcept;
-			static auto createBindingElement(js_unknown /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ dotDotDotToken, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::string, tc::js::undefined> propertyName, js_union<_js_jts_dArrayBindingPattern, _js_jts_dIdentifier, _js_jts_dObjectBindingPattern, tc::js::string> name, js_union<_js_jts_dExpression, tc::js::undefined> initializer = tc::js::undefined()) noexcept;
+			static auto createBinary(_js_jts_dExpression left, tc::js::any /*flags=1048576: SyntaxKind.CommaToken | SyntaxKind.LessThanToken | SyntaxKind.GreaterThanToken | SyntaxKind.LessThanEqualsToken | SyntaxKind.GreaterThanEqualsToken | SyntaxKind.EqualsEqualsToken | SyntaxKind.ExclamationEqualsToken | SyntaxKind.EqualsEqualsEqualsToken | SyntaxKind.ExclamationEqualsEqualsToken | SyntaxKind.PlusToken ... ()*/ operator_, _js_jts_dExpression right) noexcept;
+			static auto createBindingElement(tc::js::any /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ dotDotDotToken, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::string, tc::js::undefined> propertyName, js_union<_js_jts_dArrayBindingPattern, _js_jts_dIdentifier, _js_jts_dObjectBindingPattern, tc::js::string> name, js_union<_js_jts_dExpression, tc::js::undefined> initializer = tc::js::undefined()) noexcept;
 			static auto createBlock(js::ReadonlyArray<_js_jts_dStatement> statements, js_union<bool /*false*/, tc::js::undefined> multiLine = tc::js::undefined()) noexcept;
 			static auto createBreak(js_union<_js_jts_dIdentifier, tc::js::string, tc::js::undefined> label = tc::js::undefined()) noexcept;
 			static auto createBundle(js::ReadonlyArray<_js_jts_dSourceFile> sourceFiles, js_union<js::ReadonlyArray<js_union<_js_jts_dInputFiles, _js_jts_dUnparsedSource>>, tc::js::undefined> prepends = tc::js::undefined()) noexcept;
@@ -2825,7 +2825,7 @@ namespace tc::js_defs {
 			static auto createCompilerHost(_js_jts_dCompilerOptions options, js_union<bool /*false*/, tc::js::undefined> setParentNodes = tc::js::undefined()) noexcept;
 			static auto createComputedPropertyName(_js_jts_dExpression expression) noexcept;
 			static auto createConditional(_js_jts_dExpression condition, _js_jts_dExpression whenTrue, _js_jts_dExpression whenFalse) noexcept;
-			static auto createConditional(_js_jts_dExpression condition, js_unknown /*flags=524288: Token<SyntaxKind.QuestionToken> (TypeReference=ts.Token)*/ questionToken, _js_jts_dExpression whenTrue, js_unknown /*flags=524288: Token<SyntaxKind.ColonToken> (TypeReference=ts.Token)*/ colonToken, _js_jts_dExpression whenFalse) noexcept;
+			static auto createConditional(_js_jts_dExpression condition, tc::js::any /*flags=524288: Token<SyntaxKind.QuestionToken> (TypeReference=ts.Token)*/ questionToken, _js_jts_dExpression whenTrue, tc::js::any /*flags=524288: Token<SyntaxKind.ColonToken> (TypeReference=ts.Token)*/ colonToken, _js_jts_dExpression whenFalse) noexcept;
 			static auto createConditionalTypeNode(_js_jts_dTypeNode checkType, _js_jts_dTypeNode extendsType, _js_jts_dTypeNode trueType, _js_jts_dTypeNode falseType) noexcept;
 			static auto createConstructSignature(js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined()) noexcept;
 			static auto createConstructor(js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dBlock, tc::js::undefined> body = tc::js::undefined()) noexcept;
@@ -2855,9 +2855,9 @@ namespace tc::js_defs {
 			static auto createFileLevelUniqueName(tc::js::string text) noexcept;
 			static auto createFor(js_union<_js_jts_dExpression, _js_jts_dVariableDeclarationList, tc::js::undefined> initializer, js_union<_js_jts_dExpression, tc::js::undefined> condition, js_union<_js_jts_dExpression, tc::js::undefined> incrementor, _js_jts_dStatement statement) noexcept;
 			static auto createForIn(_js_jts_dForInitializer initializer, _js_jts_dExpression expression, _js_jts_dStatement statement) noexcept;
-			static auto createForOf(js_unknown /*flags=1048576: Token<SyntaxKind.AwaitKeyword> | tc::js::undefined ()*/ awaitModifier, _js_jts_dForInitializer initializer, _js_jts_dExpression expression, _js_jts_dStatement statement) noexcept;
-			static auto createFunctionDeclaration(js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_unknown /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, js_union<_js_jts_dIdentifier, tc::js::string, tc::js::undefined> name, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined(), js_union<_js_jts_dBlock, tc::js::undefined> body = tc::js::undefined()) noexcept;
-			static auto createFunctionExpression(js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_unknown /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, js_union<_js_jts_dIdentifier, tc::js::string, tc::js::undefined> name, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js_union<js::ReadonlyArray<_js_jts_dParameterDeclaration>, tc::js::undefined> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, _js_jts_dBlock body) noexcept;
+			static auto createForOf(tc::js::any /*flags=1048576: Token<SyntaxKind.AwaitKeyword> | tc::js::undefined ()*/ awaitModifier, _js_jts_dForInitializer initializer, _js_jts_dExpression expression, _js_jts_dStatement statement) noexcept;
+			static auto createFunctionDeclaration(js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, tc::js::any /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, js_union<_js_jts_dIdentifier, tc::js::string, tc::js::undefined> name, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined(), js_union<_js_jts_dBlock, tc::js::undefined> body = tc::js::undefined()) noexcept;
+			static auto createFunctionExpression(js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, tc::js::any /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, js_union<_js_jts_dIdentifier, tc::js::string, tc::js::undefined> name, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js_union<js::ReadonlyArray<_js_jts_dParameterDeclaration>, tc::js::undefined> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, _js_jts_dBlock body) noexcept;
 			static auto createFunctionTypeNode(js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined()) noexcept;
 			static auto createGetAccessor(js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::string> name, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined(), js_union<_js_jts_dBlock, tc::js::undefined> body = tc::js::undefined()) noexcept;
 			static auto createHeritageClause(_js_jts_dSyntaxKind /*SyntaxKind.ExtendsKeyword*/ token, js::ReadonlyArray<_js_jts_dExpressionWithTypeArguments> types) noexcept;
@@ -2884,7 +2884,7 @@ namespace tc::js_defs {
 			static auto createJsxAttributes(js::ReadonlyArray<_js_jts_dJsxAttributeLike> properties) noexcept;
 			static auto createJsxClosingElement(_js_jts_dJsxTagNameExpression tagName) noexcept;
 			static auto createJsxElement(_js_jts_dJsxOpeningElement openingElement, js::ReadonlyArray<_js_jts_dJsxChild> children, _js_jts_dJsxClosingElement closingElement) noexcept;
-			static auto createJsxExpression(js_unknown /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ dotDotDotToken = tc::js::undefined(), js_union<_js_jts_dExpression, tc::js::undefined> expression = tc::js::undefined()) noexcept;
+			static auto createJsxExpression(tc::js::any /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ dotDotDotToken = tc::js::undefined(), js_union<_js_jts_dExpression, tc::js::undefined> expression = tc::js::undefined()) noexcept;
 			static auto createJsxFragment(_js_jts_dJsxOpeningFragment openingFragment, js::ReadonlyArray<_js_jts_dJsxChild> children, _js_jts_dJsxClosingFragment closingFragment) noexcept;
 			static auto createJsxJsxClosingFragment() noexcept;
 			static auto createJsxOpeningElement(_js_jts_dJsxTagNameExpression tagName, js_union<js::ReadonlyArray<_js_jts_dTypeNode>, tc::js::undefined> typeArguments, _js_jts_dJsxAttributes attributes) noexcept;
@@ -2906,11 +2906,11 @@ namespace tc::js_defs {
 			static auto createLogicalNot(_js_jts_dExpression operand) noexcept;
 			static auto createLogicalOr(_js_jts_dExpression left, _js_jts_dExpression right) noexcept;
 			static auto createLoopVariable() noexcept;
-			static auto createMappedTypeNode(js_unknown /*flags=1048576: Token<SyntaxKind.ReadonlyKeyword> | Token<SyntaxKind.PlusToken> | Token<SyntaxKind.MinusToken> | tc::js::undefined ()*/ readonlyToken, _js_jts_dTypeParameterDeclaration typeParameter, js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | Token<SyntaxKind.PlusToken> | Token<SyntaxKind.MinusToken> | tc::js::undefined ()*/ questionToken = tc::js::undefined(), js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined()) noexcept;
+			static auto createMappedTypeNode(tc::js::any /*flags=1048576: Token<SyntaxKind.ReadonlyKeyword> | Token<SyntaxKind.PlusToken> | Token<SyntaxKind.MinusToken> | tc::js::undefined ()*/ readonlyToken, _js_jts_dTypeParameterDeclaration typeParameter, tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | Token<SyntaxKind.PlusToken> | Token<SyntaxKind.MinusToken> | tc::js::undefined ()*/ questionToken = tc::js::undefined(), js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined()) noexcept;
 			static auto createMetaProperty(_js_jts_dSyntaxKind /*SyntaxKind.ImportKeyword*/ keywordToken, _js_jts_dIdentifier name) noexcept;
-			static auto createMethod(js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_unknown /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::string> name, js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined(), js_union<_js_jts_dBlock, tc::js::undefined> body = tc::js::undefined()) noexcept;
-			static auto createMethodSignature(js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::string> name, js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken = tc::js::undefined()) noexcept;
-			static auto createModifier(js_unknown /*flags=262144: T ()*/ kind) noexcept;
+			static auto createMethod(js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, tc::js::any /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::string> name, tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined(), js_union<_js_jts_dBlock, tc::js::undefined> body = tc::js::undefined()) noexcept;
+			static auto createMethodSignature(js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::string> name, tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken = tc::js::undefined()) noexcept;
+			static auto createModifier(tc::js::any /*flags=262144: T ()*/ kind) noexcept;
 			static auto createModifiersFromModifierFlags(_js_jts_dModifierFlags /*ModifierFlags.None*/ flags) noexcept;
 			static auto createModuleBlock(js::ReadonlyArray<_js_jts_dStatement> statements) noexcept;
 			static auto createModuleDeclaration(js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, _js_jts_dModuleName name, js_union<_js_jts_dIdentifier, _js_jts_dJSDocNamespaceDeclaration, _js_jts_dModuleBlock, _js_jts_dNamespaceDeclaration, tc::js::undefined> body = tc::js::undefined(), js_union<_js_jts_dNodeFlags /*NodeFlags.YieldContext*/, tc::js::undefined> flags = tc::js::undefined()) noexcept;
@@ -2922,7 +2922,7 @@ namespace tc::js_defs {
 			static auto createNew(_js_jts_dExpression expression, js_union<js::ReadonlyArray<_js_jts_dTypeNode>, tc::js::undefined> typeArguments = tc::js::undefined(), js_union<js::ReadonlyArray<_js_jts_dExpression>, tc::js::undefined> argumentsArray = tc::js::undefined()) noexcept;
 			static auto createNoSubstitutionTemplateLiteral(tc::js::string text) noexcept;
 			static auto createNode(_js_jts_dSyntaxKind /*SyntaxKind.Unknown*/ kind, js_union<double, tc::js::undefined> pos = tc::js::undefined(), js_union<double, tc::js::undefined> end = tc::js::undefined()) noexcept;
-			static auto createNodeArray(js_union<js::ReadonlyArray<js_unknown /*flags=262144: T ()*/>, tc::js::undefined> elements = tc::js::undefined(), js_union<bool /*false*/, tc::js::undefined> hasTrailingComma = tc::js::undefined()) noexcept;
+			static auto createNodeArray(js_union<js::ReadonlyArray<tc::js::any /*flags=262144: T ()*/>, tc::js::undefined> elements = tc::js::undefined(), js_union<bool /*false*/, tc::js::undefined> hasTrailingComma = tc::js::undefined()) noexcept;
 			static auto createNonNullExpression(_js_jts_dExpression expression) noexcept;
 			static auto createNotEmittedStatement(_js_jts_dNode original) noexcept;
 			static auto createNull() noexcept;
@@ -2932,7 +2932,7 @@ namespace tc::js_defs {
 			static auto createOmittedExpression() noexcept;
 			static auto createOptimisticUniqueName(tc::js::string text) noexcept;
 			static auto createOptionalTypeNode(_js_jts_dTypeNode type) noexcept;
-			static auto createParameter(js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_unknown /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ dotDotDotToken, js_union<_js_jts_dArrayBindingPattern, _js_jts_dIdentifier, _js_jts_dObjectBindingPattern, tc::js::string> name, js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken = tc::js::undefined(), js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined(), js_union<_js_jts_dExpression, tc::js::undefined> initializer = tc::js::undefined()) noexcept;
+			static auto createParameter(js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, tc::js::any /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ dotDotDotToken, js_union<_js_jts_dArrayBindingPattern, _js_jts_dIdentifier, _js_jts_dObjectBindingPattern, tc::js::string> name, tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken = tc::js::undefined(), js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined(), js_union<_js_jts_dExpression, tc::js::undefined> initializer = tc::js::undefined()) noexcept;
 			static auto createParen(_js_jts_dExpression expression) noexcept;
 			static auto createParenthesizedType(_js_jts_dTypeNode type) noexcept;
 			static auto createPartiallyEmittedExpression(_js_jts_dExpression expression, js_union<_js_jts_dNode, tc::js::undefined> original = tc::js::undefined()) noexcept;
@@ -2942,10 +2942,10 @@ namespace tc::js_defs {
 			static auto createPrinter(js_union<_js_jts_dPrinterOptions, tc::js::undefined> printerOptions = tc::js::undefined(), js_union<_js_jts_dPrintHandlers, tc::js::undefined> handlers = tc::js::undefined()) noexcept;
 			static auto createProgram(_js_jts_dCreateProgramOptions createProgramOptions) noexcept;
 			static auto createProgram(js::ReadonlyArray<tc::js::string> rootNames, _js_jts_dCompilerOptions options, js_union<_js_jts_dCompilerHost, tc::js::undefined> host = tc::js::undefined(), js_union<_js_jts_dProgram, tc::js::undefined> oldProgram = tc::js::undefined(), js_union<js::ReadonlyArray<_js_jts_dDiagnostic>, tc::js::undefined> configFileParsingDiagnostics = tc::js::undefined()) noexcept;
-			static auto createProperty(js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::string> name, js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/ questionOrExclamationToken = tc::js::undefined(), js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined(), js_union<_js_jts_dExpression, tc::js::undefined> initializer = tc::js::undefined()) noexcept;
+			static auto createProperty(js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::string> name, tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/ questionOrExclamationToken = tc::js::undefined(), js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined(), js_union<_js_jts_dExpression, tc::js::undefined> initializer = tc::js::undefined()) noexcept;
 			static auto createPropertyAccess(_js_jts_dExpression expression, js_union<_js_jts_dIdentifier, tc::js::string> name) noexcept;
 			static auto createPropertyAssignment(js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::string> name, _js_jts_dExpression initializer) noexcept;
-			static auto createPropertySignature(js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::string> name, js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken = tc::js::undefined(), js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined(), js_union<_js_jts_dExpression, tc::js::undefined> initializer = tc::js::undefined()) noexcept;
+			static auto createPropertySignature(js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::string> name, tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken = tc::js::undefined(), js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined(), js_union<_js_jts_dExpression, tc::js::undefined> initializer = tc::js::undefined()) noexcept;
 			static auto createQualifiedName(_js_jts_dEntityName left, js_union<_js_jts_dIdentifier, tc::js::string> right) noexcept;
 			static auto createRegularExpressionLiteral(tc::js::string text) noexcept;
 			static auto createRestTypeNode(_js_jts_dTypeNode type) noexcept;
@@ -2980,7 +2980,7 @@ namespace tc::js_defs {
 			static auto createThis() noexcept;
 			static auto createThisTypeNode() noexcept;
 			static auto createThrow(_js_jts_dExpression expression) noexcept;
-			static auto createToken(js_unknown /*flags=262144: TKind ()*/ token) noexcept;
+			static auto createToken(tc::js::any /*flags=262144: TKind ()*/ token) noexcept;
 			static auto createTrue() noexcept;
 			static auto createTry(_js_jts_dBlock tryBlock, js_union<_js_jts_dCatchClause, tc::js::undefined> catchClause = tc::js::undefined(), js_union<_js_jts_dBlock, tc::js::undefined> finallyBlock = tc::js::undefined()) noexcept;
 			static auto createTupleTypeNode(js::ReadonlyArray<_js_jts_dTypeNode> elementTypes) noexcept;
@@ -3007,22 +3007,22 @@ namespace tc::js_defs {
 			static auto createVoidZero() noexcept;
 			static auto createWatchCompilerHost(js::Array<tc::js::string> rootFiles, _js_jts_dCompilerOptions options, _js_jts_dSystem system, js_union<_js_jts_dCreateProgram, tc::js::undefined> createProgram = tc::js::undefined(), js_union<_js_jts_dDiagnosticReporter, tc::js::undefined> reportDiagnostic = tc::js::undefined(), js_union<_js_jts_dWatchStatusReporter, tc::js::undefined> reportWatchStatus = tc::js::undefined(), js_union<js::ReadonlyArray<_js_jts_dProjectReference>, tc::js::undefined> projectReferences = tc::js::undefined()) noexcept;
 			static auto createWatchCompilerHost(tc::js::string configFileName, js_union<_js_jts_dCompilerOptions, tc::js::undefined> optionsToExtend, _js_jts_dSystem system, js_union<_js_jts_dCreateProgram, tc::js::undefined> createProgram = tc::js::undefined(), js_union<_js_jts_dDiagnosticReporter, tc::js::undefined> reportDiagnostic = tc::js::undefined(), js_union<_js_jts_dWatchStatusReporter, tc::js::undefined> reportWatchStatus = tc::js::undefined()) noexcept;
-			static auto createWatchProgram(js_unknown /*flags=524288: WatchCompilerHostOfFilesAndCompilerOptions<T> (TypeReference=ts.WatchCompilerHostOfFilesAndCompilerOptions)*/ host) noexcept;
+			static auto createWatchProgram(tc::js::any /*flags=524288: WatchCompilerHostOfFilesAndCompilerOptions<T> (TypeReference=ts.WatchCompilerHostOfFilesAndCompilerOptions)*/ host) noexcept;
 			static auto createWhile(_js_jts_dExpression expression, _js_jts_dStatement statement) noexcept;
 			static auto createWith(_js_jts_dExpression expression, _js_jts_dStatement statement) noexcept;
 			static auto createYield(js_union<_js_jts_dExpression, tc::js::undefined> expression = tc::js::undefined()) noexcept;
-			static auto createYield(js_unknown /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, _js_jts_dExpression expression) noexcept;
+			static auto createYield(tc::js::any /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, _js_jts_dExpression expression) noexcept;
 			static auto decodedTextSpanIntersectsWith(double start1, double length1, double start2, double length2) noexcept;
 			static auto displayPartsToString(js_union<js::Array<_js_jts_dSymbolDisplayPart>, tc::js::undefined> displayParts = tc::js::undefined()) noexcept;
 			static auto disposeEmitNodes(_js_jts_dSourceFile sourceFile) noexcept;
 			static auto escapeLeadingUnderscores(tc::js::string identifier) noexcept;
 			static auto findConfigFile(tc::js::string searchPath, js_function<bool /*false*/(tc::js::string)> fileExists, js_union<tc::js::string, tc::js::undefined> configName = tc::js::undefined()) noexcept;
 			static auto flattenDiagnosticMessageText(js_union<_js_jts_dDiagnosticMessageChain, tc::js::string, tc::js::undefined> messageText, tc::js::string newLine) noexcept;
-			static auto forEachChild(_js_jts_dNode node, js_function<js_unknown /*flags=1048576: T | tc::js::undefined ()*/(_js_jts_dNode)> cbNode, js_union<js_function<js_unknown /*flags=1048576: T | tc::js::undefined ()*/(js_unknown /*flags=524288: NodeArray<Node> (TypeReference=ts.NodeArray)*/)>, tc::js::undefined> cbNodes = tc::js::undefined()) noexcept;
-			static auto forEachLeadingCommentRange(tc::js::string text, double pos, js_function<js_unknown /*flags=262144: U ()*/(double, double, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/, bool /*false*/, js_unknown /*flags=262144: T ()*/)> cb, js_unknown /*flags=262144: T ()*/ state) noexcept;
-			static auto forEachLeadingCommentRange(tc::js::string text, double pos, js_function<js_unknown /*flags=262144: U ()*/(double, double, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/, bool /*false*/)> cb) noexcept;
-			static auto forEachTrailingCommentRange(tc::js::string text, double pos, js_function<js_unknown /*flags=262144: U ()*/(double, double, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/, bool /*false*/, js_unknown /*flags=262144: T ()*/)> cb, js_unknown /*flags=262144: T ()*/ state) noexcept;
-			static auto forEachTrailingCommentRange(tc::js::string text, double pos, js_function<js_unknown /*flags=262144: U ()*/(double, double, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/, bool /*false*/)> cb) noexcept;
+			static auto forEachChild(_js_jts_dNode node, js_function<tc::js::any /*flags=1048576: T | tc::js::undefined ()*/(_js_jts_dNode)> cbNode, js_union<js_function<tc::js::any /*flags=1048576: T | tc::js::undefined ()*/(tc::js::any /*flags=524288: NodeArray<Node> (TypeReference=ts.NodeArray)*/)>, tc::js::undefined> cbNodes = tc::js::undefined()) noexcept;
+			static auto forEachLeadingCommentRange(tc::js::string text, double pos, js_function<tc::js::any /*flags=262144: U ()*/(double, double, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/, bool /*false*/, tc::js::any /*flags=262144: T ()*/)> cb, tc::js::any /*flags=262144: T ()*/ state) noexcept;
+			static auto forEachLeadingCommentRange(tc::js::string text, double pos, js_function<tc::js::any /*flags=262144: U ()*/(double, double, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/, bool /*false*/)> cb) noexcept;
+			static auto forEachTrailingCommentRange(tc::js::string text, double pos, js_function<tc::js::any /*flags=262144: U ()*/(double, double, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/, bool /*false*/, tc::js::any /*flags=262144: T ()*/)> cb, tc::js::any /*flags=262144: T ()*/ state) noexcept;
+			static auto forEachTrailingCommentRange(tc::js::string text, double pos, js_function<tc::js::any /*flags=262144: U ()*/(double, double, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/, bool /*false*/)> cb) noexcept;
 			static auto formatDiagnostic(_js_jts_dDiagnostic diagnostic, _js_jts_dFormatDiagnosticsHost host) noexcept;
 			static auto formatDiagnostics(js::ReadonlyArray<_js_jts_dDiagnostic> diagnostics, _js_jts_dFormatDiagnosticsHost host) noexcept;
 			static auto formatDiagnosticsWithColorAndContext(js::ReadonlyArray<_js_jts_dDiagnostic> diagnostics, _js_jts_dFormatDiagnosticsHost host) noexcept;
@@ -3056,7 +3056,7 @@ namespace tc::js_defs {
 			static auto getJSDocTypeTag(_js_jts_dNode node) noexcept;
 			static auto getLeadingCommentRanges(tc::js::string text, double pos) noexcept;
 			static auto getLineAndCharacterOfPosition(_js_jts_dSourceFileLike sourceFile, double position) noexcept;
-			static auto getMutableClone(js_unknown /*flags=262144: T ()*/ node) noexcept;
+			static auto getMutableClone(tc::js::any /*flags=262144: T ()*/ node) noexcept;
 			static auto getNameOfDeclaration(js_union<_js_jts_dDeclaration, _js_jts_dExpression> declaration) noexcept;
 			static auto getNameOfJSDocTypedef(_js_jts_dJSDocTypedefTag declaration) noexcept;
 			static auto getNodeMajorVersion() noexcept;
@@ -3066,7 +3066,7 @@ namespace tc::js_defs {
 			static auto getOriginalNode(js_union<_js_jts_dNode, tc::js::undefined> node, js_function<bool /*false*/(js_union<_js_jts_dNode, tc::js::undefined>)> nodeTest) noexcept;
 			static auto getParseTreeNode(_js_jts_dNode node) noexcept;
 			static auto getParseTreeNode(js_union<_js_jts_dNode, tc::js::undefined> node = tc::js::undefined(), js_union<js_function<bool /*false*/(_js_jts_dNode)>, tc::js::undefined> nodeTest = tc::js::undefined()) noexcept;
-			static auto getParsedCommandLineOfConfigFile(tc::js::string configFileName, _js_jts_dCompilerOptions optionsToExtend, _js_jts_dParseConfigFileHost host, js_unknown /*flags=1048576: Map<ExtendedConfigCacheEntry> | tc::js::undefined ()*/ extendedConfigCache = tc::js::undefined()) noexcept;
+			static auto getParsedCommandLineOfConfigFile(tc::js::string configFileName, _js_jts_dCompilerOptions optionsToExtend, _js_jts_dParseConfigFileHost host, tc::js::any /*flags=1048576: Map<ExtendedConfigCacheEntry> | tc::js::undefined ()*/ extendedConfigCache = tc::js::undefined()) noexcept;
 			static auto getPositionOfLineAndCharacter(_js_jts_dSourceFileLike sourceFile, double line, double character) noexcept;
 			static auto getPreEmitDiagnostics(_js_jts_dProgram program, js_union<_js_jts_dSourceFile, tc::js::undefined> sourceFile = tc::js::undefined(), js_union<_js_jts_dCancellationToken, tc::js::undefined> cancellationToken = tc::js::undefined()) noexcept;
 			static auto getShebang(tc::js::string text) noexcept;
@@ -3292,19 +3292,19 @@ namespace tc::js_defs {
 			static auto isWithStatement(_js_jts_dNode node) noexcept;
 			static auto isYieldExpression(_js_jts_dNode node) noexcept;
 			static auto moveEmitHelpers(_js_jts_dNode source, _js_jts_dNode target, js_function<bool /*false*/(_js_jts_dEmitHelper)> predicate) noexcept;
-			static auto moveSyntheticComments(js_unknown /*flags=262144: T ()*/ node, _js_jts_dNode original) noexcept;
+			static auto moveSyntheticComments(tc::js::any /*flags=262144: T ()*/ node, _js_jts_dNode original) noexcept;
 			static auto nodeModuleNameResolver(tc::js::string moduleName, tc::js::string containingFile, _js_jts_dCompilerOptions compilerOptions, _js_jts_dModuleResolutionHost host, js_union<_js_jts_dModuleResolutionCache, tc::js::undefined> cache = tc::js::undefined(), js_union<_js_jts_dResolvedProjectReference, tc::js::undefined> redirectedReference = tc::js::undefined()) noexcept;
 			static auto parseCommandLine(js::ReadonlyArray<tc::js::string> commandLine, js_union<js_function<js_union<tc::js::string, tc::js::undefined>(tc::js::string)>, tc::js::undefined> readFile = tc::js::undefined()) noexcept;
 			static auto parseConfigFileTextToJson(tc::js::string fileName, tc::js::string jsonText) noexcept;
 			static auto parseIsolatedEntityName(tc::js::string text, _js_jts_dScriptTarget /*ScriptTarget.ES3*/ languageVersion) noexcept;
-			static auto parseJsonConfigFileContent(js_unknown json, _js_jts_dParseConfigHost host, tc::js::string basePath, js_union<_js_jts_dCompilerOptions, tc::js::undefined> existingOptions = tc::js::undefined(), js_union<tc::js::string, tc::js::undefined> configFileName = tc::js::undefined(), js_union<js::Array<js_unknown /*flags=2097152: Path ()*/>, tc::js::undefined> resolutionStack = tc::js::undefined(), js_union<js::ReadonlyArray<_js_jts_dFileExtensionInfo>, tc::js::undefined> extraFileExtensions = tc::js::undefined(), js_unknown /*flags=1048576: Map<ExtendedConfigCacheEntry> | tc::js::undefined ()*/ extendedConfigCache = tc::js::undefined()) noexcept;
-			static auto parseJsonSourceFileConfigFileContent(_js_jts_dTsConfigSourceFile sourceFile, _js_jts_dParseConfigHost host, tc::js::string basePath, js_union<_js_jts_dCompilerOptions, tc::js::undefined> existingOptions = tc::js::undefined(), js_union<tc::js::string, tc::js::undefined> configFileName = tc::js::undefined(), js_union<js::Array<js_unknown /*flags=2097152: Path ()*/>, tc::js::undefined> resolutionStack = tc::js::undefined(), js_union<js::ReadonlyArray<_js_jts_dFileExtensionInfo>, tc::js::undefined> extraFileExtensions = tc::js::undefined(), js_unknown /*flags=1048576: Map<ExtendedConfigCacheEntry> | tc::js::undefined ()*/ extendedConfigCache = tc::js::undefined()) noexcept;
+			static auto parseJsonConfigFileContent(tc::js::any json, _js_jts_dParseConfigHost host, tc::js::string basePath, js_union<_js_jts_dCompilerOptions, tc::js::undefined> existingOptions = tc::js::undefined(), js_union<tc::js::string, tc::js::undefined> configFileName = tc::js::undefined(), js_union<js::Array<tc::js::any /*flags=2097152: Path ()*/>, tc::js::undefined> resolutionStack = tc::js::undefined(), js_union<js::ReadonlyArray<_js_jts_dFileExtensionInfo>, tc::js::undefined> extraFileExtensions = tc::js::undefined(), tc::js::any /*flags=1048576: Map<ExtendedConfigCacheEntry> | tc::js::undefined ()*/ extendedConfigCache = tc::js::undefined()) noexcept;
+			static auto parseJsonSourceFileConfigFileContent(_js_jts_dTsConfigSourceFile sourceFile, _js_jts_dParseConfigHost host, tc::js::string basePath, js_union<_js_jts_dCompilerOptions, tc::js::undefined> existingOptions = tc::js::undefined(), js_union<tc::js::string, tc::js::undefined> configFileName = tc::js::undefined(), js_union<js::Array<tc::js::any /*flags=2097152: Path ()*/>, tc::js::undefined> resolutionStack = tc::js::undefined(), js_union<js::ReadonlyArray<_js_jts_dFileExtensionInfo>, tc::js::undefined> extraFileExtensions = tc::js::undefined(), tc::js::any /*flags=1048576: Map<ExtendedConfigCacheEntry> | tc::js::undefined ()*/ extendedConfigCache = tc::js::undefined()) noexcept;
 			static auto parseJsonText(tc::js::string fileName, tc::js::string sourceText) noexcept;
 			static auto preProcessFile(tc::js::string sourceText, js_union<bool /*false*/, tc::js::undefined> readImportFiles = tc::js::undefined(), js_union<bool /*false*/, tc::js::undefined> detectJavaScriptImports = tc::js::undefined()) noexcept;
 			static auto readConfigFile(tc::js::string fileName, js_function<js_union<tc::js::string, tc::js::undefined>(tc::js::string)> readFile) noexcept;
 			static auto readJsonConfigFile(tc::js::string fileName, js_function<js_union<tc::js::string, tc::js::undefined>(tc::js::string)> readFile) noexcept;
-			static auto reduceEachLeadingCommentRange(tc::js::string text, double pos, js_function<js_unknown /*flags=262144: U ()*/(double, double, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/, bool /*false*/, js_unknown /*flags=262144: T ()*/, js_unknown /*flags=262144: U ()*/)> cb, js_unknown /*flags=262144: T ()*/ state, js_unknown /*flags=262144: U ()*/ initial) noexcept;
-			static auto reduceEachTrailingCommentRange(tc::js::string text, double pos, js_function<js_unknown /*flags=262144: U ()*/(double, double, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/, bool /*false*/, js_unknown /*flags=262144: T ()*/, js_unknown /*flags=262144: U ()*/)> cb, js_unknown /*flags=262144: T ()*/ state, js_unknown /*flags=262144: U ()*/ initial) noexcept;
+			static auto reduceEachLeadingCommentRange(tc::js::string text, double pos, js_function<tc::js::any /*flags=262144: U ()*/(double, double, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/, bool /*false*/, tc::js::any /*flags=262144: T ()*/, tc::js::any /*flags=262144: U ()*/)> cb, tc::js::any /*flags=262144: T ()*/ state, tc::js::any /*flags=262144: U ()*/ initial) noexcept;
+			static auto reduceEachTrailingCommentRange(tc::js::string text, double pos, js_function<tc::js::any /*flags=262144: U ()*/(double, double, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/, bool /*false*/, tc::js::any /*flags=262144: T ()*/, tc::js::any /*flags=262144: U ()*/)> cb, tc::js::any /*flags=262144: T ()*/ state, tc::js::any /*flags=262144: U ()*/ initial) noexcept;
 			static auto removeEmitHelper(_js_jts_dNode node, _js_jts_dEmitHelper helper) noexcept;
 			static auto resolveModuleName(tc::js::string moduleName, tc::js::string containingFile, _js_jts_dCompilerOptions compilerOptions, _js_jts_dModuleResolutionHost host, js_union<_js_jts_dModuleResolutionCache, tc::js::undefined> cache = tc::js::undefined(), js_union<_js_jts_dResolvedProjectReference, tc::js::undefined> redirectedReference = tc::js::undefined()) noexcept;
 			static auto resolveModuleNameFromCache(tc::js::string moduleName, tc::js::string containingFile, _js_jts_dModuleResolutionCache cache) noexcept;
@@ -3312,18 +3312,18 @@ namespace tc::js_defs {
 			static auto resolveProjectReferencePath(_js_jts_dResolveProjectReferencePathHost host, _js_jts_dProjectReference ref) noexcept;
 			static auto resolveTripleslashReference(tc::js::string moduleName, tc::js::string containingFile) noexcept;
 			static auto resolveTypeReferenceDirective(tc::js::string typeReferenceDirectiveName, js_union<tc::js::string, tc::js::undefined> containingFile, _js_jts_dCompilerOptions options, _js_jts_dModuleResolutionHost host, js_union<_js_jts_dResolvedProjectReference, tc::js::undefined> redirectedReference = tc::js::undefined()) noexcept;
-			static auto setCommentRange(js_unknown /*flags=262144: T ()*/ node, _js_jts_dTextRange range) noexcept;
+			static auto setCommentRange(tc::js::any /*flags=262144: T ()*/ node, _js_jts_dTextRange range) noexcept;
 			static auto setConstantValue(js_union<_js_jts_dElementAccessExpression, _js_jts_dPropertyAccessExpression> node, js_union<double, tc::js::string> value) noexcept;
-			static auto setEmitFlags(js_unknown /*flags=262144: T ()*/ node, _js_jts_dEmitFlags /*EmitFlags.None*/ emitFlags) noexcept;
-			static auto setOriginalNode(js_unknown /*flags=262144: T ()*/ node, js_union<_js_jts_dNode, tc::js::undefined> original = tc::js::undefined()) noexcept;
-			static auto setSourceMapRange(js_unknown /*flags=262144: T ()*/ node, js_union<_js_jts_dSourceMapRange, tc::js::undefined> range = tc::js::undefined()) noexcept;
-			static auto setSyntheticLeadingComments(js_unknown /*flags=262144: T ()*/ node, js_union<js::Array<_js_jts_dSynthesizedComment>, tc::js::undefined> comments = tc::js::undefined()) noexcept;
-			static auto setSyntheticTrailingComments(js_unknown /*flags=262144: T ()*/ node, js_union<js::Array<_js_jts_dSynthesizedComment>, tc::js::undefined> comments = tc::js::undefined()) noexcept;
-			static auto setTextRange(js_unknown /*flags=262144: T ()*/ range, js_union<_js_jts_dTextRange, tc::js::undefined> location = tc::js::undefined()) noexcept;
-			static auto setTokenSourceMapRange(js_unknown /*flags=262144: T ()*/ node, _js_jts_dSyntaxKind /*SyntaxKind.Unknown*/ token, js_union<_js_jts_dSourceMapRange, tc::js::undefined> range = tc::js::undefined()) noexcept;
+			static auto setEmitFlags(tc::js::any /*flags=262144: T ()*/ node, _js_jts_dEmitFlags /*EmitFlags.None*/ emitFlags) noexcept;
+			static auto setOriginalNode(tc::js::any /*flags=262144: T ()*/ node, js_union<_js_jts_dNode, tc::js::undefined> original = tc::js::undefined()) noexcept;
+			static auto setSourceMapRange(tc::js::any /*flags=262144: T ()*/ node, js_union<_js_jts_dSourceMapRange, tc::js::undefined> range = tc::js::undefined()) noexcept;
+			static auto setSyntheticLeadingComments(tc::js::any /*flags=262144: T ()*/ node, js_union<js::Array<_js_jts_dSynthesizedComment>, tc::js::undefined> comments = tc::js::undefined()) noexcept;
+			static auto setSyntheticTrailingComments(tc::js::any /*flags=262144: T ()*/ node, js_union<js::Array<_js_jts_dSynthesizedComment>, tc::js::undefined> comments = tc::js::undefined()) noexcept;
+			static auto setTextRange(tc::js::any /*flags=262144: T ()*/ range, js_union<_js_jts_dTextRange, tc::js::undefined> location = tc::js::undefined()) noexcept;
+			static auto setTokenSourceMapRange(tc::js::any /*flags=262144: T ()*/ node, _js_jts_dSyntaxKind /*SyntaxKind.Unknown*/ token, js_union<_js_jts_dSourceMapRange, tc::js::undefined> range = tc::js::undefined()) noexcept;
 			static auto skipPartiallyEmittedExpressions(_js_jts_dExpression node) noexcept;
 			static auto skipPartiallyEmittedExpressions(_js_jts_dNode node) noexcept;
-			static auto sortAndDeduplicateDiagnostics(js::ReadonlyArray<js_unknown /*flags=262144: T ()*/> diagnostics) noexcept;
+			static auto sortAndDeduplicateDiagnostics(js::ReadonlyArray<tc::js::any /*flags=262144: T ()*/> diagnostics) noexcept;
 			static auto symbolName(_js_jts_dSymbol symbol) noexcept;
 			static auto textChangeRangeIsUnchanged(_js_jts_dTextChangeRange range) noexcept;
 			static auto textChangeRangeNewSpan(_js_jts_dTextChangeRange range) noexcept;
@@ -3339,23 +3339,23 @@ namespace tc::js_defs {
 			static auto textSpanOverlapsWith(_js_jts_dTextSpan span, _js_jts_dTextSpan other) noexcept;
 			static auto toEditorSettings(js_union<_js_jts_dEditorOptions, _js_jts_dEditorSettings> options) noexcept;
 			static auto tokenToString(_js_jts_dSyntaxKind /*SyntaxKind.Unknown*/ t) noexcept;
-			static auto transform(js_unknown /*flags=1048576: T | T[] ()*/ source, js::Array<_js_jts_dTransformerFactory> transformers, js_union<_js_jts_dCompilerOptions, tc::js::undefined> compilerOptions = tc::js::undefined()) noexcept;
+			static auto transform(tc::js::any /*flags=1048576: T | T[] ()*/ source, js::Array<_js_jts_dTransformerFactory> transformers, js_union<_js_jts_dCompilerOptions, tc::js::undefined> compilerOptions = tc::js::undefined()) noexcept;
 			static auto transpile(tc::js::string input, js_union<_js_jts_dCompilerOptions, tc::js::undefined> compilerOptions = tc::js::undefined(), js_union<tc::js::string, tc::js::undefined> fileName = tc::js::undefined(), js_union<js::Array<_js_jts_dDiagnostic>, tc::js::undefined> diagnostics = tc::js::undefined(), js_union<tc::js::string, tc::js::undefined> moduleName = tc::js::undefined()) noexcept;
 			static auto transpileModule(tc::js::string input, _js_jts_dTranspileOptions transpileOptions) noexcept;
-			static auto unescapeLeadingUnderscores(js_unknown /*flags=1048576: __String ()*/ identifier) noexcept;
+			static auto unescapeLeadingUnderscores(tc::js::any /*flags=1048576: __String ()*/ identifier) noexcept;
 			static auto updateArrayBindingPattern(_js_jts_dArrayBindingPattern node, js::ReadonlyArray<_js_jts_dArrayBindingElement> elements) noexcept;
 			static auto updateArrayLiteral(_js_jts_dArrayLiteralExpression node, js::ReadonlyArray<_js_jts_dExpression> elements) noexcept;
 			static auto updateArrayTypeNode(_js_jts_dArrayTypeNode node, _js_jts_dTypeNode elementType) noexcept;
-			static auto updateArrowFunction(_js_jts_dArrowFunction node, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_unknown /*flags=524288: Token<SyntaxKind.EqualsGreaterThanToken> (TypeReference=ts.Token)*/ equalsGreaterThanToken, _js_jts_dConciseBody body) noexcept;
+			static auto updateArrowFunction(_js_jts_dArrowFunction node, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, tc::js::any /*flags=524288: Token<SyntaxKind.EqualsGreaterThanToken> (TypeReference=ts.Token)*/ equalsGreaterThanToken, _js_jts_dConciseBody body) noexcept;
 			static auto updateAsExpression(_js_jts_dAsExpression node, _js_jts_dExpression expression, _js_jts_dTypeNode type) noexcept;
 			static auto updateAwait(_js_jts_dAwaitExpression node, _js_jts_dExpression expression) noexcept;
-			static auto updateBinary(_js_jts_dBinaryExpression node, _js_jts_dExpression left, _js_jts_dExpression right, js_unknown /*flags=1048576: SyntaxKind.CommaToken | SyntaxKind.LessThanToken | SyntaxKind.GreaterThanToken | SyntaxKind.LessThanEqualsToken | SyntaxKind.GreaterThanEqualsToken | SyntaxKind.EqualsEqualsToken | SyntaxKind.ExclamationEqualsToken | SyntaxKind.EqualsEqualsEqualsToken | SyntaxKind.ExclamationEqualsEqualsToken | SyntaxKind.PlusToken ... ()*/ operator_ = tc::js::undefined()) noexcept;
-			static auto updateBindingElement(_js_jts_dBindingElement node, js_unknown /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ dotDotDotToken, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::undefined> propertyName, _js_jts_dBindingName name, js_union<_js_jts_dExpression, tc::js::undefined> initializer = tc::js::undefined()) noexcept;
+			static auto updateBinary(_js_jts_dBinaryExpression node, _js_jts_dExpression left, _js_jts_dExpression right, tc::js::any /*flags=1048576: SyntaxKind.CommaToken | SyntaxKind.LessThanToken | SyntaxKind.GreaterThanToken | SyntaxKind.LessThanEqualsToken | SyntaxKind.GreaterThanEqualsToken | SyntaxKind.EqualsEqualsToken | SyntaxKind.ExclamationEqualsToken | SyntaxKind.EqualsEqualsEqualsToken | SyntaxKind.ExclamationEqualsEqualsToken | SyntaxKind.PlusToken ... ()*/ operator_ = tc::js::undefined()) noexcept;
+			static auto updateBindingElement(_js_jts_dBindingElement node, tc::js::any /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ dotDotDotToken, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::undefined> propertyName, _js_jts_dBindingName name, js_union<_js_jts_dExpression, tc::js::undefined> initializer = tc::js::undefined()) noexcept;
 			static auto updateBlock(_js_jts_dBlock node, js::ReadonlyArray<_js_jts_dStatement> statements) noexcept;
 			static auto updateBreak(_js_jts_dBreakStatement node, js_union<_js_jts_dIdentifier, tc::js::undefined> label = tc::js::undefined()) noexcept;
 			static auto updateBundle(_js_jts_dBundle node, js::ReadonlyArray<_js_jts_dSourceFile> sourceFiles, js_union<js::ReadonlyArray<js_union<_js_jts_dInputFiles, _js_jts_dUnparsedSource>>, tc::js::undefined> prepends = tc::js::undefined()) noexcept;
 			static auto updateCall(_js_jts_dCallExpression node, _js_jts_dExpression expression, js_union<js::ReadonlyArray<_js_jts_dTypeNode>, tc::js::undefined> typeArguments, js::ReadonlyArray<_js_jts_dExpression> argumentsArray) noexcept;
-			static auto updateCallSignature(_js_jts_dCallSignatureDeclaration node, js_unknown /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ typeParameters, js_unknown /*flags=524288: NodeArray<ParameterDeclaration> (TypeReference=ts.NodeArray)*/ parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined()) noexcept;
+			static auto updateCallSignature(_js_jts_dCallSignatureDeclaration node, tc::js::any /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ typeParameters, tc::js::any /*flags=524288: NodeArray<ParameterDeclaration> (TypeReference=ts.NodeArray)*/ parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined()) noexcept;
 			static auto updateCaseBlock(_js_jts_dCaseBlock node, js::ReadonlyArray<_js_jts_dCaseOrDefaultClause> clauses) noexcept;
 			static auto updateCaseClause(_js_jts_dCaseClause node, _js_jts_dExpression expression, js::ReadonlyArray<_js_jts_dStatement> statements) noexcept;
 			static auto updateCatchClause(_js_jts_dCatchClause node, js_union<_js_jts_dVariableDeclaration, tc::js::undefined> variableDeclaration, _js_jts_dBlock block) noexcept;
@@ -3363,11 +3363,11 @@ namespace tc::js_defs {
 			static auto updateClassExpression(_js_jts_dClassExpression node, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_union<_js_jts_dIdentifier, tc::js::undefined> name, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js_union<js::ReadonlyArray<_js_jts_dHeritageClause>, tc::js::undefined> heritageClauses, js::ReadonlyArray<_js_jts_dClassElement> members) noexcept;
 			static auto updateCommaList(_js_jts_dCommaListExpression node, js::ReadonlyArray<_js_jts_dExpression> elements) noexcept;
 			static auto updateComputedPropertyName(_js_jts_dComputedPropertyName node, _js_jts_dExpression expression) noexcept;
-			static auto updateConditional(_js_jts_dConditionalExpression node, _js_jts_dExpression condition, js_unknown /*flags=524288: Token<SyntaxKind.QuestionToken> (TypeReference=ts.Token)*/ questionToken, _js_jts_dExpression whenTrue, js_unknown /*flags=524288: Token<SyntaxKind.ColonToken> (TypeReference=ts.Token)*/ colonToken, _js_jts_dExpression whenFalse) noexcept;
+			static auto updateConditional(_js_jts_dConditionalExpression node, _js_jts_dExpression condition, tc::js::any /*flags=524288: Token<SyntaxKind.QuestionToken> (TypeReference=ts.Token)*/ questionToken, _js_jts_dExpression whenTrue, tc::js::any /*flags=524288: Token<SyntaxKind.ColonToken> (TypeReference=ts.Token)*/ colonToken, _js_jts_dExpression whenFalse) noexcept;
 			static auto updateConditionalTypeNode(_js_jts_dConditionalTypeNode node, _js_jts_dTypeNode checkType, _js_jts_dTypeNode extendsType, _js_jts_dTypeNode trueType, _js_jts_dTypeNode falseType) noexcept;
-			static auto updateConstructSignature(_js_jts_dConstructSignatureDeclaration node, js_unknown /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ typeParameters, js_unknown /*flags=524288: NodeArray<ParameterDeclaration> (TypeReference=ts.NodeArray)*/ parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined()) noexcept;
+			static auto updateConstructSignature(_js_jts_dConstructSignatureDeclaration node, tc::js::any /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ typeParameters, tc::js::any /*flags=524288: NodeArray<ParameterDeclaration> (TypeReference=ts.NodeArray)*/ parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined()) noexcept;
 			static auto updateConstructor(_js_jts_dConstructorDeclaration node, js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dBlock, tc::js::undefined> body = tc::js::undefined()) noexcept;
-			static auto updateConstructorTypeNode(_js_jts_dConstructorTypeNode node, js_unknown /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ typeParameters, js_unknown /*flags=524288: NodeArray<ParameterDeclaration> (TypeReference=ts.NodeArray)*/ parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined()) noexcept;
+			static auto updateConstructorTypeNode(_js_jts_dConstructorTypeNode node, tc::js::any /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ typeParameters, tc::js::any /*flags=524288: NodeArray<ParameterDeclaration> (TypeReference=ts.NodeArray)*/ parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined()) noexcept;
 			static auto updateContinue(_js_jts_dContinueStatement node, js_union<_js_jts_dIdentifier, tc::js::undefined> label = tc::js::undefined()) noexcept;
 			static auto updateDecorator(_js_jts_dDecorator node, _js_jts_dExpression expression) noexcept;
 			static auto updateDefaultClause(_js_jts_dDefaultClause node, js::ReadonlyArray<_js_jts_dStatement> statements) noexcept;
@@ -3384,10 +3384,10 @@ namespace tc::js_defs {
 			static auto updateExternalModuleReference(_js_jts_dExternalModuleReference node, _js_jts_dExpression expression) noexcept;
 			static auto updateFor(_js_jts_dForStatement node, js_union<_js_jts_dExpression, _js_jts_dVariableDeclarationList, tc::js::undefined> initializer, js_union<_js_jts_dExpression, tc::js::undefined> condition, js_union<_js_jts_dExpression, tc::js::undefined> incrementor, _js_jts_dStatement statement) noexcept;
 			static auto updateForIn(_js_jts_dForInStatement node, _js_jts_dForInitializer initializer, _js_jts_dExpression expression, _js_jts_dStatement statement) noexcept;
-			static auto updateForOf(_js_jts_dForOfStatement node, js_unknown /*flags=1048576: Token<SyntaxKind.AwaitKeyword> | tc::js::undefined ()*/ awaitModifier, _js_jts_dForInitializer initializer, _js_jts_dExpression expression, _js_jts_dStatement statement) noexcept;
-			static auto updateFunctionDeclaration(_js_jts_dFunctionDeclaration node, js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_unknown /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, js_union<_js_jts_dIdentifier, tc::js::undefined> name, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined(), js_union<_js_jts_dBlock, tc::js::undefined> body = tc::js::undefined()) noexcept;
-			static auto updateFunctionExpression(_js_jts_dFunctionExpression node, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_unknown /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, js_union<_js_jts_dIdentifier, tc::js::undefined> name, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, _js_jts_dBlock body) noexcept;
-			static auto updateFunctionTypeNode(_js_jts_dFunctionTypeNode node, js_unknown /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ typeParameters, js_unknown /*flags=524288: NodeArray<ParameterDeclaration> (TypeReference=ts.NodeArray)*/ parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined()) noexcept;
+			static auto updateForOf(_js_jts_dForOfStatement node, tc::js::any /*flags=1048576: Token<SyntaxKind.AwaitKeyword> | tc::js::undefined ()*/ awaitModifier, _js_jts_dForInitializer initializer, _js_jts_dExpression expression, _js_jts_dStatement statement) noexcept;
+			static auto updateFunctionDeclaration(_js_jts_dFunctionDeclaration node, js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, tc::js::any /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, js_union<_js_jts_dIdentifier, tc::js::undefined> name, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined(), js_union<_js_jts_dBlock, tc::js::undefined> body = tc::js::undefined()) noexcept;
+			static auto updateFunctionExpression(_js_jts_dFunctionExpression node, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, tc::js::any /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, js_union<_js_jts_dIdentifier, tc::js::undefined> name, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, _js_jts_dBlock body) noexcept;
+			static auto updateFunctionTypeNode(_js_jts_dFunctionTypeNode node, tc::js::any /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ typeParameters, tc::js::any /*flags=524288: NodeArray<ParameterDeclaration> (TypeReference=ts.NodeArray)*/ parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined()) noexcept;
 			static auto updateGetAccessor(_js_jts_dGetAccessorDeclaration node, js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, _js_jts_dPropertyName name, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined(), js_union<_js_jts_dBlock, tc::js::undefined> body = tc::js::undefined()) noexcept;
 			static auto updateHeritageClause(_js_jts_dHeritageClause node, js::ReadonlyArray<_js_jts_dExpressionWithTypeArguments> types) noexcept;
 			static auto updateIdentifier(_js_jts_dIdentifier node) noexcept;
@@ -3401,7 +3401,7 @@ namespace tc::js_defs {
 			static auto updateIndexedAccessTypeNode(_js_jts_dIndexedAccessTypeNode node, _js_jts_dTypeNode objectType, _js_jts_dTypeNode indexType) noexcept;
 			static auto updateInferTypeNode(_js_jts_dInferTypeNode node, _js_jts_dTypeParameterDeclaration typeParameter) noexcept;
 			static auto updateInterfaceDeclaration(_js_jts_dInterfaceDeclaration node, js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, _js_jts_dIdentifier name, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js_union<js::ReadonlyArray<_js_jts_dHeritageClause>, tc::js::undefined> heritageClauses, js::ReadonlyArray<_js_jts_dTypeElement> members) noexcept;
-			static auto updateIntersectionTypeNode(_js_jts_dIntersectionTypeNode node, js_unknown /*flags=524288: NodeArray<TypeNode> (TypeReference=ts.NodeArray)*/ types) noexcept;
+			static auto updateIntersectionTypeNode(_js_jts_dIntersectionTypeNode node, tc::js::any /*flags=524288: NodeArray<TypeNode> (TypeReference=ts.NodeArray)*/ types) noexcept;
 			static auto updateJsxAttribute(_js_jts_dJsxAttribute node, _js_jts_dIdentifier name, js_union<_js_jts_dJsxExpression, _js_jts_dStringLiteral> initializer) noexcept;
 			static auto updateJsxAttributes(_js_jts_dJsxAttributes node, js::ReadonlyArray<_js_jts_dJsxAttributeLike> properties) noexcept;
 			static auto updateJsxClosingElement(_js_jts_dJsxClosingElement node, _js_jts_dJsxTagNameExpression tagName) noexcept;
@@ -3415,10 +3415,10 @@ namespace tc::js_defs {
 			static auto updateLabel(_js_jts_dLabeledStatement node, _js_jts_dIdentifier label, _js_jts_dStatement statement) noexcept;
 			static auto updateLanguageServiceSourceFile(_js_jts_dSourceFile sourceFile, _js_jts_dIScriptSnapshot scriptSnapshot, tc::js::string version, js_union<_js_jts_dTextChangeRange, tc::js::undefined> textChangeRange = tc::js::undefined(), js_union<bool /*false*/, tc::js::undefined> aggressiveChecks = tc::js::undefined()) noexcept;
 			static auto updateLiteralTypeNode(_js_jts_dLiteralTypeNode node, js_union<_js_jts_dBooleanLiteral, _js_jts_dLiteralExpression, _js_jts_dPrefixUnaryExpression> literal) noexcept;
-			static auto updateMappedTypeNode(_js_jts_dMappedTypeNode node, js_unknown /*flags=1048576: Token<SyntaxKind.ReadonlyKeyword> | Token<SyntaxKind.PlusToken> | Token<SyntaxKind.MinusToken> | tc::js::undefined ()*/ readonlyToken, _js_jts_dTypeParameterDeclaration typeParameter, js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | Token<SyntaxKind.PlusToken> | Token<SyntaxKind.MinusToken> | tc::js::undefined ()*/ questionToken = tc::js::undefined(), js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined()) noexcept;
+			static auto updateMappedTypeNode(_js_jts_dMappedTypeNode node, tc::js::any /*flags=1048576: Token<SyntaxKind.ReadonlyKeyword> | Token<SyntaxKind.PlusToken> | Token<SyntaxKind.MinusToken> | tc::js::undefined ()*/ readonlyToken, _js_jts_dTypeParameterDeclaration typeParameter, tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | Token<SyntaxKind.PlusToken> | Token<SyntaxKind.MinusToken> | tc::js::undefined ()*/ questionToken = tc::js::undefined(), js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined()) noexcept;
 			static auto updateMetaProperty(_js_jts_dMetaProperty node, _js_jts_dIdentifier name) noexcept;
-			static auto updateMethod(_js_jts_dMethodDeclaration node, js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_unknown /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, _js_jts_dPropertyName name, js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined(), js_union<_js_jts_dBlock, tc::js::undefined> body = tc::js::undefined()) noexcept;
-			static auto updateMethodSignature(_js_jts_dMethodSignature node, js_unknown /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ typeParameters, js_unknown /*flags=524288: NodeArray<ParameterDeclaration> (TypeReference=ts.NodeArray)*/ parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, _js_jts_dPropertyName name, js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken = tc::js::undefined()) noexcept;
+			static auto updateMethod(_js_jts_dMethodDeclaration node, js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, tc::js::any /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, _js_jts_dPropertyName name, tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined(), js_union<_js_jts_dBlock, tc::js::undefined> body = tc::js::undefined()) noexcept;
+			static auto updateMethodSignature(_js_jts_dMethodSignature node, tc::js::any /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ typeParameters, tc::js::any /*flags=524288: NodeArray<ParameterDeclaration> (TypeReference=ts.NodeArray)*/ parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, _js_jts_dPropertyName name, tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken = tc::js::undefined()) noexcept;
 			static auto updateModuleBlock(_js_jts_dModuleBlock node, js::ReadonlyArray<_js_jts_dStatement> statements) noexcept;
 			static auto updateModuleDeclaration(_js_jts_dModuleDeclaration node, js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, _js_jts_dModuleName name, js_union<_js_jts_dIdentifier, _js_jts_dJSDocNamespaceDeclaration, _js_jts_dModuleBlock, _js_jts_dNamespaceDeclaration, tc::js::undefined> body = tc::js::undefined()) noexcept;
 			static auto updateNamedExports(_js_jts_dNamedExports node, js::ReadonlyArray<_js_jts_dExportSpecifier> elements) noexcept;
@@ -3430,16 +3430,16 @@ namespace tc::js_defs {
 			static auto updateObjectBindingPattern(_js_jts_dObjectBindingPattern node, js::ReadonlyArray<_js_jts_dBindingElement> elements) noexcept;
 			static auto updateObjectLiteral(_js_jts_dObjectLiteralExpression node, js::ReadonlyArray<_js_jts_dObjectLiteralElementLike> properties) noexcept;
 			static auto updateOptionalTypeNode(_js_jts_dOptionalTypeNode node, _js_jts_dTypeNode type) noexcept;
-			static auto updateParameter(_js_jts_dParameterDeclaration node, js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_unknown /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ dotDotDotToken, js_union<_js_jts_dArrayBindingPattern, _js_jts_dIdentifier, _js_jts_dObjectBindingPattern, tc::js::string> name, js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken = tc::js::undefined(), js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined(), js_union<_js_jts_dExpression, tc::js::undefined> initializer = tc::js::undefined()) noexcept;
+			static auto updateParameter(_js_jts_dParameterDeclaration node, js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, tc::js::any /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ dotDotDotToken, js_union<_js_jts_dArrayBindingPattern, _js_jts_dIdentifier, _js_jts_dObjectBindingPattern, tc::js::string> name, tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken = tc::js::undefined(), js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined(), js_union<_js_jts_dExpression, tc::js::undefined> initializer = tc::js::undefined()) noexcept;
 			static auto updateParen(_js_jts_dParenthesizedExpression node, _js_jts_dExpression expression) noexcept;
 			static auto updateParenthesizedType(_js_jts_dParenthesizedTypeNode node, _js_jts_dTypeNode type) noexcept;
 			static auto updatePartiallyEmittedExpression(_js_jts_dPartiallyEmittedExpression node, _js_jts_dExpression expression) noexcept;
 			static auto updatePostfix(_js_jts_dPostfixUnaryExpression node, _js_jts_dExpression operand) noexcept;
 			static auto updatePrefix(_js_jts_dPrefixUnaryExpression node, _js_jts_dExpression operand) noexcept;
-			static auto updateProperty(_js_jts_dPropertyDeclaration node, js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::string> name, js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/ questionOrExclamationToken = tc::js::undefined(), js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined(), js_union<_js_jts_dExpression, tc::js::undefined> initializer = tc::js::undefined()) noexcept;
+			static auto updateProperty(_js_jts_dPropertyDeclaration node, js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::string> name, tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/ questionOrExclamationToken = tc::js::undefined(), js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined(), js_union<_js_jts_dExpression, tc::js::undefined> initializer = tc::js::undefined()) noexcept;
 			static auto updatePropertyAccess(_js_jts_dPropertyAccessExpression node, _js_jts_dExpression expression, _js_jts_dIdentifier name) noexcept;
 			static auto updatePropertyAssignment(_js_jts_dPropertyAssignment node, _js_jts_dPropertyName name, _js_jts_dExpression initializer) noexcept;
-			static auto updatePropertySignature(_js_jts_dPropertySignature node, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, _js_jts_dPropertyName name, js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken = tc::js::undefined(), js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined(), js_union<_js_jts_dExpression, tc::js::undefined> initializer = tc::js::undefined()) noexcept;
+			static auto updatePropertySignature(_js_jts_dPropertySignature node, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, _js_jts_dPropertyName name, tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken = tc::js::undefined(), js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined(), js_union<_js_jts_dExpression, tc::js::undefined> initializer = tc::js::undefined()) noexcept;
 			static auto updateQualifiedName(_js_jts_dQualifiedName node, _js_jts_dEntityName left, _js_jts_dIdentifier right) noexcept;
 			static auto updateRestTypeNode(_js_jts_dRestTypeNode node, _js_jts_dTypeNode type) noexcept;
 			static auto updateReturn(_js_jts_dReturnStatement node, js_union<_js_jts_dExpression, tc::js::undefined> expression = tc::js::undefined()) noexcept;
@@ -3459,34 +3459,34 @@ namespace tc::js_defs {
 			static auto updateTupleTypeNode(_js_jts_dTupleTypeNode node, js::ReadonlyArray<_js_jts_dTypeNode> elementTypes) noexcept;
 			static auto updateTypeAliasDeclaration(_js_jts_dTypeAliasDeclaration node, js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, _js_jts_dIdentifier name, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, _js_jts_dTypeNode type) noexcept;
 			static auto updateTypeAssertion(_js_jts_dTypeAssertion node, _js_jts_dTypeNode type, _js_jts_dExpression expression) noexcept;
-			static auto updateTypeLiteralNode(_js_jts_dTypeLiteralNode node, js_unknown /*flags=524288: NodeArray<TypeElement> (TypeReference=ts.NodeArray)*/ members) noexcept;
+			static auto updateTypeLiteralNode(_js_jts_dTypeLiteralNode node, tc::js::any /*flags=524288: NodeArray<TypeElement> (TypeReference=ts.NodeArray)*/ members) noexcept;
 			static auto updateTypeOf(_js_jts_dTypeOfExpression node, _js_jts_dExpression expression) noexcept;
 			static auto updateTypeOperatorNode(_js_jts_dTypeOperatorNode node, _js_jts_dTypeNode type) noexcept;
 			static auto updateTypeParameterDeclaration(_js_jts_dTypeParameterDeclaration node, _js_jts_dIdentifier name, js_union<_js_jts_dTypeNode, tc::js::undefined> constraint = tc::js::undefined(), js_union<_js_jts_dTypeNode, tc::js::undefined> defaultType = tc::js::undefined()) noexcept;
 			static auto updateTypePredicateNode(_js_jts_dTypePredicateNode node, js_union<_js_jts_dIdentifier, _js_jts_dThisTypeNode> parameterName, _js_jts_dTypeNode type) noexcept;
 			static auto updateTypeQueryNode(_js_jts_dTypeQueryNode node, _js_jts_dEntityName exprName) noexcept;
-			static auto updateTypeReferenceNode(_js_jts_dTypeReferenceNode node, _js_jts_dEntityName typeName, js_unknown /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/ typeArguments = tc::js::undefined()) noexcept;
-			static auto updateUnionTypeNode(_js_jts_dUnionTypeNode node, js_unknown /*flags=524288: NodeArray<TypeNode> (TypeReference=ts.NodeArray)*/ types) noexcept;
+			static auto updateTypeReferenceNode(_js_jts_dTypeReferenceNode node, _js_jts_dEntityName typeName, tc::js::any /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/ typeArguments = tc::js::undefined()) noexcept;
+			static auto updateUnionTypeNode(_js_jts_dUnionTypeNode node, tc::js::any /*flags=524288: NodeArray<TypeNode> (TypeReference=ts.NodeArray)*/ types) noexcept;
 			static auto updateVariableDeclaration(_js_jts_dVariableDeclaration node, _js_jts_dBindingName name, js_union<_js_jts_dTypeNode, tc::js::undefined> type = tc::js::undefined(), js_union<_js_jts_dExpression, tc::js::undefined> initializer = tc::js::undefined()) noexcept;
 			static auto updateVariableDeclarationList(_js_jts_dVariableDeclarationList node, js::ReadonlyArray<_js_jts_dVariableDeclaration> declarations) noexcept;
 			static auto updateVariableStatement(_js_jts_dVariableStatement node, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, _js_jts_dVariableDeclarationList declarationList) noexcept;
 			static auto updateVoid(_js_jts_dVoidExpression node, _js_jts_dExpression expression) noexcept;
 			static auto updateWhile(_js_jts_dWhileStatement node, _js_jts_dExpression expression, _js_jts_dStatement statement) noexcept;
 			static auto updateWith(_js_jts_dWithStatement node, _js_jts_dExpression expression, _js_jts_dStatement statement) noexcept;
-			static auto updateYield(_js_jts_dYieldExpression node, js_unknown /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, _js_jts_dExpression expression) noexcept;
-			static auto validateLocaleAndSetLanguage(tc::js::string locale, js_unknown /*flags=524288: { getExecutingFilePath(): tc::js::string; resolvePath(path: tc::js::string): tc::js::string; fileExists(fileName: tc::js::string): boolean; readFile(fileName: tc::js::string): tc::js::string | tc::js::undefined; } (AnonymousTypeWithTypeLiteral(members:[getExecutingFilePath, resolvePath, fileExists, readFile]))*/ sys, js_unknown /*flags=1048576: Push<Diagnostic> | tc::js::undefined ()*/ errors = tc::js::undefined()) noexcept;
-			static auto visitEachChild(js_unknown /*flags=262144: T ()*/ node, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context) noexcept;
-			static auto visitEachChild(js_unknown /*flags=1048576: T | tc::js::undefined ()*/ node, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context, js_unknown /*flags=1048576: { <T extends Node>(nodes: NodeArray<T> | tc::js::undefined, visitor: Visitor, test?: ((node: Node) => boolean) | tc::js::undefined, start?: number | tc::js::undefined, count?: number | tc::js::undefined): NodeArray<T>; <T extends Node>(nodes: NodeArray<...> | tc::js::undefined, visitor: Visitor, test?: ((node: Node) => boolean) | tc::js::undefined, start?: number... ()*/ nodesVisitor = tc::js::undefined(), js_union<_js_jts_dVisitor, tc::js::undefined> tokenVisitor = tc::js::undefined()) noexcept;
+			static auto updateYield(_js_jts_dYieldExpression node, tc::js::any /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, _js_jts_dExpression expression) noexcept;
+			static auto validateLocaleAndSetLanguage(tc::js::string locale, tc::js::any /*flags=524288: { getExecutingFilePath(): tc::js::string; resolvePath(path: tc::js::string): tc::js::string; fileExists(fileName: tc::js::string): boolean; readFile(fileName: tc::js::string): tc::js::string | tc::js::undefined; } (AnonymousTypeWithTypeLiteral(members:[getExecutingFilePath, resolvePath, fileExists, readFile]))*/ sys, tc::js::any /*flags=1048576: Push<Diagnostic> | tc::js::undefined ()*/ errors = tc::js::undefined()) noexcept;
+			static auto visitEachChild(tc::js::any /*flags=262144: T ()*/ node, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context) noexcept;
+			static auto visitEachChild(tc::js::any /*flags=1048576: T | tc::js::undefined ()*/ node, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context, tc::js::any /*flags=1048576: { <T extends Node>(nodes: NodeArray<T> | tc::js::undefined, visitor: Visitor, test?: ((node: Node) => boolean) | tc::js::undefined, start?: number | tc::js::undefined, count?: number | tc::js::undefined): NodeArray<T>; <T extends Node>(nodes: NodeArray<...> | tc::js::undefined, visitor: Visitor, test?: ((node: Node) => boolean) | tc::js::undefined, start?: number... ()*/ nodesVisitor = tc::js::undefined(), js_union<_js_jts_dVisitor, tc::js::undefined> tokenVisitor = tc::js::undefined()) noexcept;
 			static auto visitFunctionBody(_js_jts_dBlock node, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context) noexcept;
 			static auto visitFunctionBody(_js_jts_dConciseBody node, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context) noexcept;
 			static auto visitFunctionBody(js_union<_js_jts_dBlock, tc::js::undefined> node, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context) noexcept;
-			static auto visitLexicalEnvironment(js_unknown /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/ statements, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context, js_union<double, tc::js::undefined> start = tc::js::undefined(), js_union<bool /*false*/, tc::js::undefined> ensureUseStrict = tc::js::undefined()) noexcept;
-			static auto visitNode(js_unknown /*flags=1048576: T | tc::js::undefined ()*/ node = tc::js::undefined(), js_union<_js_jts_dVisitor, tc::js::undefined> visitor = tc::js::undefined(), js_union<js_function<bool /*false*/(_js_jts_dNode)>, tc::js::undefined> test = tc::js::undefined(), js_union<js_function<js_unknown /*flags=262144: T ()*/(js_unknown /*flags=524288: NodeArray<Node> (TypeReference=ts.NodeArray)*/)>, tc::js::undefined> lift = tc::js::undefined()) noexcept;
-			static auto visitNodes(js_unknown /*flags=1048576: NodeArray<T> | tc::js::undefined ()*/ nodes, _js_jts_dVisitor visitor, js_union<js_function<bool /*false*/(_js_jts_dNode)>, tc::js::undefined> test = tc::js::undefined(), js_union<double, tc::js::undefined> start = tc::js::undefined(), js_union<double, tc::js::undefined> count = tc::js::undefined()) noexcept;
-			static auto visitParameterList(js_unknown /*flags=1048576: NodeArray<ParameterDeclaration> | tc::js::undefined ()*/ nodes, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context, js_unknown /*flags=1048576: { <T extends Node>(nodes: NodeArray<T> | tc::js::undefined, visitor: Visitor, test?: ((node: Node) => boolean) | tc::js::undefined, start?: number | tc::js::undefined, count?: number | tc::js::undefined): NodeArray<T>; <T extends Node>(nodes: NodeArray<...> | tc::js::undefined, visitor: Visitor, test?: ((node: Node) => boolean) | tc::js::undefined, start?: number... ()*/ nodesVisitor = tc::js::undefined()) noexcept;
+			static auto visitLexicalEnvironment(tc::js::any /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/ statements, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context, js_union<double, tc::js::undefined> start = tc::js::undefined(), js_union<bool /*false*/, tc::js::undefined> ensureUseStrict = tc::js::undefined()) noexcept;
+			static auto visitNode(tc::js::any /*flags=1048576: T | tc::js::undefined ()*/ node = tc::js::undefined(), js_union<_js_jts_dVisitor, tc::js::undefined> visitor = tc::js::undefined(), js_union<js_function<bool /*false*/(_js_jts_dNode)>, tc::js::undefined> test = tc::js::undefined(), js_union<js_function<tc::js::any /*flags=262144: T ()*/(tc::js::any /*flags=524288: NodeArray<Node> (TypeReference=ts.NodeArray)*/)>, tc::js::undefined> lift = tc::js::undefined()) noexcept;
+			static auto visitNodes(tc::js::any /*flags=1048576: NodeArray<T> | tc::js::undefined ()*/ nodes, _js_jts_dVisitor visitor, js_union<js_function<bool /*false*/(_js_jts_dNode)>, tc::js::undefined> test = tc::js::undefined(), js_union<double, tc::js::undefined> start = tc::js::undefined(), js_union<double, tc::js::undefined> count = tc::js::undefined()) noexcept;
+			static auto visitParameterList(tc::js::any /*flags=1048576: NodeArray<ParameterDeclaration> | tc::js::undefined ()*/ nodes, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context, tc::js::any /*flags=1048576: { <T extends Node>(nodes: NodeArray<T> | tc::js::undefined, visitor: Visitor, test?: ((node: Node) => boolean) | tc::js::undefined, start?: number | tc::js::undefined, count?: number | tc::js::undefined): NodeArray<T>; <T extends Node>(nodes: NodeArray<...> | tc::js::undefined, visitor: Visitor, test?: ((node: Node) => boolean) | tc::js::undefined, start?: number... ()*/ nodesVisitor = tc::js::undefined()) noexcept;
 			static auto walkUpBindingElementsAndPatterns(_js_jts_dBindingElement binding) noexcept;
 			static auto createStatement() noexcept;
-			static void createStatement(js_unknown /*flags=524288: (expression: Expression) => ExpressionStatement ()*/ v) noexcept;
+			static void createStatement(tc::js::any /*flags=524288: (expression: Expression) => ExpressionStatement ()*/ v) noexcept;
 			static auto disableIncrementalParsing() noexcept;
 			static void disableIncrementalParsing(bool /*false*/ v) noexcept;
 			static auto servicesVersion() noexcept;
@@ -3496,7 +3496,7 @@ namespace tc::js_defs {
 			static auto unchangedTextChangeRange() noexcept;
 			static void unchangedTextChangeRange(_js_jts_dTextChangeRange v) noexcept;
 			static auto updateStatement() noexcept;
-			static void updateStatement(js_unknown /*flags=524288: (node: ExpressionStatement, expression: Expression) => ExpressionStatement ()*/ v) noexcept;
+			static void updateStatement(tc::js::any /*flags=524288: (node: ExpressionStatement, expression: Expression) => ExpressionStatement ()*/ v) noexcept;
 			static auto version() noexcept;
 			static void version(tc::js::string v) noexcept;
 			static auto versionMajorMinor() noexcept;
@@ -3566,12 +3566,12 @@ namespace tc::js_defs {
 		auto flags() noexcept;
 		void flags(_js_jts_dNodeFlags /*NodeFlags.None*/ v) noexcept;
 		auto decorators() noexcept;
-		void decorators(js_unknown /*flags=1048576: NodeArray<Decorator> | tc::js::undefined ()*/ v) noexcept;
+		void decorators(tc::js::any /*flags=1048576: NodeArray<Decorator> | tc::js::undefined ()*/ v) noexcept;
 		auto modifiers() noexcept;
-		void modifiers(js_unknown /*flags=1048576: NodeArray<Modifier> | tc::js::undefined ()*/ v) noexcept;
+		void modifiers(tc::js::any /*flags=1048576: NodeArray<Modifier> | tc::js::undefined ()*/ v) noexcept;
 		auto parent() noexcept;
 		void parent(_js_jts_dNode v) noexcept;
-		auto forEachChild(js_function<js_unknown /*flags=1048576: T | tc::js::undefined ()*/(_js_jts_dNode)> cbNode, js_union<js_function<js_unknown /*flags=1048576: T | tc::js::undefined ()*/(js_unknown /*flags=524288: NodeArray<Node> (TypeReference=ts.NodeArray)*/)>, tc::js::undefined> cbNodeArray = tc::js::undefined()) noexcept;
+		auto forEachChild(js_function<tc::js::any /*flags=1048576: T | tc::js::undefined ()*/(_js_jts_dNode)> cbNode, js_union<js_function<tc::js::any /*flags=1048576: T | tc::js::undefined ()*/(tc::js::any /*flags=524288: NodeArray<Node> (TypeReference=ts.NodeArray)*/)>, tc::js::undefined> cbNodeArray = tc::js::undefined()) noexcept;
 		auto getChildAt(double index, js_union<_js_jts_dSourceFile, tc::js::undefined> sourceFile = tc::js::undefined()) noexcept;
 		auto getChildCount(js_union<_js_jts_dSourceFile, tc::js::undefined> sourceFile = tc::js::undefined()) noexcept;
 		auto getChildren(js_union<_js_jts_dSourceFile, tc::js::undefined> sourceFile = tc::js::undefined()) noexcept;
@@ -3595,7 +3595,7 @@ namespace tc::js_defs {
 		auto parent() noexcept;
 		void parent(js_union<_js_jts_dBindingElement, _js_jts_dParameterDeclaration, _js_jts_dVariableDeclaration> v) noexcept;
 		auto elements() noexcept;
-		void elements(js_unknown /*flags=524288: NodeArray<ArrayBindingElement> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void elements(tc::js::any /*flags=524288: NodeArray<ArrayBindingElement> (TypeReference=ts.NodeArray)*/ v) noexcept;
 	};
 	struct _impl_js_jts_dArrayDestructuringAssignment : virtual IObject {
 		struct _tcjs_definitions {
@@ -3607,37 +3607,37 @@ namespace tc::js_defs {
 		struct _tcjs_definitions {
 		};
 		auto _expressionBrand() noexcept;
-		void _expressionBrand(js_unknown v) noexcept;
+		void _expressionBrand(tc::js::any v) noexcept;
 	};
 	struct _impl_js_jts_dUnaryExpression : virtual _impl_js_jts_dExpression {
 		struct _tcjs_definitions {
 		};
 		auto _unaryExpressionBrand() noexcept;
-		void _unaryExpressionBrand(js_unknown v) noexcept;
+		void _unaryExpressionBrand(tc::js::any v) noexcept;
 	};
 	struct _impl_js_jts_dUpdateExpression : virtual _impl_js_jts_dUnaryExpression {
 		struct _tcjs_definitions {
 		};
 		auto _updateExpressionBrand() noexcept;
-		void _updateExpressionBrand(js_unknown v) noexcept;
+		void _updateExpressionBrand(tc::js::any v) noexcept;
 	};
 	struct _impl_js_jts_dLeftHandSideExpression : virtual _impl_js_jts_dUpdateExpression {
 		struct _tcjs_definitions {
 		};
 		auto _leftHandSideExpressionBrand() noexcept;
-		void _leftHandSideExpressionBrand(js_unknown v) noexcept;
+		void _leftHandSideExpressionBrand(tc::js::any v) noexcept;
 	};
 	struct _impl_js_jts_dMemberExpression : virtual _impl_js_jts_dLeftHandSideExpression {
 		struct _tcjs_definitions {
 		};
 		auto _memberExpressionBrand() noexcept;
-		void _memberExpressionBrand(js_unknown v) noexcept;
+		void _memberExpressionBrand(tc::js::any v) noexcept;
 	};
 	struct _impl_js_jts_dPrimaryExpression : virtual _impl_js_jts_dMemberExpression {
 		struct _tcjs_definitions {
 		};
 		auto _primaryExpressionBrand() noexcept;
-		void _primaryExpressionBrand(js_unknown v) noexcept;
+		void _primaryExpressionBrand(tc::js::any v) noexcept;
 	};
 	struct _impl_js_jts_dArrayLiteralExpression : virtual _impl_js_jts_dPrimaryExpression {
 		struct _tcjs_definitions {
@@ -3645,13 +3645,13 @@ namespace tc::js_defs {
 		auto kind() noexcept;
 		void kind(_js_jts_dSyntaxKind /*SyntaxKind.ArrayLiteralExpression*/ v) noexcept;
 		auto elements() noexcept;
-		void elements(js_unknown /*flags=524288: NodeArray<Expression> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void elements(tc::js::any /*flags=524288: NodeArray<Expression> (TypeReference=ts.NodeArray)*/ v) noexcept;
 	};
 	struct _impl_js_jts_dTypeNode : virtual _impl_js_jts_dNode {
 		struct _tcjs_definitions {
 		};
 		auto _typeNodeBrand() noexcept;
-		void _typeNodeBrand(js_unknown v) noexcept;
+		void _typeNodeBrand(tc::js::any v) noexcept;
 	};
 	struct _impl_js_jts_dArrayTypeNode : virtual _impl_js_jts_dTypeNode {
 		struct _tcjs_definitions {
@@ -3665,7 +3665,7 @@ namespace tc::js_defs {
 		struct _tcjs_definitions {
 		};
 		auto _declarationBrand() noexcept;
-		void _declarationBrand(js_unknown v) noexcept;
+		void _declarationBrand(tc::js::any v) noexcept;
 	};
 	struct _impl_js_jts_dNamedDeclaration : virtual _impl_js_jts_dDeclaration {
 		struct _tcjs_definitions {
@@ -3686,9 +3686,9 @@ namespace tc::js_defs {
 		auto name() noexcept;
 		void name(js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::undefined> v) noexcept;
 		auto typeParameters() noexcept;
-		void typeParameters(js_unknown /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ v) noexcept;
+		void typeParameters(tc::js::any /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ v) noexcept;
 		auto parameters() noexcept;
-		void parameters(js_unknown /*flags=524288: NodeArray<ParameterDeclaration> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void parameters(tc::js::any /*flags=524288: NodeArray<ParameterDeclaration> (TypeReference=ts.NodeArray)*/ v) noexcept;
 		auto type() noexcept;
 		void type(js_union<_js_jts_dTypeNode, tc::js::undefined> v) noexcept;
 	};
@@ -3696,13 +3696,13 @@ namespace tc::js_defs {
 		struct _tcjs_definitions {
 		};
 		auto _functionLikeDeclarationBrand() noexcept;
-		void _functionLikeDeclarationBrand(js_unknown v) noexcept;
+		void _functionLikeDeclarationBrand(tc::js::any v) noexcept;
 		auto asteriskToken() noexcept;
-		void asteriskToken(js_unknown /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ v) noexcept;
+		void asteriskToken(tc::js::any /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ v) noexcept;
 		auto questionToken() noexcept;
-		void questionToken(js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ v) noexcept;
+		void questionToken(tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ v) noexcept;
 		auto exclamationToken() noexcept;
-		void exclamationToken(js_unknown /*flags=1048576: Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/ v) noexcept;
+		void exclamationToken(tc::js::any /*flags=1048576: Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/ v) noexcept;
 		auto body() noexcept;
 		void body(js_union<_js_jts_dBlock, _js_jts_dExpression, tc::js::undefined> v) noexcept;
 	};
@@ -3712,11 +3712,11 @@ namespace tc::js_defs {
 		auto kind() noexcept;
 		void kind(_js_jts_dSyntaxKind /*SyntaxKind.ArrowFunction*/ v) noexcept;
 		auto equalsGreaterThanToken() noexcept;
-		void equalsGreaterThanToken(js_unknown /*flags=524288: Token<SyntaxKind.EqualsGreaterThanToken> (TypeReference=ts.Token)*/ v) noexcept;
+		void equalsGreaterThanToken(tc::js::any /*flags=524288: Token<SyntaxKind.EqualsGreaterThanToken> (TypeReference=ts.Token)*/ v) noexcept;
 		auto body() noexcept;
 		void body(_js_jts_dConciseBody v) noexcept;
 		auto name() noexcept;
-		void name(js_unknown /*flags=131072: never ()*/ v) noexcept;
+		void name(tc::js::any /*flags=131072: never ()*/ v) noexcept;
 	};
 	struct _impl_js_jts_dAsExpression : virtual _impl_js_jts_dExpression {
 		struct _tcjs_definitions {
@@ -3736,7 +3736,7 @@ namespace tc::js_defs {
 		auto left() noexcept;
 		void left(_js_jts_dExpression v) noexcept;
 		auto operatorToken() noexcept;
-		void operatorToken(js_unknown /*flags=524288: Token<BinaryOperator> (TypeReference=ts.Token)*/ v) noexcept;
+		void operatorToken(tc::js::any /*flags=524288: Token<BinaryOperator> (TypeReference=ts.Token)*/ v) noexcept;
 		auto right() noexcept;
 		void right(_js_jts_dExpression v) noexcept;
 	};
@@ -3746,7 +3746,7 @@ namespace tc::js_defs {
 		auto left() noexcept;
 		void left(_js_jts_dLeftHandSideExpression v) noexcept;
 		auto operatorToken() noexcept;
-		void operatorToken(js_unknown /*flags=262144: TOperator ()*/ v) noexcept;
+		void operatorToken(tc::js::any /*flags=262144: TOperator ()*/ v) noexcept;
 	};
 	struct _impl_js_jts_dAwaitExpression : virtual _impl_js_jts_dUnaryExpression {
 		struct _tcjs_definitions {
@@ -3770,7 +3770,7 @@ namespace tc::js_defs {
 		struct _tcjs_definitions {
 		};
 		auto _literalExpressionBrand() noexcept;
-		void _literalExpressionBrand(js_unknown v) noexcept;
+		void _literalExpressionBrand(tc::js::any v) noexcept;
 	};
 	struct _impl_js_jts_dBigIntLiteral : virtual _impl_js_jts_dLiteralExpression {
 		struct _tcjs_definitions {
@@ -3840,7 +3840,7 @@ namespace tc::js_defs {
 		auto propertyName() noexcept;
 		void propertyName(js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::undefined> v) noexcept;
 		auto dotDotDotToken() noexcept;
-		void dotDotDotToken(js_unknown /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ v) noexcept;
+		void dotDotDotToken(tc::js::any /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ v) noexcept;
 		auto name() noexcept;
 		void name(_js_jts_dBindingName v) noexcept;
 		auto initializer() noexcept;
@@ -3850,7 +3850,7 @@ namespace tc::js_defs {
 		struct _tcjs_definitions {
 		};
 		auto _statementBrand() noexcept;
-		void _statementBrand(js_unknown v) noexcept;
+		void _statementBrand(tc::js::any v) noexcept;
 	};
 	struct _impl_js_jts_dBlock : virtual _impl_js_jts_dStatement {
 		struct _tcjs_definitions {
@@ -3858,7 +3858,7 @@ namespace tc::js_defs {
 		auto kind() noexcept;
 		void kind(_js_jts_dSyntaxKind /*SyntaxKind.Block*/ v) noexcept;
 		auto statements() noexcept;
-		void statements(js_unknown /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void statements(tc::js::any /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/ v) noexcept;
 	};
 	struct _impl_js_jts_dBooleanLiteral : virtual _impl_js_jts_dPrimaryExpression, virtual _impl_js_jts_dTypeNode {
 		struct _tcjs_definitions {
@@ -3918,19 +3918,19 @@ namespace tc::js_defs {
 		auto expression() noexcept;
 		void expression(_js_jts_dLeftHandSideExpression v) noexcept;
 		auto typeArguments() noexcept;
-		void typeArguments(js_unknown /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/ v) noexcept;
+		void typeArguments(tc::js::any /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/ v) noexcept;
 		auto arguments() noexcept;
-		void arguments(js_unknown /*flags=524288: NodeArray<Expression> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void arguments(tc::js::any /*flags=524288: NodeArray<Expression> (TypeReference=ts.NodeArray)*/ v) noexcept;
 	};
 	struct _impl_js_jts_dTypeElement : virtual _impl_js_jts_dNamedDeclaration {
 		struct _tcjs_definitions {
 		};
 		auto _typeElementBrand() noexcept;
-		void _typeElementBrand(js_unknown v) noexcept;
+		void _typeElementBrand(tc::js::any v) noexcept;
 		auto name() noexcept;
 		void name(js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::undefined> v) noexcept;
 		auto questionToken() noexcept;
-		void questionToken(js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ v) noexcept;
+		void questionToken(tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ v) noexcept;
 	};
 	struct _impl_js_jts_dCallSignatureDeclaration : virtual _impl_js_jts_dSignatureDeclarationBase, virtual _impl_js_jts_dTypeElement {
 		struct _tcjs_definitions {
@@ -3952,7 +3952,7 @@ namespace tc::js_defs {
 		auto parent() noexcept;
 		void parent(_js_jts_dSwitchStatement v) noexcept;
 		auto clauses() noexcept;
-		void clauses(js_unknown /*flags=524288: NodeArray<CaseOrDefaultClause> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void clauses(tc::js::any /*flags=524288: NodeArray<CaseOrDefaultClause> (TypeReference=ts.NodeArray)*/ v) noexcept;
 	};
 	struct _impl_js_jts_dCaseClause : virtual _impl_js_jts_dNode {
 		struct _tcjs_definitions {
@@ -3964,7 +3964,7 @@ namespace tc::js_defs {
 		auto expression() noexcept;
 		void expression(_js_jts_dExpression v) noexcept;
 		auto statements() noexcept;
-		void statements(js_unknown /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void statements(tc::js::any /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/ v) noexcept;
 	};
 	struct _impl_js_jts_dCatchClause : virtual _impl_js_jts_dNode {
 		struct _tcjs_definitions {
@@ -3992,11 +3992,11 @@ namespace tc::js_defs {
 		auto name() noexcept;
 		void name(js_union<_js_jts_dIdentifier, tc::js::undefined> v) noexcept;
 		auto typeParameters() noexcept;
-		void typeParameters(js_unknown /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ v) noexcept;
+		void typeParameters(tc::js::any /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ v) noexcept;
 		auto heritageClauses() noexcept;
-		void heritageClauses(js_unknown /*flags=1048576: NodeArray<HeritageClause> | tc::js::undefined ()*/ v) noexcept;
+		void heritageClauses(tc::js::any /*flags=1048576: NodeArray<HeritageClause> | tc::js::undefined ()*/ v) noexcept;
 		auto members() noexcept;
-		void members(js_unknown /*flags=524288: NodeArray<ClassElement> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void members(tc::js::any /*flags=524288: NodeArray<ClassElement> (TypeReference=ts.NodeArray)*/ v) noexcept;
 	};
 	struct _impl_js_jts_dDeclarationStatement : virtual _impl_js_jts_dNamedDeclaration, virtual _impl_js_jts_dStatement {
 		struct _tcjs_definitions {
@@ -4016,7 +4016,7 @@ namespace tc::js_defs {
 		struct _tcjs_definitions {
 		};
 		auto _classElementBrand() noexcept;
-		void _classElementBrand(js_unknown v) noexcept;
+		void _classElementBrand(tc::js::any v) noexcept;
 		auto name() noexcept;
 		void name(js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::undefined> v) noexcept;
 	};
@@ -4080,7 +4080,7 @@ namespace tc::js_defs {
 		auto fixName() noexcept;
 		void fixName(tc::js::string v) noexcept;
 		auto fixId() noexcept;
-		void fixId(js_unknown /*flags=1048576: {} | tc::js::undefined ()*/ v) noexcept;
+		void fixId(tc::js::any /*flags=1048576: {} | tc::js::undefined ()*/ v) noexcept;
 		auto fixAllDescription() noexcept;
 		void fixAllDescription(js_union<tc::js::string, tc::js::undefined> v) noexcept;
 	};
@@ -4106,7 +4106,7 @@ namespace tc::js_defs {
 		auto kind() noexcept;
 		void kind(_js_jts_dSyntaxKind /*SyntaxKind.CommaListExpression*/ v) noexcept;
 		auto elements() noexcept;
-		void elements(js_unknown /*flags=524288: NodeArray<Expression> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void elements(tc::js::any /*flags=524288: NodeArray<Expression> (TypeReference=ts.NodeArray)*/ v) noexcept;
 	};
 	struct _impl_js_jts_dCommentRange : virtual _impl_js_jts_dTextRange {
 		struct _tcjs_definitions {
@@ -4236,7 +4236,7 @@ namespace tc::js_defs {
 		auto outFile() noexcept;
 		void outFile(js_union<tc::js::string, tc::js::undefined> v) noexcept;
 		auto paths() noexcept;
-		void paths(js_unknown /*flags=1048576: MapLike<tc::js::string[]> | tc::js::undefined ()*/ v) noexcept;
+		void paths(tc::js::any /*flags=1048576: MapLike<tc::js::string[]> | tc::js::undefined ()*/ v) noexcept;
 		auto preserveConstEnums() noexcept;
 		void preserveConstEnums(js_union<bool /*false*/, tc::js::undefined> v) noexcept;
 		auto preserveSymlinks() noexcept;
@@ -4369,11 +4369,11 @@ namespace tc::js_defs {
 		auto condition() noexcept;
 		void condition(_js_jts_dExpression v) noexcept;
 		auto questionToken() noexcept;
-		void questionToken(js_unknown /*flags=524288: Token<SyntaxKind.QuestionToken> (TypeReference=ts.Token)*/ v) noexcept;
+		void questionToken(tc::js::any /*flags=524288: Token<SyntaxKind.QuestionToken> (TypeReference=ts.Token)*/ v) noexcept;
 		auto whenTrue() noexcept;
 		void whenTrue(_js_jts_dExpression v) noexcept;
 		auto colonToken() noexcept;
-		void colonToken(js_unknown /*flags=524288: Token<SyntaxKind.ColonToken> (TypeReference=ts.Token)*/ v) noexcept;
+		void colonToken(tc::js::any /*flags=524288: Token<SyntaxKind.ColonToken> (TypeReference=ts.Token)*/ v) noexcept;
 		auto whenFalse() noexcept;
 		void whenFalse(_js_jts_dExpression v) noexcept;
 	};
@@ -4397,7 +4397,7 @@ namespace tc::js_defs {
 		auto outerTypeParameters() noexcept;
 		void outerTypeParameters(js_union<js::Array<_js_jts_dTypeParameter>, tc::js::undefined> v) noexcept;
 		auto instantiations() noexcept;
-		void instantiations(js_unknown /*flags=1048576: Map<Type> | tc::js::undefined ()*/ v) noexcept;
+		void instantiations(tc::js::any /*flags=1048576: Map<Type> | tc::js::undefined ()*/ v) noexcept;
 		auto aliasSymbol() noexcept;
 		void aliasSymbol(js_union<_js_jts_dSymbol, tc::js::undefined> v) noexcept;
 		auto aliasTypeArguments() noexcept;
@@ -4536,7 +4536,7 @@ namespace tc::js_defs {
 		auto parent() noexcept;
 		void parent(_js_jts_dCaseBlock v) noexcept;
 		auto statements() noexcept;
-		void statements(js_unknown /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void statements(tc::js::any /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/ v) noexcept;
 	};
 	struct _impl_js_jts_dDocumentSpan : virtual IObject {
 		struct _tcjs_definitions {
@@ -4598,7 +4598,7 @@ namespace tc::js_defs {
 		struct _tcjs_definitions {
 		};
 		auto reportsUnnecessary() noexcept;
-		void reportsUnnecessary(js_unknown /*flags=1048576: {} | tc::js::undefined ()*/ v) noexcept;
+		void reportsUnnecessary(tc::js::any /*flags=1048576: {} | tc::js::undefined ()*/ v) noexcept;
 		auto source() noexcept;
 		void source(js_union<tc::js::string, tc::js::undefined> v) noexcept;
 		auto relatedInformation() noexcept;
@@ -4616,7 +4616,7 @@ namespace tc::js_defs {
 		auto message() noexcept;
 		void message(tc::js::string v) noexcept;
 		auto reportsUnnecessary() noexcept;
-		void reportsUnnecessary(js_unknown /*flags=1048576: {} | tc::js::undefined ()*/ v) noexcept;
+		void reportsUnnecessary(tc::js::any /*flags=1048576: {} | tc::js::undefined ()*/ v) noexcept;
 	};
 	struct _impl_js_jts_dDiagnosticMessageChain : virtual IObject {
 		struct _tcjs_definitions {
@@ -4666,13 +4666,13 @@ namespace tc::js_defs {
 		struct _tcjs_definitions {
 		};
 		auto acquireDocument(tc::js::string fileName, _js_jts_dCompilerOptions compilationSettings, _js_jts_dIScriptSnapshot scriptSnapshot, tc::js::string version, js_union<_js_jts_dScriptKind /*ScriptKind.TS*/, tc::js::undefined> scriptKind = tc::js::undefined()) noexcept;
-		auto acquireDocumentWithKey(tc::js::string fileName, js_unknown /*flags=2097152: Path ()*/ path, _js_jts_dCompilerOptions compilationSettings, js_unknown /*flags=2097152: DocumentRegistryBucketKey ()*/ key, _js_jts_dIScriptSnapshot scriptSnapshot, tc::js::string version, js_union<_js_jts_dScriptKind /*ScriptKind.TS*/, tc::js::undefined> scriptKind = tc::js::undefined()) noexcept;
+		auto acquireDocumentWithKey(tc::js::string fileName, tc::js::any /*flags=2097152: Path ()*/ path, _js_jts_dCompilerOptions compilationSettings, tc::js::any /*flags=2097152: DocumentRegistryBucketKey ()*/ key, _js_jts_dIScriptSnapshot scriptSnapshot, tc::js::string version, js_union<_js_jts_dScriptKind /*ScriptKind.TS*/, tc::js::undefined> scriptKind = tc::js::undefined()) noexcept;
 		auto getKeyForCompilationSettings(_js_jts_dCompilerOptions settings) noexcept;
 		auto releaseDocument(tc::js::string fileName, _js_jts_dCompilerOptions compilationSettings) noexcept;
-		auto releaseDocumentWithKey(js_unknown /*flags=2097152: Path ()*/ path, js_unknown /*flags=2097152: DocumentRegistryBucketKey ()*/ key) noexcept;
+		auto releaseDocumentWithKey(tc::js::any /*flags=2097152: Path ()*/ path, tc::js::any /*flags=2097152: DocumentRegistryBucketKey ()*/ key) noexcept;
 		auto reportStats() noexcept;
 		auto updateDocument(tc::js::string fileName, _js_jts_dCompilerOptions compilationSettings, _js_jts_dIScriptSnapshot scriptSnapshot, tc::js::string version, js_union<_js_jts_dScriptKind /*ScriptKind.TS*/, tc::js::undefined> scriptKind = tc::js::undefined()) noexcept;
-		auto updateDocumentWithKey(tc::js::string fileName, js_unknown /*flags=2097152: Path ()*/ path, _js_jts_dCompilerOptions compilationSettings, js_unknown /*flags=2097152: DocumentRegistryBucketKey ()*/ key, _js_jts_dIScriptSnapshot scriptSnapshot, tc::js::string version, js_union<_js_jts_dScriptKind /*ScriptKind.TS*/, tc::js::undefined> scriptKind = tc::js::undefined()) noexcept;
+		auto updateDocumentWithKey(tc::js::string fileName, tc::js::any /*flags=2097152: Path ()*/ path, _js_jts_dCompilerOptions compilationSettings, tc::js::any /*flags=2097152: DocumentRegistryBucketKey ()*/ key, _js_jts_dIScriptSnapshot scriptSnapshot, tc::js::string version, js_union<_js_jts_dScriptKind /*ScriptKind.TS*/, tc::js::undefined> scriptKind = tc::js::undefined()) noexcept;
 	};
 	struct _impl_js_jts_dEditorOptions : virtual IObject {
 		struct _tcjs_definitions {
@@ -4762,7 +4762,7 @@ namespace tc::js_defs {
 		auto name() noexcept;
 		void name(_js_jts_dIdentifier v) noexcept;
 		auto members() noexcept;
-		void members(js_unknown /*flags=524288: NodeArray<EnumMember> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void members(tc::js::any /*flags=524288: NodeArray<EnumMember> (TypeReference=ts.NodeArray)*/ v) noexcept;
 	};
 	struct _impl_js_jts_dEnumMember : virtual _impl_js_jts_dNamedDeclaration, virtual _impl_js_jts_dJSDocContainer {
 		struct _tcjs_definitions {
@@ -4800,7 +4800,7 @@ namespace tc::js_defs {
 		auto fileNames() noexcept;
 		void fileNames(js::Array<tc::js::string> v) noexcept;
 		auto wildcardDirectories() noexcept;
-		void wildcardDirectories(js_unknown /*flags=524288: MapLike<WatchDirectoryFlags> (TypeReference=ts.MapLike)*/ v) noexcept;
+		void wildcardDirectories(tc::js::any /*flags=524288: MapLike<WatchDirectoryFlags> (TypeReference=ts.MapLike)*/ v) noexcept;
 	};
 	struct _impl_js_jts_dExportAssignment : virtual _impl_js_jts_dDeclarationStatement {
 		struct _tcjs_definitions {
@@ -4850,7 +4850,7 @@ namespace tc::js_defs {
 		struct _tcjs_definitions {
 		};
 		auto typeArguments() noexcept;
-		void typeArguments(js_unknown /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/ v) noexcept;
+		void typeArguments(tc::js::any /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/ v) noexcept;
 	};
 	struct _impl_js_jts_dExpressionWithTypeArguments : virtual _impl_js_jts_dNodeWithTypeArguments {
 		struct _tcjs_definitions {
@@ -4975,7 +4975,7 @@ namespace tc::js_defs {
 		auto kind() noexcept;
 		void kind(_js_jts_dSyntaxKind /*SyntaxKind.ForOfStatement*/ v) noexcept;
 		auto awaitModifier() noexcept;
-		void awaitModifier(js_unknown /*flags=1048576: Token<SyntaxKind.AwaitKeyword> | tc::js::undefined ()*/ v) noexcept;
+		void awaitModifier(tc::js::any /*flags=1048576: Token<SyntaxKind.AwaitKeyword> | tc::js::undefined ()*/ v) noexcept;
 		auto initializer() noexcept;
 		void initializer(_js_jts_dForInitializer v) noexcept;
 		auto expression() noexcept;
@@ -5112,7 +5112,7 @@ namespace tc::js_defs {
 		struct _tcjs_definitions {
 		};
 		auto _objectLiteralBrand() noexcept;
-		void _objectLiteralBrand(js_unknown v) noexcept;
+		void _objectLiteralBrand(tc::js::any v) noexcept;
 		auto name() noexcept;
 		void name(js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::undefined> v) noexcept;
 	};
@@ -5166,7 +5166,7 @@ namespace tc::js_defs {
 		auto token() noexcept;
 		void token(_js_jts_dSyntaxKind /*SyntaxKind.ExtendsKeyword*/ v) noexcept;
 		auto types() noexcept;
-		void types(js_unknown /*flags=524288: NodeArray<ExpressionWithTypeArguments> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void types(tc::js::any /*flags=524288: NodeArray<ExpressionWithTypeArguments> (TypeReference=ts.NodeArray)*/ v) noexcept;
 	};
 	struct _impl_js_jts_dHighlightSpan : virtual IObject {
 		struct _tcjs_definitions {
@@ -5198,7 +5198,7 @@ namespace tc::js_defs {
 		auto kind() noexcept;
 		void kind(_js_jts_dSyntaxKind /*SyntaxKind.Identifier*/ v) noexcept;
 		auto escapedText() noexcept;
-		void escapedText(js_unknown /*flags=1048576: __String ()*/ v) noexcept;
+		void escapedText(tc::js::any /*flags=1048576: __String ()*/ v) noexcept;
 		auto originalKeywordKind() noexcept;
 		void originalKeywordKind(js_union<_js_jts_dSyntaxKind /*SyntaxKind.GetAccessor*/, tc::js::undefined> v) noexcept;
 		auto isInJSDocNamespace() noexcept;
@@ -5410,7 +5410,7 @@ namespace tc::js_defs {
 		struct _tcjs_definitions {
 		};
 		auto fileName() noexcept;
-		void fileName(js_unknown /*flags=2097152: Path ()*/ v) noexcept;
+		void fileName(tc::js::any /*flags=2097152: Path ()*/ v) noexcept;
 		auto packageName() noexcept;
 		void packageName(tc::js::string v) noexcept;
 	};
@@ -5422,11 +5422,11 @@ namespace tc::js_defs {
 		auto name() noexcept;
 		void name(_js_jts_dIdentifier v) noexcept;
 		auto typeParameters() noexcept;
-		void typeParameters(js_unknown /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ v) noexcept;
+		void typeParameters(tc::js::any /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ v) noexcept;
 		auto heritageClauses() noexcept;
-		void heritageClauses(js_unknown /*flags=1048576: NodeArray<HeritageClause> | tc::js::undefined ()*/ v) noexcept;
+		void heritageClauses(tc::js::any /*flags=1048576: NodeArray<HeritageClause> | tc::js::undefined ()*/ v) noexcept;
 		auto members() noexcept;
-		void members(js_unknown /*flags=524288: NodeArray<TypeElement> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void members(tc::js::any /*flags=524288: NodeArray<TypeElement> (TypeReference=ts.NodeArray)*/ v) noexcept;
 	};
 	struct _impl_js_jts_dInterfaceTypeWithDeclaredMembers : virtual _impl_js_jts_dInterfaceType {
 		struct _tcjs_definitions {
@@ -5458,7 +5458,7 @@ namespace tc::js_defs {
 		auto kind() noexcept;
 		void kind(_js_jts_dSyntaxKind /*SyntaxKind.IntersectionType*/ v) noexcept;
 		auto types() noexcept;
-		void types(js_unknown /*flags=524288: NodeArray<TypeNode> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void types(tc::js::any /*flags=524288: NodeArray<TypeNode> (TypeReference=ts.NodeArray)*/ v) noexcept;
 	};
 	struct _impl_js_jts_dIterator : virtual IObject {
 		struct _tcjs_definitions {
@@ -5471,9 +5471,9 @@ namespace tc::js_defs {
 		auto kind() noexcept;
 		void kind(_js_jts_dSyntaxKind /*SyntaxKind.JSDocComment*/ v) noexcept;
 		auto parent() noexcept;
-		void parent(js_unknown /*flags=1048576: HasJSDoc ()*/ v) noexcept;
+		void parent(tc::js::any /*flags=1048576: HasJSDoc ()*/ v) noexcept;
 		auto tags() noexcept;
-		void tags(js_unknown /*flags=1048576: NodeArray<JSDocTag> | tc::js::undefined ()*/ v) noexcept;
+		void tags(tc::js::any /*flags=1048576: NodeArray<JSDocTag> | tc::js::undefined ()*/ v) noexcept;
 		auto comment() noexcept;
 		void comment(js_union<tc::js::string, tc::js::undefined> v) noexcept;
 	};
@@ -5481,7 +5481,7 @@ namespace tc::js_defs {
 		struct _tcjs_definitions {
 		};
 		auto _jsDocTypeBrand() noexcept;
-		void _jsDocTypeBrand(js_unknown v) noexcept;
+		void _jsDocTypeBrand(tc::js::any v) noexcept;
 	};
 	struct _impl_js_jts_dJSDocAllType : virtual _impl_js_jts_dJSDocType {
 		struct _tcjs_definitions {
@@ -5505,7 +5505,7 @@ namespace tc::js_defs {
 		auto kind() noexcept;
 		void kind(_js_jts_dSyntaxKind /*SyntaxKind.JSDocAugmentsTag*/ v) noexcept;
 		auto class_() noexcept;
-		void class_(js_unknown /*flags=2097152: ExpressionWithTypeArguments & { expression: EntityNameExpression; } ()*/ v) noexcept;
+		void class_(tc::js::any /*flags=2097152: ExpressionWithTypeArguments & { expression: EntityNameExpression; } ()*/ v) noexcept;
 	};
 	struct _impl_js_jts_dJSDocCallbackTag : virtual _impl_js_jts_dJSDocTag, virtual _impl_js_jts_dNamedDeclaration {
 		struct _tcjs_definitions {
@@ -5647,7 +5647,7 @@ namespace tc::js_defs {
 		auto constraint() noexcept;
 		void constraint(js_union<_js_jts_dJSDocTypeExpression, tc::js::undefined> v) noexcept;
 		auto typeParameters() noexcept;
-		void typeParameters(js_unknown /*flags=524288: NodeArray<TypeParameterDeclaration> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void typeParameters(tc::js::any /*flags=524288: NodeArray<TypeParameterDeclaration> (TypeReference=ts.NodeArray)*/ v) noexcept;
 	};
 	struct _impl_js_jts_dJSDocThisTag : virtual _impl_js_jts_dJSDocTag {
 		struct _tcjs_definitions {
@@ -5749,9 +5749,9 @@ namespace tc::js_defs {
 		auto kind() noexcept;
 		void kind(_js_jts_dSyntaxKind /*SyntaxKind.SourceFile*/ v) noexcept;
 		auto statements() noexcept;
-		void statements(js_unknown /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void statements(tc::js::any /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/ v) noexcept;
 		auto endOfFileToken() noexcept;
-		void endOfFileToken(js_unknown /*flags=524288: Token<SyntaxKind.EndOfFileToken> (TypeReference=ts.Token)*/ v) noexcept;
+		void endOfFileToken(tc::js::any /*flags=524288: Token<SyntaxKind.EndOfFileToken> (TypeReference=ts.Token)*/ v) noexcept;
 		auto fileName() noexcept;
 		void fileName(tc::js::string v) noexcept;
 		auto text() noexcept;
@@ -5784,7 +5784,7 @@ namespace tc::js_defs {
 		struct _tcjs_definitions {
 		};
 		auto statements() noexcept;
-		void statements(js_unknown /*flags=524288: NodeArray<JsonObjectExpressionStatement> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void statements(tc::js::any /*flags=524288: NodeArray<JsonObjectExpressionStatement> (TypeReference=ts.NodeArray)*/ v) noexcept;
 	};
 	struct _impl_js_jts_dJsxAttribute : virtual _impl_js_jts_dObjectLiteralElement {
 		struct _tcjs_definitions {
@@ -5835,7 +5835,7 @@ namespace tc::js_defs {
 		auto openingElement() noexcept;
 		void openingElement(_js_jts_dJsxOpeningElement v) noexcept;
 		auto children() noexcept;
-		void children(js_unknown /*flags=524288: NodeArray<JsxChild> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void children(tc::js::any /*flags=524288: NodeArray<JsxChild> (TypeReference=ts.NodeArray)*/ v) noexcept;
 		auto closingElement() noexcept;
 		void closingElement(_js_jts_dJsxClosingElement v) noexcept;
 	};
@@ -5847,7 +5847,7 @@ namespace tc::js_defs {
 		auto parent() noexcept;
 		void parent(js_union<_js_jts_dJsxAttribute, _js_jts_dJsxElement, _js_jts_dJsxSpreadAttribute> v) noexcept;
 		auto dotDotDotToken() noexcept;
-		void dotDotDotToken(js_unknown /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ v) noexcept;
+		void dotDotDotToken(tc::js::any /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ v) noexcept;
 		auto expression() noexcept;
 		void expression(js_union<_js_jts_dExpression, tc::js::undefined> v) noexcept;
 	};
@@ -5859,7 +5859,7 @@ namespace tc::js_defs {
 		auto openingFragment() noexcept;
 		void openingFragment(_js_jts_dJsxOpeningFragment v) noexcept;
 		auto children() noexcept;
-		void children(js_unknown /*flags=524288: NodeArray<JsxChild> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void children(tc::js::any /*flags=524288: NodeArray<JsxChild> (TypeReference=ts.NodeArray)*/ v) noexcept;
 		auto closingFragment() noexcept;
 		void closingFragment(_js_jts_dJsxClosingFragment v) noexcept;
 	};
@@ -5873,7 +5873,7 @@ namespace tc::js_defs {
 		auto tagName() noexcept;
 		void tagName(_js_jts_dJsxTagNameExpression v) noexcept;
 		auto typeArguments() noexcept;
-		void typeArguments(js_unknown /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/ v) noexcept;
+		void typeArguments(tc::js::any /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/ v) noexcept;
 		auto attributes() noexcept;
 		void attributes(_js_jts_dJsxAttributes v) noexcept;
 	};
@@ -5893,7 +5893,7 @@ namespace tc::js_defs {
 		auto tagName() noexcept;
 		void tagName(_js_jts_dJsxTagNameExpression v) noexcept;
 		auto typeArguments() noexcept;
-		void typeArguments(js_unknown /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/ v) noexcept;
+		void typeArguments(tc::js::any /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/ v) noexcept;
 		auto attributes() noexcept;
 		void attributes(_js_jts_dJsxAttributes v) noexcept;
 	};
@@ -5966,7 +5966,7 @@ namespace tc::js_defs {
 		auto getBraceMatchingAtPosition(tc::js::string fileName, double position) noexcept;
 		auto getBreakpointStatementAtPosition(tc::js::string fileName, double position) noexcept;
 		auto getCodeFixesAtPosition(tc::js::string fileName, double start, double end, js::ReadonlyArray<double> errorCodes, _js_jts_dFormatCodeSettings formatOptions, _js_jts_dUserPreferences preferences) noexcept;
-		auto getCombinedCodeFix(_js_jts_dCombinedCodeFixScope scope, js_unknown /*flags=524288: {} ()*/ fixId, _js_jts_dFormatCodeSettings formatOptions, _js_jts_dUserPreferences preferences) noexcept;
+		auto getCombinedCodeFix(_js_jts_dCombinedCodeFixScope scope, tc::js::any /*flags=524288: {} ()*/ fixId, _js_jts_dFormatCodeSettings formatOptions, _js_jts_dUserPreferences preferences) noexcept;
 		auto getCompilerOptionsDiagnostics() noexcept;
 		auto getCompletionEntryDetails(tc::js::string fileName, double position, tc::js::string name, js_union<_js_jts_dFormatCodeOptions, _js_jts_dFormatCodeSettings, tc::js::undefined> formatOptions = tc::js::undefined(), js_union<tc::js::string, tc::js::undefined> source = tc::js::undefined(), js_union<_js_jts_dUserPreferences, tc::js::undefined> preferences = tc::js::undefined()) noexcept;
 		auto getCompletionEntrySymbol(tc::js::string fileName, double position, tc::js::string name, js_union<tc::js::string, tc::js::undefined> source = tc::js::undefined()) noexcept;
@@ -6040,7 +6040,7 @@ namespace tc::js_defs {
 		};
 		auto clear() noexcept;
 		auto delete_(tc::js::string key) noexcept;
-		auto set(tc::js::string key, js_unknown /*flags=262144: T ()*/ value) noexcept;
+		auto set(tc::js::string key, tc::js::any /*flags=262144: T ()*/ value) noexcept;
 	};
 	struct _impl_js_jts_dMapLike : virtual IObject {
 		struct _tcjs_definitions {
@@ -6053,11 +6053,11 @@ namespace tc::js_defs {
 		auto kind() noexcept;
 		void kind(_js_jts_dSyntaxKind /*SyntaxKind.MappedType*/ v) noexcept;
 		auto readonlyToken() noexcept;
-		void readonlyToken(js_unknown /*flags=1048576: Token<SyntaxKind.ReadonlyKeyword> | Token<SyntaxKind.PlusToken> | Token<SyntaxKind.MinusToken> | tc::js::undefined ()*/ v) noexcept;
+		void readonlyToken(tc::js::any /*flags=1048576: Token<SyntaxKind.ReadonlyKeyword> | Token<SyntaxKind.PlusToken> | Token<SyntaxKind.MinusToken> | tc::js::undefined ()*/ v) noexcept;
 		auto typeParameter() noexcept;
 		void typeParameter(_js_jts_dTypeParameterDeclaration v) noexcept;
 		auto questionToken() noexcept;
-		void questionToken(js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | Token<SyntaxKind.PlusToken> | Token<SyntaxKind.MinusToken> | tc::js::undefined ()*/ v) noexcept;
+		void questionToken(tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | Token<SyntaxKind.PlusToken> | Token<SyntaxKind.MinusToken> | tc::js::undefined ()*/ v) noexcept;
 		auto type() noexcept;
 		void type(js_union<_js_jts_dTypeNode, tc::js::undefined> v) noexcept;
 	};
@@ -6109,7 +6109,7 @@ namespace tc::js_defs {
 		auto parent() noexcept;
 		void parent(_js_jts_dModuleDeclaration v) noexcept;
 		auto statements() noexcept;
-		void statements(js_unknown /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void statements(tc::js::any /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/ v) noexcept;
 	};
 	struct _impl_js_jts_dNonRelativeModuleNameResolutionCache : virtual IObject {
 		struct _tcjs_definitions {
@@ -6129,7 +6129,7 @@ namespace tc::js_defs {
 		auto parent() noexcept;
 		void parent(_js_jts_dExportDeclaration v) noexcept;
 		auto elements() noexcept;
-		void elements(js_unknown /*flags=524288: NodeArray<ExportSpecifier> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void elements(tc::js::any /*flags=524288: NodeArray<ExportSpecifier> (TypeReference=ts.NodeArray)*/ v) noexcept;
 	};
 	struct _impl_js_jts_dNamedImports : virtual _impl_js_jts_dNode {
 		struct _tcjs_definitions {
@@ -6139,7 +6139,7 @@ namespace tc::js_defs {
 		auto parent() noexcept;
 		void parent(_js_jts_dImportClause v) noexcept;
 		auto elements() noexcept;
-		void elements(js_unknown /*flags=524288: NodeArray<ImportSpecifier> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void elements(tc::js::any /*flags=524288: NodeArray<ImportSpecifier> (TypeReference=ts.NodeArray)*/ v) noexcept;
 	};
 	struct _impl_js_jts_dNamespaceDeclaration : virtual _impl_js_jts_dModuleDeclaration {
 		struct _tcjs_definitions {
@@ -6233,9 +6233,9 @@ namespace tc::js_defs {
 		auto expression() noexcept;
 		void expression(_js_jts_dLeftHandSideExpression v) noexcept;
 		auto typeArguments() noexcept;
-		void typeArguments(js_unknown /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/ v) noexcept;
+		void typeArguments(tc::js::any /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/ v) noexcept;
 		auto arguments() noexcept;
-		void arguments(js_unknown /*flags=1048576: NodeArray<Expression> | tc::js::undefined ()*/ v) noexcept;
+		void arguments(tc::js::any /*flags=1048576: NodeArray<Expression> | tc::js::undefined ()*/ v) noexcept;
 	};
 	struct _impl_js_jts_dNoSubstitutionTemplateLiteral : virtual _impl_js_jts_dLiteralExpression {
 		struct _tcjs_definitions {
@@ -6289,7 +6289,7 @@ namespace tc::js_defs {
 		auto parent() noexcept;
 		void parent(js_union<_js_jts_dBindingElement, _js_jts_dParameterDeclaration, _js_jts_dVariableDeclaration> v) noexcept;
 		auto elements() noexcept;
-		void elements(js_unknown /*flags=524288: NodeArray<BindingElement> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void elements(tc::js::any /*flags=524288: NodeArray<BindingElement> (TypeReference=ts.NodeArray)*/ v) noexcept;
 	};
 	struct _impl_js_jts_dObjectDestructuringAssignment : virtual IObject {
 		struct _tcjs_definitions {
@@ -6307,7 +6307,7 @@ namespace tc::js_defs {
 		struct _tcjs_definitions {
 		};
 		auto properties() noexcept;
-		void properties(js_unknown /*flags=524288: NodeArray<T> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void properties(tc::js::any /*flags=524288: NodeArray<T> (TypeReference=ts.NodeArray)*/ v) noexcept;
 	};
 	struct _impl_js_jts_dOmittedExpression : virtual _impl_js_jts_dExpression {
 		struct _tcjs_definitions {
@@ -6370,11 +6370,11 @@ namespace tc::js_defs {
 		auto parent() noexcept;
 		void parent(_js_jts_dSignatureDeclaration v) noexcept;
 		auto dotDotDotToken() noexcept;
-		void dotDotDotToken(js_unknown /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ v) noexcept;
+		void dotDotDotToken(tc::js::any /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ v) noexcept;
 		auto name() noexcept;
 		void name(_js_jts_dBindingName v) noexcept;
 		auto questionToken() noexcept;
-		void questionToken(js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ v) noexcept;
+		void questionToken(tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ v) noexcept;
 		auto type() noexcept;
 		void type(js_union<_js_jts_dTypeNode, tc::js::undefined> v) noexcept;
 		auto initializer() noexcept;
@@ -6422,11 +6422,11 @@ namespace tc::js_defs {
 		auto projectReferences() noexcept;
 		void projectReferences(js_union<js::ReadonlyArray<_js_jts_dProjectReference>, tc::js::undefined> v) noexcept;
 		auto raw() noexcept;
-		void raw(js_unknown v) noexcept;
+		void raw(tc::js::any v) noexcept;
 		auto errors() noexcept;
 		void errors(js::Array<_js_jts_dDiagnostic> v) noexcept;
 		auto wildcardDirectories() noexcept;
-		void wildcardDirectories(js_unknown /*flags=1048576: MapLike<WatchDirectoryFlags> | tc::js::undefined ()*/ v) noexcept;
+		void wildcardDirectories(tc::js::any /*flags=1048576: MapLike<WatchDirectoryFlags> | tc::js::undefined ()*/ v) noexcept;
 		auto compileOnSave() noexcept;
 		void compileOnSave(js_union<bool /*false*/, tc::js::undefined> v) noexcept;
 	};
@@ -6434,7 +6434,7 @@ namespace tc::js_defs {
 		struct _tcjs_definitions {
 		};
 		auto raw() noexcept;
-		void raw(js_unknown v) noexcept;
+		void raw(tc::js::any v) noexcept;
 		auto options() noexcept;
 		void options(js_union<_js_jts_dCompilerOptions, tc::js::undefined> v) noexcept;
 		auto typeAcquisition() noexcept;
@@ -6505,7 +6505,7 @@ namespace tc::js_defs {
 		};
 		auto printBundle(_js_jts_dBundle bundle) noexcept;
 		auto printFile(_js_jts_dSourceFile sourceFile) noexcept;
-		auto printList(_js_jts_dListFormat /*ListFormat.None*/ format, js_unknown /*flags=524288: NodeArray<T> (TypeReference=ts.NodeArray)*/ list, _js_jts_dSourceFile sourceFile) noexcept;
+		auto printList(_js_jts_dListFormat /*ListFormat.None*/ format, tc::js::any /*flags=524288: NodeArray<T> (TypeReference=ts.NodeArray)*/ list, _js_jts_dSourceFile sourceFile) noexcept;
 		auto printNode(_js_jts_dEmitHint /*EmitHint.SourceFile*/ hint, _js_jts_dNode node, _js_jts_dSourceFile sourceFile) noexcept;
 	};
 	struct _impl_js_jts_dPrinterOptions : virtual IObject {
@@ -6527,7 +6527,7 @@ namespace tc::js_defs {
 		auto getCompilerOptions() noexcept;
 		auto getCurrentDirectory() noexcept;
 		auto getSourceFile(tc::js::string fileName) noexcept;
-		auto getSourceFileByPath(js_unknown /*flags=2097152: Path ()*/ path) noexcept;
+		auto getSourceFileByPath(tc::js::any /*flags=2097152: Path ()*/ path) noexcept;
 	};
 	struct _impl_js_jts_dProgram : virtual _impl_js_jts_dScriptReferenceHost {
 		struct _tcjs_definitions {
@@ -6575,7 +6575,7 @@ namespace tc::js_defs {
 		struct _tcjs_definitions {
 		};
 		auto _propertyAccessExpressionLikeQualifiedNameBrand() noexcept;
-		void _propertyAccessExpressionLikeQualifiedNameBrand(js_unknown v) noexcept;
+		void _propertyAccessExpressionLikeQualifiedNameBrand(tc::js::any v) noexcept;
 		auto expression() noexcept;
 		void expression(_js_jts_dEntityNameExpression v) noexcept;
 	};
@@ -6589,7 +6589,7 @@ namespace tc::js_defs {
 		auto name() noexcept;
 		void name(_js_jts_dPropertyName v) noexcept;
 		auto questionToken() noexcept;
-		void questionToken(js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ v) noexcept;
+		void questionToken(tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ v) noexcept;
 		auto initializer() noexcept;
 		void initializer(_js_jts_dExpression v) noexcept;
 	};
@@ -6603,9 +6603,9 @@ namespace tc::js_defs {
 		auto name() noexcept;
 		void name(_js_jts_dPropertyName v) noexcept;
 		auto questionToken() noexcept;
-		void questionToken(js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ v) noexcept;
+		void questionToken(tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ v) noexcept;
 		auto exclamationToken() noexcept;
-		void exclamationToken(js_unknown /*flags=1048576: Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/ v) noexcept;
+		void exclamationToken(tc::js::any /*flags=1048576: Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/ v) noexcept;
 		auto type() noexcept;
 		void type(js_union<_js_jts_dTypeNode, tc::js::undefined> v) noexcept;
 		auto initializer() noexcept;
@@ -6625,7 +6625,7 @@ namespace tc::js_defs {
 		auto name() noexcept;
 		void name(_js_jts_dPropertyName v) noexcept;
 		auto questionToken() noexcept;
-		void questionToken(js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ v) noexcept;
+		void questionToken(tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ v) noexcept;
 		auto type() noexcept;
 		void type(js_union<_js_jts_dTypeNode, tc::js::undefined> v) noexcept;
 		auto initializer() noexcept;
@@ -6642,7 +6642,7 @@ namespace tc::js_defs {
 	struct _impl_js_jts_dPush : virtual IObject {
 		struct _tcjs_definitions {
 		};
-		auto push(js::Array<js_unknown /*flags=262144: T ()*/> values) noexcept;
+		auto push(js::Array<tc::js::any /*flags=262144: T ()*/> values) noexcept;
 	};
 	struct _impl_js_jts_dQualifiedName : virtual _impl_js_jts_dNode {
 		struct _tcjs_definitions {
@@ -6675,7 +6675,7 @@ namespace tc::js_defs {
 		};
 		auto size() noexcept;
 		auto entries() noexcept;
-		auto forEach(js_function<void(js_unknown /*flags=262144: T ()*/, tc::js::string)> action) noexcept;
+		auto forEach(js_function<void(tc::js::any /*flags=262144: T ()*/, tc::js::string)> action) noexcept;
 		auto get(tc::js::string key) noexcept;
 		auto has(tc::js::string key) noexcept;
 		auto keys() noexcept;
@@ -6686,9 +6686,9 @@ namespace tc::js_defs {
 		};
 		auto size() noexcept;
 		auto entries() noexcept;
-		auto forEach(js_function<void(js_unknown /*flags=262144: T ()*/, js_unknown /*flags=1048576: __String ()*/)> action) noexcept;
-		auto get(js_unknown /*flags=1048576: __String ()*/ key) noexcept;
-		auto has(js_unknown /*flags=1048576: __String ()*/ key) noexcept;
+		auto forEach(js_function<void(tc::js::any /*flags=262144: T ()*/, tc::js::any /*flags=1048576: __String ()*/)> action) noexcept;
+		auto get(tc::js::any /*flags=1048576: __String ()*/ key) noexcept;
+		auto has(tc::js::any /*flags=1048576: __String ()*/ key) noexcept;
 		auto keys() noexcept;
 		auto values() noexcept;
 	};
@@ -6865,7 +6865,7 @@ namespace tc::js_defs {
 		auto isIdentifier() noexcept;
 		auto isReservedWord() noexcept;
 		auto isUnterminated() noexcept;
-		auto lookAhead(js_function<js_unknown /*flags=262144: T ()*/()> callback) noexcept;
+		auto lookAhead(js_function<tc::js::any /*flags=262144: T ()*/()> callback) noexcept;
 		auto reScanGreaterToken() noexcept;
 		auto reScanJsxToken() noexcept;
 		auto reScanLessThanToken() noexcept;
@@ -6876,13 +6876,13 @@ namespace tc::js_defs {
 		auto scanJsxAttributeValue() noexcept;
 		auto scanJsxIdentifier() noexcept;
 		auto scanJsxToken() noexcept;
-		auto scanRange(double start, double length, js_function<js_unknown /*flags=262144: T ()*/()> callback) noexcept;
+		auto scanRange(double start, double length, js_function<tc::js::any /*flags=262144: T ()*/()> callback) noexcept;
 		auto setLanguageVariant(_js_jts_dLanguageVariant /*LanguageVariant.Standard*/ variant) noexcept;
 		auto setOnError(js_union<_js_jts_dErrorCallback, tc::js::undefined> onError = tc::js::undefined()) noexcept;
 		auto setScriptTarget(_js_jts_dScriptTarget /*ScriptTarget.ES3*/ scriptTarget) noexcept;
 		auto setText(js_union<tc::js::string, tc::js::undefined> text = tc::js::undefined(), js_union<double, tc::js::undefined> start = tc::js::undefined(), js_union<double, tc::js::undefined> length = tc::js::undefined()) noexcept;
 		auto setTextPos(double textPos) noexcept;
-		auto tryScan(js_function<js_unknown /*flags=262144: T ()*/()> callback) noexcept;
+		auto tryScan(js_function<tc::js::any /*flags=262144: T ()*/()> callback) noexcept;
 	};
 	struct _impl_js_jts_dScriptSnapshot : virtual IObject {
 		struct _tcjs_definitions {
@@ -6932,11 +6932,11 @@ namespace tc::js_defs {
 		auto name() noexcept;
 		void name(_js_jts_dIdentifier v) noexcept;
 		auto questionToken() noexcept;
-		void questionToken(js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ v) noexcept;
+		void questionToken(tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ v) noexcept;
 		auto exclamationToken() noexcept;
-		void exclamationToken(js_unknown /*flags=1048576: Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/ v) noexcept;
+		void exclamationToken(tc::js::any /*flags=1048576: Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/ v) noexcept;
 		auto equalsToken() noexcept;
-		void equalsToken(js_unknown /*flags=1048576: Token<SyntaxKind.EqualsToken> | tc::js::undefined ()*/ v) noexcept;
+		void equalsToken(tc::js::any /*flags=1048576: Token<SyntaxKind.EqualsToken> | tc::js::undefined ()*/ v) noexcept;
 		auto objectAssignmentInitializer() noexcept;
 		void objectAssignmentInitializer(js_union<_js_jts_dExpression, tc::js::undefined> v) noexcept;
 	};
@@ -7035,13 +7035,13 @@ namespace tc::js_defs {
 		struct _tcjs_definitions {
 		};
 		auto _u_u_sortedArrayBrand() noexcept;
-		void _u_u_sortedArrayBrand(js_unknown v) noexcept;
+		void _u_u_sortedArrayBrand(tc::js::any v) noexcept;
 	};
 	struct _impl_js_jts_dSortedReadonlyArray : virtual IObject {
 		struct _tcjs_definitions {
 		};
 		auto _u_u_sortedArrayBrand() noexcept;
-		void _u_u_sortedArrayBrand(js_unknown v) noexcept;
+		void _u_u_sortedArrayBrand(tc::js::any v) noexcept;
 	};
 	struct _impl_js_jts_dSourceFileLike : virtual IObject {
 		struct _tcjs_definitions {
@@ -7163,17 +7163,17 @@ namespace tc::js_defs {
 		auto flags() noexcept;
 		void flags(_js_jts_dSymbolFlags /*SymbolFlags.None*/ v) noexcept;
 		auto escapedName() noexcept;
-		void escapedName(js_unknown /*flags=1048576: __String ()*/ v) noexcept;
+		void escapedName(tc::js::any /*flags=1048576: __String ()*/ v) noexcept;
 		auto declarations() noexcept;
 		void declarations(js::Array<_js_jts_dDeclaration> v) noexcept;
 		auto valueDeclaration() noexcept;
 		void valueDeclaration(js_union<_js_jts_dDeclaration, tc::js::undefined> v) noexcept;
 		auto members() noexcept;
-		void members(js_unknown /*flags=1048576: UnderscoreEscapedMap<Symbol> | tc::js::undefined ()*/ v) noexcept;
+		void members(tc::js::any /*flags=1048576: UnderscoreEscapedMap<Symbol> | tc::js::undefined ()*/ v) noexcept;
 		auto exports() noexcept;
-		void exports(js_unknown /*flags=1048576: UnderscoreEscapedMap<Symbol> | tc::js::undefined ()*/ v) noexcept;
+		void exports(tc::js::any /*flags=1048576: UnderscoreEscapedMap<Symbol> | tc::js::undefined ()*/ v) noexcept;
 		auto globalExports() noexcept;
-		void globalExports(js_unknown /*flags=1048576: UnderscoreEscapedMap<Symbol> | tc::js::undefined ()*/ v) noexcept;
+		void globalExports(tc::js::any /*flags=1048576: UnderscoreEscapedMap<Symbol> | tc::js::undefined ()*/ v) noexcept;
 		auto name() noexcept;
 		auto getDeclarations() noexcept;
 		auto getDocumentationComment(js_union<_js_jts_dTypeChecker, tc::js::undefined> typeChecker = tc::js::undefined()) noexcept;
@@ -7246,7 +7246,7 @@ namespace tc::js_defs {
 		auto tag() noexcept;
 		void tag(_js_jts_dLeftHandSideExpression v) noexcept;
 		auto typeArguments() noexcept;
-		void typeArguments(js_unknown /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/ v) noexcept;
+		void typeArguments(tc::js::any /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/ v) noexcept;
 		auto template_() noexcept;
 		void template_(_js_jts_dTemplateLiteral v) noexcept;
 	};
@@ -7258,7 +7258,7 @@ namespace tc::js_defs {
 		auto head() noexcept;
 		void head(_js_jts_dTemplateHead v) noexcept;
 		auto templateSpans() noexcept;
-		void templateSpans(js_unknown /*flags=524288: NodeArray<TemplateSpan> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void templateSpans(tc::js::any /*flags=524288: NodeArray<TemplateSpan> (TypeReference=ts.NodeArray)*/ v) noexcept;
 	};
 	struct _impl_js_jts_dTemplateHead : virtual _impl_js_jts_dLiteralLikeNode {
 		struct _tcjs_definitions {
@@ -7376,7 +7376,7 @@ namespace tc::js_defs {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
-		void kind(js_unknown /*flags=262144: TKind ()*/ v) noexcept;
+		void kind(tc::js::any /*flags=262144: TKind ()*/ v) noexcept;
 	};
 	struct _impl_js_jts_dTransformationContext : virtual IObject {
 		struct _tcjs_definitions {
@@ -7403,7 +7403,7 @@ namespace tc::js_defs {
 		struct _tcjs_definitions {
 		};
 		auto transformed() noexcept;
-		void transformed(js::Array<js_unknown /*flags=262144: T ()*/> v) noexcept;
+		void transformed(js::Array<tc::js::any /*flags=262144: T ()*/> v) noexcept;
 		auto diagnostics() noexcept;
 		void diagnostics(js_union<js::Array<_js_jts_dDiagnosticWithLocation>, tc::js::undefined> v) noexcept;
 		auto dispose() noexcept;
@@ -7428,7 +7428,7 @@ namespace tc::js_defs {
 		auto moduleName() noexcept;
 		void moduleName(js_union<tc::js::string, tc::js::undefined> v) noexcept;
 		auto renamedDependencies() noexcept;
-		void renamedDependencies(js_unknown /*flags=1048576: MapLike<tc::js::string> | tc::js::undefined ()*/ v) noexcept;
+		void renamedDependencies(tc::js::any /*flags=1048576: MapLike<tc::js::string> | tc::js::undefined ()*/ v) noexcept;
 		auto transformers() noexcept;
 		void transformers(js_union<_js_jts_dCustomTransformers, tc::js::undefined> v) noexcept;
 		static auto _tcjs_construct() noexcept;
@@ -7471,7 +7471,7 @@ namespace tc::js_defs {
 		auto readonly() noexcept;
 		void readonly(bool /*false*/ v) noexcept;
 		auto associatedNames() noexcept;
-		void associatedNames(js_union<js::Array<js_unknown /*flags=1048576: __String ()*/>, tc::js::undefined> v) noexcept;
+		void associatedNames(js_union<js::Array<tc::js::any /*flags=1048576: __String ()*/>, tc::js::undefined> v) noexcept;
 	};
 	struct _impl_js_jts_dTupleTypeNode : virtual _impl_js_jts_dTypeNode {
 		struct _tcjs_definitions {
@@ -7479,7 +7479,7 @@ namespace tc::js_defs {
 		auto kind() noexcept;
 		void kind(_js_jts_dSyntaxKind /*SyntaxKind.TupleType*/ v) noexcept;
 		auto elementTypes() noexcept;
-		void elementTypes(js_unknown /*flags=524288: NodeArray<TypeNode> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void elementTypes(tc::js::any /*flags=524288: NodeArray<TypeNode> (TypeReference=ts.NodeArray)*/ v) noexcept;
 	};
 	struct _impl_js_jts_dTupleTypeReference : virtual _impl_js_jts_dTypeReference {
 		struct _tcjs_definitions {
@@ -7508,7 +7508,7 @@ namespace tc::js_defs {
 		auto name() noexcept;
 		void name(_js_jts_dIdentifier v) noexcept;
 		auto typeParameters() noexcept;
-		void typeParameters(js_unknown /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ v) noexcept;
+		void typeParameters(tc::js::any /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ v) noexcept;
 		auto type() noexcept;
 		void type(_js_jts_dTypeNode v) noexcept;
 	};
@@ -7569,7 +7569,7 @@ namespace tc::js_defs {
 		auto isUndefinedSymbol(_js_jts_dSymbol symbol) noexcept;
 		auto isUnknownSymbol(_js_jts_dSymbol symbol) noexcept;
 		auto isValidPropertyAccess(js_union<_js_jts_dImportTypeNode, _js_jts_dPropertyAccessExpression, _js_jts_dQualifiedName> node, tc::js::string propertyName) noexcept;
-		auto runWithCancellationToken(_js_jts_dCancellationToken token, js_function<js_unknown /*flags=262144: T ()*/(_js_jts_dTypeChecker)> cb) noexcept;
+		auto runWithCancellationToken(_js_jts_dCancellationToken token, js_function<tc::js::any /*flags=262144: T ()*/(_js_jts_dTypeChecker)> cb) noexcept;
 		auto signatureToSignatureDeclaration(_js_jts_dSignature signature, _js_jts_dSyntaxKind /*SyntaxKind.Unknown*/ kind, js_union<_js_jts_dNode, tc::js::undefined> enclosingDeclaration = tc::js::undefined(), js_union<_js_jts_dNodeBuilderFlags /*NodeBuilderFlags.OmitParameterModifiers*/, tc::js::undefined> flags = tc::js::undefined()) noexcept;
 		auto signatureToString(_js_jts_dSignature signature, js_union<_js_jts_dNode, tc::js::undefined> enclosingDeclaration = tc::js::undefined(), js_union<_js_jts_dTypeFormatFlags /*TypeFormatFlags.UseTypeOfFunction*/, tc::js::undefined> flags = tc::js::undefined(), js_union<_js_jts_dSignatureKind /*SignatureKind.Call*/, tc::js::undefined> kind = tc::js::undefined()) noexcept;
 		auto symbolToEntityName(_js_jts_dSymbol symbol, _js_jts_dSymbolFlags /*SymbolFlags.None*/ meaning, js_union<_js_jts_dNode, tc::js::undefined> enclosingDeclaration = tc::js::undefined(), js_union<_js_jts_dNodeBuilderFlags /*NodeBuilderFlags.OmitParameterModifiers*/, tc::js::undefined> flags = tc::js::undefined()) noexcept;
@@ -7589,7 +7589,7 @@ namespace tc::js_defs {
 		auto kind() noexcept;
 		void kind(_js_jts_dSyntaxKind /*SyntaxKind.TypeLiteral*/ v) noexcept;
 		auto members() noexcept;
-		void members(js_unknown /*flags=524288: NodeArray<TypeElement> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void members(tc::js::any /*flags=524288: NodeArray<TypeElement> (TypeReference=ts.NodeArray)*/ v) noexcept;
 	};
 	struct _impl_js_jts_dTypeOfExpression : virtual _impl_js_jts_dUnaryExpression {
 		struct _tcjs_definitions {
@@ -7661,8 +7661,8 @@ namespace tc::js_defs {
 		struct _tcjs_definitions {
 		};
 		auto clear() noexcept;
-		auto delete_(js_unknown /*flags=1048576: __String ()*/ key) noexcept;
-		auto set(js_unknown /*flags=1048576: __String ()*/ key, js_unknown /*flags=262144: T ()*/ value) noexcept;
+		auto delete_(tc::js::any /*flags=1048576: __String ()*/ key) noexcept;
+		auto set(tc::js::any /*flags=1048576: __String ()*/ key, tc::js::any /*flags=262144: T ()*/ value) noexcept;
 	};
 	struct _impl_js_jts_dUnionType : virtual _impl_js_jts_dUnionOrIntersectionType {
 		struct _tcjs_definitions {
@@ -7674,7 +7674,7 @@ namespace tc::js_defs {
 		auto kind() noexcept;
 		void kind(_js_jts_dSyntaxKind /*SyntaxKind.UnionType*/ v) noexcept;
 		auto types() noexcept;
-		void types(js_unknown /*flags=524288: NodeArray<TypeNode> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void types(tc::js::any /*flags=524288: NodeArray<TypeNode> (TypeReference=ts.NodeArray)*/ v) noexcept;
 	};
 	struct _impl_js_jts_dUniqueESSymbolType : virtual _impl_js_jts_dType {
 		struct _tcjs_definitions {
@@ -7682,7 +7682,7 @@ namespace tc::js_defs {
 		auto symbol() noexcept;
 		void symbol(_js_jts_dSymbol v) noexcept;
 		auto escapedName() noexcept;
-		void escapedName(js_unknown /*flags=1048576: __String ()*/ v) noexcept;
+		void escapedName(tc::js::any /*flags=1048576: __String ()*/ v) noexcept;
 	};
 	struct _impl_js_jts_dUnparsedSection : virtual _impl_js_jts_dNode {
 		struct _tcjs_definitions {
@@ -7778,7 +7778,7 @@ namespace tc::js_defs {
 		auto name() noexcept;
 		void name(_js_jts_dBindingName v) noexcept;
 		auto exclamationToken() noexcept;
-		void exclamationToken(js_unknown /*flags=1048576: Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/ v) noexcept;
+		void exclamationToken(tc::js::any /*flags=1048576: Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/ v) noexcept;
 		auto type() noexcept;
 		void type(js_union<_js_jts_dTypeNode, tc::js::undefined> v) noexcept;
 		auto initializer() noexcept;
@@ -7792,7 +7792,7 @@ namespace tc::js_defs {
 		auto parent() noexcept;
 		void parent(js_union<_js_jts_dForInStatement, _js_jts_dForOfStatement, _js_jts_dForStatement, _js_jts_dVariableStatement> v) noexcept;
 		auto declarations() noexcept;
-		void declarations(js_unknown /*flags=524288: NodeArray<VariableDeclaration> (TypeReference=ts.NodeArray)*/ v) noexcept;
+		void declarations(tc::js::any /*flags=524288: NodeArray<VariableDeclaration> (TypeReference=ts.NodeArray)*/ v) noexcept;
 	};
 	struct _impl_js_jts_dVariableStatement : virtual _impl_js_jts_dStatement, virtual _impl_js_jts_dJSDocContainer {
 		struct _tcjs_definitions {
@@ -7877,7 +7877,7 @@ namespace tc::js_defs {
 		auto kind() noexcept;
 		void kind(_js_jts_dSyntaxKind /*SyntaxKind.YieldExpression*/ v) noexcept;
 		auto asteriskToken() noexcept;
-		void asteriskToken(js_unknown /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ v) noexcept;
+		void asteriskToken(tc::js::any /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ v) noexcept;
 		auto expression() noexcept;
 		void expression(js_union<_js_jts_dExpression, tc::js::undefined> v) noexcept;
 	};
@@ -7989,17 +7989,17 @@ namespace tc::js_defs {
 		};
 		auto kind() noexcept;
 	};
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::addEmitHelper(js_unknown /*flags=262144: T ()*/ node, _js_jts_dEmitHelper helper) noexcept {
-		return emscripten::val::global("ts")["addEmitHelper"](node, helper).template as<js_unknown /*flags=262144: T ()*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::addEmitHelper(tc::js::any /*flags=262144: T ()*/ node, _js_jts_dEmitHelper helper) noexcept {
+		return emscripten::val::global("ts")["addEmitHelper"](node, helper).template as<tc::js::any /*flags=262144: T ()*/>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::addEmitHelpers(js_unknown /*flags=262144: T ()*/ node, js_union<js::Array<_js_jts_dEmitHelper>, tc::js::undefined> helpers) noexcept {
-		return emscripten::val::global("ts")["addEmitHelpers"](node, helpers).template as<js_unknown /*flags=262144: T ()*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::addEmitHelpers(tc::js::any /*flags=262144: T ()*/ node, js_union<js::Array<_js_jts_dEmitHelper>, tc::js::undefined> helpers) noexcept {
+		return emscripten::val::global("ts")["addEmitHelpers"](node, helpers).template as<tc::js::any /*flags=262144: T ()*/>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::addSyntheticLeadingComment(js_unknown /*flags=262144: T ()*/ node, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/ kind, tc::js::string text, js_union<bool /*false*/, tc::js::undefined> hasTrailingNewLine) noexcept {
-		return emscripten::val::global("ts")["addSyntheticLeadingComment"](node, kind, text, hasTrailingNewLine).template as<js_unknown /*flags=262144: T ()*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::addSyntheticLeadingComment(tc::js::any /*flags=262144: T ()*/ node, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/ kind, tc::js::string text, js_union<bool /*false*/, tc::js::undefined> hasTrailingNewLine) noexcept {
+		return emscripten::val::global("ts")["addSyntheticLeadingComment"](node, kind, text, hasTrailingNewLine).template as<tc::js::any /*flags=262144: T ()*/>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::addSyntheticTrailingComment(js_unknown /*flags=262144: T ()*/ node, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/ kind, tc::js::string text, js_union<bool /*false*/, tc::js::undefined> hasTrailingNewLine) noexcept {
-		return emscripten::val::global("ts")["addSyntheticTrailingComment"](node, kind, text, hasTrailingNewLine).template as<js_unknown /*flags=262144: T ()*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::addSyntheticTrailingComment(tc::js::any /*flags=262144: T ()*/ node, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/ kind, tc::js::string text, js_union<bool /*false*/, tc::js::undefined> hasTrailingNewLine) noexcept {
+		return emscripten::val::global("ts")["addSyntheticTrailingComment"](node, kind, text, hasTrailingNewLine).template as<tc::js::any /*flags=262144: T ()*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::classicNameResolver(tc::js::string moduleName, tc::js::string containingFile, _js_jts_dCompilerOptions compilerOptions, _js_jts_dModuleResolutionHost host, js_union<_js_jts_dNonRelativeModuleNameResolutionCache, tc::js::undefined> cache, js_union<_js_jts_dResolvedProjectReference, tc::js::undefined> redirectedReference) noexcept {
 		return emscripten::val::global("ts")["classicNameResolver"](moduleName, containingFile, compilerOptions, host, cache, redirectedReference).template as<_js_jts_dResolvedModuleWithFailedLookupLocations>();
@@ -8007,14 +8007,14 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::collapseTextChangeRangesAcrossMultipleVersions(js::ReadonlyArray<_js_jts_dTextChangeRange> changes) noexcept {
 		return emscripten::val::global("ts")["collapseTextChangeRangesAcrossMultipleVersions"](changes).template as<_js_jts_dTextChangeRange>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::convertCompilerOptionsFromJson(js_unknown jsonOptions, tc::js::string basePath, js_union<tc::js::string, tc::js::undefined> configFileName) noexcept {
-		return emscripten::val::global("ts")["convertCompilerOptionsFromJson"](jsonOptions, basePath, configFileName).template as<js_unknown /*flags=524288: { options: CompilerOptions; errors: Diagnostic[]; } (AnonymousTypeWithTypeLiteral(members:[options, errors]))*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::convertCompilerOptionsFromJson(tc::js::any jsonOptions, tc::js::string basePath, js_union<tc::js::string, tc::js::undefined> configFileName) noexcept {
+		return emscripten::val::global("ts")["convertCompilerOptionsFromJson"](jsonOptions, basePath, configFileName).template as<tc::js::any /*flags=524288: { options: CompilerOptions; errors: Diagnostic[]; } (AnonymousTypeWithTypeLiteral(members:[options, errors]))*/>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::convertToObject(_js_jts_dJsonSourceFile sourceFile, js_unknown /*flags=524288: Push<Diagnostic> (TypeReference=ts.Push)*/ errors) noexcept {
-		return emscripten::val::global("ts")["convertToObject"](sourceFile, errors).template as<js_unknown>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::convertToObject(_js_jts_dJsonSourceFile sourceFile, tc::js::any /*flags=524288: Push<Diagnostic> (TypeReference=ts.Push)*/ errors) noexcept {
+		return emscripten::val::global("ts")["convertToObject"](sourceFile, errors).template as<tc::js::any>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::convertTypeAcquisitionFromJson(js_unknown jsonOptions, tc::js::string basePath, js_union<tc::js::string, tc::js::undefined> configFileName) noexcept {
-		return emscripten::val::global("ts")["convertTypeAcquisitionFromJson"](jsonOptions, basePath, configFileName).template as<js_unknown /*flags=524288: { options: TypeAcquisition; errors: Diagnostic[]; } (AnonymousTypeWithTypeLiteral(members:[options, errors]))*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::convertTypeAcquisitionFromJson(tc::js::any jsonOptions, tc::js::string basePath, js_union<tc::js::string, tc::js::undefined> configFileName) noexcept {
+		return emscripten::val::global("ts")["convertTypeAcquisitionFromJson"](jsonOptions, basePath, configFileName).template as<tc::js::any /*flags=524288: { options: TypeAcquisition; errors: Diagnostic[]; } (AnonymousTypeWithTypeLiteral(members:[options, errors]))*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::couldStartTrivia(tc::js::string text, double pos) noexcept {
 		return emscripten::val::global("ts")["couldStartTrivia"](text, pos).template as<bool /*false*/>();
@@ -8037,7 +8037,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createArrayTypeNode(_js_jts_dTypeNode elementType) noexcept {
 		return emscripten::val::global("ts")["createArrayTypeNode"](elementType).template as<_js_jts_dArrayTypeNode>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::createArrowFunction(js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_unknown /*flags=1048576: Token<SyntaxKind.EqualsGreaterThanToken> | tc::js::undefined ()*/ equalsGreaterThanToken, _js_jts_dConciseBody body) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::createArrowFunction(js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, tc::js::any /*flags=1048576: Token<SyntaxKind.EqualsGreaterThanToken> | tc::js::undefined ()*/ equalsGreaterThanToken, _js_jts_dConciseBody body) noexcept {
 		return emscripten::val::global("ts")["createArrowFunction"](modifiers, typeParameters, parameters, type, equalsGreaterThanToken, body).template as<_js_jts_dArrowFunction>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createAsExpression(_js_jts_dExpression expression, _js_jts_dTypeNode type) noexcept {
@@ -8055,10 +8055,10 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createBigIntLiteral(tc::js::string value) noexcept {
 		return emscripten::val::global("ts")["createBigIntLiteral"](value).template as<_js_jts_dBigIntLiteral>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::createBinary(_js_jts_dExpression left, js_unknown /*flags=1048576: SyntaxKind.CommaToken | SyntaxKind.LessThanToken | SyntaxKind.GreaterThanToken | SyntaxKind.LessThanEqualsToken | SyntaxKind.GreaterThanEqualsToken | SyntaxKind.EqualsEqualsToken | SyntaxKind.ExclamationEqualsToken | SyntaxKind.EqualsEqualsEqualsToken | SyntaxKind.ExclamationEqualsEqualsToken | SyntaxKind.PlusToken ... ()*/ operator_, _js_jts_dExpression right) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::createBinary(_js_jts_dExpression left, tc::js::any /*flags=1048576: SyntaxKind.CommaToken | SyntaxKind.LessThanToken | SyntaxKind.GreaterThanToken | SyntaxKind.LessThanEqualsToken | SyntaxKind.GreaterThanEqualsToken | SyntaxKind.EqualsEqualsToken | SyntaxKind.ExclamationEqualsToken | SyntaxKind.EqualsEqualsEqualsToken | SyntaxKind.ExclamationEqualsEqualsToken | SyntaxKind.PlusToken ... ()*/ operator_, _js_jts_dExpression right) noexcept {
 		return emscripten::val::global("ts")["createBinary"](left, operator_, right).template as<_js_jts_dBinaryExpression>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::createBindingElement(js_unknown /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ dotDotDotToken, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::string, tc::js::undefined> propertyName, js_union<_js_jts_dArrayBindingPattern, _js_jts_dIdentifier, _js_jts_dObjectBindingPattern, tc::js::string> name, js_union<_js_jts_dExpression, tc::js::undefined> initializer) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::createBindingElement(tc::js::any /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ dotDotDotToken, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::string, tc::js::undefined> propertyName, js_union<_js_jts_dArrayBindingPattern, _js_jts_dIdentifier, _js_jts_dObjectBindingPattern, tc::js::string> name, js_union<_js_jts_dExpression, tc::js::undefined> initializer) noexcept {
 		return emscripten::val::global("ts")["createBindingElement"](dotDotDotToken, propertyName, name, initializer).template as<_js_jts_dBindingElement>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createBlock(js::ReadonlyArray<_js_jts_dStatement> statements, js_union<bool /*false*/, tc::js::undefined> multiLine) noexcept {
@@ -8109,7 +8109,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createConditional(_js_jts_dExpression condition, _js_jts_dExpression whenTrue, _js_jts_dExpression whenFalse) noexcept {
 		return emscripten::val::global("ts")["createConditional"](condition, whenTrue, whenFalse).template as<_js_jts_dConditionalExpression>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::createConditional(_js_jts_dExpression condition, js_unknown /*flags=524288: Token<SyntaxKind.QuestionToken> (TypeReference=ts.Token)*/ questionToken, _js_jts_dExpression whenTrue, js_unknown /*flags=524288: Token<SyntaxKind.ColonToken> (TypeReference=ts.Token)*/ colonToken, _js_jts_dExpression whenFalse) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::createConditional(_js_jts_dExpression condition, tc::js::any /*flags=524288: Token<SyntaxKind.QuestionToken> (TypeReference=ts.Token)*/ questionToken, _js_jts_dExpression whenTrue, tc::js::any /*flags=524288: Token<SyntaxKind.ColonToken> (TypeReference=ts.Token)*/ colonToken, _js_jts_dExpression whenFalse) noexcept {
 		return emscripten::val::global("ts")["createConditional"](condition, questionToken, whenTrue, colonToken, whenFalse).template as<_js_jts_dConditionalExpression>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createConditionalTypeNode(_js_jts_dTypeNode checkType, _js_jts_dTypeNode extendsType, _js_jts_dTypeNode trueType, _js_jts_dTypeNode falseType) noexcept {
@@ -8188,7 +8188,7 @@ namespace tc::js_defs {
 		return emscripten::val::global("ts")["createExternalModuleReference"](expression).template as<_js_jts_dExternalModuleReference>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createFalse() noexcept {
-		return emscripten::val::global("ts")["createFalse"]().template as<js_unknown /*flags=2097152: BooleanLiteral & Token<SyntaxKind.FalseKeyword> ()*/>();
+		return emscripten::val::global("ts")["createFalse"]().template as<tc::js::any /*flags=2097152: BooleanLiteral & Token<SyntaxKind.FalseKeyword> ()*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createFileLevelUniqueName(tc::js::string text) noexcept {
 		return emscripten::val::global("ts")["createFileLevelUniqueName"](text).template as<_js_jts_dIdentifier>();
@@ -8199,13 +8199,13 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createForIn(_js_jts_dForInitializer initializer, _js_jts_dExpression expression, _js_jts_dStatement statement) noexcept {
 		return emscripten::val::global("ts")["createForIn"](initializer, expression, statement).template as<_js_jts_dForInStatement>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::createForOf(js_unknown /*flags=1048576: Token<SyntaxKind.AwaitKeyword> | tc::js::undefined ()*/ awaitModifier, _js_jts_dForInitializer initializer, _js_jts_dExpression expression, _js_jts_dStatement statement) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::createForOf(tc::js::any /*flags=1048576: Token<SyntaxKind.AwaitKeyword> | tc::js::undefined ()*/ awaitModifier, _js_jts_dForInitializer initializer, _js_jts_dExpression expression, _js_jts_dStatement statement) noexcept {
 		return emscripten::val::global("ts")["createForOf"](awaitModifier, initializer, expression, statement).template as<_js_jts_dForOfStatement>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::createFunctionDeclaration(js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_unknown /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, js_union<_js_jts_dIdentifier, tc::js::string, tc::js::undefined> name, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_union<_js_jts_dBlock, tc::js::undefined> body) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::createFunctionDeclaration(js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, tc::js::any /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, js_union<_js_jts_dIdentifier, tc::js::string, tc::js::undefined> name, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_union<_js_jts_dBlock, tc::js::undefined> body) noexcept {
 		return emscripten::val::global("ts")["createFunctionDeclaration"](decorators, modifiers, asteriskToken, name, typeParameters, parameters, type, body).template as<_js_jts_dFunctionDeclaration>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::createFunctionExpression(js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_unknown /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, js_union<_js_jts_dIdentifier, tc::js::string, tc::js::undefined> name, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js_union<js::ReadonlyArray<_js_jts_dParameterDeclaration>, tc::js::undefined> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, _js_jts_dBlock body) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::createFunctionExpression(js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, tc::js::any /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, js_union<_js_jts_dIdentifier, tc::js::string, tc::js::undefined> name, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js_union<js::ReadonlyArray<_js_jts_dParameterDeclaration>, tc::js::undefined> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, _js_jts_dBlock body) noexcept {
 		return emscripten::val::global("ts")["createFunctionExpression"](modifiers, asteriskToken, name, typeParameters, parameters, type, body).template as<_js_jts_dFunctionExpression>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createFunctionTypeNode(js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type) noexcept {
@@ -8286,7 +8286,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createJsxElement(_js_jts_dJsxOpeningElement openingElement, js::ReadonlyArray<_js_jts_dJsxChild> children, _js_jts_dJsxClosingElement closingElement) noexcept {
 		return emscripten::val::global("ts")["createJsxElement"](openingElement, children, closingElement).template as<_js_jts_dJsxElement>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::createJsxExpression(js_unknown /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ dotDotDotToken, js_union<_js_jts_dExpression, tc::js::undefined> expression) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::createJsxExpression(tc::js::any /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ dotDotDotToken, js_union<_js_jts_dExpression, tc::js::undefined> expression) noexcept {
 		return emscripten::val::global("ts")["createJsxExpression"](dotDotDotToken, expression).template as<_js_jts_dJsxExpression>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createJsxFragment(_js_jts_dJsxOpeningFragment openingFragment, js::ReadonlyArray<_js_jts_dJsxChild> children, _js_jts_dJsxClosingFragment closingFragment) noexcept {
@@ -8352,20 +8352,20 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createLoopVariable() noexcept {
 		return emscripten::val::global("ts")["createLoopVariable"]().template as<_js_jts_dIdentifier>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::createMappedTypeNode(js_unknown /*flags=1048576: Token<SyntaxKind.ReadonlyKeyword> | Token<SyntaxKind.PlusToken> | Token<SyntaxKind.MinusToken> | tc::js::undefined ()*/ readonlyToken, _js_jts_dTypeParameterDeclaration typeParameter, js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | Token<SyntaxKind.PlusToken> | Token<SyntaxKind.MinusToken> | tc::js::undefined ()*/ questionToken, js_union<_js_jts_dTypeNode, tc::js::undefined> type) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::createMappedTypeNode(tc::js::any /*flags=1048576: Token<SyntaxKind.ReadonlyKeyword> | Token<SyntaxKind.PlusToken> | Token<SyntaxKind.MinusToken> | tc::js::undefined ()*/ readonlyToken, _js_jts_dTypeParameterDeclaration typeParameter, tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | Token<SyntaxKind.PlusToken> | Token<SyntaxKind.MinusToken> | tc::js::undefined ()*/ questionToken, js_union<_js_jts_dTypeNode, tc::js::undefined> type) noexcept {
 		return emscripten::val::global("ts")["createMappedTypeNode"](readonlyToken, typeParameter, questionToken, type).template as<_js_jts_dMappedTypeNode>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createMetaProperty(_js_jts_dSyntaxKind /*SyntaxKind.ImportKeyword*/ keywordToken, _js_jts_dIdentifier name) noexcept {
 		return emscripten::val::global("ts")["createMetaProperty"](keywordToken, name).template as<_js_jts_dMetaProperty>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::createMethod(js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_unknown /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::string> name, js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_union<_js_jts_dBlock, tc::js::undefined> body) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::createMethod(js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, tc::js::any /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::string> name, tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_union<_js_jts_dBlock, tc::js::undefined> body) noexcept {
 		return emscripten::val::global("ts")["createMethod"](decorators, modifiers, asteriskToken, name, questionToken, typeParameters, parameters, type, body).template as<_js_jts_dMethodDeclaration>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::createMethodSignature(js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::string> name, js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::createMethodSignature(js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::string> name, tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken) noexcept {
 		return emscripten::val::global("ts")["createMethodSignature"](typeParameters, parameters, type, name, questionToken).template as<_js_jts_dMethodSignature>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::createModifier(js_unknown /*flags=262144: T ()*/ kind) noexcept {
-		return emscripten::val::global("ts")["createModifier"](kind).template as<js_unknown /*flags=524288: Token<T> (TypeReference=ts.Token)*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::createModifier(tc::js::any /*flags=262144: T ()*/ kind) noexcept {
+		return emscripten::val::global("ts")["createModifier"](kind).template as<tc::js::any /*flags=524288: Token<T> (TypeReference=ts.Token)*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createModifiersFromModifierFlags(_js_jts_dModifierFlags /*ModifierFlags.None*/ flags) noexcept {
 		return emscripten::val::global("ts")["createModifiersFromModifierFlags"](flags).template as<js::Array<_js_jts_dModifier>>();
@@ -8400,8 +8400,8 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createNode(_js_jts_dSyntaxKind /*SyntaxKind.Unknown*/ kind, js_union<double, tc::js::undefined> pos, js_union<double, tc::js::undefined> end) noexcept {
 		return emscripten::val::global("ts")["createNode"](kind, pos, end).template as<_js_jts_dNode>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::createNodeArray(js_union<js::ReadonlyArray<js_unknown /*flags=262144: T ()*/>, tc::js::undefined> elements, js_union<bool /*false*/, tc::js::undefined> hasTrailingComma) noexcept {
-		return emscripten::val::global("ts")["createNodeArray"](elements, hasTrailingComma).template as<js_unknown /*flags=524288: NodeArray<T> (TypeReference=ts.NodeArray)*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::createNodeArray(js_union<js::ReadonlyArray<tc::js::any /*flags=262144: T ()*/>, tc::js::undefined> elements, js_union<bool /*false*/, tc::js::undefined> hasTrailingComma) noexcept {
+		return emscripten::val::global("ts")["createNodeArray"](elements, hasTrailingComma).template as<tc::js::any /*flags=524288: NodeArray<T> (TypeReference=ts.NodeArray)*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createNonNullExpression(_js_jts_dExpression expression) noexcept {
 		return emscripten::val::global("ts")["createNonNullExpression"](expression).template as<_js_jts_dNonNullExpression>();
@@ -8410,7 +8410,7 @@ namespace tc::js_defs {
 		return emscripten::val::global("ts")["createNotEmittedStatement"](original).template as<_js_jts_dNotEmittedStatement>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createNull() noexcept {
-		return emscripten::val::global("ts")["createNull"]().template as<js_unknown /*flags=2097152: NullLiteral & Token<SyntaxKind.NullKeyword> ()*/>();
+		return emscripten::val::global("ts")["createNull"]().template as<tc::js::any /*flags=2097152: NullLiteral & Token<SyntaxKind.NullKeyword> ()*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createNumericLiteral(tc::js::string value, js_union<_js_jts_dTokenFlags /*TokenFlags.Octal*/, tc::js::undefined> numericLiteralFlags) noexcept {
 		return emscripten::val::global("ts")["createNumericLiteral"](value, numericLiteralFlags).template as<_js_jts_dNumericLiteral>();
@@ -8430,7 +8430,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createOptionalTypeNode(_js_jts_dTypeNode type) noexcept {
 		return emscripten::val::global("ts")["createOptionalTypeNode"](type).template as<_js_jts_dOptionalTypeNode>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::createParameter(js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_unknown /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ dotDotDotToken, js_union<_js_jts_dArrayBindingPattern, _js_jts_dIdentifier, _js_jts_dObjectBindingPattern, tc::js::string> name, js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_union<_js_jts_dExpression, tc::js::undefined> initializer) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::createParameter(js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, tc::js::any /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ dotDotDotToken, js_union<_js_jts_dArrayBindingPattern, _js_jts_dIdentifier, _js_jts_dObjectBindingPattern, tc::js::string> name, tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_union<_js_jts_dExpression, tc::js::undefined> initializer) noexcept {
 		return emscripten::val::global("ts")["createParameter"](decorators, modifiers, dotDotDotToken, name, questionToken, type, initializer).template as<_js_jts_dParameterDeclaration>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createParen(_js_jts_dExpression expression) noexcept {
@@ -8460,7 +8460,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createProgram(js::ReadonlyArray<tc::js::string> rootNames, _js_jts_dCompilerOptions options, js_union<_js_jts_dCompilerHost, tc::js::undefined> host, js_union<_js_jts_dProgram, tc::js::undefined> oldProgram, js_union<js::ReadonlyArray<_js_jts_dDiagnostic>, tc::js::undefined> configFileParsingDiagnostics) noexcept {
 		return emscripten::val::global("ts")["createProgram"](rootNames, options, host, oldProgram, configFileParsingDiagnostics).template as<_js_jts_dProgram>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::createProperty(js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::string> name, js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/ questionOrExclamationToken, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_union<_js_jts_dExpression, tc::js::undefined> initializer) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::createProperty(js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::string> name, tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/ questionOrExclamationToken, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_union<_js_jts_dExpression, tc::js::undefined> initializer) noexcept {
 		return emscripten::val::global("ts")["createProperty"](decorators, modifiers, name, questionOrExclamationToken, type, initializer).template as<_js_jts_dPropertyDeclaration>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createPropertyAccess(_js_jts_dExpression expression, js_union<_js_jts_dIdentifier, tc::js::string> name) noexcept {
@@ -8469,7 +8469,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createPropertyAssignment(js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::string> name, _js_jts_dExpression initializer) noexcept {
 		return emscripten::val::global("ts")["createPropertyAssignment"](name, initializer).template as<_js_jts_dPropertyAssignment>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::createPropertySignature(js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::string> name, js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_union<_js_jts_dExpression, tc::js::undefined> initializer) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::createPropertySignature(js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::string> name, tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_union<_js_jts_dExpression, tc::js::undefined> initializer) noexcept {
 		return emscripten::val::global("ts")["createPropertySignature"](modifiers, name, questionToken, type, initializer).template as<_js_jts_dPropertySignature>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createQualifiedName(_js_jts_dEntityName left, js_union<_js_jts_dIdentifier, tc::js::string> right) noexcept {
@@ -8566,7 +8566,7 @@ namespace tc::js_defs {
 		return emscripten::val::global("ts")["createTextSpanFromBounds"](start, end).template as<_js_jts_dTextSpan>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createThis() noexcept {
-		return emscripten::val::global("ts")["createThis"]().template as<js_unknown /*flags=2097152: ThisExpression & Token<SyntaxKind.ThisKeyword> ()*/>();
+		return emscripten::val::global("ts")["createThis"]().template as<tc::js::any /*flags=2097152: ThisExpression & Token<SyntaxKind.ThisKeyword> ()*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createThisTypeNode() noexcept {
 		return emscripten::val::global("ts")["createThisTypeNode"]().template as<_js_jts_dThisTypeNode>();
@@ -8574,11 +8574,11 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createThrow(_js_jts_dExpression expression) noexcept {
 		return emscripten::val::global("ts")["createThrow"](expression).template as<_js_jts_dThrowStatement>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::createToken(js_unknown /*flags=262144: TKind ()*/ token) noexcept {
-		return emscripten::val::global("ts")["createToken"](token).template as<js_unknown /*flags=524288: Token<TKind> (TypeReference=ts.Token)*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::createToken(tc::js::any /*flags=262144: TKind ()*/ token) noexcept {
+		return emscripten::val::global("ts")["createToken"](token).template as<tc::js::any /*flags=524288: Token<TKind> (TypeReference=ts.Token)*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createTrue() noexcept {
-		return emscripten::val::global("ts")["createTrue"]().template as<js_unknown /*flags=2097152: BooleanLiteral & Token<SyntaxKind.TrueKeyword> ()*/>();
+		return emscripten::val::global("ts")["createTrue"]().template as<tc::js::any /*flags=2097152: BooleanLiteral & Token<SyntaxKind.TrueKeyword> ()*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createTry(_js_jts_dBlock tryBlock, js_union<_js_jts_dCatchClause, tc::js::undefined> catchClause, js_union<_js_jts_dBlock, tc::js::undefined> finallyBlock) noexcept {
 		return emscripten::val::global("ts")["createTry"](tryBlock, catchClause, finallyBlock).template as<_js_jts_dTryStatement>();
@@ -8650,13 +8650,13 @@ namespace tc::js_defs {
 		return emscripten::val::global("ts")["createVoidZero"]().template as<_js_jts_dVoidExpression>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createWatchCompilerHost(js::Array<tc::js::string> rootFiles, _js_jts_dCompilerOptions options, _js_jts_dSystem system, js_union<_js_jts_dCreateProgram, tc::js::undefined> createProgram, js_union<_js_jts_dDiagnosticReporter, tc::js::undefined> reportDiagnostic, js_union<_js_jts_dWatchStatusReporter, tc::js::undefined> reportWatchStatus, js_union<js::ReadonlyArray<_js_jts_dProjectReference>, tc::js::undefined> projectReferences) noexcept {
-		return emscripten::val::global("ts")["createWatchCompilerHost"](rootFiles, options, system, createProgram, reportDiagnostic, reportWatchStatus, projectReferences).template as<js_unknown /*flags=524288: WatchCompilerHostOfFilesAndCompilerOptions<T> (TypeReference=ts.WatchCompilerHostOfFilesAndCompilerOptions)*/>();
+		return emscripten::val::global("ts")["createWatchCompilerHost"](rootFiles, options, system, createProgram, reportDiagnostic, reportWatchStatus, projectReferences).template as<tc::js::any /*flags=524288: WatchCompilerHostOfFilesAndCompilerOptions<T> (TypeReference=ts.WatchCompilerHostOfFilesAndCompilerOptions)*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createWatchCompilerHost(tc::js::string configFileName, js_union<_js_jts_dCompilerOptions, tc::js::undefined> optionsToExtend, _js_jts_dSystem system, js_union<_js_jts_dCreateProgram, tc::js::undefined> createProgram, js_union<_js_jts_dDiagnosticReporter, tc::js::undefined> reportDiagnostic, js_union<_js_jts_dWatchStatusReporter, tc::js::undefined> reportWatchStatus) noexcept {
-		return emscripten::val::global("ts")["createWatchCompilerHost"](configFileName, optionsToExtend, system, createProgram, reportDiagnostic, reportWatchStatus).template as<js_unknown /*flags=524288: WatchCompilerHostOfConfigFile<T> (TypeReference=ts.WatchCompilerHostOfConfigFile)*/>();
+		return emscripten::val::global("ts")["createWatchCompilerHost"](configFileName, optionsToExtend, system, createProgram, reportDiagnostic, reportWatchStatus).template as<tc::js::any /*flags=524288: WatchCompilerHostOfConfigFile<T> (TypeReference=ts.WatchCompilerHostOfConfigFile)*/>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::createWatchProgram(js_unknown /*flags=524288: WatchCompilerHostOfFilesAndCompilerOptions<T> (TypeReference=ts.WatchCompilerHostOfFilesAndCompilerOptions)*/ host) noexcept {
-		return emscripten::val::global("ts")["createWatchProgram"](host).template as<js_unknown /*flags=524288: WatchOfFilesAndCompilerOptions<T> (TypeReference=ts.WatchOfFilesAndCompilerOptions)*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::createWatchProgram(tc::js::any /*flags=524288: WatchCompilerHostOfFilesAndCompilerOptions<T> (TypeReference=ts.WatchCompilerHostOfFilesAndCompilerOptions)*/ host) noexcept {
+		return emscripten::val::global("ts")["createWatchProgram"](host).template as<tc::js::any /*flags=524288: WatchOfFilesAndCompilerOptions<T> (TypeReference=ts.WatchOfFilesAndCompilerOptions)*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createWhile(_js_jts_dExpression expression, _js_jts_dStatement statement) noexcept {
 		return emscripten::val::global("ts")["createWhile"](expression, statement).template as<_js_jts_dWhileStatement>();
@@ -8667,7 +8667,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::createYield(js_union<_js_jts_dExpression, tc::js::undefined> expression) noexcept {
 		return emscripten::val::global("ts")["createYield"](expression).template as<_js_jts_dYieldExpression>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::createYield(js_unknown /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, _js_jts_dExpression expression) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::createYield(tc::js::any /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, _js_jts_dExpression expression) noexcept {
 		return emscripten::val::global("ts")["createYield"](asteriskToken, expression).template as<_js_jts_dYieldExpression>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::decodedTextSpanIntersectsWith(double start1, double length1, double start2, double length2) noexcept {
@@ -8680,7 +8680,7 @@ namespace tc::js_defs {
 		 emscripten::val::global("ts")["disposeEmitNodes"](sourceFile);
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::escapeLeadingUnderscores(tc::js::string identifier) noexcept {
-		return emscripten::val::global("ts")["escapeLeadingUnderscores"](identifier).template as<js_unknown /*flags=1048576: __String ()*/>();
+		return emscripten::val::global("ts")["escapeLeadingUnderscores"](identifier).template as<tc::js::any /*flags=1048576: __String ()*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::findConfigFile(tc::js::string searchPath, js_function<bool /*false*/(tc::js::string)> fileExists, js_union<tc::js::string, tc::js::undefined> configName) noexcept {
 		return emscripten::val::global("ts")["findConfigFile"](searchPath, fileExists, configName).template as<js_union<tc::js::string, tc::js::undefined>>();
@@ -8688,20 +8688,20 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::flattenDiagnosticMessageText(js_union<_js_jts_dDiagnosticMessageChain, tc::js::string, tc::js::undefined> messageText, tc::js::string newLine) noexcept {
 		return emscripten::val::global("ts")["flattenDiagnosticMessageText"](messageText, newLine).template as<tc::js::string>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::forEachChild(_js_jts_dNode node, js_function<js_unknown /*flags=1048576: T | tc::js::undefined ()*/(_js_jts_dNode)> cbNode, js_union<js_function<js_unknown /*flags=1048576: T | tc::js::undefined ()*/(js_unknown /*flags=524288: NodeArray<Node> (TypeReference=ts.NodeArray)*/)>, tc::js::undefined> cbNodes) noexcept {
-		return emscripten::val::global("ts")["forEachChild"](node, cbNode, cbNodes).template as<js_unknown /*flags=1048576: T | tc::js::undefined ()*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::forEachChild(_js_jts_dNode node, js_function<tc::js::any /*flags=1048576: T | tc::js::undefined ()*/(_js_jts_dNode)> cbNode, js_union<js_function<tc::js::any /*flags=1048576: T | tc::js::undefined ()*/(tc::js::any /*flags=524288: NodeArray<Node> (TypeReference=ts.NodeArray)*/)>, tc::js::undefined> cbNodes) noexcept {
+		return emscripten::val::global("ts")["forEachChild"](node, cbNode, cbNodes).template as<tc::js::any /*flags=1048576: T | tc::js::undefined ()*/>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::forEachLeadingCommentRange(tc::js::string text, double pos, js_function<js_unknown /*flags=262144: U ()*/(double, double, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/, bool /*false*/, js_unknown /*flags=262144: T ()*/)> cb, js_unknown /*flags=262144: T ()*/ state) noexcept {
-		return emscripten::val::global("ts")["forEachLeadingCommentRange"](text, pos, cb, state).template as<js_unknown /*flags=1048576: U | tc::js::undefined ()*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::forEachLeadingCommentRange(tc::js::string text, double pos, js_function<tc::js::any /*flags=262144: U ()*/(double, double, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/, bool /*false*/, tc::js::any /*flags=262144: T ()*/)> cb, tc::js::any /*flags=262144: T ()*/ state) noexcept {
+		return emscripten::val::global("ts")["forEachLeadingCommentRange"](text, pos, cb, state).template as<tc::js::any /*flags=1048576: U | tc::js::undefined ()*/>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::forEachLeadingCommentRange(tc::js::string text, double pos, js_function<js_unknown /*flags=262144: U ()*/(double, double, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/, bool /*false*/)> cb) noexcept {
-		return emscripten::val::global("ts")["forEachLeadingCommentRange"](text, pos, cb).template as<js_unknown /*flags=1048576: U | tc::js::undefined ()*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::forEachLeadingCommentRange(tc::js::string text, double pos, js_function<tc::js::any /*flags=262144: U ()*/(double, double, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/, bool /*false*/)> cb) noexcept {
+		return emscripten::val::global("ts")["forEachLeadingCommentRange"](text, pos, cb).template as<tc::js::any /*flags=1048576: U | tc::js::undefined ()*/>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::forEachTrailingCommentRange(tc::js::string text, double pos, js_function<js_unknown /*flags=262144: U ()*/(double, double, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/, bool /*false*/, js_unknown /*flags=262144: T ()*/)> cb, js_unknown /*flags=262144: T ()*/ state) noexcept {
-		return emscripten::val::global("ts")["forEachTrailingCommentRange"](text, pos, cb, state).template as<js_unknown /*flags=1048576: U | tc::js::undefined ()*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::forEachTrailingCommentRange(tc::js::string text, double pos, js_function<tc::js::any /*flags=262144: U ()*/(double, double, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/, bool /*false*/, tc::js::any /*flags=262144: T ()*/)> cb, tc::js::any /*flags=262144: T ()*/ state) noexcept {
+		return emscripten::val::global("ts")["forEachTrailingCommentRange"](text, pos, cb, state).template as<tc::js::any /*flags=1048576: U | tc::js::undefined ()*/>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::forEachTrailingCommentRange(tc::js::string text, double pos, js_function<js_unknown /*flags=262144: U ()*/(double, double, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/, bool /*false*/)> cb) noexcept {
-		return emscripten::val::global("ts")["forEachTrailingCommentRange"](text, pos, cb).template as<js_unknown /*flags=1048576: U | tc::js::undefined ()*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::forEachTrailingCommentRange(tc::js::string text, double pos, js_function<tc::js::any /*flags=262144: U ()*/(double, double, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/, bool /*false*/)> cb) noexcept {
+		return emscripten::val::global("ts")["forEachTrailingCommentRange"](text, pos, cb).template as<tc::js::any /*flags=1048576: U | tc::js::undefined ()*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::formatDiagnostic(_js_jts_dDiagnostic diagnostic, _js_jts_dFormatDiagnosticsHost host) noexcept {
 		return emscripten::val::global("ts")["formatDiagnostic"](diagnostic, host).template as<tc::js::string>();
@@ -8802,8 +8802,8 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::getLineAndCharacterOfPosition(_js_jts_dSourceFileLike sourceFile, double position) noexcept {
 		return emscripten::val::global("ts")["getLineAndCharacterOfPosition"](sourceFile, position).template as<_js_jts_dLineAndCharacter>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::getMutableClone(js_unknown /*flags=262144: T ()*/ node) noexcept {
-		return emscripten::val::global("ts")["getMutableClone"](node).template as<js_unknown /*flags=262144: T ()*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::getMutableClone(tc::js::any /*flags=262144: T ()*/ node) noexcept {
+		return emscripten::val::global("ts")["getMutableClone"](node).template as<tc::js::any /*flags=262144: T ()*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::getNameOfDeclaration(js_union<_js_jts_dDeclaration, _js_jts_dExpression> declaration) noexcept {
 		return emscripten::val::global("ts")["getNameOfDeclaration"](declaration).template as<js_union<_js_jts_dArrayBindingPattern, _js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNoSubstitutionTemplateLiteral, _js_jts_dNumericLiteral, _js_jts_dObjectBindingPattern, _js_jts_dStringLiteral, tc::js::undefined>>();
@@ -8818,21 +8818,21 @@ namespace tc::js_defs {
 		return emscripten::val::global("ts")["getOriginalNode"](node).template as<_js_jts_dNode>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::getOriginalNode(_js_jts_dNode node, js_function<bool /*false*/(_js_jts_dNode)> nodeTest) noexcept {
-		return emscripten::val::global("ts")["getOriginalNode"](node, nodeTest).template as<js_unknown /*flags=262144: T ()*/>();
+		return emscripten::val::global("ts")["getOriginalNode"](node, nodeTest).template as<tc::js::any /*flags=262144: T ()*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::getOriginalNode(js_union<_js_jts_dNode, tc::js::undefined> node) noexcept {
 		return emscripten::val::global("ts")["getOriginalNode"](node).template as<js_union<_js_jts_dNode, tc::js::undefined>>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::getOriginalNode(js_union<_js_jts_dNode, tc::js::undefined> node, js_function<bool /*false*/(js_union<_js_jts_dNode, tc::js::undefined>)> nodeTest) noexcept {
-		return emscripten::val::global("ts")["getOriginalNode"](node, nodeTest).template as<js_unknown /*flags=1048576: T | tc::js::undefined ()*/>();
+		return emscripten::val::global("ts")["getOriginalNode"](node, nodeTest).template as<tc::js::any /*flags=1048576: T | tc::js::undefined ()*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::getParseTreeNode(_js_jts_dNode node) noexcept {
 		return emscripten::val::global("ts")["getParseTreeNode"](node).template as<_js_jts_dNode>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::getParseTreeNode(js_union<_js_jts_dNode, tc::js::undefined> node, js_union<js_function<bool /*false*/(_js_jts_dNode)>, tc::js::undefined> nodeTest) noexcept {
-		return emscripten::val::global("ts")["getParseTreeNode"](node, nodeTest).template as<js_unknown /*flags=1048576: T | tc::js::undefined ()*/>();
+		return emscripten::val::global("ts")["getParseTreeNode"](node, nodeTest).template as<tc::js::any /*flags=1048576: T | tc::js::undefined ()*/>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::getParsedCommandLineOfConfigFile(tc::js::string configFileName, _js_jts_dCompilerOptions optionsToExtend, _js_jts_dParseConfigFileHost host, js_unknown /*flags=1048576: Map<ExtendedConfigCacheEntry> | tc::js::undefined ()*/ extendedConfigCache) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::getParsedCommandLineOfConfigFile(tc::js::string configFileName, _js_jts_dCompilerOptions optionsToExtend, _js_jts_dParseConfigFileHost host, tc::js::any /*flags=1048576: Map<ExtendedConfigCacheEntry> | tc::js::undefined ()*/ extendedConfigCache) noexcept {
 		return emscripten::val::global("ts")["getParsedCommandLineOfConfigFile"](configFileName, optionsToExtend, host, extendedConfigCache).template as<js_union<_js_jts_dParsedCommandLine, tc::js::undefined>>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::getPositionOfLineAndCharacter(_js_jts_dSourceFileLike sourceFile, double line, double character) noexcept {
@@ -8874,224 +8874,224 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isAccessor(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dAccessorDeclaration> result;
 		if(emscripten::val::global("ts")["isAccessor"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isArrayBindingPattern(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dArrayBindingPattern> result;
 		if(emscripten::val::global("ts")["isArrayBindingPattern"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isArrayLiteralExpression(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dArrayLiteralExpression> result;
 		if(emscripten::val::global("ts")["isArrayLiteralExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isArrayTypeNode(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dArrayTypeNode> result;
 		if(emscripten::val::global("ts")["isArrayTypeNode"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isArrowFunction(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dArrowFunction> result;
 		if(emscripten::val::global("ts")["isArrowFunction"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isAsExpression(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dAsExpression> result;
 		if(emscripten::val::global("ts")["isAsExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isAssertionExpression(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dAssertionExpression> result;
 		if(emscripten::val::global("ts")["isAssertionExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isAwaitExpression(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dAwaitExpression> result;
 		if(emscripten::val::global("ts")["isAwaitExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isBigIntLiteral(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dBigIntLiteral> result;
 		if(emscripten::val::global("ts")["isBigIntLiteral"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isBinaryExpression(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dBinaryExpression> result;
 		if(emscripten::val::global("ts")["isBinaryExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isBindingElement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dBindingElement> result;
 		if(emscripten::val::global("ts")["isBindingElement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isBindingName(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dBindingName> result;
 		if(emscripten::val::global("ts")["isBindingName"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isBlock(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dBlock> result;
 		if(emscripten::val::global("ts")["isBlock"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isBreakOrContinueStatement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dBreakOrContinueStatement> result;
 		if(emscripten::val::global("ts")["isBreakOrContinueStatement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isBreakStatement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dBreakStatement> result;
 		if(emscripten::val::global("ts")["isBreakStatement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isBundle(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dBundle> result;
 		if(emscripten::val::global("ts")["isBundle"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isCallExpression(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dCallExpression> result;
 		if(emscripten::val::global("ts")["isCallExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isCallLikeExpression(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dCallLikeExpression> result;
 		if(emscripten::val::global("ts")["isCallLikeExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isCallOrNewExpression(_js_jts_dNode node) noexcept {
 		std::optional<js_union<_js_jts_dCallExpression, _js_jts_dNewExpression>> result;
 		if(emscripten::val::global("ts")["isCallOrNewExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isCallSignatureDeclaration(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dCallSignatureDeclaration> result;
 		if(emscripten::val::global("ts")["isCallSignatureDeclaration"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isCaseBlock(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dCaseBlock> result;
 		if(emscripten::val::global("ts")["isCaseBlock"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isCaseClause(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dCaseClause> result;
 		if(emscripten::val::global("ts")["isCaseClause"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isCaseOrDefaultClause(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dCaseOrDefaultClause> result;
 		if(emscripten::val::global("ts")["isCaseOrDefaultClause"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isCatchClause(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dCatchClause> result;
 		if(emscripten::val::global("ts")["isCatchClause"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isClassDeclaration(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dClassDeclaration> result;
 		if(emscripten::val::global("ts")["isClassDeclaration"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isClassElement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dClassElement> result;
 		if(emscripten::val::global("ts")["isClassElement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isClassExpression(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dClassExpression> result;
 		if(emscripten::val::global("ts")["isClassExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isClassLike(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dClassLikeDeclaration> result;
 		if(emscripten::val::global("ts")["isClassLike"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isClassOrTypeElement(_js_jts_dNode node) noexcept {
 		std::optional<js_union<_js_jts_dClassElement, _js_jts_dTypeElement>> result;
 		if(emscripten::val::global("ts")["isClassOrTypeElement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isComputedPropertyName(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dComputedPropertyName> result;
 		if(emscripten::val::global("ts")["isComputedPropertyName"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isConditionalExpression(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dConditionalExpression> result;
 		if(emscripten::val::global("ts")["isConditionalExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isConditionalTypeNode(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dConditionalTypeNode> result;
 		if(emscripten::val::global("ts")["isConditionalTypeNode"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
@@ -9101,70 +9101,70 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isConstructSignatureDeclaration(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dConstructSignatureDeclaration> result;
 		if(emscripten::val::global("ts")["isConstructSignatureDeclaration"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isConstructorDeclaration(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dConstructorDeclaration> result;
 		if(emscripten::val::global("ts")["isConstructorDeclaration"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isConstructorTypeNode(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dConstructorTypeNode> result;
 		if(emscripten::val::global("ts")["isConstructorTypeNode"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isContinueStatement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dContinueStatement> result;
 		if(emscripten::val::global("ts")["isContinueStatement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isDebuggerStatement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dDebuggerStatement> result;
 		if(emscripten::val::global("ts")["isDebuggerStatement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isDecorator(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dDecorator> result;
 		if(emscripten::val::global("ts")["isDecorator"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isDefaultClause(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dDefaultClause> result;
 		if(emscripten::val::global("ts")["isDefaultClause"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isDeleteExpression(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dDeleteExpression> result;
 		if(emscripten::val::global("ts")["isDeleteExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isDoStatement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dDoStatement> result;
 		if(emscripten::val::global("ts")["isDoStatement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isElementAccessExpression(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dElementAccessExpression> result;
 		if(emscripten::val::global("ts")["isElementAccessExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
@@ -9174,70 +9174,70 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isEmptyBindingPattern(_js_jts_dBindingName node) noexcept {
 		std::optional<_js_jts_dBindingPattern> result;
 		if(emscripten::val::global("ts")["isEmptyBindingPattern"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isEmptyStatement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dEmptyStatement> result;
 		if(emscripten::val::global("ts")["isEmptyStatement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isEntityName(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dEntityName> result;
 		if(emscripten::val::global("ts")["isEntityName"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isEnumDeclaration(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dEnumDeclaration> result;
 		if(emscripten::val::global("ts")["isEnumDeclaration"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isEnumMember(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dEnumMember> result;
 		if(emscripten::val::global("ts")["isEnumMember"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isExportAssignment(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dExportAssignment> result;
 		if(emscripten::val::global("ts")["isExportAssignment"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isExportDeclaration(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dExportDeclaration> result;
 		if(emscripten::val::global("ts")["isExportDeclaration"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isExportSpecifier(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dExportSpecifier> result;
 		if(emscripten::val::global("ts")["isExportSpecifier"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isExpressionStatement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dExpressionStatement> result;
 		if(emscripten::val::global("ts")["isExpressionStatement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isExpressionWithTypeArguments(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dExpressionWithTypeArguments> result;
 		if(emscripten::val::global("ts")["isExpressionWithTypeArguments"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
@@ -9250,91 +9250,91 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isExternalModuleReference(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dExternalModuleReference> result;
 		if(emscripten::val::global("ts")["isExternalModuleReference"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isForInStatement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dForInStatement> result;
 		if(emscripten::val::global("ts")["isForInStatement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isForOfStatement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dForOfStatement> result;
 		if(emscripten::val::global("ts")["isForOfStatement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isForStatement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dForStatement> result;
 		if(emscripten::val::global("ts")["isForStatement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isFunctionDeclaration(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dFunctionDeclaration> result;
 		if(emscripten::val::global("ts")["isFunctionDeclaration"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isFunctionExpression(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dFunctionExpression> result;
 		if(emscripten::val::global("ts")["isFunctionExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isFunctionLike(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dSignatureDeclaration> result;
 		if(emscripten::val::global("ts")["isFunctionLike"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isFunctionOrConstructorTypeNode(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dFunctionOrConstructorTypeNode> result;
 		if(emscripten::val::global("ts")["isFunctionOrConstructorTypeNode"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isFunctionTypeNode(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dFunctionTypeNode> result;
 		if(emscripten::val::global("ts")["isFunctionTypeNode"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isGetAccessor(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dGetAccessorDeclaration> result;
 		if(emscripten::val::global("ts")["isGetAccessor"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isGetAccessorDeclaration(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dGetAccessorDeclaration> result;
 		if(emscripten::val::global("ts")["isGetAccessorDeclaration"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isHeritageClause(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dHeritageClause> result;
 		if(emscripten::val::global("ts")["isHeritageClause"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isIdentifier(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dIdentifier> result;
 		if(emscripten::val::global("ts")["isIdentifier"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
@@ -9347,126 +9347,126 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isIfStatement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dIfStatement> result;
 		if(emscripten::val::global("ts")["isIfStatement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isImportClause(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dImportClause> result;
 		if(emscripten::val::global("ts")["isImportClause"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isImportDeclaration(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dImportDeclaration> result;
 		if(emscripten::val::global("ts")["isImportDeclaration"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isImportEqualsDeclaration(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dImportEqualsDeclaration> result;
 		if(emscripten::val::global("ts")["isImportEqualsDeclaration"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isImportOrExportSpecifier(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dImportOrExportSpecifier> result;
 		if(emscripten::val::global("ts")["isImportOrExportSpecifier"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isImportSpecifier(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dImportSpecifier> result;
 		if(emscripten::val::global("ts")["isImportSpecifier"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isImportTypeNode(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dImportTypeNode> result;
 		if(emscripten::val::global("ts")["isImportTypeNode"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isIndexSignatureDeclaration(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dIndexSignatureDeclaration> result;
 		if(emscripten::val::global("ts")["isIndexSignatureDeclaration"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isIndexedAccessTypeNode(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dIndexedAccessTypeNode> result;
 		if(emscripten::val::global("ts")["isIndexedAccessTypeNode"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isInferTypeNode(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dInferTypeNode> result;
 		if(emscripten::val::global("ts")["isInferTypeNode"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isInterfaceDeclaration(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dInterfaceDeclaration> result;
 		if(emscripten::val::global("ts")["isInterfaceDeclaration"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isIntersectionTypeNode(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dIntersectionTypeNode> result;
 		if(emscripten::val::global("ts")["isIntersectionTypeNode"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isIterationStatement(_js_jts_dNode node, bool /*false*/ lookInLabeledStatements) noexcept {
 		std::optional<_js_jts_dIterationStatement> result;
 		if(emscripten::val::global("ts")["isIterationStatement"](node, lookInLabeledStatements).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDoc(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJSDoc> result;
 		if(emscripten::val::global("ts")["isJSDoc"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocAllType(_js_jts_dJSDocAllType node) noexcept {
 		std::optional<_js_jts_dJSDocAllType> result;
 		if(emscripten::val::global("ts")["isJSDocAllType"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocAugmentsTag(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJSDocAugmentsTag> result;
 		if(emscripten::val::global("ts")["isJSDocAugmentsTag"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocCallbackTag(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJSDocCallbackTag> result;
 		if(emscripten::val::global("ts")["isJSDocCallbackTag"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocClassTag(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJSDocClassTag> result;
 		if(emscripten::val::global("ts")["isJSDocClassTag"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
@@ -9476,224 +9476,224 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocEnumTag(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJSDocEnumTag> result;
 		if(emscripten::val::global("ts")["isJSDocEnumTag"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocFunctionType(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJSDocFunctionType> result;
 		if(emscripten::val::global("ts")["isJSDocFunctionType"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocNonNullableType(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJSDocNonNullableType> result;
 		if(emscripten::val::global("ts")["isJSDocNonNullableType"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocNullableType(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJSDocNullableType> result;
 		if(emscripten::val::global("ts")["isJSDocNullableType"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocOptionalType(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJSDocOptionalType> result;
 		if(emscripten::val::global("ts")["isJSDocOptionalType"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocParameterTag(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJSDocParameterTag> result;
 		if(emscripten::val::global("ts")["isJSDocParameterTag"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocPropertyLikeTag(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJSDocPropertyLikeTag> result;
 		if(emscripten::val::global("ts")["isJSDocPropertyLikeTag"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocPropertyTag(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJSDocPropertyTag> result;
 		if(emscripten::val::global("ts")["isJSDocPropertyTag"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocReturnTag(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJSDocReturnTag> result;
 		if(emscripten::val::global("ts")["isJSDocReturnTag"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocSignature(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJSDocSignature> result;
 		if(emscripten::val::global("ts")["isJSDocSignature"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocTemplateTag(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJSDocTemplateTag> result;
 		if(emscripten::val::global("ts")["isJSDocTemplateTag"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocThisTag(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJSDocThisTag> result;
 		if(emscripten::val::global("ts")["isJSDocThisTag"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocTypeExpression(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJSDocTypeExpression> result;
 		if(emscripten::val::global("ts")["isJSDocTypeExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocTypeLiteral(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJSDocTypeLiteral> result;
 		if(emscripten::val::global("ts")["isJSDocTypeLiteral"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocTypeTag(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJSDocTypeTag> result;
 		if(emscripten::val::global("ts")["isJSDocTypeTag"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocTypedefTag(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJSDocTypedefTag> result;
 		if(emscripten::val::global("ts")["isJSDocTypedefTag"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocUnknownType(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJSDocUnknownType> result;
 		if(emscripten::val::global("ts")["isJSDocUnknownType"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJSDocVariadicType(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJSDocVariadicType> result;
 		if(emscripten::val::global("ts")["isJSDocVariadicType"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJsxAttribute(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJsxAttribute> result;
 		if(emscripten::val::global("ts")["isJsxAttribute"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJsxAttributes(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJsxAttributes> result;
 		if(emscripten::val::global("ts")["isJsxAttributes"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJsxClosingElement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJsxClosingElement> result;
 		if(emscripten::val::global("ts")["isJsxClosingElement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJsxClosingFragment(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJsxClosingFragment> result;
 		if(emscripten::val::global("ts")["isJsxClosingFragment"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJsxElement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJsxElement> result;
 		if(emscripten::val::global("ts")["isJsxElement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJsxExpression(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJsxExpression> result;
 		if(emscripten::val::global("ts")["isJsxExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJsxFragment(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJsxFragment> result;
 		if(emscripten::val::global("ts")["isJsxFragment"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJsxOpeningElement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJsxOpeningElement> result;
 		if(emscripten::val::global("ts")["isJsxOpeningElement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJsxOpeningFragment(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJsxOpeningFragment> result;
 		if(emscripten::val::global("ts")["isJsxOpeningFragment"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJsxOpeningLikeElement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJsxOpeningLikeElement> result;
 		if(emscripten::val::global("ts")["isJsxOpeningLikeElement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJsxSelfClosingElement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJsxSelfClosingElement> result;
 		if(emscripten::val::global("ts")["isJsxSelfClosingElement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJsxSpreadAttribute(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJsxSpreadAttribute> result;
 		if(emscripten::val::global("ts")["isJsxSpreadAttribute"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isJsxText(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dJsxText> result;
 		if(emscripten::val::global("ts")["isJsxText"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isLabeledStatement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dLabeledStatement> result;
 		if(emscripten::val::global("ts")["isLabeledStatement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
@@ -9703,189 +9703,189 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isLiteralExpression(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dLiteralExpression> result;
 		if(emscripten::val::global("ts")["isLiteralExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isLiteralTypeNode(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dLiteralTypeNode> result;
 		if(emscripten::val::global("ts")["isLiteralTypeNode"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isMappedTypeNode(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dMappedTypeNode> result;
 		if(emscripten::val::global("ts")["isMappedTypeNode"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isMetaProperty(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dMetaProperty> result;
 		if(emscripten::val::global("ts")["isMetaProperty"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isMethodDeclaration(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dMethodDeclaration> result;
 		if(emscripten::val::global("ts")["isMethodDeclaration"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isMethodSignature(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dMethodSignature> result;
 		if(emscripten::val::global("ts")["isMethodSignature"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isMissingDeclaration(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dMissingDeclaration> result;
 		if(emscripten::val::global("ts")["isMissingDeclaration"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isModifier(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dModifier> result;
 		if(emscripten::val::global("ts")["isModifier"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isModuleBlock(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dModuleBlock> result;
 		if(emscripten::val::global("ts")["isModuleBlock"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isModuleDeclaration(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dModuleDeclaration> result;
 		if(emscripten::val::global("ts")["isModuleDeclaration"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isNamedExports(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dNamedExports> result;
 		if(emscripten::val::global("ts")["isNamedExports"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isNamedImports(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dNamedImports> result;
 		if(emscripten::val::global("ts")["isNamedImports"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isNamespaceExportDeclaration(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dNamespaceExportDeclaration> result;
 		if(emscripten::val::global("ts")["isNamespaceExportDeclaration"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isNamespaceImport(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dNamespaceImport> result;
 		if(emscripten::val::global("ts")["isNamespaceImport"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isNewExpression(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dNewExpression> result;
 		if(emscripten::val::global("ts")["isNewExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isNoSubstitutionTemplateLiteral(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dNoSubstitutionTemplateLiteral> result;
 		if(emscripten::val::global("ts")["isNoSubstitutionTemplateLiteral"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isNonNullExpression(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dNonNullExpression> result;
 		if(emscripten::val::global("ts")["isNonNullExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isNumericLiteral(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dNumericLiteral> result;
 		if(emscripten::val::global("ts")["isNumericLiteral"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isObjectBindingPattern(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dObjectBindingPattern> result;
 		if(emscripten::val::global("ts")["isObjectBindingPattern"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isObjectLiteralElement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dObjectLiteralElement> result;
 		if(emscripten::val::global("ts")["isObjectLiteralElement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isObjectLiteralElementLike(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dObjectLiteralElementLike> result;
 		if(emscripten::val::global("ts")["isObjectLiteralElementLike"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isObjectLiteralExpression(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dObjectLiteralExpression> result;
 		if(emscripten::val::global("ts")["isObjectLiteralExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isOmittedExpression(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dOmittedExpression> result;
 		if(emscripten::val::global("ts")["isOmittedExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isParameter(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dParameterDeclaration> result;
 		if(emscripten::val::global("ts")["isParameter"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isParameterPropertyDeclaration(_js_jts_dNode node) noexcept {
-		std::optional<js_unknown /*flags=2097152: ParameterPropertyDeclaration ()*/> result;
+		std::optional<tc::js::any /*flags=2097152: ParameterPropertyDeclaration ()*/> result;
 		if(emscripten::val::global("ts")["isParameterPropertyDeclaration"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isParenthesizedExpression(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dParenthesizedExpression> result;
 		if(emscripten::val::global("ts")["isParenthesizedExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isParenthesizedTypeNode(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dParenthesizedTypeNode> result;
 		if(emscripten::val::global("ts")["isParenthesizedTypeNode"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
@@ -9895,231 +9895,231 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isPostfixUnaryExpression(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dPostfixUnaryExpression> result;
 		if(emscripten::val::global("ts")["isPostfixUnaryExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isPrefixUnaryExpression(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dPrefixUnaryExpression> result;
 		if(emscripten::val::global("ts")["isPrefixUnaryExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isPropertyAccessExpression(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dPropertyAccessExpression> result;
 		if(emscripten::val::global("ts")["isPropertyAccessExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isPropertyAccessOrQualifiedName(_js_jts_dNode node) noexcept {
 		std::optional<js_union<_js_jts_dPropertyAccessExpression, _js_jts_dQualifiedName>> result;
 		if(emscripten::val::global("ts")["isPropertyAccessOrQualifiedName"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isPropertyAssignment(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dPropertyAssignment> result;
 		if(emscripten::val::global("ts")["isPropertyAssignment"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isPropertyDeclaration(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dPropertyDeclaration> result;
 		if(emscripten::val::global("ts")["isPropertyDeclaration"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isPropertyName(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dPropertyName> result;
 		if(emscripten::val::global("ts")["isPropertyName"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isPropertySignature(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dPropertySignature> result;
 		if(emscripten::val::global("ts")["isPropertySignature"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isQualifiedName(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dQualifiedName> result;
 		if(emscripten::val::global("ts")["isQualifiedName"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isRegularExpressionLiteral(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dRegularExpressionLiteral> result;
 		if(emscripten::val::global("ts")["isRegularExpressionLiteral"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isReturnStatement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dReturnStatement> result;
 		if(emscripten::val::global("ts")["isReturnStatement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isSemicolonClassElement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dSemicolonClassElement> result;
 		if(emscripten::val::global("ts")["isSemicolonClassElement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isSetAccessor(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dSetAccessorDeclaration> result;
 		if(emscripten::val::global("ts")["isSetAccessor"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isSetAccessorDeclaration(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dSetAccessorDeclaration> result;
 		if(emscripten::val::global("ts")["isSetAccessorDeclaration"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isShorthandPropertyAssignment(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dShorthandPropertyAssignment> result;
 		if(emscripten::val::global("ts")["isShorthandPropertyAssignment"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isSourceFile(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dSourceFile> result;
 		if(emscripten::val::global("ts")["isSourceFile"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isSpreadAssignment(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dSpreadAssignment> result;
 		if(emscripten::val::global("ts")["isSpreadAssignment"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isSpreadElement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dSpreadElement> result;
 		if(emscripten::val::global("ts")["isSpreadElement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isStringLiteral(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dStringLiteral> result;
 		if(emscripten::val::global("ts")["isStringLiteral"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isStringLiteralLike(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dStringLiteralLike> result;
 		if(emscripten::val::global("ts")["isStringLiteralLike"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isStringTextContainingNode(_js_jts_dNode node) noexcept {
 		std::optional<js_union<_js_jts_dNoSubstitutionTemplateLiteral, _js_jts_dStringLiteral, _js_jts_dTemplateHead, _js_jts_dTemplateMiddle, _js_jts_dTemplateTail>> result;
 		if(emscripten::val::global("ts")["isStringTextContainingNode"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isSwitchStatement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dSwitchStatement> result;
 		if(emscripten::val::global("ts")["isSwitchStatement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTaggedTemplateExpression(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dTaggedTemplateExpression> result;
 		if(emscripten::val::global("ts")["isTaggedTemplateExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTemplateExpression(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dTemplateExpression> result;
 		if(emscripten::val::global("ts")["isTemplateExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTemplateHead(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dTemplateHead> result;
 		if(emscripten::val::global("ts")["isTemplateHead"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTemplateLiteral(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dTemplateLiteral> result;
 		if(emscripten::val::global("ts")["isTemplateLiteral"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTemplateLiteralToken(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dTemplateLiteralToken> result;
 		if(emscripten::val::global("ts")["isTemplateLiteralToken"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTemplateMiddle(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dTemplateMiddle> result;
 		if(emscripten::val::global("ts")["isTemplateMiddle"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTemplateMiddleOrTemplateTail(_js_jts_dNode node) noexcept {
 		std::optional<js_union<_js_jts_dTemplateMiddle, _js_jts_dTemplateTail>> result;
 		if(emscripten::val::global("ts")["isTemplateMiddleOrTemplateTail"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTemplateSpan(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dTemplateSpan> result;
 		if(emscripten::val::global("ts")["isTemplateSpan"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTemplateTail(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dTemplateTail> result;
 		if(emscripten::val::global("ts")["isTemplateTail"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isThisTypeNode(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dThisTypeNode> result;
 		if(emscripten::val::global("ts")["isThisTypeNode"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isThrowStatement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dThrowStatement> result;
 		if(emscripten::val::global("ts")["isThrowStatement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
@@ -10129,161 +10129,161 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTryStatement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dTryStatement> result;
 		if(emscripten::val::global("ts")["isTryStatement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTupleTypeNode(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dTupleTypeNode> result;
 		if(emscripten::val::global("ts")["isTupleTypeNode"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTypeAliasDeclaration(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dTypeAliasDeclaration> result;
 		if(emscripten::val::global("ts")["isTypeAliasDeclaration"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTypeAssertion(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dTypeAssertion> result;
 		if(emscripten::val::global("ts")["isTypeAssertion"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTypeElement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dTypeElement> result;
 		if(emscripten::val::global("ts")["isTypeElement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTypeLiteralNode(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dTypeLiteralNode> result;
 		if(emscripten::val::global("ts")["isTypeLiteralNode"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTypeNode(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dTypeNode> result;
 		if(emscripten::val::global("ts")["isTypeNode"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTypeOfExpression(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dTypeOfExpression> result;
 		if(emscripten::val::global("ts")["isTypeOfExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTypeOperatorNode(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dTypeOperatorNode> result;
 		if(emscripten::val::global("ts")["isTypeOperatorNode"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTypeParameterDeclaration(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dTypeParameterDeclaration> result;
 		if(emscripten::val::global("ts")["isTypeParameterDeclaration"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTypePredicateNode(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dTypePredicateNode> result;
 		if(emscripten::val::global("ts")["isTypePredicateNode"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTypeQueryNode(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dTypeQueryNode> result;
 		if(emscripten::val::global("ts")["isTypeQueryNode"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isTypeReferenceNode(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dTypeReferenceNode> result;
 		if(emscripten::val::global("ts")["isTypeReferenceNode"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isUnionTypeNode(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dUnionTypeNode> result;
 		if(emscripten::val::global("ts")["isUnionTypeNode"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isUnparsedNode(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dUnparsedNode> result;
 		if(emscripten::val::global("ts")["isUnparsedNode"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isUnparsedPrepend(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dUnparsedPrepend> result;
 		if(emscripten::val::global("ts")["isUnparsedPrepend"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isUnparsedSource(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dUnparsedSource> result;
 		if(emscripten::val::global("ts")["isUnparsedSource"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isUnparsedTextLike(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dUnparsedTextLike> result;
 		if(emscripten::val::global("ts")["isUnparsedTextLike"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isVariableDeclaration(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dVariableDeclaration> result;
 		if(emscripten::val::global("ts")["isVariableDeclaration"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isVariableDeclarationList(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dVariableDeclarationList> result;
 		if(emscripten::val::global("ts")["isVariableDeclarationList"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isVariableStatement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dVariableStatement> result;
 		if(emscripten::val::global("ts")["isVariableStatement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isVoidExpression(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dVoidExpression> result;
 		if(emscripten::val::global("ts")["isVoidExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isWhileStatement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dWhileStatement> result;
 		if(emscripten::val::global("ts")["isWhileStatement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
@@ -10296,22 +10296,22 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isWithStatement(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dWithStatement> result;
 		if(emscripten::val::global("ts")["isWithStatement"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::isYieldExpression(_js_jts_dNode node) noexcept {
 		std::optional<_js_jts_dYieldExpression> result;
 		if(emscripten::val::global("ts")["isYieldExpression"](node).template as<bool /*false*/>()) {
-			result.emplace(js_unknown(node));
+			result.emplace(tc::js::any(node));
 		}
 		return result;
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::moveEmitHelpers(_js_jts_dNode source, _js_jts_dNode target, js_function<bool /*false*/(_js_jts_dEmitHelper)> predicate) noexcept {
 		 emscripten::val::global("ts")["moveEmitHelpers"](source, target, predicate);
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::moveSyntheticComments(js_unknown /*flags=262144: T ()*/ node, _js_jts_dNode original) noexcept {
-		return emscripten::val::global("ts")["moveSyntheticComments"](node, original).template as<js_unknown /*flags=262144: T ()*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::moveSyntheticComments(tc::js::any /*flags=262144: T ()*/ node, _js_jts_dNode original) noexcept {
+		return emscripten::val::global("ts")["moveSyntheticComments"](node, original).template as<tc::js::any /*flags=262144: T ()*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::nodeModuleNameResolver(tc::js::string moduleName, tc::js::string containingFile, _js_jts_dCompilerOptions compilerOptions, _js_jts_dModuleResolutionHost host, js_union<_js_jts_dModuleResolutionCache, tc::js::undefined> cache, js_union<_js_jts_dResolvedProjectReference, tc::js::undefined> redirectedReference) noexcept {
 		return emscripten::val::global("ts")["nodeModuleNameResolver"](moduleName, containingFile, compilerOptions, host, cache, redirectedReference).template as<_js_jts_dResolvedModuleWithFailedLookupLocations>();
@@ -10320,15 +10320,15 @@ namespace tc::js_defs {
 		return emscripten::val::global("ts")["parseCommandLine"](commandLine, readFile).template as<_js_jts_dParsedCommandLine>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::parseConfigFileTextToJson(tc::js::string fileName, tc::js::string jsonText) noexcept {
-		return emscripten::val::global("ts")["parseConfigFileTextToJson"](fileName, jsonText).template as<js_unknown /*flags=524288: { config?: any; error?: Diagnostic | tc::js::undefined; } (AnonymousTypeWithTypeLiteral(members:[config, error]))*/>();
+		return emscripten::val::global("ts")["parseConfigFileTextToJson"](fileName, jsonText).template as<tc::js::any /*flags=524288: { config?: tc::js::any; error?: Diagnostic | tc::js::undefined; } (AnonymousTypeWithTypeLiteral(members:[config, error]))*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::parseIsolatedEntityName(tc::js::string text, _js_jts_dScriptTarget /*ScriptTarget.ES3*/ languageVersion) noexcept {
 		return emscripten::val::global("ts")["parseIsolatedEntityName"](text, languageVersion).template as<js_union<_js_jts_dIdentifier, _js_jts_dQualifiedName, tc::js::undefined>>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::parseJsonConfigFileContent(js_unknown json, _js_jts_dParseConfigHost host, tc::js::string basePath, js_union<_js_jts_dCompilerOptions, tc::js::undefined> existingOptions, js_union<tc::js::string, tc::js::undefined> configFileName, js_union<js::Array<js_unknown /*flags=2097152: Path ()*/>, tc::js::undefined> resolutionStack, js_union<js::ReadonlyArray<_js_jts_dFileExtensionInfo>, tc::js::undefined> extraFileExtensions, js_unknown /*flags=1048576: Map<ExtendedConfigCacheEntry> | tc::js::undefined ()*/ extendedConfigCache) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::parseJsonConfigFileContent(tc::js::any json, _js_jts_dParseConfigHost host, tc::js::string basePath, js_union<_js_jts_dCompilerOptions, tc::js::undefined> existingOptions, js_union<tc::js::string, tc::js::undefined> configFileName, js_union<js::Array<tc::js::any /*flags=2097152: Path ()*/>, tc::js::undefined> resolutionStack, js_union<js::ReadonlyArray<_js_jts_dFileExtensionInfo>, tc::js::undefined> extraFileExtensions, tc::js::any /*flags=1048576: Map<ExtendedConfigCacheEntry> | tc::js::undefined ()*/ extendedConfigCache) noexcept {
 		return emscripten::val::global("ts")["parseJsonConfigFileContent"](json, host, basePath, existingOptions, configFileName, resolutionStack, extraFileExtensions, extendedConfigCache).template as<_js_jts_dParsedCommandLine>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::parseJsonSourceFileConfigFileContent(_js_jts_dTsConfigSourceFile sourceFile, _js_jts_dParseConfigHost host, tc::js::string basePath, js_union<_js_jts_dCompilerOptions, tc::js::undefined> existingOptions, js_union<tc::js::string, tc::js::undefined> configFileName, js_union<js::Array<js_unknown /*flags=2097152: Path ()*/>, tc::js::undefined> resolutionStack, js_union<js::ReadonlyArray<_js_jts_dFileExtensionInfo>, tc::js::undefined> extraFileExtensions, js_unknown /*flags=1048576: Map<ExtendedConfigCacheEntry> | tc::js::undefined ()*/ extendedConfigCache) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::parseJsonSourceFileConfigFileContent(_js_jts_dTsConfigSourceFile sourceFile, _js_jts_dParseConfigHost host, tc::js::string basePath, js_union<_js_jts_dCompilerOptions, tc::js::undefined> existingOptions, js_union<tc::js::string, tc::js::undefined> configFileName, js_union<js::Array<tc::js::any /*flags=2097152: Path ()*/>, tc::js::undefined> resolutionStack, js_union<js::ReadonlyArray<_js_jts_dFileExtensionInfo>, tc::js::undefined> extraFileExtensions, tc::js::any /*flags=1048576: Map<ExtendedConfigCacheEntry> | tc::js::undefined ()*/ extendedConfigCache) noexcept {
 		return emscripten::val::global("ts")["parseJsonSourceFileConfigFileContent"](sourceFile, host, basePath, existingOptions, configFileName, resolutionStack, extraFileExtensions, extendedConfigCache).template as<_js_jts_dParsedCommandLine>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::parseJsonText(tc::js::string fileName, tc::js::string sourceText) noexcept {
@@ -10338,16 +10338,16 @@ namespace tc::js_defs {
 		return emscripten::val::global("ts")["preProcessFile"](sourceText, readImportFiles, detectJavaScriptImports).template as<_js_jts_dPreProcessedFileInfo>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::readConfigFile(tc::js::string fileName, js_function<js_union<tc::js::string, tc::js::undefined>(tc::js::string)> readFile) noexcept {
-		return emscripten::val::global("ts")["readConfigFile"](fileName, readFile).template as<js_unknown /*flags=524288: { config?: any; error?: Diagnostic | tc::js::undefined; } (AnonymousTypeWithTypeLiteral(members:[config, error]))*/>();
+		return emscripten::val::global("ts")["readConfigFile"](fileName, readFile).template as<tc::js::any /*flags=524288: { config?: tc::js::any; error?: Diagnostic | tc::js::undefined; } (AnonymousTypeWithTypeLiteral(members:[config, error]))*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::readJsonConfigFile(tc::js::string fileName, js_function<js_union<tc::js::string, tc::js::undefined>(tc::js::string)> readFile) noexcept {
 		return emscripten::val::global("ts")["readJsonConfigFile"](fileName, readFile).template as<_js_jts_dTsConfigSourceFile>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::reduceEachLeadingCommentRange(tc::js::string text, double pos, js_function<js_unknown /*flags=262144: U ()*/(double, double, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/, bool /*false*/, js_unknown /*flags=262144: T ()*/, js_unknown /*flags=262144: U ()*/)> cb, js_unknown /*flags=262144: T ()*/ state, js_unknown /*flags=262144: U ()*/ initial) noexcept {
-		return emscripten::val::global("ts")["reduceEachLeadingCommentRange"](text, pos, cb, state, initial).template as<js_unknown /*flags=1048576: U | tc::js::undefined ()*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::reduceEachLeadingCommentRange(tc::js::string text, double pos, js_function<tc::js::any /*flags=262144: U ()*/(double, double, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/, bool /*false*/, tc::js::any /*flags=262144: T ()*/, tc::js::any /*flags=262144: U ()*/)> cb, tc::js::any /*flags=262144: T ()*/ state, tc::js::any /*flags=262144: U ()*/ initial) noexcept {
+		return emscripten::val::global("ts")["reduceEachLeadingCommentRange"](text, pos, cb, state, initial).template as<tc::js::any /*flags=1048576: U | tc::js::undefined ()*/>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::reduceEachTrailingCommentRange(tc::js::string text, double pos, js_function<js_unknown /*flags=262144: U ()*/(double, double, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/, bool /*false*/, js_unknown /*flags=262144: T ()*/, js_unknown /*flags=262144: U ()*/)> cb, js_unknown /*flags=262144: T ()*/ state, js_unknown /*flags=262144: U ()*/ initial) noexcept {
-		return emscripten::val::global("ts")["reduceEachTrailingCommentRange"](text, pos, cb, state, initial).template as<js_unknown /*flags=1048576: U | tc::js::undefined ()*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::reduceEachTrailingCommentRange(tc::js::string text, double pos, js_function<tc::js::any /*flags=262144: U ()*/(double, double, _js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/, bool /*false*/, tc::js::any /*flags=262144: T ()*/, tc::js::any /*flags=262144: U ()*/)> cb, tc::js::any /*flags=262144: T ()*/ state, tc::js::any /*flags=262144: U ()*/ initial) noexcept {
+		return emscripten::val::global("ts")["reduceEachTrailingCommentRange"](text, pos, cb, state, initial).template as<tc::js::any /*flags=1048576: U | tc::js::undefined ()*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::removeEmitHelper(_js_jts_dNode node, _js_jts_dEmitHelper helper) noexcept {
 		return emscripten::val::global("ts")["removeEmitHelper"](node, helper).template as<bool /*false*/>();
@@ -10359,10 +10359,10 @@ namespace tc::js_defs {
 		return emscripten::val::global("ts")["resolveModuleNameFromCache"](moduleName, containingFile, cache).template as<js_union<_js_jts_dResolvedModuleWithFailedLookupLocations, tc::js::undefined>>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::resolveProjectReferencePath(_js_jts_dProjectReference ref) noexcept {
-		return emscripten::val::global("ts")["resolveProjectReferencePath"](ref).template as<js_unknown /*flags=2097152: ResolvedConfigFileName ()*/>();
+		return emscripten::val::global("ts")["resolveProjectReferencePath"](ref).template as<tc::js::any /*flags=2097152: ResolvedConfigFileName ()*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::resolveProjectReferencePath(_js_jts_dResolveProjectReferencePathHost host, _js_jts_dProjectReference ref) noexcept {
-		return emscripten::val::global("ts")["resolveProjectReferencePath"](host, ref).template as<js_unknown /*flags=2097152: ResolvedConfigFileName ()*/>();
+		return emscripten::val::global("ts")["resolveProjectReferencePath"](host, ref).template as<tc::js::any /*flags=2097152: ResolvedConfigFileName ()*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::resolveTripleslashReference(tc::js::string moduleName, tc::js::string containingFile) noexcept {
 		return emscripten::val::global("ts")["resolveTripleslashReference"](moduleName, containingFile).template as<tc::js::string>();
@@ -10370,32 +10370,32 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::resolveTypeReferenceDirective(tc::js::string typeReferenceDirectiveName, js_union<tc::js::string, tc::js::undefined> containingFile, _js_jts_dCompilerOptions options, _js_jts_dModuleResolutionHost host, js_union<_js_jts_dResolvedProjectReference, tc::js::undefined> redirectedReference) noexcept {
 		return emscripten::val::global("ts")["resolveTypeReferenceDirective"](typeReferenceDirectiveName, containingFile, options, host, redirectedReference).template as<_js_jts_dResolvedTypeReferenceDirectiveWithFailedLookupLocations>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::setCommentRange(js_unknown /*flags=262144: T ()*/ node, _js_jts_dTextRange range) noexcept {
-		return emscripten::val::global("ts")["setCommentRange"](node, range).template as<js_unknown /*flags=262144: T ()*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::setCommentRange(tc::js::any /*flags=262144: T ()*/ node, _js_jts_dTextRange range) noexcept {
+		return emscripten::val::global("ts")["setCommentRange"](node, range).template as<tc::js::any /*flags=262144: T ()*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::setConstantValue(js_union<_js_jts_dElementAccessExpression, _js_jts_dPropertyAccessExpression> node, js_union<double, tc::js::string> value) noexcept {
 		return emscripten::val::global("ts")["setConstantValue"](node, value).template as<js_union<_js_jts_dElementAccessExpression, _js_jts_dPropertyAccessExpression>>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::setEmitFlags(js_unknown /*flags=262144: T ()*/ node, _js_jts_dEmitFlags /*EmitFlags.None*/ emitFlags) noexcept {
-		return emscripten::val::global("ts")["setEmitFlags"](node, emitFlags).template as<js_unknown /*flags=262144: T ()*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::setEmitFlags(tc::js::any /*flags=262144: T ()*/ node, _js_jts_dEmitFlags /*EmitFlags.None*/ emitFlags) noexcept {
+		return emscripten::val::global("ts")["setEmitFlags"](node, emitFlags).template as<tc::js::any /*flags=262144: T ()*/>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::setOriginalNode(js_unknown /*flags=262144: T ()*/ node, js_union<_js_jts_dNode, tc::js::undefined> original) noexcept {
-		return emscripten::val::global("ts")["setOriginalNode"](node, original).template as<js_unknown /*flags=262144: T ()*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::setOriginalNode(tc::js::any /*flags=262144: T ()*/ node, js_union<_js_jts_dNode, tc::js::undefined> original) noexcept {
+		return emscripten::val::global("ts")["setOriginalNode"](node, original).template as<tc::js::any /*flags=262144: T ()*/>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::setSourceMapRange(js_unknown /*flags=262144: T ()*/ node, js_union<_js_jts_dSourceMapRange, tc::js::undefined> range) noexcept {
-		return emscripten::val::global("ts")["setSourceMapRange"](node, range).template as<js_unknown /*flags=262144: T ()*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::setSourceMapRange(tc::js::any /*flags=262144: T ()*/ node, js_union<_js_jts_dSourceMapRange, tc::js::undefined> range) noexcept {
+		return emscripten::val::global("ts")["setSourceMapRange"](node, range).template as<tc::js::any /*flags=262144: T ()*/>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::setSyntheticLeadingComments(js_unknown /*flags=262144: T ()*/ node, js_union<js::Array<_js_jts_dSynthesizedComment>, tc::js::undefined> comments) noexcept {
-		return emscripten::val::global("ts")["setSyntheticLeadingComments"](node, comments).template as<js_unknown /*flags=262144: T ()*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::setSyntheticLeadingComments(tc::js::any /*flags=262144: T ()*/ node, js_union<js::Array<_js_jts_dSynthesizedComment>, tc::js::undefined> comments) noexcept {
+		return emscripten::val::global("ts")["setSyntheticLeadingComments"](node, comments).template as<tc::js::any /*flags=262144: T ()*/>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::setSyntheticTrailingComments(js_unknown /*flags=262144: T ()*/ node, js_union<js::Array<_js_jts_dSynthesizedComment>, tc::js::undefined> comments) noexcept {
-		return emscripten::val::global("ts")["setSyntheticTrailingComments"](node, comments).template as<js_unknown /*flags=262144: T ()*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::setSyntheticTrailingComments(tc::js::any /*flags=262144: T ()*/ node, js_union<js::Array<_js_jts_dSynthesizedComment>, tc::js::undefined> comments) noexcept {
+		return emscripten::val::global("ts")["setSyntheticTrailingComments"](node, comments).template as<tc::js::any /*flags=262144: T ()*/>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::setTextRange(js_unknown /*flags=262144: T ()*/ range, js_union<_js_jts_dTextRange, tc::js::undefined> location) noexcept {
-		return emscripten::val::global("ts")["setTextRange"](range, location).template as<js_unknown /*flags=262144: T ()*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::setTextRange(tc::js::any /*flags=262144: T ()*/ range, js_union<_js_jts_dTextRange, tc::js::undefined> location) noexcept {
+		return emscripten::val::global("ts")["setTextRange"](range, location).template as<tc::js::any /*flags=262144: T ()*/>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::setTokenSourceMapRange(js_unknown /*flags=262144: T ()*/ node, _js_jts_dSyntaxKind /*SyntaxKind.Unknown*/ token, js_union<_js_jts_dSourceMapRange, tc::js::undefined> range) noexcept {
-		return emscripten::val::global("ts")["setTokenSourceMapRange"](node, token, range).template as<js_unknown /*flags=262144: T ()*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::setTokenSourceMapRange(tc::js::any /*flags=262144: T ()*/ node, _js_jts_dSyntaxKind /*SyntaxKind.Unknown*/ token, js_union<_js_jts_dSourceMapRange, tc::js::undefined> range) noexcept {
+		return emscripten::val::global("ts")["setTokenSourceMapRange"](node, token, range).template as<tc::js::any /*flags=262144: T ()*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::skipPartiallyEmittedExpressions(_js_jts_dExpression node) noexcept {
 		return emscripten::val::global("ts")["skipPartiallyEmittedExpressions"](node).template as<_js_jts_dExpression>();
@@ -10403,8 +10403,8 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::skipPartiallyEmittedExpressions(_js_jts_dNode node) noexcept {
 		return emscripten::val::global("ts")["skipPartiallyEmittedExpressions"](node).template as<_js_jts_dNode>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::sortAndDeduplicateDiagnostics(js::ReadonlyArray<js_unknown /*flags=262144: T ()*/> diagnostics) noexcept {
-		return emscripten::val::global("ts")["sortAndDeduplicateDiagnostics"](diagnostics).template as<js_unknown /*flags=524288: SortedReadonlyArray<T> (TypeReference=ts.SortedReadonlyArray)*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::sortAndDeduplicateDiagnostics(js::ReadonlyArray<tc::js::any /*flags=262144: T ()*/> diagnostics) noexcept {
+		return emscripten::val::global("ts")["sortAndDeduplicateDiagnostics"](diagnostics).template as<tc::js::any /*flags=524288: SortedReadonlyArray<T> (TypeReference=ts.SortedReadonlyArray)*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::symbolName(_js_jts_dSymbol symbol) noexcept {
 		return emscripten::val::global("ts")["symbolName"](symbol).template as<tc::js::string>();
@@ -10451,8 +10451,8 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::tokenToString(_js_jts_dSyntaxKind /*SyntaxKind.Unknown*/ t) noexcept {
 		return emscripten::val::global("ts")["tokenToString"](t).template as<js_union<tc::js::string, tc::js::undefined>>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::transform(js_unknown /*flags=1048576: T | T[] ()*/ source, js::Array<_js_jts_dTransformerFactory> transformers, js_union<_js_jts_dCompilerOptions, tc::js::undefined> compilerOptions) noexcept {
-		return emscripten::val::global("ts")["transform"](source, transformers, compilerOptions).template as<js_unknown /*flags=524288: TransformationResult<T> (TypeReference=ts.TransformationResult)*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::transform(tc::js::any /*flags=1048576: T | T[] ()*/ source, js::Array<_js_jts_dTransformerFactory> transformers, js_union<_js_jts_dCompilerOptions, tc::js::undefined> compilerOptions) noexcept {
+		return emscripten::val::global("ts")["transform"](source, transformers, compilerOptions).template as<tc::js::any /*flags=524288: TransformationResult<T> (TypeReference=ts.TransformationResult)*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::transpile(tc::js::string input, js_union<_js_jts_dCompilerOptions, tc::js::undefined> compilerOptions, js_union<tc::js::string, tc::js::undefined> fileName, js_union<js::Array<_js_jts_dDiagnostic>, tc::js::undefined> diagnostics, js_union<tc::js::string, tc::js::undefined> moduleName) noexcept {
 		return emscripten::val::global("ts")["transpile"](input, compilerOptions, fileName, diagnostics, moduleName).template as<tc::js::string>();
@@ -10460,7 +10460,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::transpileModule(tc::js::string input, _js_jts_dTranspileOptions transpileOptions) noexcept {
 		return emscripten::val::global("ts")["transpileModule"](input, transpileOptions).template as<_js_jts_dTranspileOutput>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::unescapeLeadingUnderscores(js_unknown /*flags=1048576: __String ()*/ identifier) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::unescapeLeadingUnderscores(tc::js::any /*flags=1048576: __String ()*/ identifier) noexcept {
 		return emscripten::val::global("ts")["unescapeLeadingUnderscores"](identifier).template as<tc::js::string>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateArrayBindingPattern(_js_jts_dArrayBindingPattern node, js::ReadonlyArray<_js_jts_dArrayBindingElement> elements) noexcept {
@@ -10472,7 +10472,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateArrayTypeNode(_js_jts_dArrayTypeNode node, _js_jts_dTypeNode elementType) noexcept {
 		return emscripten::val::global("ts")["updateArrayTypeNode"](node, elementType).template as<_js_jts_dArrayTypeNode>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateArrowFunction(_js_jts_dArrowFunction node, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_unknown /*flags=524288: Token<SyntaxKind.EqualsGreaterThanToken> (TypeReference=ts.Token)*/ equalsGreaterThanToken, _js_jts_dConciseBody body) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateArrowFunction(_js_jts_dArrowFunction node, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, tc::js::any /*flags=524288: Token<SyntaxKind.EqualsGreaterThanToken> (TypeReference=ts.Token)*/ equalsGreaterThanToken, _js_jts_dConciseBody body) noexcept {
 		return emscripten::val::global("ts")["updateArrowFunction"](node, modifiers, typeParameters, parameters, type, equalsGreaterThanToken, body).template as<_js_jts_dArrowFunction>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateAsExpression(_js_jts_dAsExpression node, _js_jts_dExpression expression, _js_jts_dTypeNode type) noexcept {
@@ -10481,10 +10481,10 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateAwait(_js_jts_dAwaitExpression node, _js_jts_dExpression expression) noexcept {
 		return emscripten::val::global("ts")["updateAwait"](node, expression).template as<_js_jts_dAwaitExpression>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateBinary(_js_jts_dBinaryExpression node, _js_jts_dExpression left, _js_jts_dExpression right, js_unknown /*flags=1048576: SyntaxKind.CommaToken | SyntaxKind.LessThanToken | SyntaxKind.GreaterThanToken | SyntaxKind.LessThanEqualsToken | SyntaxKind.GreaterThanEqualsToken | SyntaxKind.EqualsEqualsToken | SyntaxKind.ExclamationEqualsToken | SyntaxKind.EqualsEqualsEqualsToken | SyntaxKind.ExclamationEqualsEqualsToken | SyntaxKind.PlusToken ... ()*/ operator_) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateBinary(_js_jts_dBinaryExpression node, _js_jts_dExpression left, _js_jts_dExpression right, tc::js::any /*flags=1048576: SyntaxKind.CommaToken | SyntaxKind.LessThanToken | SyntaxKind.GreaterThanToken | SyntaxKind.LessThanEqualsToken | SyntaxKind.GreaterThanEqualsToken | SyntaxKind.EqualsEqualsToken | SyntaxKind.ExclamationEqualsToken | SyntaxKind.EqualsEqualsEqualsToken | SyntaxKind.ExclamationEqualsEqualsToken | SyntaxKind.PlusToken ... ()*/ operator_) noexcept {
 		return emscripten::val::global("ts")["updateBinary"](node, left, right, operator_).template as<_js_jts_dBinaryExpression>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateBindingElement(_js_jts_dBindingElement node, js_unknown /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ dotDotDotToken, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::undefined> propertyName, _js_jts_dBindingName name, js_union<_js_jts_dExpression, tc::js::undefined> initializer) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateBindingElement(_js_jts_dBindingElement node, tc::js::any /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ dotDotDotToken, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::undefined> propertyName, _js_jts_dBindingName name, js_union<_js_jts_dExpression, tc::js::undefined> initializer) noexcept {
 		return emscripten::val::global("ts")["updateBindingElement"](node, dotDotDotToken, propertyName, name, initializer).template as<_js_jts_dBindingElement>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateBlock(_js_jts_dBlock node, js::ReadonlyArray<_js_jts_dStatement> statements) noexcept {
@@ -10499,7 +10499,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateCall(_js_jts_dCallExpression node, _js_jts_dExpression expression, js_union<js::ReadonlyArray<_js_jts_dTypeNode>, tc::js::undefined> typeArguments, js::ReadonlyArray<_js_jts_dExpression> argumentsArray) noexcept {
 		return emscripten::val::global("ts")["updateCall"](node, expression, typeArguments, argumentsArray).template as<_js_jts_dCallExpression>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateCallSignature(_js_jts_dCallSignatureDeclaration node, js_unknown /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ typeParameters, js_unknown /*flags=524288: NodeArray<ParameterDeclaration> (TypeReference=ts.NodeArray)*/ parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateCallSignature(_js_jts_dCallSignatureDeclaration node, tc::js::any /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ typeParameters, tc::js::any /*flags=524288: NodeArray<ParameterDeclaration> (TypeReference=ts.NodeArray)*/ parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type) noexcept {
 		return emscripten::val::global("ts")["updateCallSignature"](node, typeParameters, parameters, type).template as<_js_jts_dCallSignatureDeclaration>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateCaseBlock(_js_jts_dCaseBlock node, js::ReadonlyArray<_js_jts_dCaseOrDefaultClause> clauses) noexcept {
@@ -10523,19 +10523,19 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateComputedPropertyName(_js_jts_dComputedPropertyName node, _js_jts_dExpression expression) noexcept {
 		return emscripten::val::global("ts")["updateComputedPropertyName"](node, expression).template as<_js_jts_dComputedPropertyName>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateConditional(_js_jts_dConditionalExpression node, _js_jts_dExpression condition, js_unknown /*flags=524288: Token<SyntaxKind.QuestionToken> (TypeReference=ts.Token)*/ questionToken, _js_jts_dExpression whenTrue, js_unknown /*flags=524288: Token<SyntaxKind.ColonToken> (TypeReference=ts.Token)*/ colonToken, _js_jts_dExpression whenFalse) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateConditional(_js_jts_dConditionalExpression node, _js_jts_dExpression condition, tc::js::any /*flags=524288: Token<SyntaxKind.QuestionToken> (TypeReference=ts.Token)*/ questionToken, _js_jts_dExpression whenTrue, tc::js::any /*flags=524288: Token<SyntaxKind.ColonToken> (TypeReference=ts.Token)*/ colonToken, _js_jts_dExpression whenFalse) noexcept {
 		return emscripten::val::global("ts")["updateConditional"](node, condition, questionToken, whenTrue, colonToken, whenFalse).template as<_js_jts_dConditionalExpression>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateConditionalTypeNode(_js_jts_dConditionalTypeNode node, _js_jts_dTypeNode checkType, _js_jts_dTypeNode extendsType, _js_jts_dTypeNode trueType, _js_jts_dTypeNode falseType) noexcept {
 		return emscripten::val::global("ts")["updateConditionalTypeNode"](node, checkType, extendsType, trueType, falseType).template as<_js_jts_dConditionalTypeNode>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateConstructSignature(_js_jts_dConstructSignatureDeclaration node, js_unknown /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ typeParameters, js_unknown /*flags=524288: NodeArray<ParameterDeclaration> (TypeReference=ts.NodeArray)*/ parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateConstructSignature(_js_jts_dConstructSignatureDeclaration node, tc::js::any /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ typeParameters, tc::js::any /*flags=524288: NodeArray<ParameterDeclaration> (TypeReference=ts.NodeArray)*/ parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type) noexcept {
 		return emscripten::val::global("ts")["updateConstructSignature"](node, typeParameters, parameters, type).template as<_js_jts_dConstructSignatureDeclaration>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateConstructor(_js_jts_dConstructorDeclaration node, js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dBlock, tc::js::undefined> body) noexcept {
 		return emscripten::val::global("ts")["updateConstructor"](node, decorators, modifiers, parameters, body).template as<_js_jts_dConstructorDeclaration>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateConstructorTypeNode(_js_jts_dConstructorTypeNode node, js_unknown /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ typeParameters, js_unknown /*flags=524288: NodeArray<ParameterDeclaration> (TypeReference=ts.NodeArray)*/ parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateConstructorTypeNode(_js_jts_dConstructorTypeNode node, tc::js::any /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ typeParameters, tc::js::any /*flags=524288: NodeArray<ParameterDeclaration> (TypeReference=ts.NodeArray)*/ parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type) noexcept {
 		return emscripten::val::global("ts")["updateConstructorTypeNode"](node, typeParameters, parameters, type).template as<_js_jts_dConstructorTypeNode>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateContinue(_js_jts_dContinueStatement node, js_union<_js_jts_dIdentifier, tc::js::undefined> label) noexcept {
@@ -10586,16 +10586,16 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateForIn(_js_jts_dForInStatement node, _js_jts_dForInitializer initializer, _js_jts_dExpression expression, _js_jts_dStatement statement) noexcept {
 		return emscripten::val::global("ts")["updateForIn"](node, initializer, expression, statement).template as<_js_jts_dForInStatement>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateForOf(_js_jts_dForOfStatement node, js_unknown /*flags=1048576: Token<SyntaxKind.AwaitKeyword> | tc::js::undefined ()*/ awaitModifier, _js_jts_dForInitializer initializer, _js_jts_dExpression expression, _js_jts_dStatement statement) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateForOf(_js_jts_dForOfStatement node, tc::js::any /*flags=1048576: Token<SyntaxKind.AwaitKeyword> | tc::js::undefined ()*/ awaitModifier, _js_jts_dForInitializer initializer, _js_jts_dExpression expression, _js_jts_dStatement statement) noexcept {
 		return emscripten::val::global("ts")["updateForOf"](node, awaitModifier, initializer, expression, statement).template as<_js_jts_dForOfStatement>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateFunctionDeclaration(_js_jts_dFunctionDeclaration node, js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_unknown /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, js_union<_js_jts_dIdentifier, tc::js::undefined> name, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_union<_js_jts_dBlock, tc::js::undefined> body) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateFunctionDeclaration(_js_jts_dFunctionDeclaration node, js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, tc::js::any /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, js_union<_js_jts_dIdentifier, tc::js::undefined> name, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_union<_js_jts_dBlock, tc::js::undefined> body) noexcept {
 		return emscripten::val::global("ts")["updateFunctionDeclaration"](node, decorators, modifiers, asteriskToken, name, typeParameters, parameters, type, body).template as<_js_jts_dFunctionDeclaration>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateFunctionExpression(_js_jts_dFunctionExpression node, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_unknown /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, js_union<_js_jts_dIdentifier, tc::js::undefined> name, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, _js_jts_dBlock body) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateFunctionExpression(_js_jts_dFunctionExpression node, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, tc::js::any /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, js_union<_js_jts_dIdentifier, tc::js::undefined> name, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, _js_jts_dBlock body) noexcept {
 		return emscripten::val::global("ts")["updateFunctionExpression"](node, modifiers, asteriskToken, name, typeParameters, parameters, type, body).template as<_js_jts_dFunctionExpression>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateFunctionTypeNode(_js_jts_dFunctionTypeNode node, js_unknown /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ typeParameters, js_unknown /*flags=524288: NodeArray<ParameterDeclaration> (TypeReference=ts.NodeArray)*/ parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateFunctionTypeNode(_js_jts_dFunctionTypeNode node, tc::js::any /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ typeParameters, tc::js::any /*flags=524288: NodeArray<ParameterDeclaration> (TypeReference=ts.NodeArray)*/ parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type) noexcept {
 		return emscripten::val::global("ts")["updateFunctionTypeNode"](node, typeParameters, parameters, type).template as<_js_jts_dFunctionTypeNode>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateGetAccessor(_js_jts_dGetAccessorDeclaration node, js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, _js_jts_dPropertyName name, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_union<_js_jts_dBlock, tc::js::undefined> body) noexcept {
@@ -10637,7 +10637,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateInterfaceDeclaration(_js_jts_dInterfaceDeclaration node, js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, _js_jts_dIdentifier name, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js_union<js::ReadonlyArray<_js_jts_dHeritageClause>, tc::js::undefined> heritageClauses, js::ReadonlyArray<_js_jts_dTypeElement> members) noexcept {
 		return emscripten::val::global("ts")["updateInterfaceDeclaration"](node, decorators, modifiers, name, typeParameters, heritageClauses, members).template as<_js_jts_dInterfaceDeclaration>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateIntersectionTypeNode(_js_jts_dIntersectionTypeNode node, js_unknown /*flags=524288: NodeArray<TypeNode> (TypeReference=ts.NodeArray)*/ types) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateIntersectionTypeNode(_js_jts_dIntersectionTypeNode node, tc::js::any /*flags=524288: NodeArray<TypeNode> (TypeReference=ts.NodeArray)*/ types) noexcept {
 		return emscripten::val::global("ts")["updateIntersectionTypeNode"](node, types).template as<_js_jts_dIntersectionTypeNode>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateJsxAttribute(_js_jts_dJsxAttribute node, _js_jts_dIdentifier name, js_union<_js_jts_dJsxExpression, _js_jts_dStringLiteral> initializer) noexcept {
@@ -10679,16 +10679,16 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateLiteralTypeNode(_js_jts_dLiteralTypeNode node, js_union<_js_jts_dBooleanLiteral, _js_jts_dLiteralExpression, _js_jts_dPrefixUnaryExpression> literal) noexcept {
 		return emscripten::val::global("ts")["updateLiteralTypeNode"](node, literal).template as<_js_jts_dLiteralTypeNode>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateMappedTypeNode(_js_jts_dMappedTypeNode node, js_unknown /*flags=1048576: Token<SyntaxKind.ReadonlyKeyword> | Token<SyntaxKind.PlusToken> | Token<SyntaxKind.MinusToken> | tc::js::undefined ()*/ readonlyToken, _js_jts_dTypeParameterDeclaration typeParameter, js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | Token<SyntaxKind.PlusToken> | Token<SyntaxKind.MinusToken> | tc::js::undefined ()*/ questionToken, js_union<_js_jts_dTypeNode, tc::js::undefined> type) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateMappedTypeNode(_js_jts_dMappedTypeNode node, tc::js::any /*flags=1048576: Token<SyntaxKind.ReadonlyKeyword> | Token<SyntaxKind.PlusToken> | Token<SyntaxKind.MinusToken> | tc::js::undefined ()*/ readonlyToken, _js_jts_dTypeParameterDeclaration typeParameter, tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | Token<SyntaxKind.PlusToken> | Token<SyntaxKind.MinusToken> | tc::js::undefined ()*/ questionToken, js_union<_js_jts_dTypeNode, tc::js::undefined> type) noexcept {
 		return emscripten::val::global("ts")["updateMappedTypeNode"](node, readonlyToken, typeParameter, questionToken, type).template as<_js_jts_dMappedTypeNode>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateMetaProperty(_js_jts_dMetaProperty node, _js_jts_dIdentifier name) noexcept {
 		return emscripten::val::global("ts")["updateMetaProperty"](node, name).template as<_js_jts_dMetaProperty>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateMethod(_js_jts_dMethodDeclaration node, js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_unknown /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, _js_jts_dPropertyName name, js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_union<_js_jts_dBlock, tc::js::undefined> body) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateMethod(_js_jts_dMethodDeclaration node, js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, tc::js::any /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, _js_jts_dPropertyName name, tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken, js_union<js::ReadonlyArray<_js_jts_dTypeParameterDeclaration>, tc::js::undefined> typeParameters, js::ReadonlyArray<_js_jts_dParameterDeclaration> parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_union<_js_jts_dBlock, tc::js::undefined> body) noexcept {
 		return emscripten::val::global("ts")["updateMethod"](node, decorators, modifiers, asteriskToken, name, questionToken, typeParameters, parameters, type, body).template as<_js_jts_dMethodDeclaration>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateMethodSignature(_js_jts_dMethodSignature node, js_unknown /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ typeParameters, js_unknown /*flags=524288: NodeArray<ParameterDeclaration> (TypeReference=ts.NodeArray)*/ parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, _js_jts_dPropertyName name, js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateMethodSignature(_js_jts_dMethodSignature node, tc::js::any /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ typeParameters, tc::js::any /*flags=524288: NodeArray<ParameterDeclaration> (TypeReference=ts.NodeArray)*/ parameters, js_union<_js_jts_dTypeNode, tc::js::undefined> type, _js_jts_dPropertyName name, tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken) noexcept {
 		return emscripten::val::global("ts")["updateMethodSignature"](node, typeParameters, parameters, type, name, questionToken).template as<_js_jts_dMethodSignature>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateModuleBlock(_js_jts_dModuleBlock node, js::ReadonlyArray<_js_jts_dStatement> statements) noexcept {
@@ -10724,7 +10724,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateOptionalTypeNode(_js_jts_dOptionalTypeNode node, _js_jts_dTypeNode type) noexcept {
 		return emscripten::val::global("ts")["updateOptionalTypeNode"](node, type).template as<_js_jts_dOptionalTypeNode>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateParameter(_js_jts_dParameterDeclaration node, js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_unknown /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ dotDotDotToken, js_union<_js_jts_dArrayBindingPattern, _js_jts_dIdentifier, _js_jts_dObjectBindingPattern, tc::js::string> name, js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_union<_js_jts_dExpression, tc::js::undefined> initializer) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateParameter(_js_jts_dParameterDeclaration node, js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, tc::js::any /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ dotDotDotToken, js_union<_js_jts_dArrayBindingPattern, _js_jts_dIdentifier, _js_jts_dObjectBindingPattern, tc::js::string> name, tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_union<_js_jts_dExpression, tc::js::undefined> initializer) noexcept {
 		return emscripten::val::global("ts")["updateParameter"](node, decorators, modifiers, dotDotDotToken, name, questionToken, type, initializer).template as<_js_jts_dParameterDeclaration>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateParen(_js_jts_dParenthesizedExpression node, _js_jts_dExpression expression) noexcept {
@@ -10742,7 +10742,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updatePrefix(_js_jts_dPrefixUnaryExpression node, _js_jts_dExpression operand) noexcept {
 		return emscripten::val::global("ts")["updatePrefix"](node, operand).template as<_js_jts_dPrefixUnaryExpression>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateProperty(_js_jts_dPropertyDeclaration node, js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::string> name, js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/ questionOrExclamationToken, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_union<_js_jts_dExpression, tc::js::undefined> initializer) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateProperty(_js_jts_dPropertyDeclaration node, js_union<js::ReadonlyArray<_js_jts_dDecorator>, tc::js::undefined> decorators, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::string> name, tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/ questionOrExclamationToken, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_union<_js_jts_dExpression, tc::js::undefined> initializer) noexcept {
 		return emscripten::val::global("ts")["updateProperty"](node, decorators, modifiers, name, questionOrExclamationToken, type, initializer).template as<_js_jts_dPropertyDeclaration>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updatePropertyAccess(_js_jts_dPropertyAccessExpression node, _js_jts_dExpression expression, _js_jts_dIdentifier name) noexcept {
@@ -10751,7 +10751,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updatePropertyAssignment(_js_jts_dPropertyAssignment node, _js_jts_dPropertyName name, _js_jts_dExpression initializer) noexcept {
 		return emscripten::val::global("ts")["updatePropertyAssignment"](node, name, initializer).template as<_js_jts_dPropertyAssignment>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::updatePropertySignature(_js_jts_dPropertySignature node, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, _js_jts_dPropertyName name, js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_union<_js_jts_dExpression, tc::js::undefined> initializer) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::updatePropertySignature(_js_jts_dPropertySignature node, js_union<js::ReadonlyArray<_js_jts_dModifier>, tc::js::undefined> modifiers, _js_jts_dPropertyName name, tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ questionToken, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_union<_js_jts_dExpression, tc::js::undefined> initializer) noexcept {
 		return emscripten::val::global("ts")["updatePropertySignature"](node, modifiers, name, questionToken, type, initializer).template as<_js_jts_dPropertySignature>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateQualifiedName(_js_jts_dQualifiedName node, _js_jts_dEntityName left, _js_jts_dIdentifier right) noexcept {
@@ -10811,7 +10811,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateTypeAssertion(_js_jts_dTypeAssertion node, _js_jts_dTypeNode type, _js_jts_dExpression expression) noexcept {
 		return emscripten::val::global("ts")["updateTypeAssertion"](node, type, expression).template as<_js_jts_dTypeAssertion>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateTypeLiteralNode(_js_jts_dTypeLiteralNode node, js_unknown /*flags=524288: NodeArray<TypeElement> (TypeReference=ts.NodeArray)*/ members) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateTypeLiteralNode(_js_jts_dTypeLiteralNode node, tc::js::any /*flags=524288: NodeArray<TypeElement> (TypeReference=ts.NodeArray)*/ members) noexcept {
 		return emscripten::val::global("ts")["updateTypeLiteralNode"](node, members).template as<_js_jts_dTypeLiteralNode>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateTypeOf(_js_jts_dTypeOfExpression node, _js_jts_dExpression expression) noexcept {
@@ -10829,10 +10829,10 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateTypeQueryNode(_js_jts_dTypeQueryNode node, _js_jts_dEntityName exprName) noexcept {
 		return emscripten::val::global("ts")["updateTypeQueryNode"](node, exprName).template as<_js_jts_dTypeQueryNode>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateTypeReferenceNode(_js_jts_dTypeReferenceNode node, _js_jts_dEntityName typeName, js_unknown /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/ typeArguments) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateTypeReferenceNode(_js_jts_dTypeReferenceNode node, _js_jts_dEntityName typeName, tc::js::any /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/ typeArguments) noexcept {
 		return emscripten::val::global("ts")["updateTypeReferenceNode"](node, typeName, typeArguments).template as<_js_jts_dTypeReferenceNode>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateUnionTypeNode(_js_jts_dUnionTypeNode node, js_unknown /*flags=524288: NodeArray<TypeNode> (TypeReference=ts.NodeArray)*/ types) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateUnionTypeNode(_js_jts_dUnionTypeNode node, tc::js::any /*flags=524288: NodeArray<TypeNode> (TypeReference=ts.NodeArray)*/ types) noexcept {
 		return emscripten::val::global("ts")["updateUnionTypeNode"](node, types).template as<_js_jts_dUnionTypeNode>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateVariableDeclaration(_js_jts_dVariableDeclaration node, _js_jts_dBindingName name, js_union<_js_jts_dTypeNode, tc::js::undefined> type, js_union<_js_jts_dExpression, tc::js::undefined> initializer) noexcept {
@@ -10853,17 +10853,17 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateWith(_js_jts_dWithStatement node, _js_jts_dExpression expression, _js_jts_dStatement statement) noexcept {
 		return emscripten::val::global("ts")["updateWith"](node, expression, statement).template as<_js_jts_dWithStatement>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateYield(_js_jts_dYieldExpression node, js_unknown /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, _js_jts_dExpression expression) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateYield(_js_jts_dYieldExpression node, tc::js::any /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ asteriskToken, _js_jts_dExpression expression) noexcept {
 		return emscripten::val::global("ts")["updateYield"](node, asteriskToken, expression).template as<_js_jts_dYieldExpression>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::validateLocaleAndSetLanguage(tc::js::string locale, js_unknown /*flags=524288: { getExecutingFilePath(): tc::js::string; resolvePath(path: tc::js::string): tc::js::string; fileExists(fileName: tc::js::string): boolean; readFile(fileName: tc::js::string): tc::js::string | tc::js::undefined; } (AnonymousTypeWithTypeLiteral(members:[getExecutingFilePath, resolvePath, fileExists, readFile]))*/ sys, js_unknown /*flags=1048576: Push<Diagnostic> | tc::js::undefined ()*/ errors) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::validateLocaleAndSetLanguage(tc::js::string locale, tc::js::any /*flags=524288: { getExecutingFilePath(): tc::js::string; resolvePath(path: tc::js::string): tc::js::string; fileExists(fileName: tc::js::string): boolean; readFile(fileName: tc::js::string): tc::js::string | tc::js::undefined; } (AnonymousTypeWithTypeLiteral(members:[getExecutingFilePath, resolvePath, fileExists, readFile]))*/ sys, tc::js::any /*flags=1048576: Push<Diagnostic> | tc::js::undefined ()*/ errors) noexcept {
 		 emscripten::val::global("ts")["validateLocaleAndSetLanguage"](locale, sys, errors);
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::visitEachChild(js_unknown /*flags=262144: T ()*/ node, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context) noexcept {
-		return emscripten::val::global("ts")["visitEachChild"](node, visitor, context).template as<js_unknown /*flags=262144: T ()*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::visitEachChild(tc::js::any /*flags=262144: T ()*/ node, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context) noexcept {
+		return emscripten::val::global("ts")["visitEachChild"](node, visitor, context).template as<tc::js::any /*flags=262144: T ()*/>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::visitEachChild(js_unknown /*flags=1048576: T | tc::js::undefined ()*/ node, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context, js_unknown /*flags=1048576: { <T extends Node>(nodes: NodeArray<T> | tc::js::undefined, visitor: Visitor, test?: ((node: Node) => boolean) | tc::js::undefined, start?: number | tc::js::undefined, count?: number | tc::js::undefined): NodeArray<T>; <T extends Node>(nodes: NodeArray<...> | tc::js::undefined, visitor: Visitor, test?: ((node: Node) => boolean) | tc::js::undefined, start?: number... ()*/ nodesVisitor, js_union<_js_jts_dVisitor, tc::js::undefined> tokenVisitor) noexcept {
-		return emscripten::val::global("ts")["visitEachChild"](node, visitor, context, nodesVisitor, tokenVisitor).template as<js_unknown /*flags=1048576: T | tc::js::undefined ()*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::visitEachChild(tc::js::any /*flags=1048576: T | tc::js::undefined ()*/ node, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context, tc::js::any /*flags=1048576: { <T extends Node>(nodes: NodeArray<T> | tc::js::undefined, visitor: Visitor, test?: ((node: Node) => boolean) | tc::js::undefined, start?: number | tc::js::undefined, count?: number | tc::js::undefined): NodeArray<T>; <T extends Node>(nodes: NodeArray<...> | tc::js::undefined, visitor: Visitor, test?: ((node: Node) => boolean) | tc::js::undefined, start?: number... ()*/ nodesVisitor, js_union<_js_jts_dVisitor, tc::js::undefined> tokenVisitor) noexcept {
+		return emscripten::val::global("ts")["visitEachChild"](node, visitor, context, nodesVisitor, tokenVisitor).template as<tc::js::any /*flags=1048576: T | tc::js::undefined ()*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::visitFunctionBody(_js_jts_dBlock node, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context) noexcept {
 		return emscripten::val::global("ts")["visitFunctionBody"](node, visitor, context).template as<_js_jts_dBlock>();
@@ -10874,23 +10874,23 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::visitFunctionBody(js_union<_js_jts_dBlock, tc::js::undefined> node, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context) noexcept {
 		return emscripten::val::global("ts")["visitFunctionBody"](node, visitor, context).template as<js_union<_js_jts_dBlock, tc::js::undefined>>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::visitLexicalEnvironment(js_unknown /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/ statements, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context, js_union<double, tc::js::undefined> start, js_union<bool /*false*/, tc::js::undefined> ensureUseStrict) noexcept {
-		return emscripten::val::global("ts")["visitLexicalEnvironment"](statements, visitor, context, start, ensureUseStrict).template as<js_unknown /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::visitLexicalEnvironment(tc::js::any /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/ statements, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context, js_union<double, tc::js::undefined> start, js_union<bool /*false*/, tc::js::undefined> ensureUseStrict) noexcept {
+		return emscripten::val::global("ts")["visitLexicalEnvironment"](statements, visitor, context, start, ensureUseStrict).template as<tc::js::any /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::visitNode(js_unknown /*flags=1048576: T | tc::js::undefined ()*/ node, js_union<_js_jts_dVisitor, tc::js::undefined> visitor, js_union<js_function<bool /*false*/(_js_jts_dNode)>, tc::js::undefined> test, js_union<js_function<js_unknown /*flags=262144: T ()*/(js_unknown /*flags=524288: NodeArray<Node> (TypeReference=ts.NodeArray)*/)>, tc::js::undefined> lift) noexcept {
-		return emscripten::val::global("ts")["visitNode"](node, visitor, test, lift).template as<js_unknown /*flags=1048576: T | tc::js::undefined ()*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::visitNode(tc::js::any /*flags=1048576: T | tc::js::undefined ()*/ node, js_union<_js_jts_dVisitor, tc::js::undefined> visitor, js_union<js_function<bool /*false*/(_js_jts_dNode)>, tc::js::undefined> test, js_union<js_function<tc::js::any /*flags=262144: T ()*/(tc::js::any /*flags=524288: NodeArray<Node> (TypeReference=ts.NodeArray)*/)>, tc::js::undefined> lift) noexcept {
+		return emscripten::val::global("ts")["visitNode"](node, visitor, test, lift).template as<tc::js::any /*flags=1048576: T | tc::js::undefined ()*/>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::visitNodes(js_unknown /*flags=1048576: NodeArray<T> | tc::js::undefined ()*/ nodes, _js_jts_dVisitor visitor, js_union<js_function<bool /*false*/(_js_jts_dNode)>, tc::js::undefined> test, js_union<double, tc::js::undefined> start, js_union<double, tc::js::undefined> count) noexcept {
-		return emscripten::val::global("ts")["visitNodes"](nodes, visitor, test, start, count).template as<js_unknown /*flags=524288: NodeArray<T> (TypeReference=ts.NodeArray)*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::visitNodes(tc::js::any /*flags=1048576: NodeArray<T> | tc::js::undefined ()*/ nodes, _js_jts_dVisitor visitor, js_union<js_function<bool /*false*/(_js_jts_dNode)>, tc::js::undefined> test, js_union<double, tc::js::undefined> start, js_union<double, tc::js::undefined> count) noexcept {
+		return emscripten::val::global("ts")["visitNodes"](nodes, visitor, test, start, count).template as<tc::js::any /*flags=524288: NodeArray<T> (TypeReference=ts.NodeArray)*/>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::visitParameterList(js_unknown /*flags=1048576: NodeArray<ParameterDeclaration> | tc::js::undefined ()*/ nodes, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context, js_unknown /*flags=1048576: { <T extends Node>(nodes: NodeArray<T> | tc::js::undefined, visitor: Visitor, test?: ((node: Node) => boolean) | tc::js::undefined, start?: number | tc::js::undefined, count?: number | tc::js::undefined): NodeArray<T>; <T extends Node>(nodes: NodeArray<...> | tc::js::undefined, visitor: Visitor, test?: ((node: Node) => boolean) | tc::js::undefined, start?: number... ()*/ nodesVisitor) noexcept {
-		return emscripten::val::global("ts")["visitParameterList"](nodes, visitor, context, nodesVisitor).template as<js_unknown /*flags=524288: NodeArray<ParameterDeclaration> (TypeReference=ts.NodeArray)*/>();
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::visitParameterList(tc::js::any /*flags=1048576: NodeArray<ParameterDeclaration> | tc::js::undefined ()*/ nodes, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context, tc::js::any /*flags=1048576: { <T extends Node>(nodes: NodeArray<T> | tc::js::undefined, visitor: Visitor, test?: ((node: Node) => boolean) | tc::js::undefined, start?: number | tc::js::undefined, count?: number | tc::js::undefined): NodeArray<T>; <T extends Node>(nodes: NodeArray<...> | tc::js::undefined, visitor: Visitor, test?: ((node: Node) => boolean) | tc::js::undefined, start?: number... ()*/ nodesVisitor) noexcept {
+		return emscripten::val::global("ts")["visitParameterList"](nodes, visitor, context, nodesVisitor).template as<tc::js::any /*flags=524288: NodeArray<ParameterDeclaration> (TypeReference=ts.NodeArray)*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::walkUpBindingElementsAndPatterns(_js_jts_dBindingElement binding) noexcept {
 		return emscripten::val::global("ts")["walkUpBindingElementsAndPatterns"](binding).template as<js_union<_js_jts_dParameterDeclaration, _js_jts_dVariableDeclaration>>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::createStatement() noexcept { return emscripten::val::global("ts")["createStatement"].template as<js_unknown /*flags=524288: (expression: Expression) => ExpressionStatement ()*/>(); }
-	inline void _impl_js_j_qts_q::_tcjs_definitions::createStatement(js_unknown /*flags=524288: (expression: Expression) => ExpressionStatement ()*/ v) noexcept { emscripten::val::global("ts").set("createStatement", v); }
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::createStatement() noexcept { return emscripten::val::global("ts")["createStatement"].template as<tc::js::any /*flags=524288: (expression: Expression) => ExpressionStatement ()*/>(); }
+	inline void _impl_js_j_qts_q::_tcjs_definitions::createStatement(tc::js::any /*flags=524288: (expression: Expression) => ExpressionStatement ()*/ v) noexcept { emscripten::val::global("ts").set("createStatement", v); }
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::disableIncrementalParsing() noexcept { return emscripten::val::global("ts")["disableIncrementalParsing"].template as<bool /*false*/>(); }
 	inline void _impl_js_j_qts_q::_tcjs_definitions::disableIncrementalParsing(bool /*false*/ v) noexcept { emscripten::val::global("ts").set("disableIncrementalParsing", v); }
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::servicesVersion() noexcept { return emscripten::val::global("ts")["servicesVersion"].template as<tc::js::string /*"0.8"*/>(); }
@@ -10899,8 +10899,8 @@ namespace tc::js_defs {
 	inline void _impl_js_j_qts_q::_tcjs_definitions::sys(_js_jts_dSystem v) noexcept { emscripten::val::global("ts").set("sys", v); }
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::unchangedTextChangeRange() noexcept { return emscripten::val::global("ts")["unchangedTextChangeRange"].template as<_js_jts_dTextChangeRange>(); }
 	inline void _impl_js_j_qts_q::_tcjs_definitions::unchangedTextChangeRange(_js_jts_dTextChangeRange v) noexcept { emscripten::val::global("ts").set("unchangedTextChangeRange", v); }
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateStatement() noexcept { return emscripten::val::global("ts")["updateStatement"].template as<js_unknown /*flags=524288: (node: ExpressionStatement, expression: Expression) => ExpressionStatement ()*/>(); }
-	inline void _impl_js_j_qts_q::_tcjs_definitions::updateStatement(js_unknown /*flags=524288: (node: ExpressionStatement, expression: Expression) => ExpressionStatement ()*/ v) noexcept { emscripten::val::global("ts").set("updateStatement", v); }
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateStatement() noexcept { return emscripten::val::global("ts")["updateStatement"].template as<tc::js::any /*flags=524288: (node: ExpressionStatement, expression: Expression) => ExpressionStatement ()*/>(); }
+	inline void _impl_js_j_qts_q::_tcjs_definitions::updateStatement(tc::js::any /*flags=524288: (node: ExpressionStatement, expression: Expression) => ExpressionStatement ()*/ v) noexcept { emscripten::val::global("ts").set("updateStatement", v); }
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::version() noexcept { return emscripten::val::global("ts")["version"].template as<tc::js::string>(); }
 	inline void _impl_js_j_qts_q::_tcjs_definitions::version(tc::js::string v) noexcept { emscripten::val::global("ts").set("version", v); }
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::versionMajorMinor() noexcept { return emscripten::val::global("ts")["versionMajorMinor"].template as<tc::js::string /*"3.5"*/>(); }
@@ -10938,14 +10938,14 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dNode::kind(_js_jts_dSyntaxKind /*SyntaxKind.Unknown*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dNode::flags() noexcept { return _getProperty<_js_jts_dNodeFlags /*NodeFlags.None*/>("flags"); }
 	inline void _impl_js_jts_dNode::flags(_js_jts_dNodeFlags /*NodeFlags.None*/ v) noexcept { _setProperty("flags", v); }
-	inline auto _impl_js_jts_dNode::decorators() noexcept { return _getProperty<js_unknown /*flags=1048576: NodeArray<Decorator> | tc::js::undefined ()*/>("decorators"); }
-	inline void _impl_js_jts_dNode::decorators(js_unknown /*flags=1048576: NodeArray<Decorator> | tc::js::undefined ()*/ v) noexcept { _setProperty("decorators", v); }
-	inline auto _impl_js_jts_dNode::modifiers() noexcept { return _getProperty<js_unknown /*flags=1048576: NodeArray<Modifier> | tc::js::undefined ()*/>("modifiers"); }
-	inline void _impl_js_jts_dNode::modifiers(js_unknown /*flags=1048576: NodeArray<Modifier> | tc::js::undefined ()*/ v) noexcept { _setProperty("modifiers", v); }
+	inline auto _impl_js_jts_dNode::decorators() noexcept { return _getProperty<tc::js::any /*flags=1048576: NodeArray<Decorator> | tc::js::undefined ()*/>("decorators"); }
+	inline void _impl_js_jts_dNode::decorators(tc::js::any /*flags=1048576: NodeArray<Decorator> | tc::js::undefined ()*/ v) noexcept { _setProperty("decorators", v); }
+	inline auto _impl_js_jts_dNode::modifiers() noexcept { return _getProperty<tc::js::any /*flags=1048576: NodeArray<Modifier> | tc::js::undefined ()*/>("modifiers"); }
+	inline void _impl_js_jts_dNode::modifiers(tc::js::any /*flags=1048576: NodeArray<Modifier> | tc::js::undefined ()*/ v) noexcept { _setProperty("modifiers", v); }
 	inline auto _impl_js_jts_dNode::parent() noexcept { return _getProperty<_js_jts_dNode>("parent"); }
 	inline void _impl_js_jts_dNode::parent(_js_jts_dNode v) noexcept { _setProperty("parent", v); }
-	inline auto _impl_js_jts_dNode::forEachChild(js_function<js_unknown /*flags=1048576: T | tc::js::undefined ()*/(_js_jts_dNode)> cbNode, js_union<js_function<js_unknown /*flags=1048576: T | tc::js::undefined ()*/(js_unknown /*flags=524288: NodeArray<Node> (TypeReference=ts.NodeArray)*/)>, tc::js::undefined> cbNodeArray) noexcept {
-		return _call<js_unknown /*flags=1048576: T | tc::js::undefined ()*/>("forEachChild", cbNode, cbNodeArray);
+	inline auto _impl_js_jts_dNode::forEachChild(js_function<tc::js::any /*flags=1048576: T | tc::js::undefined ()*/(_js_jts_dNode)> cbNode, js_union<js_function<tc::js::any /*flags=1048576: T | tc::js::undefined ()*/(tc::js::any /*flags=524288: NodeArray<Node> (TypeReference=ts.NodeArray)*/)>, tc::js::undefined> cbNodeArray) noexcept {
+		return _call<tc::js::any /*flags=1048576: T | tc::js::undefined ()*/>("forEachChild", cbNode, cbNodeArray);
 	}
 	inline auto _impl_js_jts_dNode::getChildAt(double index, js_union<_js_jts_dSourceFile, tc::js::undefined> sourceFile) noexcept {
 		return _call<_js_jts_dNode>("getChildAt", index, sourceFile);
@@ -10993,34 +10993,34 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dArrayBindingPattern::kind(_js_jts_dSyntaxKind /*SyntaxKind.ArrayBindingPattern*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dArrayBindingPattern::parent() noexcept { return _getProperty<js_union<_js_jts_dBindingElement, _js_jts_dParameterDeclaration, _js_jts_dVariableDeclaration>>("parent"); }
 	inline void _impl_js_jts_dArrayBindingPattern::parent(js_union<_js_jts_dBindingElement, _js_jts_dParameterDeclaration, _js_jts_dVariableDeclaration> v) noexcept { _setProperty("parent", v); }
-	inline auto _impl_js_jts_dArrayBindingPattern::elements() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<ArrayBindingElement> (TypeReference=ts.NodeArray)*/>("elements"); }
-	inline void _impl_js_jts_dArrayBindingPattern::elements(js_unknown /*flags=524288: NodeArray<ArrayBindingElement> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("elements", v); }
+	inline auto _impl_js_jts_dArrayBindingPattern::elements() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<ArrayBindingElement> (TypeReference=ts.NodeArray)*/>("elements"); }
+	inline void _impl_js_jts_dArrayBindingPattern::elements(tc::js::any /*flags=524288: NodeArray<ArrayBindingElement> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("elements", v); }
 	inline auto _impl_js_jts_dArrayDestructuringAssignment::left() noexcept { return _getProperty<_js_jts_dArrayLiteralExpression>("left"); }
 	inline void _impl_js_jts_dArrayDestructuringAssignment::left(_js_jts_dArrayLiteralExpression v) noexcept { _setProperty("left", v); }
-	inline auto _impl_js_jts_dExpression::_expressionBrand() noexcept { return _getProperty<js_unknown>("_expressionBrand"); }
-	inline void _impl_js_jts_dExpression::_expressionBrand(js_unknown v) noexcept { _setProperty("_expressionBrand", v); }
-	inline auto _impl_js_jts_dUnaryExpression::_unaryExpressionBrand() noexcept { return _getProperty<js_unknown>("_unaryExpressionBrand"); }
-	inline void _impl_js_jts_dUnaryExpression::_unaryExpressionBrand(js_unknown v) noexcept { _setProperty("_unaryExpressionBrand", v); }
-	inline auto _impl_js_jts_dUpdateExpression::_updateExpressionBrand() noexcept { return _getProperty<js_unknown>("_updateExpressionBrand"); }
-	inline void _impl_js_jts_dUpdateExpression::_updateExpressionBrand(js_unknown v) noexcept { _setProperty("_updateExpressionBrand", v); }
-	inline auto _impl_js_jts_dLeftHandSideExpression::_leftHandSideExpressionBrand() noexcept { return _getProperty<js_unknown>("_leftHandSideExpressionBrand"); }
-	inline void _impl_js_jts_dLeftHandSideExpression::_leftHandSideExpressionBrand(js_unknown v) noexcept { _setProperty("_leftHandSideExpressionBrand", v); }
-	inline auto _impl_js_jts_dMemberExpression::_memberExpressionBrand() noexcept { return _getProperty<js_unknown>("_memberExpressionBrand"); }
-	inline void _impl_js_jts_dMemberExpression::_memberExpressionBrand(js_unknown v) noexcept { _setProperty("_memberExpressionBrand", v); }
-	inline auto _impl_js_jts_dPrimaryExpression::_primaryExpressionBrand() noexcept { return _getProperty<js_unknown>("_primaryExpressionBrand"); }
-	inline void _impl_js_jts_dPrimaryExpression::_primaryExpressionBrand(js_unknown v) noexcept { _setProperty("_primaryExpressionBrand", v); }
+	inline auto _impl_js_jts_dExpression::_expressionBrand() noexcept { return _getProperty<tc::js::any>("_expressionBrand"); }
+	inline void _impl_js_jts_dExpression::_expressionBrand(tc::js::any v) noexcept { _setProperty("_expressionBrand", v); }
+	inline auto _impl_js_jts_dUnaryExpression::_unaryExpressionBrand() noexcept { return _getProperty<tc::js::any>("_unaryExpressionBrand"); }
+	inline void _impl_js_jts_dUnaryExpression::_unaryExpressionBrand(tc::js::any v) noexcept { _setProperty("_unaryExpressionBrand", v); }
+	inline auto _impl_js_jts_dUpdateExpression::_updateExpressionBrand() noexcept { return _getProperty<tc::js::any>("_updateExpressionBrand"); }
+	inline void _impl_js_jts_dUpdateExpression::_updateExpressionBrand(tc::js::any v) noexcept { _setProperty("_updateExpressionBrand", v); }
+	inline auto _impl_js_jts_dLeftHandSideExpression::_leftHandSideExpressionBrand() noexcept { return _getProperty<tc::js::any>("_leftHandSideExpressionBrand"); }
+	inline void _impl_js_jts_dLeftHandSideExpression::_leftHandSideExpressionBrand(tc::js::any v) noexcept { _setProperty("_leftHandSideExpressionBrand", v); }
+	inline auto _impl_js_jts_dMemberExpression::_memberExpressionBrand() noexcept { return _getProperty<tc::js::any>("_memberExpressionBrand"); }
+	inline void _impl_js_jts_dMemberExpression::_memberExpressionBrand(tc::js::any v) noexcept { _setProperty("_memberExpressionBrand", v); }
+	inline auto _impl_js_jts_dPrimaryExpression::_primaryExpressionBrand() noexcept { return _getProperty<tc::js::any>("_primaryExpressionBrand"); }
+	inline void _impl_js_jts_dPrimaryExpression::_primaryExpressionBrand(tc::js::any v) noexcept { _setProperty("_primaryExpressionBrand", v); }
 	inline auto _impl_js_jts_dArrayLiteralExpression::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.ArrayLiteralExpression*/>("kind"); }
 	inline void _impl_js_jts_dArrayLiteralExpression::kind(_js_jts_dSyntaxKind /*SyntaxKind.ArrayLiteralExpression*/ v) noexcept { _setProperty("kind", v); }
-	inline auto _impl_js_jts_dArrayLiteralExpression::elements() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<Expression> (TypeReference=ts.NodeArray)*/>("elements"); }
-	inline void _impl_js_jts_dArrayLiteralExpression::elements(js_unknown /*flags=524288: NodeArray<Expression> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("elements", v); }
-	inline auto _impl_js_jts_dTypeNode::_typeNodeBrand() noexcept { return _getProperty<js_unknown>("_typeNodeBrand"); }
-	inline void _impl_js_jts_dTypeNode::_typeNodeBrand(js_unknown v) noexcept { _setProperty("_typeNodeBrand", v); }
+	inline auto _impl_js_jts_dArrayLiteralExpression::elements() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<Expression> (TypeReference=ts.NodeArray)*/>("elements"); }
+	inline void _impl_js_jts_dArrayLiteralExpression::elements(tc::js::any /*flags=524288: NodeArray<Expression> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("elements", v); }
+	inline auto _impl_js_jts_dTypeNode::_typeNodeBrand() noexcept { return _getProperty<tc::js::any>("_typeNodeBrand"); }
+	inline void _impl_js_jts_dTypeNode::_typeNodeBrand(tc::js::any v) noexcept { _setProperty("_typeNodeBrand", v); }
 	inline auto _impl_js_jts_dArrayTypeNode::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.ArrayType*/>("kind"); }
 	inline void _impl_js_jts_dArrayTypeNode::kind(_js_jts_dSyntaxKind /*SyntaxKind.ArrayType*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dArrayTypeNode::elementType() noexcept { return _getProperty<_js_jts_dTypeNode>("elementType"); }
 	inline void _impl_js_jts_dArrayTypeNode::elementType(_js_jts_dTypeNode v) noexcept { _setProperty("elementType", v); }
-	inline auto _impl_js_jts_dDeclaration::_declarationBrand() noexcept { return _getProperty<js_unknown>("_declarationBrand"); }
-	inline void _impl_js_jts_dDeclaration::_declarationBrand(js_unknown v) noexcept { _setProperty("_declarationBrand", v); }
+	inline auto _impl_js_jts_dDeclaration::_declarationBrand() noexcept { return _getProperty<tc::js::any>("_declarationBrand"); }
+	inline void _impl_js_jts_dDeclaration::_declarationBrand(tc::js::any v) noexcept { _setProperty("_declarationBrand", v); }
 	inline auto _impl_js_jts_dNamedDeclaration::name() noexcept { return _getProperty<js_union<_js_jts_dArrayBindingPattern, _js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNoSubstitutionTemplateLiteral, _js_jts_dNumericLiteral, _js_jts_dObjectBindingPattern, _js_jts_dStringLiteral, tc::js::undefined>>("name"); }
 	inline void _impl_js_jts_dNamedDeclaration::name(js_union<_js_jts_dArrayBindingPattern, _js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNoSubstitutionTemplateLiteral, _js_jts_dNumericLiteral, _js_jts_dObjectBindingPattern, _js_jts_dStringLiteral, tc::js::undefined> v) noexcept { _setProperty("name", v); }
 	inline auto _impl_js_jts_dJSDocContainer::_tcjs_construct() noexcept {
@@ -11030,30 +11030,30 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dSignatureDeclarationBase::kind(_js_jts_dSyntaxKind /*SyntaxKind.MethodSignature*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dSignatureDeclarationBase::name() noexcept { return _getProperty<js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::undefined>>("name"); }
 	inline void _impl_js_jts_dSignatureDeclarationBase::name(js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::undefined> v) noexcept { _setProperty("name", v); }
-	inline auto _impl_js_jts_dSignatureDeclarationBase::typeParameters() noexcept { return _getProperty<js_unknown /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/>("typeParameters"); }
-	inline void _impl_js_jts_dSignatureDeclarationBase::typeParameters(js_unknown /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ v) noexcept { _setProperty("typeParameters", v); }
-	inline auto _impl_js_jts_dSignatureDeclarationBase::parameters() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<ParameterDeclaration> (TypeReference=ts.NodeArray)*/>("parameters"); }
-	inline void _impl_js_jts_dSignatureDeclarationBase::parameters(js_unknown /*flags=524288: NodeArray<ParameterDeclaration> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("parameters", v); }
+	inline auto _impl_js_jts_dSignatureDeclarationBase::typeParameters() noexcept { return _getProperty<tc::js::any /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/>("typeParameters"); }
+	inline void _impl_js_jts_dSignatureDeclarationBase::typeParameters(tc::js::any /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ v) noexcept { _setProperty("typeParameters", v); }
+	inline auto _impl_js_jts_dSignatureDeclarationBase::parameters() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<ParameterDeclaration> (TypeReference=ts.NodeArray)*/>("parameters"); }
+	inline void _impl_js_jts_dSignatureDeclarationBase::parameters(tc::js::any /*flags=524288: NodeArray<ParameterDeclaration> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("parameters", v); }
 	inline auto _impl_js_jts_dSignatureDeclarationBase::type() noexcept { return _getProperty<js_union<_js_jts_dTypeNode, tc::js::undefined>>("type"); }
 	inline void _impl_js_jts_dSignatureDeclarationBase::type(js_union<_js_jts_dTypeNode, tc::js::undefined> v) noexcept { _setProperty("type", v); }
-	inline auto _impl_js_jts_dFunctionLikeDeclarationBase::_functionLikeDeclarationBrand() noexcept { return _getProperty<js_unknown>("_functionLikeDeclarationBrand"); }
-	inline void _impl_js_jts_dFunctionLikeDeclarationBase::_functionLikeDeclarationBrand(js_unknown v) noexcept { _setProperty("_functionLikeDeclarationBrand", v); }
-	inline auto _impl_js_jts_dFunctionLikeDeclarationBase::asteriskToken() noexcept { return _getProperty<js_unknown /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/>("asteriskToken"); }
-	inline void _impl_js_jts_dFunctionLikeDeclarationBase::asteriskToken(js_unknown /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("asteriskToken", v); }
-	inline auto _impl_js_jts_dFunctionLikeDeclarationBase::questionToken() noexcept { return _getProperty<js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/>("questionToken"); }
-	inline void _impl_js_jts_dFunctionLikeDeclarationBase::questionToken(js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("questionToken", v); }
-	inline auto _impl_js_jts_dFunctionLikeDeclarationBase::exclamationToken() noexcept { return _getProperty<js_unknown /*flags=1048576: Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/>("exclamationToken"); }
-	inline void _impl_js_jts_dFunctionLikeDeclarationBase::exclamationToken(js_unknown /*flags=1048576: Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("exclamationToken", v); }
+	inline auto _impl_js_jts_dFunctionLikeDeclarationBase::_functionLikeDeclarationBrand() noexcept { return _getProperty<tc::js::any>("_functionLikeDeclarationBrand"); }
+	inline void _impl_js_jts_dFunctionLikeDeclarationBase::_functionLikeDeclarationBrand(tc::js::any v) noexcept { _setProperty("_functionLikeDeclarationBrand", v); }
+	inline auto _impl_js_jts_dFunctionLikeDeclarationBase::asteriskToken() noexcept { return _getProperty<tc::js::any /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/>("asteriskToken"); }
+	inline void _impl_js_jts_dFunctionLikeDeclarationBase::asteriskToken(tc::js::any /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("asteriskToken", v); }
+	inline auto _impl_js_jts_dFunctionLikeDeclarationBase::questionToken() noexcept { return _getProperty<tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/>("questionToken"); }
+	inline void _impl_js_jts_dFunctionLikeDeclarationBase::questionToken(tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("questionToken", v); }
+	inline auto _impl_js_jts_dFunctionLikeDeclarationBase::exclamationToken() noexcept { return _getProperty<tc::js::any /*flags=1048576: Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/>("exclamationToken"); }
+	inline void _impl_js_jts_dFunctionLikeDeclarationBase::exclamationToken(tc::js::any /*flags=1048576: Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("exclamationToken", v); }
 	inline auto _impl_js_jts_dFunctionLikeDeclarationBase::body() noexcept { return _getProperty<js_union<_js_jts_dBlock, _js_jts_dExpression, tc::js::undefined>>("body"); }
 	inline void _impl_js_jts_dFunctionLikeDeclarationBase::body(js_union<_js_jts_dBlock, _js_jts_dExpression, tc::js::undefined> v) noexcept { _setProperty("body", v); }
 	inline auto _impl_js_jts_dArrowFunction::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.ArrowFunction*/>("kind"); }
 	inline void _impl_js_jts_dArrowFunction::kind(_js_jts_dSyntaxKind /*SyntaxKind.ArrowFunction*/ v) noexcept { _setProperty("kind", v); }
-	inline auto _impl_js_jts_dArrowFunction::equalsGreaterThanToken() noexcept { return _getProperty<js_unknown /*flags=524288: Token<SyntaxKind.EqualsGreaterThanToken> (TypeReference=ts.Token)*/>("equalsGreaterThanToken"); }
-	inline void _impl_js_jts_dArrowFunction::equalsGreaterThanToken(js_unknown /*flags=524288: Token<SyntaxKind.EqualsGreaterThanToken> (TypeReference=ts.Token)*/ v) noexcept { _setProperty("equalsGreaterThanToken", v); }
+	inline auto _impl_js_jts_dArrowFunction::equalsGreaterThanToken() noexcept { return _getProperty<tc::js::any /*flags=524288: Token<SyntaxKind.EqualsGreaterThanToken> (TypeReference=ts.Token)*/>("equalsGreaterThanToken"); }
+	inline void _impl_js_jts_dArrowFunction::equalsGreaterThanToken(tc::js::any /*flags=524288: Token<SyntaxKind.EqualsGreaterThanToken> (TypeReference=ts.Token)*/ v) noexcept { _setProperty("equalsGreaterThanToken", v); }
 	inline auto _impl_js_jts_dArrowFunction::body() noexcept { return _getProperty<_js_jts_dConciseBody>("body"); }
 	inline void _impl_js_jts_dArrowFunction::body(_js_jts_dConciseBody v) noexcept { _setProperty("body", v); }
-	inline auto _impl_js_jts_dArrowFunction::name() noexcept { return _getProperty<js_unknown /*flags=131072: never ()*/>("name"); }
-	inline void _impl_js_jts_dArrowFunction::name(js_unknown /*flags=131072: never ()*/ v) noexcept { _setProperty("name", v); }
+	inline auto _impl_js_jts_dArrowFunction::name() noexcept { return _getProperty<tc::js::any /*flags=131072: never ()*/>("name"); }
+	inline void _impl_js_jts_dArrowFunction::name(tc::js::any /*flags=131072: never ()*/ v) noexcept { _setProperty("name", v); }
 	inline auto _impl_js_jts_dAsExpression::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.AsExpression*/>("kind"); }
 	inline void _impl_js_jts_dAsExpression::kind(_js_jts_dSyntaxKind /*SyntaxKind.AsExpression*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dAsExpression::expression() noexcept { return _getProperty<_js_jts_dExpression>("expression"); }
@@ -11064,14 +11064,14 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dBinaryExpression::kind(_js_jts_dSyntaxKind /*SyntaxKind.BinaryExpression*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dBinaryExpression::left() noexcept { return _getProperty<_js_jts_dExpression>("left"); }
 	inline void _impl_js_jts_dBinaryExpression::left(_js_jts_dExpression v) noexcept { _setProperty("left", v); }
-	inline auto _impl_js_jts_dBinaryExpression::operatorToken() noexcept { return _getProperty<js_unknown /*flags=524288: Token<BinaryOperator> (TypeReference=ts.Token)*/>("operatorToken"); }
-	inline void _impl_js_jts_dBinaryExpression::operatorToken(js_unknown /*flags=524288: Token<BinaryOperator> (TypeReference=ts.Token)*/ v) noexcept { _setProperty("operatorToken", v); }
+	inline auto _impl_js_jts_dBinaryExpression::operatorToken() noexcept { return _getProperty<tc::js::any /*flags=524288: Token<BinaryOperator> (TypeReference=ts.Token)*/>("operatorToken"); }
+	inline void _impl_js_jts_dBinaryExpression::operatorToken(tc::js::any /*flags=524288: Token<BinaryOperator> (TypeReference=ts.Token)*/ v) noexcept { _setProperty("operatorToken", v); }
 	inline auto _impl_js_jts_dBinaryExpression::right() noexcept { return _getProperty<_js_jts_dExpression>("right"); }
 	inline void _impl_js_jts_dBinaryExpression::right(_js_jts_dExpression v) noexcept { _setProperty("right", v); }
 	inline auto _impl_js_jts_dAssignmentExpression::left() noexcept { return _getProperty<_js_jts_dLeftHandSideExpression>("left"); }
 	inline void _impl_js_jts_dAssignmentExpression::left(_js_jts_dLeftHandSideExpression v) noexcept { _setProperty("left", v); }
-	inline auto _impl_js_jts_dAssignmentExpression::operatorToken() noexcept { return _getProperty<js_unknown /*flags=262144: TOperator ()*/>("operatorToken"); }
-	inline void _impl_js_jts_dAssignmentExpression::operatorToken(js_unknown /*flags=262144: TOperator ()*/ v) noexcept { _setProperty("operatorToken", v); }
+	inline auto _impl_js_jts_dAssignmentExpression::operatorToken() noexcept { return _getProperty<tc::js::any /*flags=262144: TOperator ()*/>("operatorToken"); }
+	inline void _impl_js_jts_dAssignmentExpression::operatorToken(tc::js::any /*flags=262144: TOperator ()*/ v) noexcept { _setProperty("operatorToken", v); }
 	inline auto _impl_js_jts_dAwaitExpression::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.AwaitExpression*/>("kind"); }
 	inline void _impl_js_jts_dAwaitExpression::kind(_js_jts_dSyntaxKind /*SyntaxKind.AwaitExpression*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dAwaitExpression::expression() noexcept { return _getProperty<_js_jts_dUnaryExpression>("expression"); }
@@ -11082,8 +11082,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dLiteralLikeNode::isUnterminated(js_union<bool /*false*/, tc::js::undefined> v) noexcept { _setProperty("isUnterminated", v); }
 	inline auto _impl_js_jts_dLiteralLikeNode::hasExtendedUnicodeEscape() noexcept { return _getProperty<js_union<bool /*false*/, tc::js::undefined>>("hasExtendedUnicodeEscape"); }
 	inline void _impl_js_jts_dLiteralLikeNode::hasExtendedUnicodeEscape(js_union<bool /*false*/, tc::js::undefined> v) noexcept { _setProperty("hasExtendedUnicodeEscape", v); }
-	inline auto _impl_js_jts_dLiteralExpression::_literalExpressionBrand() noexcept { return _getProperty<js_unknown>("_literalExpressionBrand"); }
-	inline void _impl_js_jts_dLiteralExpression::_literalExpressionBrand(js_unknown v) noexcept { _setProperty("_literalExpressionBrand", v); }
+	inline auto _impl_js_jts_dLiteralExpression::_literalExpressionBrand() noexcept { return _getProperty<tc::js::any>("_literalExpressionBrand"); }
+	inline void _impl_js_jts_dLiteralExpression::_literalExpressionBrand(tc::js::any v) noexcept { _setProperty("_literalExpressionBrand", v); }
 	inline auto _impl_js_jts_dBigIntLiteral::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.BigIntLiteral*/>("kind"); }
 	inline void _impl_js_jts_dBigIntLiteral::kind(_js_jts_dSyntaxKind /*SyntaxKind.BigIntLiteral*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dType::flags() noexcept { return _getProperty<_js_jts_dTypeFlags /*TypeFlags.Any*/>("flags"); }
@@ -11138,63 +11138,63 @@ namespace tc::js_defs {
 	inline auto _impl_js_jts_dType::isClass() noexcept {
 		std::optional<_js_jts_dInterfaceType> result;
 		if(_call<bool /*false*/>("isClass")) {
-			result.emplace(_this<js_unknown>());
+			result.emplace(_this<tc::js::any>());
 		}
 		return result;
 	}
 	inline auto _impl_js_jts_dType::isClassOrInterface() noexcept {
 		std::optional<_js_jts_dInterfaceType> result;
 		if(_call<bool /*false*/>("isClassOrInterface")) {
-			result.emplace(_this<js_unknown>());
+			result.emplace(_this<tc::js::any>());
 		}
 		return result;
 	}
 	inline auto _impl_js_jts_dType::isIntersection() noexcept {
 		std::optional<_js_jts_dIntersectionType> result;
 		if(_call<bool /*false*/>("isIntersection")) {
-			result.emplace(_this<js_unknown>());
+			result.emplace(_this<tc::js::any>());
 		}
 		return result;
 	}
 	inline auto _impl_js_jts_dType::isLiteral() noexcept {
 		std::optional<_js_jts_dLiteralType> result;
 		if(_call<bool /*false*/>("isLiteral")) {
-			result.emplace(_this<js_unknown>());
+			result.emplace(_this<tc::js::any>());
 		}
 		return result;
 	}
 	inline auto _impl_js_jts_dType::isNumberLiteral() noexcept {
 		std::optional<_js_jts_dNumberLiteralType> result;
 		if(_call<bool /*false*/>("isNumberLiteral")) {
-			result.emplace(_this<js_unknown>());
+			result.emplace(_this<tc::js::any>());
 		}
 		return result;
 	}
 	inline auto _impl_js_jts_dType::isStringLiteral() noexcept {
 		std::optional<_js_jts_dStringLiteralType> result;
 		if(_call<bool /*false*/>("isStringLiteral")) {
-			result.emplace(_this<js_unknown>());
+			result.emplace(_this<tc::js::any>());
 		}
 		return result;
 	}
 	inline auto _impl_js_jts_dType::isTypeParameter() noexcept {
 		std::optional<_js_jts_dTypeParameter> result;
 		if(_call<bool /*false*/>("isTypeParameter")) {
-			result.emplace(_this<js_unknown>());
+			result.emplace(_this<tc::js::any>());
 		}
 		return result;
 	}
 	inline auto _impl_js_jts_dType::isUnion() noexcept {
 		std::optional<_js_jts_dUnionType> result;
 		if(_call<bool /*false*/>("isUnion")) {
-			result.emplace(_this<js_unknown>());
+			result.emplace(_this<tc::js::any>());
 		}
 		return result;
 	}
 	inline auto _impl_js_jts_dType::isUnionOrIntersection() noexcept {
 		std::optional<_js_jts_dUnionOrIntersectionType> result;
 		if(_call<bool /*false*/>("isUnionOrIntersection")) {
-			result.emplace(_this<js_unknown>());
+			result.emplace(_this<tc::js::any>());
 		}
 		return result;
 	}
@@ -11212,18 +11212,18 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dBindingElement::parent(_js_jts_dBindingPattern v) noexcept { _setProperty("parent", v); }
 	inline auto _impl_js_jts_dBindingElement::propertyName() noexcept { return _getProperty<js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::undefined>>("propertyName"); }
 	inline void _impl_js_jts_dBindingElement::propertyName(js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::undefined> v) noexcept { _setProperty("propertyName", v); }
-	inline auto _impl_js_jts_dBindingElement::dotDotDotToken() noexcept { return _getProperty<js_unknown /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/>("dotDotDotToken"); }
-	inline void _impl_js_jts_dBindingElement::dotDotDotToken(js_unknown /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("dotDotDotToken", v); }
+	inline auto _impl_js_jts_dBindingElement::dotDotDotToken() noexcept { return _getProperty<tc::js::any /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/>("dotDotDotToken"); }
+	inline void _impl_js_jts_dBindingElement::dotDotDotToken(tc::js::any /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("dotDotDotToken", v); }
 	inline auto _impl_js_jts_dBindingElement::name() noexcept { return _getProperty<_js_jts_dBindingName>("name"); }
 	inline void _impl_js_jts_dBindingElement::name(_js_jts_dBindingName v) noexcept { _setProperty("name", v); }
 	inline auto _impl_js_jts_dBindingElement::initializer() noexcept { return _getProperty<js_union<_js_jts_dExpression, tc::js::undefined>>("initializer"); }
 	inline void _impl_js_jts_dBindingElement::initializer(js_union<_js_jts_dExpression, tc::js::undefined> v) noexcept { _setProperty("initializer", v); }
-	inline auto _impl_js_jts_dStatement::_statementBrand() noexcept { return _getProperty<js_unknown>("_statementBrand"); }
-	inline void _impl_js_jts_dStatement::_statementBrand(js_unknown v) noexcept { _setProperty("_statementBrand", v); }
+	inline auto _impl_js_jts_dStatement::_statementBrand() noexcept { return _getProperty<tc::js::any>("_statementBrand"); }
+	inline void _impl_js_jts_dStatement::_statementBrand(tc::js::any v) noexcept { _setProperty("_statementBrand", v); }
 	inline auto _impl_js_jts_dBlock::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.Block*/>("kind"); }
 	inline void _impl_js_jts_dBlock::kind(_js_jts_dSyntaxKind /*SyntaxKind.Block*/ v) noexcept { _setProperty("kind", v); }
-	inline auto _impl_js_jts_dBlock::statements() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/>("statements"); }
-	inline void _impl_js_jts_dBlock::statements(js_unknown /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("statements", v); }
+	inline auto _impl_js_jts_dBlock::statements() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/>("statements"); }
+	inline void _impl_js_jts_dBlock::statements(tc::js::any /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("statements", v); }
 	inline auto _impl_js_jts_dBooleanLiteral::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.FalseKeyword*/>("kind"); }
 	inline void _impl_js_jts_dBooleanLiteral::kind(_js_jts_dSyntaxKind /*SyntaxKind.FalseKeyword*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dBreakStatement::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.BreakStatement*/>("kind"); }
@@ -11286,16 +11286,16 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dCallExpression::kind(_js_jts_dSyntaxKind /*SyntaxKind.CallExpression*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dCallExpression::expression() noexcept { return _getProperty<_js_jts_dLeftHandSideExpression>("expression"); }
 	inline void _impl_js_jts_dCallExpression::expression(_js_jts_dLeftHandSideExpression v) noexcept { _setProperty("expression", v); }
-	inline auto _impl_js_jts_dCallExpression::typeArguments() noexcept { return _getProperty<js_unknown /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/>("typeArguments"); }
-	inline void _impl_js_jts_dCallExpression::typeArguments(js_unknown /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/ v) noexcept { _setProperty("typeArguments", v); }
-	inline auto _impl_js_jts_dCallExpression::arguments() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<Expression> (TypeReference=ts.NodeArray)*/>("arguments"); }
-	inline void _impl_js_jts_dCallExpression::arguments(js_unknown /*flags=524288: NodeArray<Expression> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("arguments", v); }
-	inline auto _impl_js_jts_dTypeElement::_typeElementBrand() noexcept { return _getProperty<js_unknown>("_typeElementBrand"); }
-	inline void _impl_js_jts_dTypeElement::_typeElementBrand(js_unknown v) noexcept { _setProperty("_typeElementBrand", v); }
+	inline auto _impl_js_jts_dCallExpression::typeArguments() noexcept { return _getProperty<tc::js::any /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/>("typeArguments"); }
+	inline void _impl_js_jts_dCallExpression::typeArguments(tc::js::any /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/ v) noexcept { _setProperty("typeArguments", v); }
+	inline auto _impl_js_jts_dCallExpression::arguments() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<Expression> (TypeReference=ts.NodeArray)*/>("arguments"); }
+	inline void _impl_js_jts_dCallExpression::arguments(tc::js::any /*flags=524288: NodeArray<Expression> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("arguments", v); }
+	inline auto _impl_js_jts_dTypeElement::_typeElementBrand() noexcept { return _getProperty<tc::js::any>("_typeElementBrand"); }
+	inline void _impl_js_jts_dTypeElement::_typeElementBrand(tc::js::any v) noexcept { _setProperty("_typeElementBrand", v); }
 	inline auto _impl_js_jts_dTypeElement::name() noexcept { return _getProperty<js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::undefined>>("name"); }
 	inline void _impl_js_jts_dTypeElement::name(js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::undefined> v) noexcept { _setProperty("name", v); }
-	inline auto _impl_js_jts_dTypeElement::questionToken() noexcept { return _getProperty<js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/>("questionToken"); }
-	inline void _impl_js_jts_dTypeElement::questionToken(js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("questionToken", v); }
+	inline auto _impl_js_jts_dTypeElement::questionToken() noexcept { return _getProperty<tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/>("questionToken"); }
+	inline void _impl_js_jts_dTypeElement::questionToken(tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("questionToken", v); }
 	inline auto _impl_js_jts_dCallSignatureDeclaration::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.CallSignature*/>("kind"); }
 	inline void _impl_js_jts_dCallSignatureDeclaration::kind(_js_jts_dSyntaxKind /*SyntaxKind.CallSignature*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dCancellationToken::isCancellationRequested() noexcept {
@@ -11308,16 +11308,16 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dCaseBlock::kind(_js_jts_dSyntaxKind /*SyntaxKind.CaseBlock*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dCaseBlock::parent() noexcept { return _getProperty<_js_jts_dSwitchStatement>("parent"); }
 	inline void _impl_js_jts_dCaseBlock::parent(_js_jts_dSwitchStatement v) noexcept { _setProperty("parent", v); }
-	inline auto _impl_js_jts_dCaseBlock::clauses() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<CaseOrDefaultClause> (TypeReference=ts.NodeArray)*/>("clauses"); }
-	inline void _impl_js_jts_dCaseBlock::clauses(js_unknown /*flags=524288: NodeArray<CaseOrDefaultClause> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("clauses", v); }
+	inline auto _impl_js_jts_dCaseBlock::clauses() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<CaseOrDefaultClause> (TypeReference=ts.NodeArray)*/>("clauses"); }
+	inline void _impl_js_jts_dCaseBlock::clauses(tc::js::any /*flags=524288: NodeArray<CaseOrDefaultClause> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("clauses", v); }
 	inline auto _impl_js_jts_dCaseClause::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.CaseClause*/>("kind"); }
 	inline void _impl_js_jts_dCaseClause::kind(_js_jts_dSyntaxKind /*SyntaxKind.CaseClause*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dCaseClause::parent() noexcept { return _getProperty<_js_jts_dCaseBlock>("parent"); }
 	inline void _impl_js_jts_dCaseClause::parent(_js_jts_dCaseBlock v) noexcept { _setProperty("parent", v); }
 	inline auto _impl_js_jts_dCaseClause::expression() noexcept { return _getProperty<_js_jts_dExpression>("expression"); }
 	inline void _impl_js_jts_dCaseClause::expression(_js_jts_dExpression v) noexcept { _setProperty("expression", v); }
-	inline auto _impl_js_jts_dCaseClause::statements() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/>("statements"); }
-	inline void _impl_js_jts_dCaseClause::statements(js_unknown /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("statements", v); }
+	inline auto _impl_js_jts_dCaseClause::statements() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/>("statements"); }
+	inline void _impl_js_jts_dCaseClause::statements(tc::js::any /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("statements", v); }
 	inline auto _impl_js_jts_dCatchClause::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.CatchClause*/>("kind"); }
 	inline void _impl_js_jts_dCatchClause::kind(_js_jts_dSyntaxKind /*SyntaxKind.CatchClause*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dCatchClause::parent() noexcept { return _getProperty<_js_jts_dTryStatement>("parent"); }
@@ -11332,20 +11332,20 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dClassLikeDeclarationBase::kind(_js_jts_dSyntaxKind /*SyntaxKind.ClassExpression*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dClassLikeDeclarationBase::name() noexcept { return _getProperty<js_union<_js_jts_dIdentifier, tc::js::undefined>>("name"); }
 	inline void _impl_js_jts_dClassLikeDeclarationBase::name(js_union<_js_jts_dIdentifier, tc::js::undefined> v) noexcept { _setProperty("name", v); }
-	inline auto _impl_js_jts_dClassLikeDeclarationBase::typeParameters() noexcept { return _getProperty<js_unknown /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/>("typeParameters"); }
-	inline void _impl_js_jts_dClassLikeDeclarationBase::typeParameters(js_unknown /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ v) noexcept { _setProperty("typeParameters", v); }
-	inline auto _impl_js_jts_dClassLikeDeclarationBase::heritageClauses() noexcept { return _getProperty<js_unknown /*flags=1048576: NodeArray<HeritageClause> | tc::js::undefined ()*/>("heritageClauses"); }
-	inline void _impl_js_jts_dClassLikeDeclarationBase::heritageClauses(js_unknown /*flags=1048576: NodeArray<HeritageClause> | tc::js::undefined ()*/ v) noexcept { _setProperty("heritageClauses", v); }
-	inline auto _impl_js_jts_dClassLikeDeclarationBase::members() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<ClassElement> (TypeReference=ts.NodeArray)*/>("members"); }
-	inline void _impl_js_jts_dClassLikeDeclarationBase::members(js_unknown /*flags=524288: NodeArray<ClassElement> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("members", v); }
+	inline auto _impl_js_jts_dClassLikeDeclarationBase::typeParameters() noexcept { return _getProperty<tc::js::any /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/>("typeParameters"); }
+	inline void _impl_js_jts_dClassLikeDeclarationBase::typeParameters(tc::js::any /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ v) noexcept { _setProperty("typeParameters", v); }
+	inline auto _impl_js_jts_dClassLikeDeclarationBase::heritageClauses() noexcept { return _getProperty<tc::js::any /*flags=1048576: NodeArray<HeritageClause> | tc::js::undefined ()*/>("heritageClauses"); }
+	inline void _impl_js_jts_dClassLikeDeclarationBase::heritageClauses(tc::js::any /*flags=1048576: NodeArray<HeritageClause> | tc::js::undefined ()*/ v) noexcept { _setProperty("heritageClauses", v); }
+	inline auto _impl_js_jts_dClassLikeDeclarationBase::members() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<ClassElement> (TypeReference=ts.NodeArray)*/>("members"); }
+	inline void _impl_js_jts_dClassLikeDeclarationBase::members(tc::js::any /*flags=524288: NodeArray<ClassElement> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("members", v); }
 	inline auto _impl_js_jts_dDeclarationStatement::name() noexcept { return _getProperty<js_union<_js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::undefined>>("name"); }
 	inline void _impl_js_jts_dDeclarationStatement::name(js_union<_js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::undefined> v) noexcept { _setProperty("name", v); }
 	inline auto _impl_js_jts_dClassDeclaration::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.ClassDeclaration*/>("kind"); }
 	inline void _impl_js_jts_dClassDeclaration::kind(_js_jts_dSyntaxKind /*SyntaxKind.ClassDeclaration*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dClassDeclaration::name() noexcept { return _getProperty<js_union<_js_jts_dIdentifier, tc::js::undefined>>("name"); }
 	inline void _impl_js_jts_dClassDeclaration::name(js_union<_js_jts_dIdentifier, tc::js::undefined> v) noexcept { _setProperty("name", v); }
-	inline auto _impl_js_jts_dClassElement::_classElementBrand() noexcept { return _getProperty<js_unknown>("_classElementBrand"); }
-	inline void _impl_js_jts_dClassElement::_classElementBrand(js_unknown v) noexcept { _setProperty("_classElementBrand", v); }
+	inline auto _impl_js_jts_dClassElement::_classElementBrand() noexcept { return _getProperty<tc::js::any>("_classElementBrand"); }
+	inline void _impl_js_jts_dClassElement::_classElementBrand(tc::js::any v) noexcept { _setProperty("_classElementBrand", v); }
 	inline auto _impl_js_jts_dClassElement::name() noexcept { return _getProperty<js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::undefined>>("name"); }
 	inline void _impl_js_jts_dClassElement::name(js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::undefined> v) noexcept { _setProperty("name", v); }
 	inline auto _impl_js_jts_dClassExpression::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.ClassExpression*/>("kind"); }
@@ -11380,8 +11380,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dCodeAction::commands(js_union<js::Array<_js_jts_dInstallPackageAction>, tc::js::undefined> v) noexcept { _setProperty("commands", v); }
 	inline auto _impl_js_jts_dCodeFixAction::fixName() noexcept { return _getProperty<tc::js::string>("fixName"); }
 	inline void _impl_js_jts_dCodeFixAction::fixName(tc::js::string v) noexcept { _setProperty("fixName", v); }
-	inline auto _impl_js_jts_dCodeFixAction::fixId() noexcept { return _getProperty<js_unknown /*flags=1048576: {} | tc::js::undefined ()*/>("fixId"); }
-	inline void _impl_js_jts_dCodeFixAction::fixId(js_unknown /*flags=1048576: {} | tc::js::undefined ()*/ v) noexcept { _setProperty("fixId", v); }
+	inline auto _impl_js_jts_dCodeFixAction::fixId() noexcept { return _getProperty<tc::js::any /*flags=1048576: {} | tc::js::undefined ()*/>("fixId"); }
+	inline void _impl_js_jts_dCodeFixAction::fixId(tc::js::any /*flags=1048576: {} | tc::js::undefined ()*/ v) noexcept { _setProperty("fixId", v); }
 	inline auto _impl_js_jts_dCodeFixAction::fixAllDescription() noexcept { return _getProperty<js_union<tc::js::string, tc::js::undefined>>("fixAllDescription"); }
 	inline void _impl_js_jts_dCodeFixAction::fixAllDescription(js_union<tc::js::string, tc::js::undefined> v) noexcept { _setProperty("fixAllDescription", v); }
 	inline auto _impl_js_jts_dCombinedCodeActions::changes() noexcept { return _getProperty<js::ReadonlyArray<_js_jts_dFileTextChanges>>("changes"); }
@@ -11394,8 +11394,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dCombinedCodeFixScope::fileName(tc::js::string v) noexcept { _setProperty("fileName", v); }
 	inline auto _impl_js_jts_dCommaListExpression::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.CommaListExpression*/>("kind"); }
 	inline void _impl_js_jts_dCommaListExpression::kind(_js_jts_dSyntaxKind /*SyntaxKind.CommaListExpression*/ v) noexcept { _setProperty("kind", v); }
-	inline auto _impl_js_jts_dCommaListExpression::elements() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<Expression> (TypeReference=ts.NodeArray)*/>("elements"); }
-	inline void _impl_js_jts_dCommaListExpression::elements(js_unknown /*flags=524288: NodeArray<Expression> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("elements", v); }
+	inline auto _impl_js_jts_dCommaListExpression::elements() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<Expression> (TypeReference=ts.NodeArray)*/>("elements"); }
+	inline void _impl_js_jts_dCommaListExpression::elements(tc::js::any /*flags=524288: NodeArray<Expression> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("elements", v); }
 	inline auto _impl_js_jts_dCommentRange::hasTrailingNewLine() noexcept { return _getProperty<js_union<bool /*false*/, tc::js::undefined>>("hasTrailingNewLine"); }
 	inline void _impl_js_jts_dCommentRange::hasTrailingNewLine(js_union<bool /*false*/, tc::js::undefined> v) noexcept { _setProperty("hasTrailingNewLine", v); }
 	inline auto _impl_js_jts_dCommentRange::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.SingleLineCommentTrivia*/>("kind"); }
@@ -11524,8 +11524,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dCompilerOptions::outDir(js_union<tc::js::string, tc::js::undefined> v) noexcept { _setProperty("outDir", v); }
 	inline auto _impl_js_jts_dCompilerOptions::outFile() noexcept { return _getProperty<js_union<tc::js::string, tc::js::undefined>>("outFile"); }
 	inline void _impl_js_jts_dCompilerOptions::outFile(js_union<tc::js::string, tc::js::undefined> v) noexcept { _setProperty("outFile", v); }
-	inline auto _impl_js_jts_dCompilerOptions::paths() noexcept { return _getProperty<js_unknown /*flags=1048576: MapLike<tc::js::string[]> | tc::js::undefined ()*/>("paths"); }
-	inline void _impl_js_jts_dCompilerOptions::paths(js_unknown /*flags=1048576: MapLike<tc::js::string[]> | tc::js::undefined ()*/ v) noexcept { _setProperty("paths", v); }
+	inline auto _impl_js_jts_dCompilerOptions::paths() noexcept { return _getProperty<tc::js::any /*flags=1048576: MapLike<tc::js::string[]> | tc::js::undefined ()*/>("paths"); }
+	inline void _impl_js_jts_dCompilerOptions::paths(tc::js::any /*flags=1048576: MapLike<tc::js::string[]> | tc::js::undefined ()*/ v) noexcept { _setProperty("paths", v); }
 	inline auto _impl_js_jts_dCompilerOptions::preserveConstEnums() noexcept { return _getProperty<js_union<bool /*false*/, tc::js::undefined>>("preserveConstEnums"); }
 	inline void _impl_js_jts_dCompilerOptions::preserveConstEnums(js_union<bool /*false*/, tc::js::undefined> v) noexcept { _setProperty("preserveConstEnums", v); }
 	inline auto _impl_js_jts_dCompilerOptions::preserveSymlinks() noexcept { return _getProperty<js_union<bool /*false*/, tc::js::undefined>>("preserveSymlinks"); }
@@ -11639,12 +11639,12 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dConditionalExpression::kind(_js_jts_dSyntaxKind /*SyntaxKind.ConditionalExpression*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dConditionalExpression::condition() noexcept { return _getProperty<_js_jts_dExpression>("condition"); }
 	inline void _impl_js_jts_dConditionalExpression::condition(_js_jts_dExpression v) noexcept { _setProperty("condition", v); }
-	inline auto _impl_js_jts_dConditionalExpression::questionToken() noexcept { return _getProperty<js_unknown /*flags=524288: Token<SyntaxKind.QuestionToken> (TypeReference=ts.Token)*/>("questionToken"); }
-	inline void _impl_js_jts_dConditionalExpression::questionToken(js_unknown /*flags=524288: Token<SyntaxKind.QuestionToken> (TypeReference=ts.Token)*/ v) noexcept { _setProperty("questionToken", v); }
+	inline auto _impl_js_jts_dConditionalExpression::questionToken() noexcept { return _getProperty<tc::js::any /*flags=524288: Token<SyntaxKind.QuestionToken> (TypeReference=ts.Token)*/>("questionToken"); }
+	inline void _impl_js_jts_dConditionalExpression::questionToken(tc::js::any /*flags=524288: Token<SyntaxKind.QuestionToken> (TypeReference=ts.Token)*/ v) noexcept { _setProperty("questionToken", v); }
 	inline auto _impl_js_jts_dConditionalExpression::whenTrue() noexcept { return _getProperty<_js_jts_dExpression>("whenTrue"); }
 	inline void _impl_js_jts_dConditionalExpression::whenTrue(_js_jts_dExpression v) noexcept { _setProperty("whenTrue", v); }
-	inline auto _impl_js_jts_dConditionalExpression::colonToken() noexcept { return _getProperty<js_unknown /*flags=524288: Token<SyntaxKind.ColonToken> (TypeReference=ts.Token)*/>("colonToken"); }
-	inline void _impl_js_jts_dConditionalExpression::colonToken(js_unknown /*flags=524288: Token<SyntaxKind.ColonToken> (TypeReference=ts.Token)*/ v) noexcept { _setProperty("colonToken", v); }
+	inline auto _impl_js_jts_dConditionalExpression::colonToken() noexcept { return _getProperty<tc::js::any /*flags=524288: Token<SyntaxKind.ColonToken> (TypeReference=ts.Token)*/>("colonToken"); }
+	inline void _impl_js_jts_dConditionalExpression::colonToken(tc::js::any /*flags=524288: Token<SyntaxKind.ColonToken> (TypeReference=ts.Token)*/ v) noexcept { _setProperty("colonToken", v); }
 	inline auto _impl_js_jts_dConditionalExpression::whenFalse() noexcept { return _getProperty<_js_jts_dExpression>("whenFalse"); }
 	inline void _impl_js_jts_dConditionalExpression::whenFalse(_js_jts_dExpression v) noexcept { _setProperty("whenFalse", v); }
 	inline auto _impl_js_jts_dConditionalRoot::node() noexcept { return _getProperty<_js_jts_dConditionalTypeNode>("node"); }
@@ -11663,8 +11663,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dConditionalRoot::inferTypeParameters(js_union<js::Array<_js_jts_dTypeParameter>, tc::js::undefined> v) noexcept { _setProperty("inferTypeParameters", v); }
 	inline auto _impl_js_jts_dConditionalRoot::outerTypeParameters() noexcept { return _getProperty<js_union<js::Array<_js_jts_dTypeParameter>, tc::js::undefined>>("outerTypeParameters"); }
 	inline void _impl_js_jts_dConditionalRoot::outerTypeParameters(js_union<js::Array<_js_jts_dTypeParameter>, tc::js::undefined> v) noexcept { _setProperty("outerTypeParameters", v); }
-	inline auto _impl_js_jts_dConditionalRoot::instantiations() noexcept { return _getProperty<js_unknown /*flags=1048576: Map<Type> | tc::js::undefined ()*/>("instantiations"); }
-	inline void _impl_js_jts_dConditionalRoot::instantiations(js_unknown /*flags=1048576: Map<Type> | tc::js::undefined ()*/ v) noexcept { _setProperty("instantiations", v); }
+	inline auto _impl_js_jts_dConditionalRoot::instantiations() noexcept { return _getProperty<tc::js::any /*flags=1048576: Map<Type> | tc::js::undefined ()*/>("instantiations"); }
+	inline void _impl_js_jts_dConditionalRoot::instantiations(tc::js::any /*flags=1048576: Map<Type> | tc::js::undefined ()*/ v) noexcept { _setProperty("instantiations", v); }
 	inline auto _impl_js_jts_dConditionalRoot::aliasSymbol() noexcept { return _getProperty<js_union<_js_jts_dSymbol, tc::js::undefined>>("aliasSymbol"); }
 	inline void _impl_js_jts_dConditionalRoot::aliasSymbol(js_union<_js_jts_dSymbol, tc::js::undefined> v) noexcept { _setProperty("aliasSymbol", v); }
 	inline auto _impl_js_jts_dConditionalRoot::aliasTypeArguments() noexcept { return _getProperty<js_union<js::Array<_js_jts_dType>, tc::js::undefined>>("aliasTypeArguments"); }
@@ -11748,8 +11748,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dDefaultClause::kind(_js_jts_dSyntaxKind /*SyntaxKind.DefaultClause*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dDefaultClause::parent() noexcept { return _getProperty<_js_jts_dCaseBlock>("parent"); }
 	inline void _impl_js_jts_dDefaultClause::parent(_js_jts_dCaseBlock v) noexcept { _setProperty("parent", v); }
-	inline auto _impl_js_jts_dDefaultClause::statements() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/>("statements"); }
-	inline void _impl_js_jts_dDefaultClause::statements(js_unknown /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("statements", v); }
+	inline auto _impl_js_jts_dDefaultClause::statements() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/>("statements"); }
+	inline void _impl_js_jts_dDefaultClause::statements(tc::js::any /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("statements", v); }
 	inline auto _impl_js_jts_dDocumentSpan::textSpan() noexcept { return _getProperty<_js_jts_dTextSpan>("textSpan"); }
 	inline void _impl_js_jts_dDocumentSpan::textSpan(_js_jts_dTextSpan v) noexcept { _setProperty("textSpan", v); }
 	inline auto _impl_js_jts_dDocumentSpan::fileName() noexcept { return _getProperty<tc::js::string>("fileName"); }
@@ -11786,8 +11786,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dDiagnosticRelatedInformation::length(js_union<double, tc::js::undefined> v) noexcept { _setProperty("length", v); }
 	inline auto _impl_js_jts_dDiagnosticRelatedInformation::messageText() noexcept { return _getProperty<js_union<_js_jts_dDiagnosticMessageChain, tc::js::string>>("messageText"); }
 	inline void _impl_js_jts_dDiagnosticRelatedInformation::messageText(js_union<_js_jts_dDiagnosticMessageChain, tc::js::string> v) noexcept { _setProperty("messageText", v); }
-	inline auto _impl_js_jts_dDiagnostic::reportsUnnecessary() noexcept { return _getProperty<js_unknown /*flags=1048576: {} | tc::js::undefined ()*/>("reportsUnnecessary"); }
-	inline void _impl_js_jts_dDiagnostic::reportsUnnecessary(js_unknown /*flags=1048576: {} | tc::js::undefined ()*/ v) noexcept { _setProperty("reportsUnnecessary", v); }
+	inline auto _impl_js_jts_dDiagnostic::reportsUnnecessary() noexcept { return _getProperty<tc::js::any /*flags=1048576: {} | tc::js::undefined ()*/>("reportsUnnecessary"); }
+	inline void _impl_js_jts_dDiagnostic::reportsUnnecessary(tc::js::any /*flags=1048576: {} | tc::js::undefined ()*/ v) noexcept { _setProperty("reportsUnnecessary", v); }
 	inline auto _impl_js_jts_dDiagnostic::source() noexcept { return _getProperty<js_union<tc::js::string, tc::js::undefined>>("source"); }
 	inline void _impl_js_jts_dDiagnostic::source(js_union<tc::js::string, tc::js::undefined> v) noexcept { _setProperty("source", v); }
 	inline auto _impl_js_jts_dDiagnostic::relatedInformation() noexcept { return _getProperty<js_union<js::Array<_js_jts_dDiagnosticRelatedInformation>, tc::js::undefined>>("relatedInformation"); }
@@ -11800,8 +11800,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dDiagnosticMessage::code(double v) noexcept { _setProperty("code", v); }
 	inline auto _impl_js_jts_dDiagnosticMessage::message() noexcept { return _getProperty<tc::js::string>("message"); }
 	inline void _impl_js_jts_dDiagnosticMessage::message(tc::js::string v) noexcept { _setProperty("message", v); }
-	inline auto _impl_js_jts_dDiagnosticMessage::reportsUnnecessary() noexcept { return _getProperty<js_unknown /*flags=1048576: {} | tc::js::undefined ()*/>("reportsUnnecessary"); }
-	inline void _impl_js_jts_dDiagnosticMessage::reportsUnnecessary(js_unknown /*flags=1048576: {} | tc::js::undefined ()*/ v) noexcept { _setProperty("reportsUnnecessary", v); }
+	inline auto _impl_js_jts_dDiagnosticMessage::reportsUnnecessary() noexcept { return _getProperty<tc::js::any /*flags=1048576: {} | tc::js::undefined ()*/>("reportsUnnecessary"); }
+	inline void _impl_js_jts_dDiagnosticMessage::reportsUnnecessary(tc::js::any /*flags=1048576: {} | tc::js::undefined ()*/ v) noexcept { _setProperty("reportsUnnecessary", v); }
 	inline auto _impl_js_jts_dDiagnosticMessageChain::messageText() noexcept { return _getProperty<tc::js::string>("messageText"); }
 	inline void _impl_js_jts_dDiagnosticMessageChain::messageText(tc::js::string v) noexcept { _setProperty("messageText", v); }
 	inline auto _impl_js_jts_dDiagnosticMessageChain::category() noexcept { return _getProperty<_js_jts_dDiagnosticCategory /*DiagnosticCategory.Warning*/>("category"); }
@@ -11829,16 +11829,16 @@ namespace tc::js_defs {
 	inline auto _impl_js_jts_dDocumentRegistry::acquireDocument(tc::js::string fileName, _js_jts_dCompilerOptions compilationSettings, _js_jts_dIScriptSnapshot scriptSnapshot, tc::js::string version, js_union<_js_jts_dScriptKind /*ScriptKind.TS*/, tc::js::undefined> scriptKind) noexcept {
 		return _call<_js_jts_dSourceFile>("acquireDocument", fileName, compilationSettings, scriptSnapshot, version, scriptKind);
 	}
-	inline auto _impl_js_jts_dDocumentRegistry::acquireDocumentWithKey(tc::js::string fileName, js_unknown /*flags=2097152: Path ()*/ path, _js_jts_dCompilerOptions compilationSettings, js_unknown /*flags=2097152: DocumentRegistryBucketKey ()*/ key, _js_jts_dIScriptSnapshot scriptSnapshot, tc::js::string version, js_union<_js_jts_dScriptKind /*ScriptKind.TS*/, tc::js::undefined> scriptKind) noexcept {
+	inline auto _impl_js_jts_dDocumentRegistry::acquireDocumentWithKey(tc::js::string fileName, tc::js::any /*flags=2097152: Path ()*/ path, _js_jts_dCompilerOptions compilationSettings, tc::js::any /*flags=2097152: DocumentRegistryBucketKey ()*/ key, _js_jts_dIScriptSnapshot scriptSnapshot, tc::js::string version, js_union<_js_jts_dScriptKind /*ScriptKind.TS*/, tc::js::undefined> scriptKind) noexcept {
 		return _call<_js_jts_dSourceFile>("acquireDocumentWithKey", fileName, path, compilationSettings, key, scriptSnapshot, version, scriptKind);
 	}
 	inline auto _impl_js_jts_dDocumentRegistry::getKeyForCompilationSettings(_js_jts_dCompilerOptions settings) noexcept {
-		return _call<js_unknown /*flags=2097152: DocumentRegistryBucketKey ()*/>("getKeyForCompilationSettings", settings);
+		return _call<tc::js::any /*flags=2097152: DocumentRegistryBucketKey ()*/>("getKeyForCompilationSettings", settings);
 	}
 	inline auto _impl_js_jts_dDocumentRegistry::releaseDocument(tc::js::string fileName, _js_jts_dCompilerOptions compilationSettings) noexcept {
 		 _call<void>("releaseDocument", fileName, compilationSettings);
 	}
-	inline auto _impl_js_jts_dDocumentRegistry::releaseDocumentWithKey(js_unknown /*flags=2097152: Path ()*/ path, js_unknown /*flags=2097152: DocumentRegistryBucketKey ()*/ key) noexcept {
+	inline auto _impl_js_jts_dDocumentRegistry::releaseDocumentWithKey(tc::js::any /*flags=2097152: Path ()*/ path, tc::js::any /*flags=2097152: DocumentRegistryBucketKey ()*/ key) noexcept {
 		 _call<void>("releaseDocumentWithKey", path, key);
 	}
 	inline auto _impl_js_jts_dDocumentRegistry::reportStats() noexcept {
@@ -11847,7 +11847,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_jts_dDocumentRegistry::updateDocument(tc::js::string fileName, _js_jts_dCompilerOptions compilationSettings, _js_jts_dIScriptSnapshot scriptSnapshot, tc::js::string version, js_union<_js_jts_dScriptKind /*ScriptKind.TS*/, tc::js::undefined> scriptKind) noexcept {
 		return _call<_js_jts_dSourceFile>("updateDocument", fileName, compilationSettings, scriptSnapshot, version, scriptKind);
 	}
-	inline auto _impl_js_jts_dDocumentRegistry::updateDocumentWithKey(tc::js::string fileName, js_unknown /*flags=2097152: Path ()*/ path, _js_jts_dCompilerOptions compilationSettings, js_unknown /*flags=2097152: DocumentRegistryBucketKey ()*/ key, _js_jts_dIScriptSnapshot scriptSnapshot, tc::js::string version, js_union<_js_jts_dScriptKind /*ScriptKind.TS*/, tc::js::undefined> scriptKind) noexcept {
+	inline auto _impl_js_jts_dDocumentRegistry::updateDocumentWithKey(tc::js::string fileName, tc::js::any /*flags=2097152: Path ()*/ path, _js_jts_dCompilerOptions compilationSettings, tc::js::any /*flags=2097152: DocumentRegistryBucketKey ()*/ key, _js_jts_dIScriptSnapshot scriptSnapshot, tc::js::string version, js_union<_js_jts_dScriptKind /*ScriptKind.TS*/, tc::js::undefined> scriptKind) noexcept {
 		return _call<_js_jts_dSourceFile>("updateDocumentWithKey", fileName, path, compilationSettings, key, scriptSnapshot, version, scriptKind);
 	}
 	inline auto _impl_js_jts_dEditorOptions::BaseIndentSize() noexcept { return _getProperty<js_union<double, tc::js::undefined>>("BaseIndentSize"); }
@@ -11906,8 +11906,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dEnumDeclaration::kind(_js_jts_dSyntaxKind /*SyntaxKind.EnumDeclaration*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dEnumDeclaration::name() noexcept { return _getProperty<_js_jts_dIdentifier>("name"); }
 	inline void _impl_js_jts_dEnumDeclaration::name(_js_jts_dIdentifier v) noexcept { _setProperty("name", v); }
-	inline auto _impl_js_jts_dEnumDeclaration::members() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<EnumMember> (TypeReference=ts.NodeArray)*/>("members"); }
-	inline void _impl_js_jts_dEnumDeclaration::members(js_unknown /*flags=524288: NodeArray<EnumMember> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("members", v); }
+	inline auto _impl_js_jts_dEnumDeclaration::members() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<EnumMember> (TypeReference=ts.NodeArray)*/>("members"); }
+	inline void _impl_js_jts_dEnumDeclaration::members(tc::js::any /*flags=524288: NodeArray<EnumMember> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("members", v); }
 	inline auto _impl_js_jts_dEnumMember::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.EnumMember*/>("kind"); }
 	inline void _impl_js_jts_dEnumMember::kind(_js_jts_dSyntaxKind /*SyntaxKind.EnumMember*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dEnumMember::parent() noexcept { return _getProperty<_js_jts_dEnumDeclaration>("parent"); }
@@ -11924,8 +11924,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dEvolvingArrayType::finalArrayType(js_union<_js_jts_dType, tc::js::undefined> v) noexcept { _setProperty("finalArrayType", v); }
 	inline auto _impl_js_jts_dExpandResult::fileNames() noexcept { return _getProperty<js::Array<tc::js::string>>("fileNames"); }
 	inline void _impl_js_jts_dExpandResult::fileNames(js::Array<tc::js::string> v) noexcept { _setProperty("fileNames", v); }
-	inline auto _impl_js_jts_dExpandResult::wildcardDirectories() noexcept { return _getProperty<js_unknown /*flags=524288: MapLike<WatchDirectoryFlags> (TypeReference=ts.MapLike)*/>("wildcardDirectories"); }
-	inline void _impl_js_jts_dExpandResult::wildcardDirectories(js_unknown /*flags=524288: MapLike<WatchDirectoryFlags> (TypeReference=ts.MapLike)*/ v) noexcept { _setProperty("wildcardDirectories", v); }
+	inline auto _impl_js_jts_dExpandResult::wildcardDirectories() noexcept { return _getProperty<tc::js::any /*flags=524288: MapLike<WatchDirectoryFlags> (TypeReference=ts.MapLike)*/>("wildcardDirectories"); }
+	inline void _impl_js_jts_dExpandResult::wildcardDirectories(tc::js::any /*flags=524288: MapLike<WatchDirectoryFlags> (TypeReference=ts.MapLike)*/ v) noexcept { _setProperty("wildcardDirectories", v); }
 	inline auto _impl_js_jts_dExportAssignment::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.ExportAssignment*/>("kind"); }
 	inline void _impl_js_jts_dExportAssignment::kind(_js_jts_dSyntaxKind /*SyntaxKind.ExportAssignment*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dExportAssignment::parent() noexcept { return _getProperty<_js_jts_dSourceFile>("parent"); }
@@ -11954,8 +11954,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dExpressionStatement::kind(_js_jts_dSyntaxKind /*SyntaxKind.ExpressionStatement*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dExpressionStatement::expression() noexcept { return _getProperty<_js_jts_dExpression>("expression"); }
 	inline void _impl_js_jts_dExpressionStatement::expression(_js_jts_dExpression v) noexcept { _setProperty("expression", v); }
-	inline auto _impl_js_jts_dNodeWithTypeArguments::typeArguments() noexcept { return _getProperty<js_unknown /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/>("typeArguments"); }
-	inline void _impl_js_jts_dNodeWithTypeArguments::typeArguments(js_unknown /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/ v) noexcept { _setProperty("typeArguments", v); }
+	inline auto _impl_js_jts_dNodeWithTypeArguments::typeArguments() noexcept { return _getProperty<tc::js::any /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/>("typeArguments"); }
+	inline void _impl_js_jts_dNodeWithTypeArguments::typeArguments(tc::js::any /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/ v) noexcept { _setProperty("typeArguments", v); }
 	inline auto _impl_js_jts_dExpressionWithTypeArguments::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.ExpressionWithTypeArguments*/>("kind"); }
 	inline void _impl_js_jts_dExpressionWithTypeArguments::kind(_js_jts_dSyntaxKind /*SyntaxKind.ExpressionWithTypeArguments*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dExpressionWithTypeArguments::parent() noexcept { return _getProperty<js_union<_js_jts_dHeritageClause, _js_jts_dJSDocAugmentsTag>>("parent"); }
@@ -12021,8 +12021,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dForInStatement::expression(_js_jts_dExpression v) noexcept { _setProperty("expression", v); }
 	inline auto _impl_js_jts_dForOfStatement::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.ForOfStatement*/>("kind"); }
 	inline void _impl_js_jts_dForOfStatement::kind(_js_jts_dSyntaxKind /*SyntaxKind.ForOfStatement*/ v) noexcept { _setProperty("kind", v); }
-	inline auto _impl_js_jts_dForOfStatement::awaitModifier() noexcept { return _getProperty<js_unknown /*flags=1048576: Token<SyntaxKind.AwaitKeyword> | tc::js::undefined ()*/>("awaitModifier"); }
-	inline void _impl_js_jts_dForOfStatement::awaitModifier(js_unknown /*flags=1048576: Token<SyntaxKind.AwaitKeyword> | tc::js::undefined ()*/ v) noexcept { _setProperty("awaitModifier", v); }
+	inline auto _impl_js_jts_dForOfStatement::awaitModifier() noexcept { return _getProperty<tc::js::any /*flags=1048576: Token<SyntaxKind.AwaitKeyword> | tc::js::undefined ()*/>("awaitModifier"); }
+	inline void _impl_js_jts_dForOfStatement::awaitModifier(tc::js::any /*flags=1048576: Token<SyntaxKind.AwaitKeyword> | tc::js::undefined ()*/ v) noexcept { _setProperty("awaitModifier", v); }
 	inline auto _impl_js_jts_dForOfStatement::initializer() noexcept { return _getProperty<_js_jts_dForInitializer>("initializer"); }
 	inline void _impl_js_jts_dForOfStatement::initializer(_js_jts_dForInitializer v) noexcept { _setProperty("initializer", v); }
 	inline auto _impl_js_jts_dForOfStatement::expression() noexcept { return _getProperty<_js_jts_dExpression>("expression"); }
@@ -12122,8 +12122,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dTypeReference::target(_js_jts_dGenericType v) noexcept { _setProperty("target", v); }
 	inline auto _impl_js_jts_dTypeReference::typeArguments() noexcept { return _getProperty<js_union<js::ReadonlyArray<_js_jts_dType>, tc::js::undefined>>("typeArguments"); }
 	inline void _impl_js_jts_dTypeReference::typeArguments(js_union<js::ReadonlyArray<_js_jts_dType>, tc::js::undefined> v) noexcept { _setProperty("typeArguments", v); }
-	inline auto _impl_js_jts_dObjectLiteralElement::_objectLiteralBrand() noexcept { return _getProperty<js_unknown>("_objectLiteralBrand"); }
-	inline void _impl_js_jts_dObjectLiteralElement::_objectLiteralBrand(js_unknown v) noexcept { _setProperty("_objectLiteralBrand", v); }
+	inline auto _impl_js_jts_dObjectLiteralElement::_objectLiteralBrand() noexcept { return _getProperty<tc::js::any>("_objectLiteralBrand"); }
+	inline void _impl_js_jts_dObjectLiteralElement::_objectLiteralBrand(tc::js::any v) noexcept { _setProperty("_objectLiteralBrand", v); }
 	inline auto _impl_js_jts_dObjectLiteralElement::name() noexcept { return _getProperty<js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::undefined>>("name"); }
 	inline void _impl_js_jts_dObjectLiteralElement::name(js_union<_js_jts_dComputedPropertyName, _js_jts_dIdentifier, _js_jts_dNumericLiteral, _js_jts_dStringLiteral, tc::js::undefined> v) noexcept { _setProperty("name", v); }
 	inline auto _impl_js_jts_dGetAccessorDeclaration::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.GetAccessor*/>("kind"); }
@@ -12160,8 +12160,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dHeritageClause::parent(js_union<_js_jts_dClassDeclaration, _js_jts_dClassExpression, _js_jts_dInterfaceDeclaration> v) noexcept { _setProperty("parent", v); }
 	inline auto _impl_js_jts_dHeritageClause::token() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.ExtendsKeyword*/>("token"); }
 	inline void _impl_js_jts_dHeritageClause::token(_js_jts_dSyntaxKind /*SyntaxKind.ExtendsKeyword*/ v) noexcept { _setProperty("token", v); }
-	inline auto _impl_js_jts_dHeritageClause::types() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<ExpressionWithTypeArguments> (TypeReference=ts.NodeArray)*/>("types"); }
-	inline void _impl_js_jts_dHeritageClause::types(js_unknown /*flags=524288: NodeArray<ExpressionWithTypeArguments> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("types", v); }
+	inline auto _impl_js_jts_dHeritageClause::types() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<ExpressionWithTypeArguments> (TypeReference=ts.NodeArray)*/>("types"); }
+	inline void _impl_js_jts_dHeritageClause::types(tc::js::any /*flags=524288: NodeArray<ExpressionWithTypeArguments> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("types", v); }
 	inline auto _impl_js_jts_dHighlightSpan::fileName() noexcept { return _getProperty<js_union<tc::js::string, tc::js::undefined>>("fileName"); }
 	inline void _impl_js_jts_dHighlightSpan::fileName(js_union<tc::js::string, tc::js::undefined> v) noexcept { _setProperty("fileName", v); }
 	inline auto _impl_js_jts_dHighlightSpan::isInString() noexcept { return _getProperty<js_union<bool /*true*/, tc::js::undefined>>("isInString"); }
@@ -12184,8 +12184,8 @@ namespace tc::js_defs {
 	}
 	inline auto _impl_js_jts_dIdentifier::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.Identifier*/>("kind"); }
 	inline void _impl_js_jts_dIdentifier::kind(_js_jts_dSyntaxKind /*SyntaxKind.Identifier*/ v) noexcept { _setProperty("kind", v); }
-	inline auto _impl_js_jts_dIdentifier::escapedText() noexcept { return _getProperty<js_unknown /*flags=1048576: __String ()*/>("escapedText"); }
-	inline void _impl_js_jts_dIdentifier::escapedText(js_unknown /*flags=1048576: __String ()*/ v) noexcept { _setProperty("escapedText", v); }
+	inline auto _impl_js_jts_dIdentifier::escapedText() noexcept { return _getProperty<tc::js::any /*flags=1048576: __String ()*/>("escapedText"); }
+	inline void _impl_js_jts_dIdentifier::escapedText(tc::js::any /*flags=1048576: __String ()*/ v) noexcept { _setProperty("escapedText", v); }
 	inline auto _impl_js_jts_dIdentifier::originalKeywordKind() noexcept { return _getProperty<js_union<_js_jts_dSyntaxKind /*SyntaxKind.GetAccessor*/, tc::js::undefined>>("originalKeywordKind"); }
 	inline void _impl_js_jts_dIdentifier::originalKeywordKind(js_union<_js_jts_dSyntaxKind /*SyntaxKind.GetAccessor*/, tc::js::undefined> v) noexcept { _setProperty("originalKeywordKind", v); }
 	inline auto _impl_js_jts_dIdentifier::isInJSDocNamespace() noexcept { return _getProperty<js_union<bool /*false*/, tc::js::undefined>>("isInJSDocNamespace"); }
@@ -12314,20 +12314,20 @@ namespace tc::js_defs {
 	inline auto _impl_js_jts_dInstallPackageAction::_tcjs_construct() noexcept {
 		return emscripten::val::object();
 	}
-	inline auto _impl_js_jts_dInstallPackageOptions::fileName() noexcept { return _getProperty<js_unknown /*flags=2097152: Path ()*/>("fileName"); }
-	inline void _impl_js_jts_dInstallPackageOptions::fileName(js_unknown /*flags=2097152: Path ()*/ v) noexcept { _setProperty("fileName", v); }
+	inline auto _impl_js_jts_dInstallPackageOptions::fileName() noexcept { return _getProperty<tc::js::any /*flags=2097152: Path ()*/>("fileName"); }
+	inline void _impl_js_jts_dInstallPackageOptions::fileName(tc::js::any /*flags=2097152: Path ()*/ v) noexcept { _setProperty("fileName", v); }
 	inline auto _impl_js_jts_dInstallPackageOptions::packageName() noexcept { return _getProperty<tc::js::string>("packageName"); }
 	inline void _impl_js_jts_dInstallPackageOptions::packageName(tc::js::string v) noexcept { _setProperty("packageName", v); }
 	inline auto _impl_js_jts_dInterfaceDeclaration::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.InterfaceDeclaration*/>("kind"); }
 	inline void _impl_js_jts_dInterfaceDeclaration::kind(_js_jts_dSyntaxKind /*SyntaxKind.InterfaceDeclaration*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dInterfaceDeclaration::name() noexcept { return _getProperty<_js_jts_dIdentifier>("name"); }
 	inline void _impl_js_jts_dInterfaceDeclaration::name(_js_jts_dIdentifier v) noexcept { _setProperty("name", v); }
-	inline auto _impl_js_jts_dInterfaceDeclaration::typeParameters() noexcept { return _getProperty<js_unknown /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/>("typeParameters"); }
-	inline void _impl_js_jts_dInterfaceDeclaration::typeParameters(js_unknown /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ v) noexcept { _setProperty("typeParameters", v); }
-	inline auto _impl_js_jts_dInterfaceDeclaration::heritageClauses() noexcept { return _getProperty<js_unknown /*flags=1048576: NodeArray<HeritageClause> | tc::js::undefined ()*/>("heritageClauses"); }
-	inline void _impl_js_jts_dInterfaceDeclaration::heritageClauses(js_unknown /*flags=1048576: NodeArray<HeritageClause> | tc::js::undefined ()*/ v) noexcept { _setProperty("heritageClauses", v); }
-	inline auto _impl_js_jts_dInterfaceDeclaration::members() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<TypeElement> (TypeReference=ts.NodeArray)*/>("members"); }
-	inline void _impl_js_jts_dInterfaceDeclaration::members(js_unknown /*flags=524288: NodeArray<TypeElement> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("members", v); }
+	inline auto _impl_js_jts_dInterfaceDeclaration::typeParameters() noexcept { return _getProperty<tc::js::any /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/>("typeParameters"); }
+	inline void _impl_js_jts_dInterfaceDeclaration::typeParameters(tc::js::any /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ v) noexcept { _setProperty("typeParameters", v); }
+	inline auto _impl_js_jts_dInterfaceDeclaration::heritageClauses() noexcept { return _getProperty<tc::js::any /*flags=1048576: NodeArray<HeritageClause> | tc::js::undefined ()*/>("heritageClauses"); }
+	inline void _impl_js_jts_dInterfaceDeclaration::heritageClauses(tc::js::any /*flags=1048576: NodeArray<HeritageClause> | tc::js::undefined ()*/ v) noexcept { _setProperty("heritageClauses", v); }
+	inline auto _impl_js_jts_dInterfaceDeclaration::members() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<TypeElement> (TypeReference=ts.NodeArray)*/>("members"); }
+	inline void _impl_js_jts_dInterfaceDeclaration::members(tc::js::any /*flags=524288: NodeArray<TypeElement> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("members", v); }
 	inline auto _impl_js_jts_dInterfaceTypeWithDeclaredMembers::declaredProperties() noexcept { return _getProperty<js::Array<_js_jts_dSymbol>>("declaredProperties"); }
 	inline void _impl_js_jts_dInterfaceTypeWithDeclaredMembers::declaredProperties(js::Array<_js_jts_dSymbol> v) noexcept { _setProperty("declaredProperties", v); }
 	inline auto _impl_js_jts_dInterfaceTypeWithDeclaredMembers::declaredCallSignatures() noexcept { return _getProperty<js::Array<_js_jts_dSignature>>("declaredCallSignatures"); }
@@ -12342,21 +12342,21 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dUnionOrIntersectionType::types(js::Array<_js_jts_dType> v) noexcept { _setProperty("types", v); }
 	inline auto _impl_js_jts_dIntersectionTypeNode::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.IntersectionType*/>("kind"); }
 	inline void _impl_js_jts_dIntersectionTypeNode::kind(_js_jts_dSyntaxKind /*SyntaxKind.IntersectionType*/ v) noexcept { _setProperty("kind", v); }
-	inline auto _impl_js_jts_dIntersectionTypeNode::types() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<TypeNode> (TypeReference=ts.NodeArray)*/>("types"); }
-	inline void _impl_js_jts_dIntersectionTypeNode::types(js_unknown /*flags=524288: NodeArray<TypeNode> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("types", v); }
+	inline auto _impl_js_jts_dIntersectionTypeNode::types() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<TypeNode> (TypeReference=ts.NodeArray)*/>("types"); }
+	inline void _impl_js_jts_dIntersectionTypeNode::types(tc::js::any /*flags=524288: NodeArray<TypeNode> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("types", v); }
 	inline auto _impl_js_jts_dIterator::next() noexcept {
-		return _call<js_unknown /*flags=1048576: { value: T; done: false; } | { value: never; done: true; } ()*/>("next");
+		return _call<tc::js::any /*flags=1048576: { value: T; done: false; } | { value: never; done: true; } ()*/>("next");
 	}
 	inline auto _impl_js_jts_dJSDoc::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.JSDocComment*/>("kind"); }
 	inline void _impl_js_jts_dJSDoc::kind(_js_jts_dSyntaxKind /*SyntaxKind.JSDocComment*/ v) noexcept { _setProperty("kind", v); }
-	inline auto _impl_js_jts_dJSDoc::parent() noexcept { return _getProperty<js_unknown /*flags=1048576: HasJSDoc ()*/>("parent"); }
-	inline void _impl_js_jts_dJSDoc::parent(js_unknown /*flags=1048576: HasJSDoc ()*/ v) noexcept { _setProperty("parent", v); }
-	inline auto _impl_js_jts_dJSDoc::tags() noexcept { return _getProperty<js_unknown /*flags=1048576: NodeArray<JSDocTag> | tc::js::undefined ()*/>("tags"); }
-	inline void _impl_js_jts_dJSDoc::tags(js_unknown /*flags=1048576: NodeArray<JSDocTag> | tc::js::undefined ()*/ v) noexcept { _setProperty("tags", v); }
+	inline auto _impl_js_jts_dJSDoc::parent() noexcept { return _getProperty<tc::js::any /*flags=1048576: HasJSDoc ()*/>("parent"); }
+	inline void _impl_js_jts_dJSDoc::parent(tc::js::any /*flags=1048576: HasJSDoc ()*/ v) noexcept { _setProperty("parent", v); }
+	inline auto _impl_js_jts_dJSDoc::tags() noexcept { return _getProperty<tc::js::any /*flags=1048576: NodeArray<JSDocTag> | tc::js::undefined ()*/>("tags"); }
+	inline void _impl_js_jts_dJSDoc::tags(tc::js::any /*flags=1048576: NodeArray<JSDocTag> | tc::js::undefined ()*/ v) noexcept { _setProperty("tags", v); }
 	inline auto _impl_js_jts_dJSDoc::comment() noexcept { return _getProperty<js_union<tc::js::string, tc::js::undefined>>("comment"); }
 	inline void _impl_js_jts_dJSDoc::comment(js_union<tc::js::string, tc::js::undefined> v) noexcept { _setProperty("comment", v); }
-	inline auto _impl_js_jts_dJSDocType::_jsDocTypeBrand() noexcept { return _getProperty<js_unknown>("_jsDocTypeBrand"); }
-	inline void _impl_js_jts_dJSDocType::_jsDocTypeBrand(js_unknown v) noexcept { _setProperty("_jsDocTypeBrand", v); }
+	inline auto _impl_js_jts_dJSDocType::_jsDocTypeBrand() noexcept { return _getProperty<tc::js::any>("_jsDocTypeBrand"); }
+	inline void _impl_js_jts_dJSDocType::_jsDocTypeBrand(tc::js::any v) noexcept { _setProperty("_jsDocTypeBrand", v); }
 	inline auto _impl_js_jts_dJSDocAllType::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.JSDocAllType*/>("kind"); }
 	inline void _impl_js_jts_dJSDocAllType::kind(_js_jts_dSyntaxKind /*SyntaxKind.JSDocAllType*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dJSDocTag::parent() noexcept { return _getProperty<js_union<_js_jts_dJSDoc, _js_jts_dJSDocTypeLiteral>>("parent"); }
@@ -12367,8 +12367,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dJSDocTag::comment(js_union<tc::js::string, tc::js::undefined> v) noexcept { _setProperty("comment", v); }
 	inline auto _impl_js_jts_dJSDocAugmentsTag::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.JSDocAugmentsTag*/>("kind"); }
 	inline void _impl_js_jts_dJSDocAugmentsTag::kind(_js_jts_dSyntaxKind /*SyntaxKind.JSDocAugmentsTag*/ v) noexcept { _setProperty("kind", v); }
-	inline auto _impl_js_jts_dJSDocAugmentsTag::class_() noexcept { return _getProperty<js_unknown /*flags=2097152: ExpressionWithTypeArguments & { expression: EntityNameExpression; } ()*/>("class"); }
-	inline void _impl_js_jts_dJSDocAugmentsTag::class_(js_unknown /*flags=2097152: ExpressionWithTypeArguments & { expression: EntityNameExpression; } ()*/ v) noexcept { _setProperty("class", v); }
+	inline auto _impl_js_jts_dJSDocAugmentsTag::class_() noexcept { return _getProperty<tc::js::any /*flags=2097152: ExpressionWithTypeArguments & { expression: EntityNameExpression; } ()*/>("class"); }
+	inline void _impl_js_jts_dJSDocAugmentsTag::class_(tc::js::any /*flags=2097152: ExpressionWithTypeArguments & { expression: EntityNameExpression; } ()*/ v) noexcept { _setProperty("class", v); }
 	inline auto _impl_js_jts_dJSDocCallbackTag::parent() noexcept { return _getProperty<_js_jts_dJSDoc>("parent"); }
 	inline void _impl_js_jts_dJSDocCallbackTag::parent(_js_jts_dJSDoc v) noexcept { _setProperty("parent", v); }
 	inline auto _impl_js_jts_dJSDocCallbackTag::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.JSDocCallbackTag*/>("kind"); }
@@ -12445,8 +12445,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dJSDocTemplateTag::kind(_js_jts_dSyntaxKind /*SyntaxKind.JSDocTemplateTag*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dJSDocTemplateTag::constraint() noexcept { return _getProperty<js_union<_js_jts_dJSDocTypeExpression, tc::js::undefined>>("constraint"); }
 	inline void _impl_js_jts_dJSDocTemplateTag::constraint(js_union<_js_jts_dJSDocTypeExpression, tc::js::undefined> v) noexcept { _setProperty("constraint", v); }
-	inline auto _impl_js_jts_dJSDocTemplateTag::typeParameters() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<TypeParameterDeclaration> (TypeReference=ts.NodeArray)*/>("typeParameters"); }
-	inline void _impl_js_jts_dJSDocTemplateTag::typeParameters(js_unknown /*flags=524288: NodeArray<TypeParameterDeclaration> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("typeParameters", v); }
+	inline auto _impl_js_jts_dJSDocTemplateTag::typeParameters() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<TypeParameterDeclaration> (TypeReference=ts.NodeArray)*/>("typeParameters"); }
+	inline void _impl_js_jts_dJSDocTemplateTag::typeParameters(tc::js::any /*flags=524288: NodeArray<TypeParameterDeclaration> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("typeParameters", v); }
 	inline auto _impl_js_jts_dJSDocThisTag::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.JSDocThisTag*/>("kind"); }
 	inline void _impl_js_jts_dJSDocThisTag::kind(_js_jts_dSyntaxKind /*SyntaxKind.JSDocThisTag*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dJSDocThisTag::typeExpression() noexcept { return _getProperty<js_union<_js_jts_dJSDocTypeExpression, tc::js::undefined>>("typeExpression"); }
@@ -12499,10 +12499,10 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dJsonObjectExpressionStatement::expression(js_union<_js_jts_dArrayLiteralExpression, _js_jts_dBooleanLiteral, _js_jts_dJsonMinusNumericLiteral, _js_jts_dNullLiteral, _js_jts_dNumericLiteral, _js_jts_dObjectLiteralExpression, _js_jts_dStringLiteral> v) noexcept { _setProperty("expression", v); }
 	inline auto _impl_js_jts_dSourceFile::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.SourceFile*/>("kind"); }
 	inline void _impl_js_jts_dSourceFile::kind(_js_jts_dSyntaxKind /*SyntaxKind.SourceFile*/ v) noexcept { _setProperty("kind", v); }
-	inline auto _impl_js_jts_dSourceFile::statements() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/>("statements"); }
-	inline void _impl_js_jts_dSourceFile::statements(js_unknown /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("statements", v); }
-	inline auto _impl_js_jts_dSourceFile::endOfFileToken() noexcept { return _getProperty<js_unknown /*flags=524288: Token<SyntaxKind.EndOfFileToken> (TypeReference=ts.Token)*/>("endOfFileToken"); }
-	inline void _impl_js_jts_dSourceFile::endOfFileToken(js_unknown /*flags=524288: Token<SyntaxKind.EndOfFileToken> (TypeReference=ts.Token)*/ v) noexcept { _setProperty("endOfFileToken", v); }
+	inline auto _impl_js_jts_dSourceFile::statements() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/>("statements"); }
+	inline void _impl_js_jts_dSourceFile::statements(tc::js::any /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("statements", v); }
+	inline auto _impl_js_jts_dSourceFile::endOfFileToken() noexcept { return _getProperty<tc::js::any /*flags=524288: Token<SyntaxKind.EndOfFileToken> (TypeReference=ts.Token)*/>("endOfFileToken"); }
+	inline void _impl_js_jts_dSourceFile::endOfFileToken(tc::js::any /*flags=524288: Token<SyntaxKind.EndOfFileToken> (TypeReference=ts.Token)*/ v) noexcept { _setProperty("endOfFileToken", v); }
 	inline auto _impl_js_jts_dSourceFile::fileName() noexcept { return _getProperty<tc::js::string>("fileName"); }
 	inline void _impl_js_jts_dSourceFile::fileName(tc::js::string v) noexcept { _setProperty("fileName", v); }
 	inline auto _impl_js_jts_dSourceFile::text() noexcept { return _getProperty<tc::js::string>("text"); }
@@ -12540,8 +12540,8 @@ namespace tc::js_defs {
 	inline auto _impl_js_jts_dSourceFile::update(tc::js::string newText, _js_jts_dTextChangeRange textChangeRange) noexcept {
 		return _call<_js_jts_dSourceFile>("update", newText, textChangeRange);
 	}
-	inline auto _impl_js_jts_dJsonSourceFile::statements() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<JsonObjectExpressionStatement> (TypeReference=ts.NodeArray)*/>("statements"); }
-	inline void _impl_js_jts_dJsonSourceFile::statements(js_unknown /*flags=524288: NodeArray<JsonObjectExpressionStatement> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("statements", v); }
+	inline auto _impl_js_jts_dJsonSourceFile::statements() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<JsonObjectExpressionStatement> (TypeReference=ts.NodeArray)*/>("statements"); }
+	inline void _impl_js_jts_dJsonSourceFile::statements(tc::js::any /*flags=524288: NodeArray<JsonObjectExpressionStatement> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("statements", v); }
 	inline auto _impl_js_jts_dJsxAttribute::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.JsxAttribute*/>("kind"); }
 	inline void _impl_js_jts_dJsxAttribute::kind(_js_jts_dSyntaxKind /*SyntaxKind.JsxAttribute*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dJsxAttribute::parent() noexcept { return _getProperty<_js_jts_dJsxAttributes>("parent"); }
@@ -12567,24 +12567,24 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dJsxElement::kind(_js_jts_dSyntaxKind /*SyntaxKind.JsxElement*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dJsxElement::openingElement() noexcept { return _getProperty<_js_jts_dJsxOpeningElement>("openingElement"); }
 	inline void _impl_js_jts_dJsxElement::openingElement(_js_jts_dJsxOpeningElement v) noexcept { _setProperty("openingElement", v); }
-	inline auto _impl_js_jts_dJsxElement::children() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<JsxChild> (TypeReference=ts.NodeArray)*/>("children"); }
-	inline void _impl_js_jts_dJsxElement::children(js_unknown /*flags=524288: NodeArray<JsxChild> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("children", v); }
+	inline auto _impl_js_jts_dJsxElement::children() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<JsxChild> (TypeReference=ts.NodeArray)*/>("children"); }
+	inline void _impl_js_jts_dJsxElement::children(tc::js::any /*flags=524288: NodeArray<JsxChild> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("children", v); }
 	inline auto _impl_js_jts_dJsxElement::closingElement() noexcept { return _getProperty<_js_jts_dJsxClosingElement>("closingElement"); }
 	inline void _impl_js_jts_dJsxElement::closingElement(_js_jts_dJsxClosingElement v) noexcept { _setProperty("closingElement", v); }
 	inline auto _impl_js_jts_dJsxExpression::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.JsxExpression*/>("kind"); }
 	inline void _impl_js_jts_dJsxExpression::kind(_js_jts_dSyntaxKind /*SyntaxKind.JsxExpression*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dJsxExpression::parent() noexcept { return _getProperty<js_union<_js_jts_dJsxAttribute, _js_jts_dJsxElement, _js_jts_dJsxSpreadAttribute>>("parent"); }
 	inline void _impl_js_jts_dJsxExpression::parent(js_union<_js_jts_dJsxAttribute, _js_jts_dJsxElement, _js_jts_dJsxSpreadAttribute> v) noexcept { _setProperty("parent", v); }
-	inline auto _impl_js_jts_dJsxExpression::dotDotDotToken() noexcept { return _getProperty<js_unknown /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/>("dotDotDotToken"); }
-	inline void _impl_js_jts_dJsxExpression::dotDotDotToken(js_unknown /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("dotDotDotToken", v); }
+	inline auto _impl_js_jts_dJsxExpression::dotDotDotToken() noexcept { return _getProperty<tc::js::any /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/>("dotDotDotToken"); }
+	inline void _impl_js_jts_dJsxExpression::dotDotDotToken(tc::js::any /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("dotDotDotToken", v); }
 	inline auto _impl_js_jts_dJsxExpression::expression() noexcept { return _getProperty<js_union<_js_jts_dExpression, tc::js::undefined>>("expression"); }
 	inline void _impl_js_jts_dJsxExpression::expression(js_union<_js_jts_dExpression, tc::js::undefined> v) noexcept { _setProperty("expression", v); }
 	inline auto _impl_js_jts_dJsxFragment::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.JsxFragment*/>("kind"); }
 	inline void _impl_js_jts_dJsxFragment::kind(_js_jts_dSyntaxKind /*SyntaxKind.JsxFragment*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dJsxFragment::openingFragment() noexcept { return _getProperty<_js_jts_dJsxOpeningFragment>("openingFragment"); }
 	inline void _impl_js_jts_dJsxFragment::openingFragment(_js_jts_dJsxOpeningFragment v) noexcept { _setProperty("openingFragment", v); }
-	inline auto _impl_js_jts_dJsxFragment::children() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<JsxChild> (TypeReference=ts.NodeArray)*/>("children"); }
-	inline void _impl_js_jts_dJsxFragment::children(js_unknown /*flags=524288: NodeArray<JsxChild> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("children", v); }
+	inline auto _impl_js_jts_dJsxFragment::children() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<JsxChild> (TypeReference=ts.NodeArray)*/>("children"); }
+	inline void _impl_js_jts_dJsxFragment::children(tc::js::any /*flags=524288: NodeArray<JsxChild> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("children", v); }
 	inline auto _impl_js_jts_dJsxFragment::closingFragment() noexcept { return _getProperty<_js_jts_dJsxClosingFragment>("closingFragment"); }
 	inline void _impl_js_jts_dJsxFragment::closingFragment(_js_jts_dJsxClosingFragment v) noexcept { _setProperty("closingFragment", v); }
 	inline auto _impl_js_jts_dJsxOpeningElement::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.JsxOpeningElement*/>("kind"); }
@@ -12593,8 +12593,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dJsxOpeningElement::parent(_js_jts_dJsxElement v) noexcept { _setProperty("parent", v); }
 	inline auto _impl_js_jts_dJsxOpeningElement::tagName() noexcept { return _getProperty<_js_jts_dJsxTagNameExpression>("tagName"); }
 	inline void _impl_js_jts_dJsxOpeningElement::tagName(_js_jts_dJsxTagNameExpression v) noexcept { _setProperty("tagName", v); }
-	inline auto _impl_js_jts_dJsxOpeningElement::typeArguments() noexcept { return _getProperty<js_unknown /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/>("typeArguments"); }
-	inline void _impl_js_jts_dJsxOpeningElement::typeArguments(js_unknown /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/ v) noexcept { _setProperty("typeArguments", v); }
+	inline auto _impl_js_jts_dJsxOpeningElement::typeArguments() noexcept { return _getProperty<tc::js::any /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/>("typeArguments"); }
+	inline void _impl_js_jts_dJsxOpeningElement::typeArguments(tc::js::any /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/ v) noexcept { _setProperty("typeArguments", v); }
 	inline auto _impl_js_jts_dJsxOpeningElement::attributes() noexcept { return _getProperty<_js_jts_dJsxAttributes>("attributes"); }
 	inline void _impl_js_jts_dJsxOpeningElement::attributes(_js_jts_dJsxAttributes v) noexcept { _setProperty("attributes", v); }
 	inline auto _impl_js_jts_dJsxOpeningFragment::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.JsxOpeningFragment*/>("kind"); }
@@ -12605,8 +12605,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dJsxSelfClosingElement::kind(_js_jts_dSyntaxKind /*SyntaxKind.JsxSelfClosingElement*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dJsxSelfClosingElement::tagName() noexcept { return _getProperty<_js_jts_dJsxTagNameExpression>("tagName"); }
 	inline void _impl_js_jts_dJsxSelfClosingElement::tagName(_js_jts_dJsxTagNameExpression v) noexcept { _setProperty("tagName", v); }
-	inline auto _impl_js_jts_dJsxSelfClosingElement::typeArguments() noexcept { return _getProperty<js_unknown /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/>("typeArguments"); }
-	inline void _impl_js_jts_dJsxSelfClosingElement::typeArguments(js_unknown /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/ v) noexcept { _setProperty("typeArguments", v); }
+	inline auto _impl_js_jts_dJsxSelfClosingElement::typeArguments() noexcept { return _getProperty<tc::js::any /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/>("typeArguments"); }
+	inline void _impl_js_jts_dJsxSelfClosingElement::typeArguments(tc::js::any /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/ v) noexcept { _setProperty("typeArguments", v); }
 	inline auto _impl_js_jts_dJsxSelfClosingElement::attributes() noexcept { return _getProperty<_js_jts_dJsxAttributes>("attributes"); }
 	inline void _impl_js_jts_dJsxSelfClosingElement::attributes(_js_jts_dJsxAttributes v) noexcept { _setProperty("attributes", v); }
 	inline auto _impl_js_jts_dJsxSpreadAttribute::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.JsxSpreadAttribute*/>("kind"); }
@@ -12679,7 +12679,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_jts_dLanguageService::getCodeFixesAtPosition(tc::js::string fileName, double start, double end, js::ReadonlyArray<double> errorCodes, _js_jts_dFormatCodeSettings formatOptions, _js_jts_dUserPreferences preferences) noexcept {
 		return _call<js::ReadonlyArray<_js_jts_dCodeFixAction>>("getCodeFixesAtPosition", fileName, start, end, errorCodes, formatOptions, preferences);
 	}
-	inline auto _impl_js_jts_dLanguageService::getCombinedCodeFix(_js_jts_dCombinedCodeFixScope scope, js_unknown /*flags=524288: {} ()*/ fixId, _js_jts_dFormatCodeSettings formatOptions, _js_jts_dUserPreferences preferences) noexcept {
+	inline auto _impl_js_jts_dLanguageService::getCombinedCodeFix(_js_jts_dCombinedCodeFixScope scope, tc::js::any /*flags=524288: {} ()*/ fixId, _js_jts_dFormatCodeSettings formatOptions, _js_jts_dUserPreferences preferences) noexcept {
 		return _call<_js_jts_dCombinedCodeActions>("getCombinedCodeFix", scope, fixId, formatOptions, preferences);
 	}
 	inline auto _impl_js_jts_dLanguageService::getCompilerOptionsDiagnostics() noexcept {
@@ -12692,7 +12692,7 @@ namespace tc::js_defs {
 		return _call<js_union<_js_jts_dSymbol, tc::js::undefined>>("getCompletionEntrySymbol", fileName, position, name, source);
 	}
 	inline auto _impl_js_jts_dLanguageService::getCompletionsAtPosition(tc::js::string fileName, double position, js_union<_js_jts_dGetCompletionsAtPositionOptions, tc::js::undefined> options) noexcept {
-		return _call<js_unknown /*flags=1048576: WithMetadata<CompletionInfo> | tc::js::undefined ()*/>("getCompletionsAtPosition", fileName, position, options);
+		return _call<tc::js::any /*flags=1048576: WithMetadata<CompletionInfo> | tc::js::undefined ()*/>("getCompletionsAtPosition", fileName, position, options);
 	}
 	inline auto _impl_js_jts_dLanguageService::getDefinitionAndBoundSpan(tc::js::string fileName, double position) noexcept {
 		return _call<js_union<_js_jts_dDefinitionInfoAndBoundSpan, tc::js::undefined>>("getDefinitionAndBoundSpan", fileName, position);
@@ -12837,20 +12837,20 @@ namespace tc::js_defs {
 	inline auto _impl_js_jts_dMap::delete_(tc::js::string key) noexcept {
 		return _call<bool /*false*/>("delete", key);
 	}
-	inline auto _impl_js_jts_dMap::set(tc::js::string key, js_unknown /*flags=262144: T ()*/ value) noexcept {
-		return _call<js_unknown /*flags=262144: this ()*/>("set", key, value);
+	inline auto _impl_js_jts_dMap::set(tc::js::string key, tc::js::any /*flags=262144: T ()*/ value) noexcept {
+		return _call<tc::js::any /*flags=262144: this ()*/>("set", key, value);
 	}
 	inline auto _impl_js_jts_dMapLike::_tcjs_construct() noexcept {
 		return emscripten::val::object();
 	}
 	inline auto _impl_js_jts_dMappedTypeNode::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.MappedType*/>("kind"); }
 	inline void _impl_js_jts_dMappedTypeNode::kind(_js_jts_dSyntaxKind /*SyntaxKind.MappedType*/ v) noexcept { _setProperty("kind", v); }
-	inline auto _impl_js_jts_dMappedTypeNode::readonlyToken() noexcept { return _getProperty<js_unknown /*flags=1048576: Token<SyntaxKind.ReadonlyKeyword> | Token<SyntaxKind.PlusToken> | Token<SyntaxKind.MinusToken> | tc::js::undefined ()*/>("readonlyToken"); }
-	inline void _impl_js_jts_dMappedTypeNode::readonlyToken(js_unknown /*flags=1048576: Token<SyntaxKind.ReadonlyKeyword> | Token<SyntaxKind.PlusToken> | Token<SyntaxKind.MinusToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("readonlyToken", v); }
+	inline auto _impl_js_jts_dMappedTypeNode::readonlyToken() noexcept { return _getProperty<tc::js::any /*flags=1048576: Token<SyntaxKind.ReadonlyKeyword> | Token<SyntaxKind.PlusToken> | Token<SyntaxKind.MinusToken> | tc::js::undefined ()*/>("readonlyToken"); }
+	inline void _impl_js_jts_dMappedTypeNode::readonlyToken(tc::js::any /*flags=1048576: Token<SyntaxKind.ReadonlyKeyword> | Token<SyntaxKind.PlusToken> | Token<SyntaxKind.MinusToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("readonlyToken", v); }
 	inline auto _impl_js_jts_dMappedTypeNode::typeParameter() noexcept { return _getProperty<_js_jts_dTypeParameterDeclaration>("typeParameter"); }
 	inline void _impl_js_jts_dMappedTypeNode::typeParameter(_js_jts_dTypeParameterDeclaration v) noexcept { _setProperty("typeParameter", v); }
-	inline auto _impl_js_jts_dMappedTypeNode::questionToken() noexcept { return _getProperty<js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | Token<SyntaxKind.PlusToken> | Token<SyntaxKind.MinusToken> | tc::js::undefined ()*/>("questionToken"); }
-	inline void _impl_js_jts_dMappedTypeNode::questionToken(js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | Token<SyntaxKind.PlusToken> | Token<SyntaxKind.MinusToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("questionToken", v); }
+	inline auto _impl_js_jts_dMappedTypeNode::questionToken() noexcept { return _getProperty<tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | Token<SyntaxKind.PlusToken> | Token<SyntaxKind.MinusToken> | tc::js::undefined ()*/>("questionToken"); }
+	inline void _impl_js_jts_dMappedTypeNode::questionToken(tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | Token<SyntaxKind.PlusToken> | Token<SyntaxKind.MinusToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("questionToken", v); }
 	inline auto _impl_js_jts_dMappedTypeNode::type() noexcept { return _getProperty<js_union<_js_jts_dTypeNode, tc::js::undefined>>("type"); }
 	inline void _impl_js_jts_dMappedTypeNode::type(js_union<_js_jts_dTypeNode, tc::js::undefined> v) noexcept { _setProperty("type", v); }
 	inline auto _impl_js_jts_dMetaProperty::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.MetaProperty*/>("kind"); }
@@ -12881,26 +12881,26 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dModuleBlock::kind(_js_jts_dSyntaxKind /*SyntaxKind.ModuleBlock*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dModuleBlock::parent() noexcept { return _getProperty<_js_jts_dModuleDeclaration>("parent"); }
 	inline void _impl_js_jts_dModuleBlock::parent(_js_jts_dModuleDeclaration v) noexcept { _setProperty("parent", v); }
-	inline auto _impl_js_jts_dModuleBlock::statements() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/>("statements"); }
-	inline void _impl_js_jts_dModuleBlock::statements(js_unknown /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("statements", v); }
+	inline auto _impl_js_jts_dModuleBlock::statements() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/>("statements"); }
+	inline void _impl_js_jts_dModuleBlock::statements(tc::js::any /*flags=524288: NodeArray<Statement> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("statements", v); }
 	inline auto _impl_js_jts_dNonRelativeModuleNameResolutionCache::getOrCreateCacheForModuleName(tc::js::string nonRelativeModuleName, js_union<_js_jts_dResolvedProjectReference, tc::js::undefined> redirectedReference) noexcept {
 		return _call<_js_jts_dPerModuleNameCache>("getOrCreateCacheForModuleName", nonRelativeModuleName, redirectedReference);
 	}
 	inline auto _impl_js_jts_dModuleResolutionCache::getOrCreateCacheForDirectory(tc::js::string directoryName, js_union<_js_jts_dResolvedProjectReference, tc::js::undefined> redirectedReference) noexcept {
-		return _call<js_unknown /*flags=524288: Map<ResolvedModuleWithFailedLookupLocations> (TypeReference=ts.Map)*/>("getOrCreateCacheForDirectory", directoryName, redirectedReference);
+		return _call<tc::js::any /*flags=524288: Map<ResolvedModuleWithFailedLookupLocations> (TypeReference=ts.Map)*/>("getOrCreateCacheForDirectory", directoryName, redirectedReference);
 	}
 	inline auto _impl_js_jts_dNamedExports::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.NamedExports*/>("kind"); }
 	inline void _impl_js_jts_dNamedExports::kind(_js_jts_dSyntaxKind /*SyntaxKind.NamedExports*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dNamedExports::parent() noexcept { return _getProperty<_js_jts_dExportDeclaration>("parent"); }
 	inline void _impl_js_jts_dNamedExports::parent(_js_jts_dExportDeclaration v) noexcept { _setProperty("parent", v); }
-	inline auto _impl_js_jts_dNamedExports::elements() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<ExportSpecifier> (TypeReference=ts.NodeArray)*/>("elements"); }
-	inline void _impl_js_jts_dNamedExports::elements(js_unknown /*flags=524288: NodeArray<ExportSpecifier> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("elements", v); }
+	inline auto _impl_js_jts_dNamedExports::elements() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<ExportSpecifier> (TypeReference=ts.NodeArray)*/>("elements"); }
+	inline void _impl_js_jts_dNamedExports::elements(tc::js::any /*flags=524288: NodeArray<ExportSpecifier> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("elements", v); }
 	inline auto _impl_js_jts_dNamedImports::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.NamedImports*/>("kind"); }
 	inline void _impl_js_jts_dNamedImports::kind(_js_jts_dSyntaxKind /*SyntaxKind.NamedImports*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dNamedImports::parent() noexcept { return _getProperty<_js_jts_dImportClause>("parent"); }
 	inline void _impl_js_jts_dNamedImports::parent(_js_jts_dImportClause v) noexcept { _setProperty("parent", v); }
-	inline auto _impl_js_jts_dNamedImports::elements() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<ImportSpecifier> (TypeReference=ts.NodeArray)*/>("elements"); }
-	inline void _impl_js_jts_dNamedImports::elements(js_unknown /*flags=524288: NodeArray<ImportSpecifier> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("elements", v); }
+	inline auto _impl_js_jts_dNamedImports::elements() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<ImportSpecifier> (TypeReference=ts.NodeArray)*/>("elements"); }
+	inline void _impl_js_jts_dNamedImports::elements(tc::js::any /*flags=524288: NodeArray<ImportSpecifier> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("elements", v); }
 	inline auto _impl_js_jts_dNamespaceDeclaration::name() noexcept { return _getProperty<_js_jts_dIdentifier>("name"); }
 	inline void _impl_js_jts_dNamespaceDeclaration::name(_js_jts_dIdentifier v) noexcept { _setProperty("name", v); }
 	inline auto _impl_js_jts_dNamespaceDeclaration::body() noexcept { return _getProperty<_js_jts_dNamespaceBody>("body"); }
@@ -12965,10 +12965,10 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dNewExpression::kind(_js_jts_dSyntaxKind /*SyntaxKind.NewExpression*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dNewExpression::expression() noexcept { return _getProperty<_js_jts_dLeftHandSideExpression>("expression"); }
 	inline void _impl_js_jts_dNewExpression::expression(_js_jts_dLeftHandSideExpression v) noexcept { _setProperty("expression", v); }
-	inline auto _impl_js_jts_dNewExpression::typeArguments() noexcept { return _getProperty<js_unknown /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/>("typeArguments"); }
-	inline void _impl_js_jts_dNewExpression::typeArguments(js_unknown /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/ v) noexcept { _setProperty("typeArguments", v); }
-	inline auto _impl_js_jts_dNewExpression::arguments() noexcept { return _getProperty<js_unknown /*flags=1048576: NodeArray<Expression> | tc::js::undefined ()*/>("arguments"); }
-	inline void _impl_js_jts_dNewExpression::arguments(js_unknown /*flags=1048576: NodeArray<Expression> | tc::js::undefined ()*/ v) noexcept { _setProperty("arguments", v); }
+	inline auto _impl_js_jts_dNewExpression::typeArguments() noexcept { return _getProperty<tc::js::any /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/>("typeArguments"); }
+	inline void _impl_js_jts_dNewExpression::typeArguments(tc::js::any /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/ v) noexcept { _setProperty("typeArguments", v); }
+	inline auto _impl_js_jts_dNewExpression::arguments() noexcept { return _getProperty<tc::js::any /*flags=1048576: NodeArray<Expression> | tc::js::undefined ()*/>("arguments"); }
+	inline void _impl_js_jts_dNewExpression::arguments(tc::js::any /*flags=1048576: NodeArray<Expression> | tc::js::undefined ()*/ v) noexcept { _setProperty("arguments", v); }
 	inline auto _impl_js_jts_dNoSubstitutionTemplateLiteral::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.NoSubstitutionTemplateLiteral*/>("kind"); }
 	inline void _impl_js_jts_dNoSubstitutionTemplateLiteral::kind(_js_jts_dSyntaxKind /*SyntaxKind.NoSubstitutionTemplateLiteral*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dNodeArray::hasTrailingComma() noexcept { return _getProperty<js_union<bool /*false*/, tc::js::undefined>>("hasTrailingComma"); }
@@ -12989,14 +12989,14 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dObjectBindingPattern::kind(_js_jts_dSyntaxKind /*SyntaxKind.ObjectBindingPattern*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dObjectBindingPattern::parent() noexcept { return _getProperty<js_union<_js_jts_dBindingElement, _js_jts_dParameterDeclaration, _js_jts_dVariableDeclaration>>("parent"); }
 	inline void _impl_js_jts_dObjectBindingPattern::parent(js_union<_js_jts_dBindingElement, _js_jts_dParameterDeclaration, _js_jts_dVariableDeclaration> v) noexcept { _setProperty("parent", v); }
-	inline auto _impl_js_jts_dObjectBindingPattern::elements() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<BindingElement> (TypeReference=ts.NodeArray)*/>("elements"); }
-	inline void _impl_js_jts_dObjectBindingPattern::elements(js_unknown /*flags=524288: NodeArray<BindingElement> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("elements", v); }
+	inline auto _impl_js_jts_dObjectBindingPattern::elements() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<BindingElement> (TypeReference=ts.NodeArray)*/>("elements"); }
+	inline void _impl_js_jts_dObjectBindingPattern::elements(tc::js::any /*flags=524288: NodeArray<BindingElement> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("elements", v); }
 	inline auto _impl_js_jts_dObjectDestructuringAssignment::left() noexcept { return _getProperty<_js_jts_dObjectLiteralExpression>("left"); }
 	inline void _impl_js_jts_dObjectDestructuringAssignment::left(_js_jts_dObjectLiteralExpression v) noexcept { _setProperty("left", v); }
 	inline auto _impl_js_jts_dObjectLiteralExpression::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.ObjectLiteralExpression*/>("kind"); }
 	inline void _impl_js_jts_dObjectLiteralExpression::kind(_js_jts_dSyntaxKind /*SyntaxKind.ObjectLiteralExpression*/ v) noexcept { _setProperty("kind", v); }
-	inline auto _impl_js_jts_dObjectLiteralExpressionBase::properties() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<T> (TypeReference=ts.NodeArray)*/>("properties"); }
-	inline void _impl_js_jts_dObjectLiteralExpressionBase::properties(js_unknown /*flags=524288: NodeArray<T> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("properties", v); }
+	inline auto _impl_js_jts_dObjectLiteralExpressionBase::properties() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<T> (TypeReference=ts.NodeArray)*/>("properties"); }
+	inline void _impl_js_jts_dObjectLiteralExpressionBase::properties(tc::js::any /*flags=524288: NodeArray<T> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("properties", v); }
 	inline auto _impl_js_jts_dOmittedExpression::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.OmittedExpression*/>("kind"); }
 	inline void _impl_js_jts_dOmittedExpression::kind(_js_jts_dSyntaxKind /*SyntaxKind.OmittedExpression*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dOperationCanceledException::_tcjs_construct() noexcept {
@@ -13032,12 +13032,12 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dParameterDeclaration::kind(_js_jts_dSyntaxKind /*SyntaxKind.Parameter*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dParameterDeclaration::parent() noexcept { return _getProperty<_js_jts_dSignatureDeclaration>("parent"); }
 	inline void _impl_js_jts_dParameterDeclaration::parent(_js_jts_dSignatureDeclaration v) noexcept { _setProperty("parent", v); }
-	inline auto _impl_js_jts_dParameterDeclaration::dotDotDotToken() noexcept { return _getProperty<js_unknown /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/>("dotDotDotToken"); }
-	inline void _impl_js_jts_dParameterDeclaration::dotDotDotToken(js_unknown /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("dotDotDotToken", v); }
+	inline auto _impl_js_jts_dParameterDeclaration::dotDotDotToken() noexcept { return _getProperty<tc::js::any /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/>("dotDotDotToken"); }
+	inline void _impl_js_jts_dParameterDeclaration::dotDotDotToken(tc::js::any /*flags=1048576: Token<SyntaxKind.DotDotDotToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("dotDotDotToken", v); }
 	inline auto _impl_js_jts_dParameterDeclaration::name() noexcept { return _getProperty<_js_jts_dBindingName>("name"); }
 	inline void _impl_js_jts_dParameterDeclaration::name(_js_jts_dBindingName v) noexcept { _setProperty("name", v); }
-	inline auto _impl_js_jts_dParameterDeclaration::questionToken() noexcept { return _getProperty<js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/>("questionToken"); }
-	inline void _impl_js_jts_dParameterDeclaration::questionToken(js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("questionToken", v); }
+	inline auto _impl_js_jts_dParameterDeclaration::questionToken() noexcept { return _getProperty<tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/>("questionToken"); }
+	inline void _impl_js_jts_dParameterDeclaration::questionToken(tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("questionToken", v); }
 	inline auto _impl_js_jts_dParameterDeclaration::type() noexcept { return _getProperty<js_union<_js_jts_dTypeNode, tc::js::undefined>>("type"); }
 	inline void _impl_js_jts_dParameterDeclaration::type(js_union<_js_jts_dTypeNode, tc::js::undefined> v) noexcept { _setProperty("type", v); }
 	inline auto _impl_js_jts_dParameterDeclaration::initializer() noexcept { return _getProperty<js_union<_js_jts_dExpression, tc::js::undefined>>("initializer"); }
@@ -13072,16 +13072,16 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dParsedCommandLine::fileNames(js::Array<tc::js::string> v) noexcept { _setProperty("fileNames", v); }
 	inline auto _impl_js_jts_dParsedCommandLine::projectReferences() noexcept { return _getProperty<js_union<js::ReadonlyArray<_js_jts_dProjectReference>, tc::js::undefined>>("projectReferences"); }
 	inline void _impl_js_jts_dParsedCommandLine::projectReferences(js_union<js::ReadonlyArray<_js_jts_dProjectReference>, tc::js::undefined> v) noexcept { _setProperty("projectReferences", v); }
-	inline auto _impl_js_jts_dParsedCommandLine::raw() noexcept { return _getProperty<js_unknown>("raw"); }
-	inline void _impl_js_jts_dParsedCommandLine::raw(js_unknown v) noexcept { _setProperty("raw", v); }
+	inline auto _impl_js_jts_dParsedCommandLine::raw() noexcept { return _getProperty<tc::js::any>("raw"); }
+	inline void _impl_js_jts_dParsedCommandLine::raw(tc::js::any v) noexcept { _setProperty("raw", v); }
 	inline auto _impl_js_jts_dParsedCommandLine::errors() noexcept { return _getProperty<js::Array<_js_jts_dDiagnostic>>("errors"); }
 	inline void _impl_js_jts_dParsedCommandLine::errors(js::Array<_js_jts_dDiagnostic> v) noexcept { _setProperty("errors", v); }
-	inline auto _impl_js_jts_dParsedCommandLine::wildcardDirectories() noexcept { return _getProperty<js_unknown /*flags=1048576: MapLike<WatchDirectoryFlags> | tc::js::undefined ()*/>("wildcardDirectories"); }
-	inline void _impl_js_jts_dParsedCommandLine::wildcardDirectories(js_unknown /*flags=1048576: MapLike<WatchDirectoryFlags> | tc::js::undefined ()*/ v) noexcept { _setProperty("wildcardDirectories", v); }
+	inline auto _impl_js_jts_dParsedCommandLine::wildcardDirectories() noexcept { return _getProperty<tc::js::any /*flags=1048576: MapLike<WatchDirectoryFlags> | tc::js::undefined ()*/>("wildcardDirectories"); }
+	inline void _impl_js_jts_dParsedCommandLine::wildcardDirectories(tc::js::any /*flags=1048576: MapLike<WatchDirectoryFlags> | tc::js::undefined ()*/ v) noexcept { _setProperty("wildcardDirectories", v); }
 	inline auto _impl_js_jts_dParsedCommandLine::compileOnSave() noexcept { return _getProperty<js_union<bool /*false*/, tc::js::undefined>>("compileOnSave"); }
 	inline void _impl_js_jts_dParsedCommandLine::compileOnSave(js_union<bool /*false*/, tc::js::undefined> v) noexcept { _setProperty("compileOnSave", v); }
-	inline auto _impl_js_jts_dParsedTsconfig::raw() noexcept { return _getProperty<js_unknown>("raw"); }
-	inline void _impl_js_jts_dParsedTsconfig::raw(js_unknown v) noexcept { _setProperty("raw", v); }
+	inline auto _impl_js_jts_dParsedTsconfig::raw() noexcept { return _getProperty<tc::js::any>("raw"); }
+	inline void _impl_js_jts_dParsedTsconfig::raw(tc::js::any v) noexcept { _setProperty("raw", v); }
 	inline auto _impl_js_jts_dParsedTsconfig::options() noexcept { return _getProperty<js_union<_js_jts_dCompilerOptions, tc::js::undefined>>("options"); }
 	inline void _impl_js_jts_dParsedTsconfig::options(js_union<_js_jts_dCompilerOptions, tc::js::undefined> v) noexcept { _setProperty("options", v); }
 	inline auto _impl_js_jts_dParsedTsconfig::typeAcquisition() noexcept { return _getProperty<js_union<_js_jts_dTypeAcquisition, tc::js::undefined>>("typeAcquisition"); }
@@ -13128,7 +13128,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_jts_dPrinter::printFile(_js_jts_dSourceFile sourceFile) noexcept {
 		return _call<tc::js::string>("printFile", sourceFile);
 	}
-	inline auto _impl_js_jts_dPrinter::printList(_js_jts_dListFormat /*ListFormat.None*/ format, js_unknown /*flags=524288: NodeArray<T> (TypeReference=ts.NodeArray)*/ list, _js_jts_dSourceFile sourceFile) noexcept {
+	inline auto _impl_js_jts_dPrinter::printList(_js_jts_dListFormat /*ListFormat.None*/ format, tc::js::any /*flags=524288: NodeArray<T> (TypeReference=ts.NodeArray)*/ list, _js_jts_dSourceFile sourceFile) noexcept {
 		return _call<tc::js::string>("printList", format, list, sourceFile);
 	}
 	inline auto _impl_js_jts_dPrinter::printNode(_js_jts_dEmitHint /*EmitHint.SourceFile*/ hint, _js_jts_dNode node, _js_jts_dSourceFile sourceFile) noexcept {
@@ -13154,7 +13154,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_jts_dScriptReferenceHost::getSourceFile(tc::js::string fileName) noexcept {
 		return _call<js_union<_js_jts_dSourceFile, tc::js::undefined>>("getSourceFile", fileName);
 	}
-	inline auto _impl_js_jts_dScriptReferenceHost::getSourceFileByPath(js_unknown /*flags=2097152: Path ()*/ path) noexcept {
+	inline auto _impl_js_jts_dScriptReferenceHost::getSourceFileByPath(tc::js::any /*flags=2097152: Path ()*/ path) noexcept {
 		return _call<js_union<_js_jts_dSourceFile, tc::js::undefined>>("getSourceFileByPath", path);
 	}
 	inline auto _impl_js_jts_dProgram::emit(js_union<_js_jts_dSourceFile, tc::js::undefined> targetSourceFile, js_union<_js_jts_dWriteFileCallback, tc::js::undefined> writeFile, js_union<_js_jts_dCancellationToken, tc::js::undefined> cancellationToken, js_union<bool /*false*/, tc::js::undefined> emitOnlyDtsFiles, js_union<_js_jts_dCustomTransformers, tc::js::undefined> customTransformers) noexcept {
@@ -13227,8 +13227,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dProjectReference::prepend(js_union<bool /*false*/, tc::js::undefined> v) noexcept { _setProperty("prepend", v); }
 	inline auto _impl_js_jts_dProjectReference::circular() noexcept { return _getProperty<js_union<bool /*false*/, tc::js::undefined>>("circular"); }
 	inline void _impl_js_jts_dProjectReference::circular(js_union<bool /*false*/, tc::js::undefined> v) noexcept { _setProperty("circular", v); }
-	inline auto _impl_js_jts_dPropertyAccessEntityNameExpression::_propertyAccessExpressionLikeQualifiedNameBrand() noexcept { return _getProperty<js_unknown>("_propertyAccessExpressionLikeQualifiedNameBrand"); }
-	inline void _impl_js_jts_dPropertyAccessEntityNameExpression::_propertyAccessExpressionLikeQualifiedNameBrand(js_unknown v) noexcept { _setProperty("_propertyAccessExpressionLikeQualifiedNameBrand", v); }
+	inline auto _impl_js_jts_dPropertyAccessEntityNameExpression::_propertyAccessExpressionLikeQualifiedNameBrand() noexcept { return _getProperty<tc::js::any>("_propertyAccessExpressionLikeQualifiedNameBrand"); }
+	inline void _impl_js_jts_dPropertyAccessEntityNameExpression::_propertyAccessExpressionLikeQualifiedNameBrand(tc::js::any v) noexcept { _setProperty("_propertyAccessExpressionLikeQualifiedNameBrand", v); }
 	inline auto _impl_js_jts_dPropertyAccessEntityNameExpression::expression() noexcept { return _getProperty<_js_jts_dEntityNameExpression>("expression"); }
 	inline void _impl_js_jts_dPropertyAccessEntityNameExpression::expression(_js_jts_dEntityNameExpression v) noexcept { _setProperty("expression", v); }
 	inline auto _impl_js_jts_dPropertyAssignment::parent() noexcept { return _getProperty<_js_jts_dObjectLiteralExpression>("parent"); }
@@ -13237,8 +13237,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dPropertyAssignment::kind(_js_jts_dSyntaxKind /*SyntaxKind.PropertyAssignment*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dPropertyAssignment::name() noexcept { return _getProperty<_js_jts_dPropertyName>("name"); }
 	inline void _impl_js_jts_dPropertyAssignment::name(_js_jts_dPropertyName v) noexcept { _setProperty("name", v); }
-	inline auto _impl_js_jts_dPropertyAssignment::questionToken() noexcept { return _getProperty<js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/>("questionToken"); }
-	inline void _impl_js_jts_dPropertyAssignment::questionToken(js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("questionToken", v); }
+	inline auto _impl_js_jts_dPropertyAssignment::questionToken() noexcept { return _getProperty<tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/>("questionToken"); }
+	inline void _impl_js_jts_dPropertyAssignment::questionToken(tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("questionToken", v); }
 	inline auto _impl_js_jts_dPropertyAssignment::initializer() noexcept { return _getProperty<_js_jts_dExpression>("initializer"); }
 	inline void _impl_js_jts_dPropertyAssignment::initializer(_js_jts_dExpression v) noexcept { _setProperty("initializer", v); }
 	inline auto _impl_js_jts_dPropertyDeclaration::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.PropertyDeclaration*/>("kind"); }
@@ -13247,10 +13247,10 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dPropertyDeclaration::parent(_js_jts_dClassLikeDeclaration v) noexcept { _setProperty("parent", v); }
 	inline auto _impl_js_jts_dPropertyDeclaration::name() noexcept { return _getProperty<_js_jts_dPropertyName>("name"); }
 	inline void _impl_js_jts_dPropertyDeclaration::name(_js_jts_dPropertyName v) noexcept { _setProperty("name", v); }
-	inline auto _impl_js_jts_dPropertyDeclaration::questionToken() noexcept { return _getProperty<js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/>("questionToken"); }
-	inline void _impl_js_jts_dPropertyDeclaration::questionToken(js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("questionToken", v); }
-	inline auto _impl_js_jts_dPropertyDeclaration::exclamationToken() noexcept { return _getProperty<js_unknown /*flags=1048576: Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/>("exclamationToken"); }
-	inline void _impl_js_jts_dPropertyDeclaration::exclamationToken(js_unknown /*flags=1048576: Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("exclamationToken", v); }
+	inline auto _impl_js_jts_dPropertyDeclaration::questionToken() noexcept { return _getProperty<tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/>("questionToken"); }
+	inline void _impl_js_jts_dPropertyDeclaration::questionToken(tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("questionToken", v); }
+	inline auto _impl_js_jts_dPropertyDeclaration::exclamationToken() noexcept { return _getProperty<tc::js::any /*flags=1048576: Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/>("exclamationToken"); }
+	inline void _impl_js_jts_dPropertyDeclaration::exclamationToken(tc::js::any /*flags=1048576: Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("exclamationToken", v); }
 	inline auto _impl_js_jts_dPropertyDeclaration::type() noexcept { return _getProperty<js_union<_js_jts_dTypeNode, tc::js::undefined>>("type"); }
 	inline void _impl_js_jts_dPropertyDeclaration::type(js_union<_js_jts_dTypeNode, tc::js::undefined> v) noexcept { _setProperty("type", v); }
 	inline auto _impl_js_jts_dPropertyDeclaration::initializer() noexcept { return _getProperty<js_union<_js_jts_dExpression, tc::js::undefined>>("initializer"); }
@@ -13261,8 +13261,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dPropertySignature::kind(_js_jts_dSyntaxKind /*SyntaxKind.PropertySignature*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dPropertySignature::name() noexcept { return _getProperty<_js_jts_dPropertyName>("name"); }
 	inline void _impl_js_jts_dPropertySignature::name(_js_jts_dPropertyName v) noexcept { _setProperty("name", v); }
-	inline auto _impl_js_jts_dPropertySignature::questionToken() noexcept { return _getProperty<js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/>("questionToken"); }
-	inline void _impl_js_jts_dPropertySignature::questionToken(js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("questionToken", v); }
+	inline auto _impl_js_jts_dPropertySignature::questionToken() noexcept { return _getProperty<tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/>("questionToken"); }
+	inline void _impl_js_jts_dPropertySignature::questionToken(tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("questionToken", v); }
 	inline auto _impl_js_jts_dPropertySignature::type() noexcept { return _getProperty<js_union<_js_jts_dTypeNode, tc::js::undefined>>("type"); }
 	inline void _impl_js_jts_dPropertySignature::type(js_union<_js_jts_dTypeNode, tc::js::undefined> v) noexcept { _setProperty("type", v); }
 	inline auto _impl_js_jts_dPropertySignature::initializer() noexcept { return _getProperty<js_union<_js_jts_dExpression, tc::js::undefined>>("initializer"); }
@@ -13271,7 +13271,7 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dPseudoBigInt::negative(bool /*false*/ v) noexcept { _setProperty("negative", v); }
 	inline auto _impl_js_jts_dPseudoBigInt::base10Value() noexcept { return _getProperty<tc::js::string>("base10Value"); }
 	inline void _impl_js_jts_dPseudoBigInt::base10Value(tc::js::string v) noexcept { _setProperty("base10Value", v); }
-	inline auto _impl_js_jts_dPush::push(js::Array<js_unknown /*flags=262144: T ()*/> values) noexcept {
+	inline auto _impl_js_jts_dPush::push(js::Array<tc::js::any /*flags=262144: T ()*/> values) noexcept {
 		 _call<void>("push", values);
 	}
 	inline auto _impl_js_jts_dQualifiedName::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.QualifiedName*/>("kind"); }
@@ -13294,41 +13294,41 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dQuickInfo::tags(js_union<js::Array<_js_jts_dJSDocTagInfo>, tc::js::undefined> v) noexcept { _setProperty("tags", v); }
 	inline auto _impl_js_jts_dReadonlyMap::size() noexcept { return _getProperty<double>("size"); }
 	inline auto _impl_js_jts_dReadonlyMap::entries() noexcept {
-		return _call<js_unknown /*flags=524288: Iterator<[tc::js::string, T]> (TypeReference=ts.Iterator)*/>("entries");
+		return _call<tc::js::any /*flags=524288: Iterator<[tc::js::string, T]> (TypeReference=ts.Iterator)*/>("entries");
 	}
-	inline auto _impl_js_jts_dReadonlyMap::forEach(js_function<void(js_unknown /*flags=262144: T ()*/, tc::js::string)> action) noexcept {
+	inline auto _impl_js_jts_dReadonlyMap::forEach(js_function<void(tc::js::any /*flags=262144: T ()*/, tc::js::string)> action) noexcept {
 		 _call<void>("forEach", action);
 	}
 	inline auto _impl_js_jts_dReadonlyMap::get(tc::js::string key) noexcept {
-		return _call<js_unknown /*flags=1048576: T | tc::js::undefined ()*/>("get", key);
+		return _call<tc::js::any /*flags=1048576: T | tc::js::undefined ()*/>("get", key);
 	}
 	inline auto _impl_js_jts_dReadonlyMap::has(tc::js::string key) noexcept {
 		return _call<bool /*false*/>("has", key);
 	}
 	inline auto _impl_js_jts_dReadonlyMap::keys() noexcept {
-		return _call<js_unknown /*flags=524288: Iterator<tc::js::string> (TypeReference=ts.Iterator)*/>("keys");
+		return _call<tc::js::any /*flags=524288: Iterator<tc::js::string> (TypeReference=ts.Iterator)*/>("keys");
 	}
 	inline auto _impl_js_jts_dReadonlyMap::values() noexcept {
-		return _call<js_unknown /*flags=524288: Iterator<T> (TypeReference=ts.Iterator)*/>("values");
+		return _call<tc::js::any /*flags=524288: Iterator<T> (TypeReference=ts.Iterator)*/>("values");
 	}
 	inline auto _impl_js_jts_dReadonlyUnderscoreEscapedMap::size() noexcept { return _getProperty<double>("size"); }
 	inline auto _impl_js_jts_dReadonlyUnderscoreEscapedMap::entries() noexcept {
-		return _call<js_unknown /*flags=524288: Iterator<[__String, T]> (TypeReference=ts.Iterator)*/>("entries");
+		return _call<tc::js::any /*flags=524288: Iterator<[__String, T]> (TypeReference=ts.Iterator)*/>("entries");
 	}
-	inline auto _impl_js_jts_dReadonlyUnderscoreEscapedMap::forEach(js_function<void(js_unknown /*flags=262144: T ()*/, js_unknown /*flags=1048576: __String ()*/)> action) noexcept {
+	inline auto _impl_js_jts_dReadonlyUnderscoreEscapedMap::forEach(js_function<void(tc::js::any /*flags=262144: T ()*/, tc::js::any /*flags=1048576: __String ()*/)> action) noexcept {
 		 _call<void>("forEach", action);
 	}
-	inline auto _impl_js_jts_dReadonlyUnderscoreEscapedMap::get(js_unknown /*flags=1048576: __String ()*/ key) noexcept {
-		return _call<js_unknown /*flags=1048576: T | tc::js::undefined ()*/>("get", key);
+	inline auto _impl_js_jts_dReadonlyUnderscoreEscapedMap::get(tc::js::any /*flags=1048576: __String ()*/ key) noexcept {
+		return _call<tc::js::any /*flags=1048576: T | tc::js::undefined ()*/>("get", key);
 	}
-	inline auto _impl_js_jts_dReadonlyUnderscoreEscapedMap::has(js_unknown /*flags=1048576: __String ()*/ key) noexcept {
+	inline auto _impl_js_jts_dReadonlyUnderscoreEscapedMap::has(tc::js::any /*flags=1048576: __String ()*/ key) noexcept {
 		return _call<bool /*false*/>("has", key);
 	}
 	inline auto _impl_js_jts_dReadonlyUnderscoreEscapedMap::keys() noexcept {
-		return _call<js_unknown /*flags=524288: Iterator<__String> (TypeReference=ts.Iterator)*/>("keys");
+		return _call<tc::js::any /*flags=524288: Iterator<__String> (TypeReference=ts.Iterator)*/>("keys");
 	}
 	inline auto _impl_js_jts_dReadonlyUnderscoreEscapedMap::values() noexcept {
-		return _call<js_unknown /*flags=524288: Iterator<T> (TypeReference=ts.Iterator)*/>("values");
+		return _call<tc::js::any /*flags=524288: Iterator<T> (TypeReference=ts.Iterator)*/>("values");
 	}
 	inline auto _impl_js_jts_dRefactorActionInfo::name() noexcept { return _getProperty<tc::js::string>("name"); }
 	inline void _impl_js_jts_dRefactorActionInfo::name(tc::js::string v) noexcept { _setProperty("name", v); }
@@ -13452,8 +13452,8 @@ namespace tc::js_defs {
 	inline auto _impl_js_jts_dScanner::isUnterminated() noexcept {
 		return _call<bool /*false*/>("isUnterminated");
 	}
-	inline auto _impl_js_jts_dScanner::lookAhead(js_function<js_unknown /*flags=262144: T ()*/()> callback) noexcept {
-		return _call<js_unknown /*flags=262144: T ()*/>("lookAhead", callback);
+	inline auto _impl_js_jts_dScanner::lookAhead(js_function<tc::js::any /*flags=262144: T ()*/()> callback) noexcept {
+		return _call<tc::js::any /*flags=262144: T ()*/>("lookAhead", callback);
 	}
 	inline auto _impl_js_jts_dScanner::reScanGreaterToken() noexcept {
 		return _call<_js_jts_dSyntaxKind /*SyntaxKind.Unknown*/>("reScanGreaterToken");
@@ -13485,8 +13485,8 @@ namespace tc::js_defs {
 	inline auto _impl_js_jts_dScanner::scanJsxToken() noexcept {
 		return _call<_js_jts_dSyntaxKind /*SyntaxKind.EndOfFileToken*/>("scanJsxToken");
 	}
-	inline auto _impl_js_jts_dScanner::scanRange(double start, double length, js_function<js_unknown /*flags=262144: T ()*/()> callback) noexcept {
-		return _call<js_unknown /*flags=262144: T ()*/>("scanRange", start, length, callback);
+	inline auto _impl_js_jts_dScanner::scanRange(double start, double length, js_function<tc::js::any /*flags=262144: T ()*/()> callback) noexcept {
+		return _call<tc::js::any /*flags=262144: T ()*/>("scanRange", start, length, callback);
 	}
 	inline auto _impl_js_jts_dScanner::setLanguageVariant(_js_jts_dLanguageVariant /*LanguageVariant.Standard*/ variant) noexcept {
 		 _call<void>("setLanguageVariant", variant);
@@ -13503,8 +13503,8 @@ namespace tc::js_defs {
 	inline auto _impl_js_jts_dScanner::setTextPos(double textPos) noexcept {
 		 _call<void>("setTextPos", textPos);
 	}
-	inline auto _impl_js_jts_dScanner::tryScan(js_function<js_unknown /*flags=262144: T ()*/()> callback) noexcept {
-		return _call<js_unknown /*flags=262144: T ()*/>("tryScan", callback);
+	inline auto _impl_js_jts_dScanner::tryScan(js_function<tc::js::any /*flags=262144: T ()*/()> callback) noexcept {
+		return _call<tc::js::any /*flags=262144: T ()*/>("tryScan", callback);
 	}
 	inline auto _impl_js_jts_dScriptSnapshot::_tcjs_definitions::fromString(tc::js::string text) noexcept {
 		return emscripten::val::global("ts")["ScriptSnapshot"]["fromString"](text).template as<_js_jts_dIScriptSnapshot>();
@@ -13534,12 +13534,12 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dShorthandPropertyAssignment::kind(_js_jts_dSyntaxKind /*SyntaxKind.ShorthandPropertyAssignment*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dShorthandPropertyAssignment::name() noexcept { return _getProperty<_js_jts_dIdentifier>("name"); }
 	inline void _impl_js_jts_dShorthandPropertyAssignment::name(_js_jts_dIdentifier v) noexcept { _setProperty("name", v); }
-	inline auto _impl_js_jts_dShorthandPropertyAssignment::questionToken() noexcept { return _getProperty<js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/>("questionToken"); }
-	inline void _impl_js_jts_dShorthandPropertyAssignment::questionToken(js_unknown /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("questionToken", v); }
-	inline auto _impl_js_jts_dShorthandPropertyAssignment::exclamationToken() noexcept { return _getProperty<js_unknown /*flags=1048576: Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/>("exclamationToken"); }
-	inline void _impl_js_jts_dShorthandPropertyAssignment::exclamationToken(js_unknown /*flags=1048576: Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("exclamationToken", v); }
-	inline auto _impl_js_jts_dShorthandPropertyAssignment::equalsToken() noexcept { return _getProperty<js_unknown /*flags=1048576: Token<SyntaxKind.EqualsToken> | tc::js::undefined ()*/>("equalsToken"); }
-	inline void _impl_js_jts_dShorthandPropertyAssignment::equalsToken(js_unknown /*flags=1048576: Token<SyntaxKind.EqualsToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("equalsToken", v); }
+	inline auto _impl_js_jts_dShorthandPropertyAssignment::questionToken() noexcept { return _getProperty<tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/>("questionToken"); }
+	inline void _impl_js_jts_dShorthandPropertyAssignment::questionToken(tc::js::any /*flags=1048576: Token<SyntaxKind.QuestionToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("questionToken", v); }
+	inline auto _impl_js_jts_dShorthandPropertyAssignment::exclamationToken() noexcept { return _getProperty<tc::js::any /*flags=1048576: Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/>("exclamationToken"); }
+	inline void _impl_js_jts_dShorthandPropertyAssignment::exclamationToken(tc::js::any /*flags=1048576: Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("exclamationToken", v); }
+	inline auto _impl_js_jts_dShorthandPropertyAssignment::equalsToken() noexcept { return _getProperty<tc::js::any /*flags=1048576: Token<SyntaxKind.EqualsToken> | tc::js::undefined ()*/>("equalsToken"); }
+	inline void _impl_js_jts_dShorthandPropertyAssignment::equalsToken(tc::js::any /*flags=1048576: Token<SyntaxKind.EqualsToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("equalsToken", v); }
 	inline auto _impl_js_jts_dShorthandPropertyAssignment::objectAssignmentInitializer() noexcept { return _getProperty<js_union<_js_jts_dExpression, tc::js::undefined>>("objectAssignmentInitializer"); }
 	inline void _impl_js_jts_dShorthandPropertyAssignment::objectAssignmentInitializer(js_union<_js_jts_dExpression, tc::js::undefined> v) noexcept { _setProperty("objectAssignmentInitializer", v); }
 	inline auto _impl_js_jts_dSignature::declaration() noexcept { return _getProperty<js_union<_js_jts_dArrowFunction, _js_jts_dCallSignatureDeclaration, _js_jts_dConstructSignatureDeclaration, _js_jts_dConstructorDeclaration, _js_jts_dConstructorTypeNode, _js_jts_dFunctionDeclaration, _js_jts_dFunctionExpression, _js_jts_dFunctionTypeNode, _js_jts_dGetAccessorDeclaration, _js_jts_dIndexSignatureDeclaration, _js_jts_dJSDocFunctionType, _js_jts_dJSDocSignature, _js_jts_dMethodDeclaration, _js_jts_dMethodSignature, _js_jts_dSetAccessorDeclaration, tc::js::undefined>>("declaration"); }
@@ -13615,10 +13615,10 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dSignatureHelpRetriggeredReason::kind(tc::js::string /*"retrigger"*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dSignatureHelpRetriggeredReason::triggerCharacter() noexcept { return _getProperty<js_union<tc::js::string /*"<"*/, tc::js::undefined>>("triggerCharacter"); }
 	inline void _impl_js_jts_dSignatureHelpRetriggeredReason::triggerCharacter(js_union<tc::js::string /*"<"*/, tc::js::undefined> v) noexcept { _setProperty("triggerCharacter", v); }
-	inline auto _impl_js_jts_dSortedArray::_u_u_sortedArrayBrand() noexcept { return _getProperty<js_unknown>(" __sortedArrayBrand"); }
-	inline void _impl_js_jts_dSortedArray::_u_u_sortedArrayBrand(js_unknown v) noexcept { _setProperty(" __sortedArrayBrand", v); }
-	inline auto _impl_js_jts_dSortedReadonlyArray::_u_u_sortedArrayBrand() noexcept { return _getProperty<js_unknown>(" __sortedArrayBrand"); }
-	inline void _impl_js_jts_dSortedReadonlyArray::_u_u_sortedArrayBrand(js_unknown v) noexcept { _setProperty(" __sortedArrayBrand", v); }
+	inline auto _impl_js_jts_dSortedArray::_u_u_sortedArrayBrand() noexcept { return _getProperty<tc::js::any>(" __sortedArrayBrand"); }
+	inline void _impl_js_jts_dSortedArray::_u_u_sortedArrayBrand(tc::js::any v) noexcept { _setProperty(" __sortedArrayBrand", v); }
+	inline auto _impl_js_jts_dSortedReadonlyArray::_u_u_sortedArrayBrand() noexcept { return _getProperty<tc::js::any>(" __sortedArrayBrand"); }
+	inline void _impl_js_jts_dSortedReadonlyArray::_u_u_sortedArrayBrand(tc::js::any v) noexcept { _setProperty(" __sortedArrayBrand", v); }
 	inline auto _impl_js_jts_dSourceFileLike::getLineAndCharacterOfPosition(double pos) noexcept {
 		return _call<_js_jts_dLineAndCharacter>("getLineAndCharacterOfPosition", pos);
 	}
@@ -13683,18 +13683,18 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dSwitchStatement::possiblyExhaustive(js_union<bool /*false*/, tc::js::undefined> v) noexcept { _setProperty("possiblyExhaustive", v); }
 	inline auto _impl_js_jts_dSymbol::flags() noexcept { return _getProperty<_js_jts_dSymbolFlags /*SymbolFlags.None*/>("flags"); }
 	inline void _impl_js_jts_dSymbol::flags(_js_jts_dSymbolFlags /*SymbolFlags.None*/ v) noexcept { _setProperty("flags", v); }
-	inline auto _impl_js_jts_dSymbol::escapedName() noexcept { return _getProperty<js_unknown /*flags=1048576: __String ()*/>("escapedName"); }
-	inline void _impl_js_jts_dSymbol::escapedName(js_unknown /*flags=1048576: __String ()*/ v) noexcept { _setProperty("escapedName", v); }
+	inline auto _impl_js_jts_dSymbol::escapedName() noexcept { return _getProperty<tc::js::any /*flags=1048576: __String ()*/>("escapedName"); }
+	inline void _impl_js_jts_dSymbol::escapedName(tc::js::any /*flags=1048576: __String ()*/ v) noexcept { _setProperty("escapedName", v); }
 	inline auto _impl_js_jts_dSymbol::declarations() noexcept { return _getProperty<js::Array<_js_jts_dDeclaration>>("declarations"); }
 	inline void _impl_js_jts_dSymbol::declarations(js::Array<_js_jts_dDeclaration> v) noexcept { _setProperty("declarations", v); }
 	inline auto _impl_js_jts_dSymbol::valueDeclaration() noexcept { return _getProperty<js_union<_js_jts_dDeclaration, tc::js::undefined>>("valueDeclaration"); }
 	inline void _impl_js_jts_dSymbol::valueDeclaration(js_union<_js_jts_dDeclaration, tc::js::undefined> v) noexcept { _setProperty("valueDeclaration", v); }
-	inline auto _impl_js_jts_dSymbol::members() noexcept { return _getProperty<js_unknown /*flags=1048576: UnderscoreEscapedMap<Symbol> | tc::js::undefined ()*/>("members"); }
-	inline void _impl_js_jts_dSymbol::members(js_unknown /*flags=1048576: UnderscoreEscapedMap<Symbol> | tc::js::undefined ()*/ v) noexcept { _setProperty("members", v); }
-	inline auto _impl_js_jts_dSymbol::exports() noexcept { return _getProperty<js_unknown /*flags=1048576: UnderscoreEscapedMap<Symbol> | tc::js::undefined ()*/>("exports"); }
-	inline void _impl_js_jts_dSymbol::exports(js_unknown /*flags=1048576: UnderscoreEscapedMap<Symbol> | tc::js::undefined ()*/ v) noexcept { _setProperty("exports", v); }
-	inline auto _impl_js_jts_dSymbol::globalExports() noexcept { return _getProperty<js_unknown /*flags=1048576: UnderscoreEscapedMap<Symbol> | tc::js::undefined ()*/>("globalExports"); }
-	inline void _impl_js_jts_dSymbol::globalExports(js_unknown /*flags=1048576: UnderscoreEscapedMap<Symbol> | tc::js::undefined ()*/ v) noexcept { _setProperty("globalExports", v); }
+	inline auto _impl_js_jts_dSymbol::members() noexcept { return _getProperty<tc::js::any /*flags=1048576: UnderscoreEscapedMap<Symbol> | tc::js::undefined ()*/>("members"); }
+	inline void _impl_js_jts_dSymbol::members(tc::js::any /*flags=1048576: UnderscoreEscapedMap<Symbol> | tc::js::undefined ()*/ v) noexcept { _setProperty("members", v); }
+	inline auto _impl_js_jts_dSymbol::exports() noexcept { return _getProperty<tc::js::any /*flags=1048576: UnderscoreEscapedMap<Symbol> | tc::js::undefined ()*/>("exports"); }
+	inline void _impl_js_jts_dSymbol::exports(tc::js::any /*flags=1048576: UnderscoreEscapedMap<Symbol> | tc::js::undefined ()*/ v) noexcept { _setProperty("exports", v); }
+	inline auto _impl_js_jts_dSymbol::globalExports() noexcept { return _getProperty<tc::js::any /*flags=1048576: UnderscoreEscapedMap<Symbol> | tc::js::undefined ()*/>("globalExports"); }
+	inline void _impl_js_jts_dSymbol::globalExports(tc::js::any /*flags=1048576: UnderscoreEscapedMap<Symbol> | tc::js::undefined ()*/ v) noexcept { _setProperty("globalExports", v); }
 	inline auto _impl_js_jts_dSymbol::name() noexcept { return _getProperty<tc::js::string>("name"); }
 	inline auto _impl_js_jts_dSymbol::getDeclarations() noexcept {
 		return _call<js_union<js::Array<_js_jts_dDeclaration>, tc::js::undefined>>("getDeclarations");
@@ -13703,7 +13703,7 @@ namespace tc::js_defs {
 		return _call<js::Array<_js_jts_dSymbolDisplayPart>>("getDocumentationComment", typeChecker);
 	}
 	inline auto _impl_js_jts_dSymbol::getEscapedName() noexcept {
-		return _call<js_unknown /*flags=1048576: __String ()*/>("getEscapedName");
+		return _call<tc::js::any /*flags=1048576: __String ()*/>("getEscapedName");
 	}
 	inline auto _impl_js_jts_dSymbol::getFlags() noexcept {
 		return _call<_js_jts_dSymbolFlags /*SymbolFlags.None*/>("getFlags");
@@ -13778,16 +13778,16 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dTaggedTemplateExpression::kind(_js_jts_dSyntaxKind /*SyntaxKind.TaggedTemplateExpression*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dTaggedTemplateExpression::tag() noexcept { return _getProperty<_js_jts_dLeftHandSideExpression>("tag"); }
 	inline void _impl_js_jts_dTaggedTemplateExpression::tag(_js_jts_dLeftHandSideExpression v) noexcept { _setProperty("tag", v); }
-	inline auto _impl_js_jts_dTaggedTemplateExpression::typeArguments() noexcept { return _getProperty<js_unknown /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/>("typeArguments"); }
-	inline void _impl_js_jts_dTaggedTemplateExpression::typeArguments(js_unknown /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/ v) noexcept { _setProperty("typeArguments", v); }
+	inline auto _impl_js_jts_dTaggedTemplateExpression::typeArguments() noexcept { return _getProperty<tc::js::any /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/>("typeArguments"); }
+	inline void _impl_js_jts_dTaggedTemplateExpression::typeArguments(tc::js::any /*flags=1048576: NodeArray<TypeNode> | tc::js::undefined ()*/ v) noexcept { _setProperty("typeArguments", v); }
 	inline auto _impl_js_jts_dTaggedTemplateExpression::template_() noexcept { return _getProperty<_js_jts_dTemplateLiteral>("template"); }
 	inline void _impl_js_jts_dTaggedTemplateExpression::template_(_js_jts_dTemplateLiteral v) noexcept { _setProperty("template", v); }
 	inline auto _impl_js_jts_dTemplateExpression::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.TemplateExpression*/>("kind"); }
 	inline void _impl_js_jts_dTemplateExpression::kind(_js_jts_dSyntaxKind /*SyntaxKind.TemplateExpression*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dTemplateExpression::head() noexcept { return _getProperty<_js_jts_dTemplateHead>("head"); }
 	inline void _impl_js_jts_dTemplateExpression::head(_js_jts_dTemplateHead v) noexcept { _setProperty("head", v); }
-	inline auto _impl_js_jts_dTemplateExpression::templateSpans() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<TemplateSpan> (TypeReference=ts.NodeArray)*/>("templateSpans"); }
-	inline void _impl_js_jts_dTemplateExpression::templateSpans(js_unknown /*flags=524288: NodeArray<TemplateSpan> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("templateSpans", v); }
+	inline auto _impl_js_jts_dTemplateExpression::templateSpans() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<TemplateSpan> (TypeReference=ts.NodeArray)*/>("templateSpans"); }
+	inline void _impl_js_jts_dTemplateExpression::templateSpans(tc::js::any /*flags=524288: NodeArray<TemplateSpan> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("templateSpans", v); }
 	inline auto _impl_js_jts_dTemplateHead::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.TemplateHead*/>("kind"); }
 	inline void _impl_js_jts_dTemplateHead::kind(_js_jts_dSyntaxKind /*SyntaxKind.TemplateHead*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dTemplateHead::parent() noexcept { return _getProperty<_js_jts_dTemplateExpression>("parent"); }
@@ -13844,8 +13844,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dTodoCommentDescriptor::text(tc::js::string v) noexcept { _setProperty("text", v); }
 	inline auto _impl_js_jts_dTodoCommentDescriptor::priority() noexcept { return _getProperty<double>("priority"); }
 	inline void _impl_js_jts_dTodoCommentDescriptor::priority(double v) noexcept { _setProperty("priority", v); }
-	inline auto _impl_js_jts_dToken::kind() noexcept { return _getProperty<js_unknown /*flags=262144: TKind ()*/>("kind"); }
-	inline void _impl_js_jts_dToken::kind(js_unknown /*flags=262144: TKind ()*/ v) noexcept { _setProperty("kind", v); }
+	inline auto _impl_js_jts_dToken::kind() noexcept { return _getProperty<tc::js::any /*flags=262144: TKind ()*/>("kind"); }
+	inline void _impl_js_jts_dToken::kind(tc::js::any /*flags=262144: TKind ()*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dTransformationContext::onSubstituteNode() noexcept { return _getProperty<js_function<_js_jts_dNode(_js_jts_dEmitHint /*EmitHint.SourceFile*/, _js_jts_dNode)>>("onSubstituteNode"); }
 	inline void _impl_js_jts_dTransformationContext::onSubstituteNode(js_function<_js_jts_dNode(_js_jts_dEmitHint /*EmitHint.SourceFile*/, _js_jts_dNode)> v) noexcept { _setProperty("onSubstituteNode", v); }
 	inline auto _impl_js_jts_dTransformationContext::onEmitNode() noexcept { return _getProperty<js_function<void(_js_jts_dEmitHint /*EmitHint.SourceFile*/, _js_jts_dNode, js_function<void(_js_jts_dEmitHint /*EmitHint.SourceFile*/, _js_jts_dNode)>)>>("onEmitNode"); }
@@ -13889,8 +13889,8 @@ namespace tc::js_defs {
 	inline auto _impl_js_jts_dTransformationContext::suspendLexicalEnvironment() noexcept {
 		 _call<void>("suspendLexicalEnvironment");
 	}
-	inline auto _impl_js_jts_dTransformationResult::transformed() noexcept { return _getProperty<js::Array<js_unknown /*flags=262144: T ()*/>>("transformed"); }
-	inline void _impl_js_jts_dTransformationResult::transformed(js::Array<js_unknown /*flags=262144: T ()*/> v) noexcept { _setProperty("transformed", v); }
+	inline auto _impl_js_jts_dTransformationResult::transformed() noexcept { return _getProperty<js::Array<tc::js::any /*flags=262144: T ()*/>>("transformed"); }
+	inline void _impl_js_jts_dTransformationResult::transformed(js::Array<tc::js::any /*flags=262144: T ()*/> v) noexcept { _setProperty("transformed", v); }
 	inline auto _impl_js_jts_dTransformationResult::diagnostics() noexcept { return _getProperty<js_union<js::Array<_js_jts_dDiagnosticWithLocation>, tc::js::undefined>>("diagnostics"); }
 	inline void _impl_js_jts_dTransformationResult::diagnostics(js_union<js::Array<_js_jts_dDiagnosticWithLocation>, tc::js::undefined> v) noexcept { _setProperty("diagnostics", v); }
 	inline auto _impl_js_jts_dTransformationResult::dispose() noexcept {
@@ -13912,8 +13912,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dTranspileOptions::reportDiagnostics(js_union<bool /*false*/, tc::js::undefined> v) noexcept { _setProperty("reportDiagnostics", v); }
 	inline auto _impl_js_jts_dTranspileOptions::moduleName() noexcept { return _getProperty<js_union<tc::js::string, tc::js::undefined>>("moduleName"); }
 	inline void _impl_js_jts_dTranspileOptions::moduleName(js_union<tc::js::string, tc::js::undefined> v) noexcept { _setProperty("moduleName", v); }
-	inline auto _impl_js_jts_dTranspileOptions::renamedDependencies() noexcept { return _getProperty<js_unknown /*flags=1048576: MapLike<tc::js::string> | tc::js::undefined ()*/>("renamedDependencies"); }
-	inline void _impl_js_jts_dTranspileOptions::renamedDependencies(js_unknown /*flags=1048576: MapLike<tc::js::string> | tc::js::undefined ()*/ v) noexcept { _setProperty("renamedDependencies", v); }
+	inline auto _impl_js_jts_dTranspileOptions::renamedDependencies() noexcept { return _getProperty<tc::js::any /*flags=1048576: MapLike<tc::js::string> | tc::js::undefined ()*/>("renamedDependencies"); }
+	inline void _impl_js_jts_dTranspileOptions::renamedDependencies(tc::js::any /*flags=1048576: MapLike<tc::js::string> | tc::js::undefined ()*/ v) noexcept { _setProperty("renamedDependencies", v); }
 	inline auto _impl_js_jts_dTranspileOptions::transformers() noexcept { return _getProperty<js_union<_js_jts_dCustomTransformers, tc::js::undefined>>("transformers"); }
 	inline void _impl_js_jts_dTranspileOptions::transformers(js_union<_js_jts_dCustomTransformers, tc::js::undefined> v) noexcept { _setProperty("transformers", v); }
 	inline auto _impl_js_jts_dTranspileOptions::_tcjs_construct() noexcept {
@@ -13941,12 +13941,12 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dTupleType::hasRestElement(bool /*false*/ v) noexcept { _setProperty("hasRestElement", v); }
 	inline auto _impl_js_jts_dTupleType::readonly() noexcept { return _getProperty<bool /*false*/>("readonly"); }
 	inline void _impl_js_jts_dTupleType::readonly(bool /*false*/ v) noexcept { _setProperty("readonly", v); }
-	inline auto _impl_js_jts_dTupleType::associatedNames() noexcept { return _getProperty<js_union<js::Array<js_unknown /*flags=1048576: __String ()*/>, tc::js::undefined>>("associatedNames"); }
-	inline void _impl_js_jts_dTupleType::associatedNames(js_union<js::Array<js_unknown /*flags=1048576: __String ()*/>, tc::js::undefined> v) noexcept { _setProperty("associatedNames", v); }
+	inline auto _impl_js_jts_dTupleType::associatedNames() noexcept { return _getProperty<js_union<js::Array<tc::js::any /*flags=1048576: __String ()*/>, tc::js::undefined>>("associatedNames"); }
+	inline void _impl_js_jts_dTupleType::associatedNames(js_union<js::Array<tc::js::any /*flags=1048576: __String ()*/>, tc::js::undefined> v) noexcept { _setProperty("associatedNames", v); }
 	inline auto _impl_js_jts_dTupleTypeNode::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.TupleType*/>("kind"); }
 	inline void _impl_js_jts_dTupleTypeNode::kind(_js_jts_dSyntaxKind /*SyntaxKind.TupleType*/ v) noexcept { _setProperty("kind", v); }
-	inline auto _impl_js_jts_dTupleTypeNode::elementTypes() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<TypeNode> (TypeReference=ts.NodeArray)*/>("elementTypes"); }
-	inline void _impl_js_jts_dTupleTypeNode::elementTypes(js_unknown /*flags=524288: NodeArray<TypeNode> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("elementTypes", v); }
+	inline auto _impl_js_jts_dTupleTypeNode::elementTypes() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<TypeNode> (TypeReference=ts.NodeArray)*/>("elementTypes"); }
+	inline void _impl_js_jts_dTupleTypeNode::elementTypes(tc::js::any /*flags=524288: NodeArray<TypeNode> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("elementTypes", v); }
 	inline auto _impl_js_jts_dTupleTypeReference::target() noexcept { return _getProperty<_js_jts_dTupleType>("target"); }
 	inline void _impl_js_jts_dTupleTypeReference::target(_js_jts_dTupleType v) noexcept { _setProperty("target", v); }
 	inline auto _impl_js_jts_dTypeAcquisition::enableAutoDiscovery() noexcept { return _getProperty<js_union<bool /*false*/, tc::js::undefined>>("enableAutoDiscovery"); }
@@ -13964,8 +13964,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dTypeAliasDeclaration::kind(_js_jts_dSyntaxKind /*SyntaxKind.TypeAliasDeclaration*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dTypeAliasDeclaration::name() noexcept { return _getProperty<_js_jts_dIdentifier>("name"); }
 	inline void _impl_js_jts_dTypeAliasDeclaration::name(_js_jts_dIdentifier v) noexcept { _setProperty("name", v); }
-	inline auto _impl_js_jts_dTypeAliasDeclaration::typeParameters() noexcept { return _getProperty<js_unknown /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/>("typeParameters"); }
-	inline void _impl_js_jts_dTypeAliasDeclaration::typeParameters(js_unknown /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ v) noexcept { _setProperty("typeParameters", v); }
+	inline auto _impl_js_jts_dTypeAliasDeclaration::typeParameters() noexcept { return _getProperty<tc::js::any /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/>("typeParameters"); }
+	inline void _impl_js_jts_dTypeAliasDeclaration::typeParameters(tc::js::any /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/ v) noexcept { _setProperty("typeParameters", v); }
 	inline auto _impl_js_jts_dTypeAliasDeclaration::type() noexcept { return _getProperty<_js_jts_dTypeNode>("type"); }
 	inline void _impl_js_jts_dTypeAliasDeclaration::type(_js_jts_dTypeNode v) noexcept { _setProperty("type", v); }
 	inline auto _impl_js_jts_dTypeAssertion::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.TypeAssertionExpression*/>("kind"); }
@@ -14106,11 +14106,11 @@ namespace tc::js_defs {
 	inline auto _impl_js_jts_dTypeChecker::isValidPropertyAccess(js_union<_js_jts_dImportTypeNode, _js_jts_dPropertyAccessExpression, _js_jts_dQualifiedName> node, tc::js::string propertyName) noexcept {
 		return _call<bool /*false*/>("isValidPropertyAccess", node, propertyName);
 	}
-	inline auto _impl_js_jts_dTypeChecker::runWithCancellationToken(_js_jts_dCancellationToken token, js_function<js_unknown /*flags=262144: T ()*/(_js_jts_dTypeChecker)> cb) noexcept {
-		return _call<js_unknown /*flags=262144: T ()*/>("runWithCancellationToken", token, cb);
+	inline auto _impl_js_jts_dTypeChecker::runWithCancellationToken(_js_jts_dCancellationToken token, js_function<tc::js::any /*flags=262144: T ()*/(_js_jts_dTypeChecker)> cb) noexcept {
+		return _call<tc::js::any /*flags=262144: T ()*/>("runWithCancellationToken", token, cb);
 	}
 	inline auto _impl_js_jts_dTypeChecker::signatureToSignatureDeclaration(_js_jts_dSignature signature, _js_jts_dSyntaxKind /*SyntaxKind.Unknown*/ kind, js_union<_js_jts_dNode, tc::js::undefined> enclosingDeclaration, js_union<_js_jts_dNodeBuilderFlags /*NodeBuilderFlags.OmitParameterModifiers*/, tc::js::undefined> flags) noexcept {
-		return _call<js_unknown /*flags=1048576: (CallSignatureDeclaration & { typeArguments?: NodeArray<TypeNode> | tc::js::undefined; }) | (ConstructSignatureDeclaration & { typeArguments?: NodeArray<TypeNode> | tc::js::undefined; }) | ... 12 more ... | tc::js::undefined ()*/>("signatureToSignatureDeclaration", signature, kind, enclosingDeclaration, flags);
+		return _call<tc::js::any /*flags=1048576: (CallSignatureDeclaration & { typeArguments?: NodeArray<TypeNode> | tc::js::undefined; }) | (ConstructSignatureDeclaration & { typeArguments?: NodeArray<TypeNode> | tc::js::undefined; }) | ... 12 more ... | tc::js::undefined ()*/>("signatureToSignatureDeclaration", signature, kind, enclosingDeclaration, flags);
 	}
 	inline auto _impl_js_jts_dTypeChecker::signatureToString(_js_jts_dSignature signature, js_union<_js_jts_dNode, tc::js::undefined> enclosingDeclaration, js_union<_js_jts_dTypeFormatFlags /*TypeFormatFlags.UseTypeOfFunction*/, tc::js::undefined> flags, js_union<_js_jts_dSignatureKind /*SignatureKind.Call*/, tc::js::undefined> kind) noexcept {
 		return _call<tc::js::string>("signatureToString", signature, enclosingDeclaration, flags, kind);
@@ -14128,7 +14128,7 @@ namespace tc::js_defs {
 		return _call<tc::js::string>("symbolToString", symbol, enclosingDeclaration, meaning, flags);
 	}
 	inline auto _impl_js_jts_dTypeChecker::symbolToTypeParameterDeclarations(_js_jts_dSymbol symbol, js_union<_js_jts_dNode, tc::js::undefined> enclosingDeclaration, js_union<_js_jts_dNodeBuilderFlags /*NodeBuilderFlags.OmitParameterModifiers*/, tc::js::undefined> flags) noexcept {
-		return _call<js_unknown /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/>("symbolToTypeParameterDeclarations", symbol, enclosingDeclaration, flags);
+		return _call<tc::js::any /*flags=1048576: NodeArray<TypeParameterDeclaration> | tc::js::undefined ()*/>("symbolToTypeParameterDeclarations", symbol, enclosingDeclaration, flags);
 	}
 	inline auto _impl_js_jts_dTypeChecker::tryGetMemberInModuleExports(tc::js::string memberName, _js_jts_dSymbol moduleSymbol) noexcept {
 		return _call<js_union<_js_jts_dSymbol, tc::js::undefined>>("tryGetMemberInModuleExports", memberName, moduleSymbol);
@@ -14147,8 +14147,8 @@ namespace tc::js_defs {
 	}
 	inline auto _impl_js_jts_dTypeLiteralNode::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.TypeLiteral*/>("kind"); }
 	inline void _impl_js_jts_dTypeLiteralNode::kind(_js_jts_dSyntaxKind /*SyntaxKind.TypeLiteral*/ v) noexcept { _setProperty("kind", v); }
-	inline auto _impl_js_jts_dTypeLiteralNode::members() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<TypeElement> (TypeReference=ts.NodeArray)*/>("members"); }
-	inline void _impl_js_jts_dTypeLiteralNode::members(js_unknown /*flags=524288: NodeArray<TypeElement> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("members", v); }
+	inline auto _impl_js_jts_dTypeLiteralNode::members() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<TypeElement> (TypeReference=ts.NodeArray)*/>("members"); }
+	inline void _impl_js_jts_dTypeLiteralNode::members(tc::js::any /*flags=524288: NodeArray<TypeElement> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("members", v); }
 	inline auto _impl_js_jts_dTypeOfExpression::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.TypeOfExpression*/>("kind"); }
 	inline void _impl_js_jts_dTypeOfExpression::kind(_js_jts_dSyntaxKind /*SyntaxKind.TypeOfExpression*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dTypeOfExpression::expression() noexcept { return _getProperty<_js_jts_dUnaryExpression>("expression"); }
@@ -14190,20 +14190,20 @@ namespace tc::js_defs {
 	inline auto _impl_js_jts_dUnderscoreEscapedMap::clear() noexcept {
 		 _call<void>("clear");
 	}
-	inline auto _impl_js_jts_dUnderscoreEscapedMap::delete_(js_unknown /*flags=1048576: __String ()*/ key) noexcept {
+	inline auto _impl_js_jts_dUnderscoreEscapedMap::delete_(tc::js::any /*flags=1048576: __String ()*/ key) noexcept {
 		return _call<bool /*false*/>("delete", key);
 	}
-	inline auto _impl_js_jts_dUnderscoreEscapedMap::set(js_unknown /*flags=1048576: __String ()*/ key, js_unknown /*flags=262144: T ()*/ value) noexcept {
-		return _call<js_unknown /*flags=262144: this ()*/>("set", key, value);
+	inline auto _impl_js_jts_dUnderscoreEscapedMap::set(tc::js::any /*flags=1048576: __String ()*/ key, tc::js::any /*flags=262144: T ()*/ value) noexcept {
+		return _call<tc::js::any /*flags=262144: this ()*/>("set", key, value);
 	}
 	inline auto _impl_js_jts_dUnionTypeNode::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.UnionType*/>("kind"); }
 	inline void _impl_js_jts_dUnionTypeNode::kind(_js_jts_dSyntaxKind /*SyntaxKind.UnionType*/ v) noexcept { _setProperty("kind", v); }
-	inline auto _impl_js_jts_dUnionTypeNode::types() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<TypeNode> (TypeReference=ts.NodeArray)*/>("types"); }
-	inline void _impl_js_jts_dUnionTypeNode::types(js_unknown /*flags=524288: NodeArray<TypeNode> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("types", v); }
+	inline auto _impl_js_jts_dUnionTypeNode::types() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<TypeNode> (TypeReference=ts.NodeArray)*/>("types"); }
+	inline void _impl_js_jts_dUnionTypeNode::types(tc::js::any /*flags=524288: NodeArray<TypeNode> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("types", v); }
 	inline auto _impl_js_jts_dUniqueESSymbolType::symbol() noexcept { return _getProperty<_js_jts_dSymbol>("symbol"); }
 	inline void _impl_js_jts_dUniqueESSymbolType::symbol(_js_jts_dSymbol v) noexcept { _setProperty("symbol", v); }
-	inline auto _impl_js_jts_dUniqueESSymbolType::escapedName() noexcept { return _getProperty<js_unknown /*flags=1048576: __String ()*/>("escapedName"); }
-	inline void _impl_js_jts_dUniqueESSymbolType::escapedName(js_unknown /*flags=1048576: __String ()*/ v) noexcept { _setProperty("escapedName", v); }
+	inline auto _impl_js_jts_dUniqueESSymbolType::escapedName() noexcept { return _getProperty<tc::js::any /*flags=1048576: __String ()*/>("escapedName"); }
+	inline void _impl_js_jts_dUniqueESSymbolType::escapedName(tc::js::any /*flags=1048576: __String ()*/ v) noexcept { _setProperty("escapedName", v); }
 	inline auto _impl_js_jts_dUnparsedSection::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.Unknown*/>("kind"); }
 	inline void _impl_js_jts_dUnparsedSection::kind(_js_jts_dSyntaxKind /*SyntaxKind.Unknown*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dUnparsedSection::data() noexcept { return _getProperty<js_union<tc::js::string, tc::js::undefined>>("data"); }
@@ -14266,8 +14266,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dVariableDeclaration::parent(js_union<_js_jts_dCatchClause, _js_jts_dVariableDeclarationList> v) noexcept { _setProperty("parent", v); }
 	inline auto _impl_js_jts_dVariableDeclaration::name() noexcept { return _getProperty<_js_jts_dBindingName>("name"); }
 	inline void _impl_js_jts_dVariableDeclaration::name(_js_jts_dBindingName v) noexcept { _setProperty("name", v); }
-	inline auto _impl_js_jts_dVariableDeclaration::exclamationToken() noexcept { return _getProperty<js_unknown /*flags=1048576: Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/>("exclamationToken"); }
-	inline void _impl_js_jts_dVariableDeclaration::exclamationToken(js_unknown /*flags=1048576: Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("exclamationToken", v); }
+	inline auto _impl_js_jts_dVariableDeclaration::exclamationToken() noexcept { return _getProperty<tc::js::any /*flags=1048576: Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/>("exclamationToken"); }
+	inline void _impl_js_jts_dVariableDeclaration::exclamationToken(tc::js::any /*flags=1048576: Token<SyntaxKind.ExclamationToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("exclamationToken", v); }
 	inline auto _impl_js_jts_dVariableDeclaration::type() noexcept { return _getProperty<js_union<_js_jts_dTypeNode, tc::js::undefined>>("type"); }
 	inline void _impl_js_jts_dVariableDeclaration::type(js_union<_js_jts_dTypeNode, tc::js::undefined> v) noexcept { _setProperty("type", v); }
 	inline auto _impl_js_jts_dVariableDeclaration::initializer() noexcept { return _getProperty<js_union<_js_jts_dExpression, tc::js::undefined>>("initializer"); }
@@ -14276,8 +14276,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dVariableDeclarationList::kind(_js_jts_dSyntaxKind /*SyntaxKind.VariableDeclarationList*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dVariableDeclarationList::parent() noexcept { return _getProperty<js_union<_js_jts_dForInStatement, _js_jts_dForOfStatement, _js_jts_dForStatement, _js_jts_dVariableStatement>>("parent"); }
 	inline void _impl_js_jts_dVariableDeclarationList::parent(js_union<_js_jts_dForInStatement, _js_jts_dForOfStatement, _js_jts_dForStatement, _js_jts_dVariableStatement> v) noexcept { _setProperty("parent", v); }
-	inline auto _impl_js_jts_dVariableDeclarationList::declarations() noexcept { return _getProperty<js_unknown /*flags=524288: NodeArray<VariableDeclaration> (TypeReference=ts.NodeArray)*/>("declarations"); }
-	inline void _impl_js_jts_dVariableDeclarationList::declarations(js_unknown /*flags=524288: NodeArray<VariableDeclaration> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("declarations", v); }
+	inline auto _impl_js_jts_dVariableDeclarationList::declarations() noexcept { return _getProperty<tc::js::any /*flags=524288: NodeArray<VariableDeclaration> (TypeReference=ts.NodeArray)*/>("declarations"); }
+	inline void _impl_js_jts_dVariableDeclarationList::declarations(tc::js::any /*flags=524288: NodeArray<VariableDeclaration> (TypeReference=ts.NodeArray)*/ v) noexcept { _setProperty("declarations", v); }
 	inline auto _impl_js_jts_dVariableStatement::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.VariableStatement*/>("kind"); }
 	inline void _impl_js_jts_dVariableStatement::kind(_js_jts_dSyntaxKind /*SyntaxKind.VariableStatement*/ v) noexcept { _setProperty("kind", v); }
 	inline auto _impl_js_jts_dVariableStatement::declarationList() noexcept { return _getProperty<_js_jts_dVariableDeclarationList>("declarationList"); }
@@ -14287,7 +14287,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_jts_dVoidExpression::expression() noexcept { return _getProperty<_js_jts_dUnaryExpression>("expression"); }
 	inline void _impl_js_jts_dVoidExpression::expression(_js_jts_dUnaryExpression v) noexcept { _setProperty("expression", v); }
 	inline auto _impl_js_jts_dWatch::getProgram() noexcept {
-		return _call<js_unknown /*flags=262144: T ()*/>("getProgram");
+		return _call<tc::js::any /*flags=262144: T ()*/>("getProgram");
 	}
 	inline auto _impl_js_jts_dWatchHost::watchDirectory(tc::js::string path, _js_jts_dDirectoryWatcherCallback callback, js_union<bool /*false*/, tc::js::undefined> recursive) noexcept {
 		return _call<_js_jts_dFileWatcher>("watchDirectory", path, callback, recursive);
@@ -14323,8 +14323,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dWithStatement::statement(_js_jts_dStatement v) noexcept { _setProperty("statement", v); }
 	inline auto _impl_js_jts_dYieldExpression::kind() noexcept { return _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.YieldExpression*/>("kind"); }
 	inline void _impl_js_jts_dYieldExpression::kind(_js_jts_dSyntaxKind /*SyntaxKind.YieldExpression*/ v) noexcept { _setProperty("kind", v); }
-	inline auto _impl_js_jts_dYieldExpression::asteriskToken() noexcept { return _getProperty<js_unknown /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/>("asteriskToken"); }
-	inline void _impl_js_jts_dYieldExpression::asteriskToken(js_unknown /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("asteriskToken", v); }
+	inline auto _impl_js_jts_dYieldExpression::asteriskToken() noexcept { return _getProperty<tc::js::any /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/>("asteriskToken"); }
+	inline void _impl_js_jts_dYieldExpression::asteriskToken(tc::js::any /*flags=1048576: Token<SyntaxKind.AsteriskToken> | tc::js::undefined ()*/ v) noexcept { _setProperty("asteriskToken", v); }
 	inline auto _impl_js_jts_dYieldExpression::expression() noexcept { return _getProperty<js_union<_js_jts_dExpression, tc::js::undefined>>("expression"); }
 	inline void _impl_js_jts_dYieldExpression::expression(js_union<_js_jts_dExpression, tc::js::undefined> v) noexcept { _setProperty("expression", v); }
 	inline auto _impl_js_jts_dserver_dTypingInstallerResponse::kind() noexcept { return _getProperty<tc::js::string /*"action::set"*/>("kind"); }
@@ -14337,10 +14337,10 @@ namespace tc::js_defs {
 	inline auto _impl_js_jts_dserver_dTypingInstallerRequestWithProjectName::projectName() noexcept { return _getProperty<tc::js::string>("projectName"); }
 	inline auto _impl_js_jts_dserver_dCloseProject::kind() noexcept { return _getProperty<tc::js::string /*"closeProject"*/>("kind"); }
 	inline auto _impl_js_jts_dserver_dDiscoverTypings::fileNames() noexcept { return _getProperty<js::Array<tc::js::string>>("fileNames"); }
-	inline auto _impl_js_jts_dserver_dDiscoverTypings::projectRootPath() noexcept { return _getProperty<js_unknown /*flags=2097152: Path ()*/>("projectRootPath"); }
+	inline auto _impl_js_jts_dserver_dDiscoverTypings::projectRootPath() noexcept { return _getProperty<tc::js::any /*flags=2097152: Path ()*/>("projectRootPath"); }
 	inline auto _impl_js_jts_dserver_dDiscoverTypings::compilerOptions() noexcept { return _getProperty<_js_jts_dCompilerOptions>("compilerOptions"); }
 	inline auto _impl_js_jts_dserver_dDiscoverTypings::typeAcquisition() noexcept { return _getProperty<_js_jts_dTypeAcquisition>("typeAcquisition"); }
-	inline auto _impl_js_jts_dserver_dDiscoverTypings::unresolvedImports() noexcept { return _getProperty<js_unknown /*flags=524288: SortedReadonlyArray<tc::js::string> (TypeReference=ts.SortedReadonlyArray)*/>("unresolvedImports"); }
+	inline auto _impl_js_jts_dserver_dDiscoverTypings::unresolvedImports() noexcept { return _getProperty<tc::js::any /*flags=524288: SortedReadonlyArray<tc::js::string> (TypeReference=ts.SortedReadonlyArray)*/>("unresolvedImports"); }
 	inline auto _impl_js_jts_dserver_dDiscoverTypings::cachePath() noexcept { return _getProperty<js_union<tc::js::string, tc::js::undefined>>("cachePath"); }
 	inline auto _impl_js_jts_dserver_dDiscoverTypings::kind() noexcept { return _getProperty<tc::js::string /*"discover"*/>("kind"); }
 	inline auto _impl_js_jts_dserver_dEndInstallTypes::kind() noexcept { return _getProperty<tc::js::string /*"event::endInstallTypes"*/>("kind"); }
@@ -14348,9 +14348,9 @@ namespace tc::js_defs {
 	inline auto _impl_js_jts_dserver_dInitializationFailedResponse::kind() noexcept { return _getProperty<tc::js::string /*"event::initializationFailed"*/>("kind"); }
 	inline auto _impl_js_jts_dserver_dInitializationFailedResponse::message() noexcept { return _getProperty<tc::js::string>("message"); }
 	inline auto _impl_js_jts_dserver_dInstallPackageRequest::kind() noexcept { return _getProperty<tc::js::string /*"installPackage"*/>("kind"); }
-	inline auto _impl_js_jts_dserver_dInstallPackageRequest::fileName() noexcept { return _getProperty<js_unknown /*flags=2097152: Path ()*/>("fileName"); }
+	inline auto _impl_js_jts_dserver_dInstallPackageRequest::fileName() noexcept { return _getProperty<tc::js::any /*flags=2097152: Path ()*/>("fileName"); }
 	inline auto _impl_js_jts_dserver_dInstallPackageRequest::packageName() noexcept { return _getProperty<tc::js::string>("packageName"); }
-	inline auto _impl_js_jts_dserver_dInstallPackageRequest::projectRootPath() noexcept { return _getProperty<js_unknown /*flags=2097152: Path ()*/>("projectRootPath"); }
+	inline auto _impl_js_jts_dserver_dInstallPackageRequest::projectRootPath() noexcept { return _getProperty<tc::js::any /*flags=2097152: Path ()*/>("projectRootPath"); }
 	inline auto _impl_js_jts_dserver_dInvalidateCachedTypings::kind() noexcept { return _getProperty<tc::js::string /*"action::invalidate"*/>("kind"); }
 	inline auto _impl_js_jts_dserver_dPackageInstalledResponse::kind() noexcept { return _getProperty<tc::js::string /*"action::packageInstalled"*/>("kind"); }
 	inline auto _impl_js_jts_dserver_dPackageInstalledResponse::success() noexcept { return _getProperty<bool /*false*/>("success"); }
@@ -14358,7 +14358,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_jts_dserver_dSetTypings::typeAcquisition() noexcept { return _getProperty<_js_jts_dTypeAcquisition>("typeAcquisition"); }
 	inline auto _impl_js_jts_dserver_dSetTypings::compilerOptions() noexcept { return _getProperty<_js_jts_dCompilerOptions>("compilerOptions"); }
 	inline auto _impl_js_jts_dserver_dSetTypings::typings() noexcept { return _getProperty<js::Array<tc::js::string>>("typings"); }
-	inline auto _impl_js_jts_dserver_dSetTypings::unresolvedImports() noexcept { return _getProperty<js_unknown /*flags=524288: SortedReadonlyArray<tc::js::string> (TypeReference=ts.SortedReadonlyArray)*/>("unresolvedImports"); }
+	inline auto _impl_js_jts_dserver_dSetTypings::unresolvedImports() noexcept { return _getProperty<tc::js::any /*flags=524288: SortedReadonlyArray<tc::js::string> (TypeReference=ts.SortedReadonlyArray)*/>("unresolvedImports"); }
 	inline auto _impl_js_jts_dserver_dSetTypings::kind() noexcept { return _getProperty<tc::js::string /*"action::set"*/>("kind"); }
 	inline auto _impl_js_jts_dserver_dTypesRegistryRequest::kind() noexcept { return _getProperty<tc::js::string /*"typesRegistry"*/>("kind"); }
 }; // namespace tc::js_defs

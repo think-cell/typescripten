@@ -9,7 +9,7 @@ int main() {
 	tc::js::document()->title(tc::js::string("Hello World from C++!"));
 	static struct Clicker {
 		int number = 1;
-		TC_JS_MEMBER_FUNCTION(Clicker, m_jfuncOnClick, tc::jst::js_unknown, (tc::js::MouseEvent ev)) {
+		TC_JS_MEMBER_FUNCTION(Clicker, m_jfuncOnClick, tc::js::any, (tc::js::MouseEvent ev)) {
 			printf("Got click, number is %d; x=%f, y=%f\n", number, ev->x(), ev->y());
 			tc::js::document()->title(tc::js::string(tc::concat(
 				"Hello World from C++! number = ", tc::as_dec(number)

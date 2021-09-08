@@ -36,14 +36,14 @@ int main() {
     do_foo_TestInvalidArgs<tc::js::string>(0);
     do_foo_TestValidArgs<tc::js::string, tc::js::string>(0);
     do_foo_TestInvalidArgs<tc::js::string, tc::js::undefined>(0);
-    do_foo_TestInvalidArgs<tc::js::string, tc::jst::js_unknown>(0);
+    do_foo_TestInvalidArgs<tc::js::string, tc::js::any>(0);
     do_foo_TestInvalidArgs<tc::js::string, double>(0);
     
     do_foo_TestValidArgs<tc::js::string, tc::js::string, double>(0);
     do_foo_TestValidArgs<tc::js::string, tc::js::string, tc::js::undefined>(0);
 
     do_foo_TestInvalidArgs<tc::js::string, tc::js::string, tc::js::string>(0);
-    do_foo_TestInvalidArgs<tc::js::string, tc::js::string, tc::jst::js_unknown>(0);
+    do_foo_TestInvalidArgs<tc::js::string, tc::js::string, tc::js::any>(0);
     do_foo_TestInvalidArgs<tc::js::string, tc::js::undefined, double>(0);
 
     do_foo4_TestValidArgs<tc::js::string, tc::js::string, double>(0);

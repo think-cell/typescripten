@@ -13,7 +13,7 @@ using tc::jst::js_lambda_wrap;
 using tc::js::string;
 using tc::js::undefined;
 using tc::jst::js_union;
-using tc::jst::js_unknown;
+using tc::js::any;
 
 auto SuccessfulPromise(double x) {
 	return static_cast<Promise<double>>(emscripten::val::module_property("successfulPromise")(x));
@@ -49,7 +49,7 @@ int main() {
 			_ASSERTEQUAL(x, 20);
 			_ASSERTFALSE;
 		});
-		static auto l3fail = js_lambda_wrap([](js_unknown x) noexcept {
+		static auto l3fail = js_lambda_wrap([](any x) noexcept {
 			_ASSERTEQUAL(tc::explicit_cast<std::string>(tc::explicit_cast<string>(x)), "err");
 			return string("hello");
 		});
@@ -73,7 +73,7 @@ int main() {
 			_ASSERTEQUAL(x, 10);
 			return string("ok");
 		});
-		static auto l1fail = js_lambda_wrap([](js_unknown) noexcept {
+		static auto l1fail = js_lambda_wrap([](any) noexcept {
 			_ASSERTFALSE;
 			return null();
 		});
@@ -93,7 +93,7 @@ int main() {
 			_ASSERTFALSE;
 			return string("ok");
 		});
-		static auto l1fail = js_lambda_wrap([](js_unknown x) noexcept {
+		static auto l1fail = js_lambda_wrap([](any x) noexcept {
 			_ASSERTEQUAL(tc::explicit_cast<std::string>(tc::explicit_cast<string>(x)), "err");
 			return null();
 		});

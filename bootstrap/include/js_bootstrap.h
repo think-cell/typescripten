@@ -96,7 +96,7 @@ namespace tc::js {
 			static_assert(::tc::jst::IsJsInteropable<T>::value);
 
 			template<typename R>
-			auto then(::tc::jst::js_function<R(T)> onfulfilled, ::tc::jst::js_function<R(::tc::jst::js_unknown)> onrejected) noexcept {
+			auto then(::tc::jst::js_function<R(T)> onfulfilled, ::tc::jst::js_function<R(::tc::js::any)> onrejected) noexcept {
 				return _call<Promise<RemovePromise_t<R>>>("then", onfulfilled, onrejected);
 			}
 
@@ -106,7 +106,7 @@ namespace tc::js {
 			}
 
 			template<typename R1, typename R2>
-			auto then(::tc::jst::js_function<R1(T)> onfulfilled, ::tc::jst::js_function<R2(jst::js_unknown)> onrejected) noexcept {
+			auto then(::tc::jst::js_function<R1(T)> onfulfilled, ::tc::jst::js_function<R2(::tc::js::any)> onrejected) noexcept {
 				return _call<Promise<::tc::jst::js_union<RemovePromise_t<R1>, RemovePromise_t<R2>>>>("then", onfulfilled, onrejected);
 			}
 		};

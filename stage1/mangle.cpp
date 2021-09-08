@@ -99,7 +99,7 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 	if (ts::TypeFlags::Any == jtypeRoot->flags() ||
 		ts::TypeFlags::Unknown == jtypeRoot->flags()
 		) {
-		return {mangled_no_comments, "js_unknown"};
+		return {mangled_no_comments, "tc::js::any"};
 	}
 	if (ts::TypeFlags::String == jtypeRoot->flags()) {
 		return {mangled_no_comments, "tc::js::string"};
@@ -146,7 +146,7 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 		}));
 		if(!tc::find_first_if<tc::return_bool>(
 			vecmtType, 
-			[](SMangledType const& mt) noexcept { return tc::equal("js_unknown", mt.m_strCppCanonized); }
+			[](SMangledType const& mt) noexcept { return tc::equal("tc::js::any", mt.m_strCppCanonized); }
 		)) {
 			// NOTE: sort_unique works with final names which go to C++. It may potentially hide
 			// some errors in mangling (e.g. if two different types map to the same type in C++).
@@ -252,13 +252,13 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 	}
 	return {
 		tc::make_str(
-			"js_unknown /*flags=",
+			"tc::js::any /*flags=",
 			tc::as_dec(static_cast<int>(jtypeRoot->flags())),
 			": ",
 			tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->typeToString(jtypeRoot)),
 			" (", tc::join_separated(vecstrExtraInfo, ","), ")",
 			"*/"
 		),
-		"js_unknown"
+		"tc::js::any"
 	};
 };

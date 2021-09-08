@@ -9,7 +9,7 @@ using tc::jst::create_js_object;
 using tc::jst::js_object;
 using tc::js::string;
 using tc::js::undefined;
-using tc::jst::js_unknown;
+using tc::js::any;
 using tc::js::null;
 using tc::jst::js_union;
 using tc::jst::js_ref;
@@ -131,15 +131,15 @@ int main() {
 		// No derivedcasts in construction unless there is an explicit_cast to exactly one option.
 		{
 			static_assert(!std::is_constructible<ObjectOrBaseOrString, bool>::value);
-			// static_assert(!std::is_constructible<ObjectOrBaseOrString, js_unknown>::value); // Does not compile because of ambiguity.
-			static_assert(!std::is_convertible<js_unknown, ObjectOrBaseOrString>::value); // Does not compile.
+			// static_assert(!std::is_constructible<ObjectOrBaseOrString, any>::value); // Does not compile because of ambiguity.
+			static_assert(!std::is_convertible<any, ObjectOrBaseOrString>::value); // Does not compile.
 		}
 
 		// Basecast.
 		{
 			ObjectOrBaseOrString const bod(base);
-			static_cast<void>(js_unknown(bod));
-			js_unknown const unk = bod;
+			static_cast<void>(any(bod));
+			any const unk = bod;
 			static_cast<void>(unk);
 		}
 

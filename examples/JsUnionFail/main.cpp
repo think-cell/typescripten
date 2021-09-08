@@ -9,7 +9,7 @@
 using tc::jst::js_object;
 using tc::js::string;
 using tc::js::undefined;
-using tc::jst::js_unknown;
+using tc::js::any;
 using tc::js::null;
 using tc::jst::js_union;
 using tc::jst::js_ref;

@@ -9,7 +9,7 @@
 #include "js_bootstrap.h"
 
 using tc::js::string;
-using tc::jst::js_unknown;
+using tc::js::any;
 using tc::js::Array;
 using tc::js::ReadonlyArray;
 using tc::js::console;
@@ -22,7 +22,7 @@ namespace tc::jst {
 template<> struct IsJsIntegralEnum<MyIntEnum> : std::true_type {};
 template<> struct IsJsHeterogeneousEnum<MyHeterogeneousEnum> : std::true_type {
 	static inline auto const& Values() {
-		static tc::unordered_map<MyHeterogeneousEnum, js_unknown> vals{
+		static tc::unordered_map<MyHeterogeneousEnum, any> vals{
 			{MyHeterogeneousEnum::Foo, 23.0},
 			{MyHeterogeneousEnum::Bar, string("bar")}
 		};
@@ -110,7 +110,7 @@ int main() {
 		_ASSERTEQUAL(emval.template as<double>(), 10.0);
 		_ASSERTEQUAL(emval.template as<MyIntEnum>(), MyIntEnum::Foo);
 
-		js_unknown const unk(MyIntEnum::Foo);
+		any const unk(MyIntEnum::Foo);
 		_ASSERTEQUAL(static_cast<MyIntEnum>(unk), MyIntEnum::Foo);
 		_ASSERT(unk.getEmval().isNumber());
 		_ASSERTEQUAL(unk.getEmval().template as<double>(), 10.0);
@@ -119,7 +119,7 @@ int main() {
 		// Check that BindingType<> removes cv-refs.
 		auto const e = MyIntEnum::Foo;
 		emscripten::val const emval(e);
-		js_unknown const unk(e);
+		any const unk(e);
 	}
 
 	{
@@ -128,7 +128,7 @@ int main() {
 		_ASSERTEQUAL(emval.template as<double>(), 23.0);
 		_ASSERTEQUAL(emval.template as<MyHeterogeneousEnum>(), MyHeterogeneousEnum::Foo);
 
-		js_unknown const unk(MyHeterogeneousEnum::Foo);
+		any const unk(MyHeterogeneousEnum::Foo);
 		_ASSERTEQUAL(static_cast<MyHeterogeneousEnum>(unk), MyHeterogeneousEnum::Foo);
 		_ASSERT(unk.getEmval().isNumber());
 		_ASSERTEQUAL(unk.getEmval().template as<double>(), 23.0);
@@ -140,7 +140,7 @@ int main() {
 		_ASSERTEQUAL(emval.template as<std::string>(), "bar");
 		_ASSERTEQUAL(emval.template as<MyHeterogeneousEnum>(), MyHeterogeneousEnum::Bar);
 
-		js_unknown const unk(MyHeterogeneousEnum::Bar);
+		any const unk(MyHeterogeneousEnum::Bar);
 		_ASSERTEQUAL(static_cast<MyHeterogeneousEnum>(unk), MyHeterogeneousEnum::Bar);
 		_ASSERT(unk.getEmval().isString());
 		_ASSERTEQUAL(unk.getEmval().template as<std::string>(), "bar");
@@ -149,7 +149,7 @@ int main() {
 		// Check that BindingType<> removes cv-refs.
 		auto e = MyHeterogeneousEnum::Foo;
 		emscripten::val const emval(e);
-		js_unknown const unk(e);
+		any const unk(e);
 	}
 	return 0;
 }

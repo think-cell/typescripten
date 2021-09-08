@@ -7,7 +7,7 @@
 #include "js_ref.h"
 
 using tc::js::string;
-using tc::jst::js_unknown;
+using tc::js::any;
 using tc::jst::js_optional;
 
 struct ISomeObject : virtual tc::jst::IObject {
@@ -45,8 +45,8 @@ int main() {
 		_ASSERTEQUAL(tc::explicit_cast<std::string>(message), "Hello World");
 
 		// Implicit basecast.
-		js_unknown anyMessage = message;
-		static_assert(std::is_convertible<string, js_unknown>::value);
+		any anyMessage = message;
+		static_assert(std::is_convertible<string, any>::value);
 		_ASSERTEQUAL(message.length(), 11);
 		_ASSERT(message.getEmval().strictlyEquals(anyMessage.getEmval()));
 		anyMessage = message;
@@ -55,7 +55,7 @@ int main() {
 
 		// Explicit derivedcast.
 		string const message2(anyMessage);
-		static_assert(!std::is_convertible<js_unknown, string>::value);
+		static_assert(!std::is_convertible<any, string>::value);
 		_ASSERT(message.getEmval().strictlyEquals(message2.getEmval()));
 	}
 
