@@ -62,13 +62,13 @@ namespace tc::js { // Implementations of TypeScript/JavaScript builtin types are
 				: m_emval(std::forward<T>(value)) {
 			}
 
-			// explicit operator bool() may be expected to have different semantics in C++ and JS:
-			// C++: undefined/null only.
-			// JS: undefined/null/NaN/0/""
-			// So we disable it altogether.
-
 			template<typename U, typename = std::enable_if_t<tc::jst::IsJsInteropable<tc::remove_cvref_t<U>>::value && !std::is_same<tc::remove_cvref_t<U>, bool>::value>>
 			explicit operator U() const& noexcept { return m_emval.template as<U>(); }
+
+			explicit operator bool() const& noexcept {
+				_ASSERT(m_emval.isTrue() || m_emval.isFalse());
+				return m_emval.template as<bool>();
+			}
 
 		  private:
 			emscripten::val m_emval;
@@ -112,10 +112,6 @@ namespace tc::js { // Implementations of TypeScript/JavaScript builtin types are
 			{}
 
 			int length() const& noexcept { return m_emval["length"].as<int>(); }
-
-			explicit operator bool() const& noexcept {
-				return !!m_emval;
-			}
 
 			explicit operator std::string() const& noexcept { return m_emval.template as<std::string>(); }
 
