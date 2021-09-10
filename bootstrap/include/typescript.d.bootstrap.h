@@ -40,7 +40,7 @@ namespace tc::js::ts_ext {
 	using TypeParameter = tc::jst::js_ref<_js_TypeParameter>;
 
 	// TODO: Generics
-	struct _js_SymbolTable : virtual tc::jst::IObject {
+	struct _js_SymbolTable : virtual tc::jst::object_base {
 		struct _tcjs_definitions {
 			using value_type = tc::js::ts::Symbol;
 		};

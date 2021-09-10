@@ -134,7 +134,7 @@ namespace tc::jst {
 		struct IJsFunction {};
 
 		template<typename R, typename... Args>
-		struct IJsFunction<R(Args...)> : virtual IObject {
+		struct IJsFunction<R(Args...)> : virtual object_base {
 			struct _tcjs_definitions {
 				using function_type = R(Args...);
 			};

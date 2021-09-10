@@ -180,7 +180,7 @@ int main() {
 	}
 	// js_ref
 	{
-		struct ISomeObject : virtual jst::IObject {
+		struct ISomeObject : virtual jst::object_base {
 			struct _tcjs_definitions { // Optional
 				using Foo = int;
 			};

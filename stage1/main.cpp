@@ -395,7 +395,7 @@ int main(int cArgs, char* apszArgs[]) {
 					" : ",
 					tc_conditional_range(
 						tc::empty(pjsclass->m_vecpjsclassBase),
-						"virtual IObject",
+						"virtual object_base",
 						tc::join_separated(
 							tc::transform(pjsclass->m_vecpjsclassBase,
 								[](SJsClass const* pjsclass) noexcept {

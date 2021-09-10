@@ -16,7 +16,7 @@ using tc::jst::pass_this_t;
 using tc::jst::pass_all_arguments_t;
 using tc::js::Array;
 
-struct _js_SomeJsClass : virtual tc::jst::IObject {
+struct _js_SomeJsClass : virtual tc::jst::object_base {
 	auto intValue() noexcept { return tc::explicit_cast<int>(_getProperty<double>("intValue")); }
 
 	static auto _tcjs_construct(int v) noexcept {

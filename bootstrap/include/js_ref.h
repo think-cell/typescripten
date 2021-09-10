@@ -12,12 +12,12 @@
 
 namespace tc::jst {
 	namespace no_adl {
-		struct IObject {
+		struct object_base {
 		  private:
 			emscripten::val& m_emval;
 
 		  protected:
-			explicit IObject(emscripten::val& _emval) noexcept
+			explicit object_base(emscripten::val& _emval) noexcept
 				: m_emval(_emval) {}
 
 			template<typename T>
@@ -63,12 +63,12 @@ namespace tc::jst {
 		template<typename>
 		struct js_ref;
 	} // namespace no_adl
-	using no_adl::IObject;
+	using no_adl::object_base;
 	using no_adl::js_ref;
 
 	DEFINE_TAG_TYPE(create_js_object)
 
-	using object = js_ref<IObject>;
+	using object = js_ref<object_base>;
 
 	namespace js_ref_detail {
 		namespace no_adl {
@@ -91,7 +91,7 @@ namespace tc::jst {
 			static_assert(std::is_class<T>::value); // void is explicitly excluded as well, even though void* is base of all pointers.
 			static_assert(!std::is_volatile<T>::value);
 			static_assert(!std::is_const<T>::value, "We cannot guarantee constness of JS values");
-			// static_assert(std::is_convertible<T*, IObject*>::value);
+			// static_assert(std::is_convertible<T*, object_base*>::value);
 
 			// js_ref is non-nullable.
 			explicit js_ref(emscripten::val const& _emval) noexcept
@@ -173,7 +173,7 @@ namespace tc::jst {
 			struct CArrowProxy final : T
 				, private tc::nonmovable {
 				explicit CArrowProxy(emscripten::val& m_emval) noexcept
-					: IObject(m_emval) {}
+					: object_base(m_emval) {}
 				T* operator->() && noexcept { return this; }
 
 			  private:

@@ -42,7 +42,7 @@ namespace tc::js {
 		using console = ::tc::jst::js_ref<_js_console>;
 
 		template<typename T>
-		struct _js_Array : virtual ::tc::jst::IObject {
+		struct _js_Array : virtual ::tc::jst::object_base {
 			static_assert(::tc::jst::IsJsInteropable<T>::value);
 
 			struct _tcjs_definitions {
@@ -77,7 +77,7 @@ namespace tc::js {
 		};
 
 		template<typename K, typename V>
-		struct _js_Record : virtual ::tc::jst::IObject {
+		struct _js_Record : virtual ::tc::jst::object_base {
 			static_assert(::tc::jst::IsJsInteropable<K>::value);
 			static_assert(::tc::jst::IsJsInteropable<V>::value);
 
@@ -92,7 +92,7 @@ namespace tc::js {
 		using RemovePromise_t = typename RemovePromise<T>::type;
 
 		template<typename T>
-		struct _js_Promise : virtual ::tc::jst::IObject {
+		struct _js_Promise : virtual ::tc::jst::object_base {
 			static_assert(::tc::jst::IsJsInteropable<T>::value);
 
 			template<typename R>
@@ -116,7 +116,7 @@ namespace tc::js {
 			// JavaScript passes 'undefined' to what TypeScript calls 'void' promise.
 		};
 
-		struct _js_console : virtual ::tc::jst::IObject {
+		struct _js_console : virtual ::tc::jst::object_base {
 			struct _tcjs_definitions {
 				template<typename... Args>
 				static void log(Args&&... args) noexcept {

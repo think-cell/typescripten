@@ -16,7 +16,7 @@ Running the **typescripten** compiler on this file will produce the C++ header `
         using namespace jst; // no ADL
         struct _impl_js_jMyLib;
         using _js_jMyLib = js_ref<_impl_js_jMyLib>;
-        struct _impl_js_jMyLib : virtual IObject {
+        struct _impl_js_jMyLib : virtual object_base {
             struct _tcjs_definitions {
                 static auto appendNumber(string a, double b) noexcept;
             };

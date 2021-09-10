@@ -14,7 +14,7 @@ using tc::js::null;
 using tc::jst::union_t;
 using tc::jst::js_ref;
 
-struct _js_MyJsBase : virtual tc::jst::IObject {
+struct _js_MyJsBase : virtual tc::jst::object_base {
 	static auto _tcjs_construct(string, string) noexcept { return emscripten::val::object(); }
 };
 struct _js_MyJsDerived : virtual _js_MyJsBase {
