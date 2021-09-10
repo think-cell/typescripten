@@ -35,7 +35,7 @@ and limitations under the License.
 namespace tc::js::ts_ext {
 	// TODO: Unclear why this is ok, this is not defined on TypeParameter
 	struct _js_TypeParameter : virtual tc::js_defs::_impl_js_jts_dTypeParameter {
-		auto constraint() noexcept { return _getProperty<tc::jst::js_union<tc::js::undefined, tc::js::ts::Type>>("constraint"); }
+		auto constraint() noexcept { return _getProperty<tc::jst::union_t<tc::js::undefined, tc::js::ts::Type>>("constraint"); }
 	};
 	using TypeParameter = tc::jst::js_ref<_js_TypeParameter>;
 

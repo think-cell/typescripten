@@ -59,7 +59,7 @@ SMangledType WrapType(std::string strPrefix, tc::js::ReadonlyArray<ts::Type> aty
 	};
 }
 
-std::optional<SMangledType> MangleBootstrapType(ts::Symbol jsym, tc::jst::js_union<tc::js::ReadonlyArray<ts::Type>, tc::js::undefined> jorarrtypeArguments) noexcept {
+std::optional<SMangledType> MangleBootstrapType(ts::Symbol jsym, tc::jst::union_t<tc::js::ReadonlyArray<ts::Type>, tc::js::undefined> jorarrtypeArguments) noexcept {
 	if(jorarrtypeArguments) {
 		std::string strTarget = FullyQualifiedName(jsym);
 		auto const jrarrTypeArguments = *jorarrtypeArguments;
@@ -159,10 +159,10 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 			} else {
 				return {
 					tc::make_str(
-						"tc::jst::js_union<", tc::join_separated(tc::transform(vecmtType, TC_MEMBER(.m_strWithComments)), ", "), ">"
+						"tc::jst::union_t<", tc::join_separated(tc::transform(vecmtType, TC_MEMBER(.m_strWithComments)), ", "), ">"
 					),
 					tc::make_str(
-						"tc::jst::js_union<", tc::join_separated(tc::transform(vecmtType, TC_MEMBER(.m_strCppCanonized)), ", "), ">"
+						"tc::jst::union_t<", tc::join_separated(tc::transform(vecmtType, TC_MEMBER(.m_strCppCanonized)), ", "), ">"
 					)
 				};
 			}

@@ -6,12 +6,12 @@
 #include "js_ref.h"
 
 using tc::jst::create_js_object;
-using tc::jst::js_object;
+using tc::jst::object;
 using tc::js::string;
 using tc::js::undefined;
 using tc::js::any;
 using tc::js::null;
-using tc::jst::js_union;
+using tc::jst::union_t;
 using tc::jst::js_ref;
 
 struct _js_MyJsBase : virtual tc::jst::IObject {
@@ -25,7 +25,7 @@ using MyJsDerived = tc::jst::js_ref<_js_MyJsDerived>;
 
 int main() {
 	{
-		using BigUnion = js_union<undefined, string, double, MyJsBase>;
+		using BigUnion = union_t<undefined, string, double, MyJsBase>;
 		{
 			BigUnion const u;
 			_ASSERT(u.getEmval().isUndefined());
@@ -72,7 +72,7 @@ int main() {
 		}
 	}
 	{
-		using BigUnion = js_union<null, bool>;
+		using BigUnion = union_t<null, bool>;
 		{
 			BigUnion const u;
 			_ASSERT(u.getEmval().isNull());
@@ -93,7 +93,7 @@ int main() {
 		}
 	}
 	{
-		using BigUnion = js_union<null, string>;
+		using BigUnion = union_t<null, string>;
 		{
 			BigUnion const u;
 			_ASSERT(u.getEmval().isNull());
@@ -106,7 +106,7 @@ int main() {
 		}
 	}
 	{
-		using ObjectOrBaseOrString = js_union<js_object, MyJsBase, string>;
+		using ObjectOrBaseOrString = union_t<object, MyJsBase, string>;
 		MyJsBase const base(create_js_object, string(""), string(""));
 		MyJsDerived const derived(create_js_object, string(""), string(""));
 		string const str("");
@@ -144,8 +144,8 @@ int main() {
 		}
 
 		// Element extraction.
-		static_cast<void>(js_object(ObjectOrBaseOrString(base)));
-		static_assert(!std::is_convertible<ObjectOrBaseOrString, js_object>::value);
+		static_cast<void>(object(ObjectOrBaseOrString(base)));
+		static_assert(!std::is_convertible<ObjectOrBaseOrString, object>::value);
 
 		static_cast<void>(MyJsBase(ObjectOrBaseOrString(derived)));
 		static_assert(!std::is_convertible<ObjectOrBaseOrString, MyJsBase>::value);
@@ -159,7 +159,7 @@ int main() {
 	}
 	{
 		// Corner case: all options are subtypes of an option.
-		using BaseOrDerived = js_union<MyJsBase, MyJsDerived>;
+		using BaseOrDerived = union_t<MyJsBase, MyJsDerived>;
 		static_assert(std::is_convertible<MyJsDerived, MyJsBase>::value);
 		BaseOrDerived const bod(MyJsDerived(create_js_object, string(""), string("")));
 
@@ -177,36 +177,36 @@ int main() {
 	{
 		// Union basecast.
 		{
-			static_cast<void>(js_union<MyJsBase, string, undefined, null>(js_union<MyJsDerived, undefined>()));
-			js_union<MyJsBase, string, undefined, null> const x = js_union<MyJsDerived, undefined>();
+			static_cast<void>(union_t<MyJsBase, string, undefined, null>(union_t<MyJsDerived, undefined>()));
+			union_t<MyJsBase, string, undefined, null> const x = union_t<MyJsDerived, undefined>();
 			static_cast<void>(x);
 		}
 
 		// Union derivedcast.
 		static_assert(!std::is_convertible<
-			js_union<MyJsBase, string, undefined>,
-			js_union<MyJsDerived, string>
+			union_t<MyJsBase, string, undefined>,
+			union_t<MyJsDerived, string>
 		>::value);
-		static_cast<void>(js_union<MyJsDerived, undefined>(js_union<MyJsBase, string, undefined>()));
+		static_cast<void>(union_t<MyJsDerived, undefined>(union_t<MyJsBase, string, undefined>()));
 
 		// Union crosscasts are prohibited.
 		static_assert(!std::is_constructible<
-			js_union<MyJsDerived, undefined, null>, // null is removed, but MyJsDerived is generalized.
-			js_union<MyJsBase, undefined>
+			union_t<MyJsDerived, undefined, null>, // null is removed, but MyJsDerived is generalized.
+			union_t<MyJsBase, undefined>
 		>::value);
 		static_assert(!std::is_constructible<
-			js_union<MyJsBase, undefined>,
-			js_union<MyJsDerived, undefined, null> // null is removed, but MyJsDerived is generalized.
+			union_t<MyJsBase, undefined>,
+			union_t<MyJsDerived, undefined, null> // null is removed, but MyJsDerived is generalized.
 		>::value);
 	}
 	{
-		js_union<undefined, MyJsBase, MyJsDerived> const u;
+		union_t<undefined, MyJsBase, MyJsDerived> const u;
 		static_cast<void>(u.get<undefined>());
 		static_cast<void>(undefined{u});
 		// _ASSERT(!u);
 	}
 	{
-		js_union<undefined, MyJsBase, MyJsDerived> const u(MyJsBase(create_js_object, string(""), string("")));
+		union_t<undefined, MyJsBase, MyJsDerived> const u(MyJsBase(create_js_object, string(""), string("")));
 		static_cast<void>(u.get<MyJsBase>());
 		static_cast<void>(MyJsBase{u});
 		// _ASSERT(u);

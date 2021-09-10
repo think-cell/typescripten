@@ -540,11 +540,11 @@ void SJsTypeAlias::Initialize() & noexcept {
 }
 
 SMangledType SJsTypeAlias::MangleType() const& noexcept {
-    // If a type alias is defined by a union, we have to define it by the corresponding js_union<...> declaration
+    // If a type alias is defined by a union, we have to define it by the corresponding union_t<...> declaration
     // type FooBar = number | string;
-    // using FooBar = js_union<js_number, string>;
+    // using FooBar = union_t<js_number, string>;
 
-    // If is type alias is defined as another type or type alias, we do not want to repeat the js_union declaration
+    // If is type alias is defined as another type or type alias, we do not want to repeat the union_t declaration
     // but try to keep referencing the type alias, so we call MangleType with bUseTypeAlias = true
     // type FooBar2 = FooBar;
     // using FooBar2 = FooBar;

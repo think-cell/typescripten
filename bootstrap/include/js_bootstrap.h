@@ -107,7 +107,7 @@ namespace tc::js {
 
 			template<typename R1, typename R2>
 			auto then(::tc::jst::function<R1(T)> onfulfilled, ::tc::jst::function<R2(::tc::js::any)> onrejected) noexcept {
-				return _call<Promise<::tc::jst::js_union<RemovePromise_t<R1>, RemovePromise_t<R2>>>>("then", onfulfilled, onrejected);
+				return _call<Promise<::tc::jst::union_t<RemovePromise_t<R1>, RemovePromise_t<R2>>>>("then", onfulfilled, onrejected);
 			}
 		};
 

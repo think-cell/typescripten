@@ -132,7 +132,7 @@ namespace tc::jst {
 	}
 
 	// Any union of null|T T|null undefined|T or T|undefined behaves like a optional<T>
-	namespace js_union_detail {
+	namespace union_detail {
 		namespace no_adl {
 			template<typename, typename... Ts>
 			struct CDetectOptionLike {
@@ -185,12 +185,12 @@ namespace tc::jst {
 
 		template<typename ListFrom, typename ListTs>
 		using FindUniqueExplicitCastableFrom = tc::type::find_unique_if<ListTs, no_adl::IsExplicitCastableFrom<ListFrom>::template type>;
-	} // namespace js_union_detail
+	} // namespace union_detail
 
 	namespace no_adl {
 		// TODO: optimize by providing JS-side toWireType/fromWireType for integrals/bools and getting rid of emscripten::val
 		template<typename... Ts>
-		struct js_union : js_union_detail::CDetectOptionLike<void, Ts...> {
+		struct union_t : union_detail::CDetectOptionLike<void, Ts...> {
 			static inline constexpr auto instantiated = true;
 
 			static_assert(1 < sizeof...(Ts));
@@ -206,51 +206,58 @@ namespace tc::jst {
 			static inline constexpr auto has_bool = tc::type::find_unique<ListTs, bool>::found;
 			static inline constexpr auto has_number = tc::type::find_unique<ListTs, double>::found;
 
-			explicit js_union(emscripten::val const& _emval) noexcept
+			explicit union_t(emscripten::val const& _emval) noexcept
 				: m_emval(_emval) { assertEmvalInRange(); }
-			explicit js_union(emscripten::val&& _emval) noexcept
+			explicit union_t(emscripten::val&& _emval) noexcept
 				: m_emval(tc_move(_emval)) { assertEmvalInRange(); }
 
 			emscripten::val const& getEmval() const& noexcept { return m_emval; }
 			emscripten::val&& getEmval() && noexcept { return tc_move(m_emval); }
 
-			template<typename T = js_union, std::enable_if_t<T::has_undefined && !T::has_null>* = nullptr>
-			js_union() noexcept
-				: js_union(emscripten::val::undefined()) {}
+			template<ENABLE_SFINAE, std::enable_if_t<SFINAE_TYPE(union_t)::has_undefined && !SFINAE_TYPE(union_t)::has_null>* = nullptr>
+			union_t() noexcept
+				: union_t(emscripten::val::undefined()) {}
 
-			template<typename T = js_union, std::enable_if_t<!T::has_undefined && T::has_null>* = nullptr>
-			js_union() noexcept
-				: js_union(emscripten::val::null()) {}
+			template<ENABLE_SFINAE, std::enable_if_t<!SFINAE_TYPE(union_t)::has_undefined && SFINAE_TYPE(union_t)::has_null>* = nullptr>
+			union_t() noexcept
+				: union_t(emscripten::val::null()) {}
 
 			// Constructing from a subtype. Assumption: the underlying representation does not depend on what element of ListTs is chosen.
 			template<typename T, std::enable_if_t<IsJsInteropable<tc::remove_cvref_t<T>>::value && (std::is_convertible<T&&, Ts>::value || ...)>* = nullptr>
-			js_union(T&& value) noexcept
+			union_t(T&& value) noexcept
 				: m_emval(std::forward<T>(value)) {}
 
-			// Constructing from a wider js_union (derived cast).
-			template<typename T, std::enable_if_t<std::conjunction<std::negation<std::is_same<tc::remove_cvref_t<T>, js_union>>, tc::is_instance_or_derived<js_union, T>, std::is_convertible<js_union, tc::remove_cvref_t<T>>>::value>* = nullptr>
-			explicit js_union(T&& other) noexcept
+			// Constructing from a wider union_t (derived cast).
+			template<typename T, std::enable_if_t<std::conjunction<std::negation<std::is_same<tc::remove_cvref_t<T>, union_t>>, tc::is_instance_or_derived<union_t, T>, std::is_convertible<union_t, tc::remove_cvref_t<T>>>::value>* = nullptr>
+			explicit union_t(T&& other) noexcept
 				: m_emval(std::forward<T>(other).m_emval) {
 				assertEmvalInRange();
 			}
 
 			template<typename... Args>
-			explicit js_union(tc::aggregate_tag_t, Args&&... args) noexcept
+			explicit union_t(tc::aggregate_tag_t, Args&&... args) noexcept
 				: m_emval(
-					  tc::explicit_cast<typename js_union_detail::FindUniqueExplicitCastableFrom<tc::type::list<Args&&...>, ListTs>::type>(
-						  std::forward<Args>(args)...)) {}
+					tc::explicit_cast<typename union_detail::FindUniqueExplicitCastableFrom<tc::type::list<Args&&...>, ListTs>::type>(
+						std::forward<Args>(args)...
+					)
+				) 
+			{}
 
 			// Base cast to a common type. Assumption: the underlying representation does not depend on what element of ListTs is chosen.
-			template<typename T, std::enable_if_t<!std::is_same<bool, tc::remove_cvref_t<T>>::value && !std::is_same<tc::js::any, tc::remove_cvref_t<T>>::value && // js_unkown(T&&) ctor takes care of that.
-									 (std::is_convertible<Ts, T>::value && ...)>* = nullptr>
+			template<typename T, std::enable_if_t<
+				!std::is_same<bool, tc::remove_cvref_t<T>>::value 
+				&& !std::is_same<tc::js::any, tc::remove_cvref_t<T>>::value // any(T&&) ctor takes care of that.
+				&& (std::is_convertible<Ts, T>::value && ...)>* = nullptr
+			>
 			operator T() const& noexcept {
 				return m_emval.template as<T>();
 			}
 
 			// Extracting a specific type.
-			template<typename T, std::enable_if_t<!std::is_same<bool, tc::remove_cvref_t<T>>::value && // operator bool() has special meaning, use get<> to get `bool` out of `js_union`.
-									 !(std::is_convertible<Ts, T>::value && ...) && // implicit conversion takes care of that.
-									 (std::is_same<Ts, tc::remove_cvref_t<T>>::value || ...)>* = nullptr>
+			template<typename T, std::enable_if_t<
+				!std::is_same<bool, tc::remove_cvref_t<T>>::value // operator bool() has special meaning, use get<> to get `bool` out of `union_t`.
+				&& !(std::is_convertible<Ts, T>::value && ...) // implicit conversion takes care of that.
+				&& (std::is_same<Ts, tc::remove_cvref_t<T>>::value || ...)>* = nullptr>
 			explicit operator T() const& noexcept {
 				static_assert((std::is_same<Ts, T>::value || ...));
 				return get<tc::remove_cvref_t<T>>();
@@ -269,13 +276,13 @@ namespace tc::jst {
 		  private:
 		  	// Members specific to optionals
 
-			// We cannot derive optional<T> from js_union<T, js::undefined> and implement
+			// We cannot derive optional<T> from union_t<T, js::undefined> and implement
 			// these members in the derived class only, because  "optional" is a concept 
-			// that js_union<T, js::undefined>, js_union<T, js::null>, js_union<js::undefined, T> 
-			// and js_union<js::null, T> satisfy
+			// that union_t<T, js::undefined>, union_t<T, js::null>, union_t<js::undefined, T> 
+			// and union_t<js::null, T> satisfy
 
 			template<typename... Us>
-			friend struct js_union;
+			friend struct union_t;
 
 			template<typename T>
 			struct CArrowProxy final {
@@ -289,16 +296,16 @@ namespace tc::jst {
 
 		  public:
 			template<ENABLE_SFINAE>
-			typename SFINAE_TYPE(js_union)::option_like_type operator*() const& noexcept {
-				return get<typename js_union::option_like_type>();
+			typename SFINAE_TYPE(union_t)::option_like_type operator*() const& noexcept {
+				return get<typename union_t::option_like_type>();
 			}
 
 			template<ENABLE_SFINAE>
-			CArrowProxy<typename SFINAE_TYPE(js_union)::option_like_type> operator->() const& noexcept {
-				return get<typename js_union::option_like_type>();
+			CArrowProxy<typename SFINAE_TYPE(union_t)::option_like_type> operator->() const& noexcept {
+				return get<typename union_t::option_like_type>();
 			}
 
-			template<ENABLE_SFINAE, std::enable_if_t<!std::is_void<typename SFINAE_TYPE(js_union)::option_like_type>::value>* = nullptr>
+			template<ENABLE_SFINAE, std::enable_if_t<!std::is_void<typename SFINAE_TYPE(union_t)::option_like_type>::value>* = nullptr>
 			operator bool() const& noexcept {
 				// This matches the semantics of std::optional
 				static_assert(has_undefined != has_null);
@@ -333,10 +340,10 @@ namespace tc::jst {
 		};
 
 	} // namespace no_adl
-	using no_adl::js_union;
+	using no_adl::union_t;
 	
 	template<typename T>
-	using optional = js_union<tc::js::undefined, T>;
+	using optional = union_t<tc::js::undefined, T>;
 
 	template<>
 	struct IsJsInteropable<tc::js::any> : std::true_type {
@@ -351,8 +358,8 @@ namespace tc::jst {
 	};
 
 	template<typename... Ts>
-	struct IsJsInteropable<js_union<Ts...>> : std::true_type {
-		static_assert(js_union<Ts...>::instantiated);
+	struct IsJsInteropable<union_t<Ts...>> : std::true_type {
+		static_assert(union_t<Ts...>::instantiated);
 	};
 
 	template<>
@@ -378,7 +385,7 @@ namespace tc::jst {
 			};
 
 			template<typename... Ts>
-			struct IsEmvalWrapper<js_union<Ts...>, std::enable_if_t<IsJsInteropable<js_union<Ts...>>::value>> : std::true_type {
+			struct IsEmvalWrapper<union_t<Ts...>, std::enable_if_t<IsJsInteropable<union_t<Ts...>>::value>> : std::true_type {
 			};
 		} // namespace no_adl
 		using no_adl::IsEmvalWrapper;

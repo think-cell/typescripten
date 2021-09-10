@@ -12,7 +12,7 @@ using tc::js::null;
 using tc::jst::js_lambda_wrap;
 using tc::js::string;
 using tc::js::undefined;
-using tc::jst::js_union;
+using tc::jst::union_t;
 using tc::js::any;
 
 auto SuccessfulPromise(double x) {
@@ -77,9 +77,9 @@ int main() {
 			_ASSERTFALSE;
 			return null();
 		});
-		Promise<js_union<string, null>> p2 = p1->then(l1ok, l1fail);
+		Promise<union_t<string, null>> p2 = p1->then(l1ok, l1fail);
 
-		static auto l2 = js_lambda_wrap([](js_union<string, null> x) noexcept {
+		static auto l2 = js_lambda_wrap([](union_t<string, null> x) noexcept {
 			_ASSERTEQUAL(tc::explicit_cast<std::string>(tc::explicit_cast<string>(x)), "ok");
 			std::cout << "Promise 2/3 success\n";
 			CompletePromiseTest();
@@ -97,9 +97,9 @@ int main() {
 			_ASSERTEQUAL(tc::explicit_cast<std::string>(tc::explicit_cast<string>(x)), "err");
 			return null();
 		});
-		Promise<js_union<string, null>> p2 = p1->then(l1ok, l1fail);
+		Promise<union_t<string, null>> p2 = p1->then(l1ok, l1fail);
 
-		static auto l2 = js_lambda_wrap([](js_union<string, null> x) noexcept {
+		static auto l2 = js_lambda_wrap([](union_t<string, null> x) noexcept {
 			static_cast<void>(static_cast<null>(x));
 			std::cout << "Promise 3/3 success\n";
 			CompletePromiseTest();
