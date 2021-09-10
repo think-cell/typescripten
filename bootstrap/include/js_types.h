@@ -227,7 +227,7 @@ namespace tc::jst {
 			js_union(T&& value) noexcept
 				: m_emval(std::forward<T>(value)) {}
 
-			// Constructing from a wider js_union (derivedcast).
+			// Constructing from a wider js_union (derived cast).
 			template<typename T, std::enable_if_t<std::conjunction<std::negation<std::is_same<tc::remove_cvref_t<T>, js_union>>, tc::is_instance_or_derived<js_union, T>, std::is_convertible<js_union, tc::remove_cvref_t<T>>>::value>* = nullptr>
 			explicit js_union(T&& other) noexcept
 				: m_emval(std::forward<T>(other).m_emval) {
@@ -240,7 +240,7 @@ namespace tc::jst {
 					  tc::explicit_cast<typename js_union_detail::FindUniqueExplicitCastableFrom<tc::type::list<Args&&...>, ListTs>::type>(
 						  std::forward<Args>(args)...)) {}
 
-			// Basecast to a common type. Assumption: the underlying representation does not depend on what element of ListTs is chosen.
+			// Base cast to a common type. Assumption: the underlying representation does not depend on what element of ListTs is chosen.
 			template<typename T, std::enable_if_t<!std::is_same<bool, tc::remove_cvref_t<T>>::value && !std::is_same<tc::js::any, tc::remove_cvref_t<T>>::value && // js_unkown(T&&) ctor takes care of that.
 									 (std::is_convertible<Ts, T>::value && ...)>* = nullptr>
 			operator T() const& noexcept {
@@ -267,41 +267,46 @@ namespace tc::jst {
 			}
 
 		  private:
+		  	// Members specific to optionals
+
+			// We cannot derive optional<T> from js_union<T, js::undefined> and implement
+			// these members in the derived class only, because  "optional" is a concept 
+			// that js_union<T, js::undefined>, js_union<T, js::null>, js_union<js::undefined, T> 
+			// and js_union<js::null, T> satisfy
+
 			template<typename... Us>
 			friend struct js_union;
 
 			template<typename T>
-			struct CArrowProxy {
+			struct CArrowProxy final {
 				T m_value;
-				CArrowProxy(T&& value) noexcept
-					: m_value(tc_move(value)) {}
-				T* operator->() & noexcept { return &m_value; }
-				T const* operator->() const& noexcept { return &m_value; }
+
+				CArrowProxy(T&& value) noexcept : m_value(tc_move(value)) {}
+
+				T* operator->() & noexcept { return std::addressof(m_value); }
+				T const* operator->() const& noexcept { return std::addressof(m_value); }
 			};
 
 		  public:
-			template<typename T = js_union>
-			typename T::option_like_type operator*() const& noexcept {
+			template<ENABLE_SFINAE>
+			typename SFINAE_TYPE(js_union)::option_like_type operator*() const& noexcept {
 				return get<typename js_union::option_like_type>();
 			}
 
-			template<typename T = js_union>
-			CArrowProxy<typename T::option_like_type> operator->() const& noexcept {
+			template<ENABLE_SFINAE>
+			CArrowProxy<typename SFINAE_TYPE(js_union)::option_like_type> operator->() const& noexcept {
 				return get<typename js_union::option_like_type>();
 			}
 
-			explicit operator bool() const& noexcept {
-				// This matches JS logic for 0. But what should we do with js_union<undefined, double>?
-				// So we only enable this operator iff all of the following is true:
-				// 1. Contains exactly one of: undefined, null
-				// 2. Contains only js objects (IObject), which are non-nullable.
-				// Consequently: does not contain: string, boolean, number, enum.
+			template<ENABLE_SFINAE, std::enable_if_t<!std::is_void<typename SFINAE_TYPE(js_union)::option_like_type>::value>* = nullptr>
+			operator bool() const& noexcept {
+				// This matches the semantics of std::optional
 				static_assert(has_undefined != has_null);
-				static_assert(!has_string);
-				static_assert(!has_bool);
-				static_assert(!has_number);
-				static_assert(((std::is_same<Ts, tc::js::undefined>::value || std::is_same<Ts, tc::js::null>::value || tc::is_instance_or_derived<js_ref, Ts>::value) && ...));
-				return !!m_emval;
+				if constexpr(has_undefined) {
+					return !m_emval.isUndefined();
+				} else {
+					return !m_emval.isNull();
+				}
 			}
 
 		  private:
@@ -329,6 +334,7 @@ namespace tc::jst {
 
 	} // namespace no_adl
 	using no_adl::js_union;
+	
 	template<typename T>
 	using optional = js_union<tc::js::undefined, T>;
 

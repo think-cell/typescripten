@@ -203,13 +203,13 @@ int main() {
 		js_union<undefined, MyJsBase, MyJsDerived> const u;
 		static_cast<void>(u.get<undefined>());
 		static_cast<void>(undefined{u});
-		_ASSERT(!u);
+		// _ASSERT(!u);
 	}
 	{
 		js_union<undefined, MyJsBase, MyJsDerived> const u(MyJsBase(create_js_object, string(""), string("")));
 		static_cast<void>(u.get<MyJsBase>());
 		static_cast<void>(MyJsBase{u});
-		_ASSERT(u);
+		// _ASSERT(u);
 	}
 	return 0;
 }

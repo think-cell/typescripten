@@ -68,7 +68,7 @@ namespace tc::jst {
 
 	DEFINE_TAG_TYPE(create_js_object)
 
-	using js_object = js_ref<IObject>;
+	using object = js_ref<IObject>;
 
 	namespace js_ref_detail {
 		namespace no_adl {

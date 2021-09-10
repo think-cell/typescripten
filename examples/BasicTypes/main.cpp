@@ -9,34 +9,7 @@
 namespace js = tc::js;
 namespace jst = tc::jst;
 
-struct ISomeObject : virtual jst::IObject {
-	struct _tcjs_definitions { // Optional
-		using Foo = int;
-	};
-
-	auto foo() {
-		return _call<js::string>("foo");
-	}
-
-	auto operator()(double) {
-	    return _call_this<void>();
-	}
-
-	auto operator()(js::string) {
-	    return _call_this<double>();
-	}
-};
-
-using SomeObject = jst::js_ref<ISomeObject>;
-
 int main() {
-	{
-		static_assert(std::is_same<int, SomeObject::Foo>::value);
-		static_assert(std::is_same<js::string, decltype(std::declval<SomeObject>()->foo())>::value);
-		static_assert(std::is_same<void, decltype(std::declval<SomeObject>()(10.0))>::value);
-		static_assert(std::is_same<double, decltype(std::declval<SomeObject>()(js::string("hi")))>::value);
-	}
-
 	// any
 	{
 		static_assert(std::is_convertible<double, js::any>::value);
@@ -145,34 +118,47 @@ int main() {
 		js::null{emval};
 	}
 
+	// optional
 	{
-		// Test optional of object.
-		using OptionalUnknown = jst::optional<jst::js_object>;
 		static_assert(
 			std::is_same<
-				typename emscripten::internal::BindingType<OptionalUnknown>::WireType,
+				typename emscripten::internal::BindingType<jst::optional<js::string>>::WireType,
 				typename emscripten::internal::BindingType<emscripten::val>::WireType
-			>::value);
+			>::value
+		);
 
 		{
-			emscripten::val const emval{OptionalUnknown()};
-			_ASSERT(!emval.template as<OptionalUnknown>());
+			jst::optional<js::string> ostr;
+			_ASSERT(ostr.getEmval().isUndefined());
+			_ASSERT(!ostr);
+			_ASSERT(!ostr.getEmval().template as<jst::optional<js::string>>());
+		}
+		{
+		 	js::string const str("Hello World");
+
+		 	emscripten::val emval{jst::optional<js::string>(str)};
+			 _ASSERT(!emval.isUndefined());
+
+			auto const ostrReturned = emval.template as<jst::optional<js::string>>();
+			_ASSERT(ostrReturned);
+			_ASSERT(ostrReturned.getEmval().strictlyEquals(emval));
+			_ASSERT(ostrReturned.getEmval().strictlyEquals(str.getEmval()));
+		}
+		{
+			jst::optional<js::string> ostr;
+			emscripten::val const emval(ostr);
+			_ASSERT(!emval.template as<jst::optional<js::string>>());
 			_ASSERT(emval.isUndefined());
 		}
 		{
-			jst::js_object const jsOrigin(emscripten::val::object());
-			emscripten::val emval{OptionalUnknown(jsOrigin)};
-			auto const ounkParsed = emval.template as<OptionalUnknown>();
-			_ASSERT(ounkParsed);
-			_ASSERT(ounkParsed->getEmval().strictlyEquals(jsOrigin.getEmval()));
-			_ASSERT(!emval.isUndefined());
-			_ASSERT(emval.strictlyEquals(jsOrigin.getEmval()));
-		}
-		{
-			OptionalUnknown const ounk;
-			emscripten::val const emval(ounk);
-			_ASSERT(!emval.template as<OptionalUnknown>());
-			_ASSERT(emval.isUndefined());
+			jst::optional<js::string> ostr;
+			_ASSERT(!ostr);
+			jst::optional<js::string> ostr2(tc::aggregate_tag, "Hello World");
+			_ASSERT(ostr2);
+			_ASSERTEQUAL(ostr2->length(), 11);
+
+			jst::optional<js::string> ostr3(tc::aggregate_tag, "");
+			_ASSERT(ostr3);
 		}
 	}
 
@@ -192,7 +178,31 @@ int main() {
 			_ASSERT(123.5 == emval.as<double>());
 		}
 	}
+	// js_ref
+	{
+		struct ISomeObject : virtual jst::IObject {
+			struct _tcjs_definitions { // Optional
+				using Foo = int;
+			};
 
-	
+			auto foo() noexcept {
+				return _call<js::string>("foo");
+			}
+
+			auto operator()(double) noexcept {
+				return _call_this<void>();
+			}
+
+			auto operator()(js::string) noexcept {
+				return _call_this<double>();
+			}
+		};
+		using SomeObject = jst::js_ref<ISomeObject>;
+
+		static_assert(std::is_same<int, SomeObject::Foo>::value);
+		static_assert(std::is_same<js::string, decltype(std::declval<SomeObject>()->foo())>::value);
+		static_assert(std::is_same<void, decltype(std::declval<SomeObject>()(10.0))>::value);
+		static_assert(std::is_same<double, decltype(std::declval<SomeObject>()(js::string("hi")))>::value);
+	}
 	return 0;
 }
