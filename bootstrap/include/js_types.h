@@ -188,6 +188,18 @@ namespace tc::jst {
 	} // namespace union_detail
 
 	namespace no_adl {
+		template<typename TSource, typename TTarget>
+		struct is_safely_js_convertible : 
+			std::integral_constant<
+				bool,
+				IsJsInteropable<tc::remove_cvref_t<TSource>>::value
+				&& IsJsInteropable<tc::remove_cvref_t<TTarget>>::value
+				&& (!std::is_same<tc::remove_cvref_t<TSource>, double>::value || std::is_same<tc::remove_cvref_t<TTarget>, double>::value)
+				&& (!std::is_same<tc::remove_cvref_t<TSource>, bool>::value || std::is_same<tc::remove_cvref_t<TTarget>, bool>::value)
+				&& std::is_convertible<TSource, TTarget>::value
+			>
+		{};
+
 		// TODO: optimize by providing JS-side toWireType/fromWireType for integrals/bools and getting rid of emscripten::val
 		template<typename... Ts>
 		struct union_t : union_detail::CDetectOptionLike<void, Ts...> {
@@ -204,7 +216,7 @@ namespace tc::jst {
 			static inline constexpr auto has_null = tc::type::find_unique<ListTs, tc::js::null>::found;
 			static inline constexpr auto has_string = tc::type::find_unique<ListTs, tc::js::string>::found;
 			static inline constexpr auto has_bool = tc::type::find_unique<ListTs, bool>::found;
-			static inline constexpr auto has_number = tc::type::find_unique<ListTs, double>::found;
+			static inline constexpr auto has_number = tc::type::find_unique<ListTs, double>::found || tc::type::find_unique_if<ListTs, IsJsIntegralEnum>::found; // TODO: Check marshal type directly
 
 			explicit union_t(emscripten::val const& _emval) noexcept
 				: m_emval(_emval) { assertEmvalInRange(); }
@@ -214,6 +226,11 @@ namespace tc::jst {
 			emscripten::val const& getEmval() const& noexcept { return m_emval; }
 			emscripten::val&& getEmval() && noexcept { return tc_move(m_emval); }
 
+			template<ENABLE_SFINAE, std::enable_if_t<
+				SFINAE_TYPE(union_t)::has_undefined == SFINAE_TYPE(union_t)::has_null
+			>* = nullptr>
+ 			union_t() noexcept = delete; // Compiler error message is much clearer if we delete the function explicitly
+
 			template<ENABLE_SFINAE, std::enable_if_t<SFINAE_TYPE(union_t)::has_undefined && !SFINAE_TYPE(union_t)::has_null>* = nullptr>
 			union_t() noexcept
 				: union_t(emscripten::val::undefined()) {}
@@ -222,16 +239,29 @@ namespace tc::jst {
 			union_t() noexcept
 				: union_t(emscripten::val::null()) {}
 
-			// Constructing from a subtype. Assumption: the underlying representation does not depend on what element of ListTs is chosen.
-			template<typename T, std::enable_if_t<IsJsInteropable<tc::remove_cvref_t<T>>::value && (std::is_convertible<T&&, Ts>::value || ...)>* = nullptr>
+			// Constructing from a subtype
+			template<typename T, std::enable_if_t<IsJsInteropable<tc::remove_cvref_t<T>>::value && (is_safely_js_convertible<T&&, Ts>::value || ...)>* = nullptr>
 			union_t(T&& value) noexcept
-				: m_emval(std::forward<T>(value)) {}
+				: m_emval(std::forward<T>(value)) 
+			{
+			 	assertEmvalInRange();
+			}
 
-			// Constructing from a wider union_t (derived cast).
-			template<typename T, std::enable_if_t<std::conjunction<std::negation<std::is_same<tc::remove_cvref_t<T>, union_t>>, tc::is_instance_or_derived<union_t, T>, std::is_convertible<union_t, tc::remove_cvref_t<T>>>::value>* = nullptr>
-			explicit union_t(T&& other) noexcept
-				: m_emval(std::forward<T>(other).m_emval) {
-				assertEmvalInRange();
+private:
+			template<typename T>
+			struct SafelyConvertibleUnion {
+				static constexpr auto value = tc::type::find_unique_if<tc::type::list<Ts...>, tc::type::curry<is_safely_js_convertible, T>::template type>::found;
+			};
+
+public:
+			// Implicit construction from a union subset 
+			template<typename... Args, std::enable_if_t<
+				tc::type::all_of<tc::type::list<Args...>, SafelyConvertibleUnion>::value
+			>* = nullptr>
+			union_t(union_t<Args...> u) noexcept
+			 	: m_emval(tc_move(u.m_emval)) 
+			{
+			 	assertEmvalInRange();
 			}
 
 			template<typename... Args>
@@ -243,24 +273,14 @@ namespace tc::jst {
 				) 
 			{}
 
-			// Base cast to a common type. Assumption: the underlying representation does not depend on what element of ListTs is chosen.
+			// Base cast to a  common object type
+			// Without an 
 			template<typename T, std::enable_if_t<
-				!std::is_same<bool, tc::remove_cvref_t<T>>::value 
-				&& !std::is_same<tc::js::any, tc::remove_cvref_t<T>>::value // any(T&&) ctor takes care of that.
-				&& (std::is_convertible<Ts, T>::value && ...)>* = nullptr
-			>
+				tc::is_instance_or_derived<js_ref, T>::value
+				&& (std::is_constructible<T, Ts>::value && ...)
+			>* = nullptr>
 			operator T() const& noexcept {
 				return m_emval.template as<T>();
-			}
-
-			// Extracting a specific type.
-			template<typename T, std::enable_if_t<
-				!std::is_same<bool, tc::remove_cvref_t<T>>::value // operator bool() has special meaning, use get<> to get `bool` out of `union_t`.
-				&& !(std::is_convertible<Ts, T>::value && ...) // implicit conversion takes care of that.
-				&& (std::is_same<Ts, tc::remove_cvref_t<T>>::value || ...)>* = nullptr>
-			explicit operator T() const& noexcept {
-				static_assert((std::is_same<Ts, T>::value || ...));
-				return get<tc::remove_cvref_t<T>>();
 			}
 
 			template<typename T, std::enable_if_t<(std::is_same<Ts, T>::value || ...)>* = nullptr>

@@ -102,21 +102,21 @@ int main(int cArgs, char* apszArgs[]) {
 						tc::append(std::cerr, "Module not found for ", tc::explicit_cast<std::string>(jtsSourceFile->fileName()), ", treating at as a global library\n");
 						ts::forEachChild(jtsSourceFile, tc::jst::js_lambda_wrap([&](ts::Node jnodeChild) noexcept -> tc::js::any {
 							if (auto const jotsFunctionDeclaration = ts::isFunctionDeclaration(jnodeChild)) {
-								tc::cont_emplace_back(vecjsymExportedSymbol, (*g_ojtsTypeChecker)->getSymbolAtLocation(*(*jotsFunctionDeclaration)->name()));
+								tc::cont_emplace_back(vecjsymExportedSymbol, *(*g_ojtsTypeChecker)->getSymbolAtLocation(*(*jotsFunctionDeclaration)->name()));
 							} else if (auto const jotsVariableStatement = ts::isVariableStatement(jnodeChild)) {
 								tc::for_each(tc::js::ts_ext::MakeReadOnlyArray<ts::VariableDeclaration>((*jotsVariableStatement)->declarationList()->declarations()), [&](ts::VariableDeclaration jtsVariableDeclaration) noexcept {
-									tc::cont_emplace_back(vecjsymExportedSymbol, (*g_ojtsTypeChecker)->getSymbolAtLocation(jtsVariableDeclaration->name()));
+									tc::cont_emplace_back(vecjsymExportedSymbol, *(*g_ojtsTypeChecker)->getSymbolAtLocation(jtsVariableDeclaration->name()));
 								});
 							} else if (auto const jotsClassDeclaration = ts::isClassDeclaration(jnodeChild)) {
-								tc::cont_emplace_back(vecjsymExportedSymbol, (*g_ojtsTypeChecker)->getSymbolAtLocation(*(*jotsClassDeclaration)->name()));
+								tc::cont_emplace_back(vecjsymExportedSymbol, *(*g_ojtsTypeChecker)->getSymbolAtLocation(*(*jotsClassDeclaration)->name()));
 							} else if (auto const jotsInterfaceDeclaration = ts::isInterfaceDeclaration(jnodeChild)) {
-								tc::cont_emplace_back(vecjsymExportedSymbol, (*g_ojtsTypeChecker)->getSymbolAtLocation((*jotsInterfaceDeclaration)->name()));
+								tc::cont_emplace_back(vecjsymExportedSymbol, *(*g_ojtsTypeChecker)->getSymbolAtLocation((*jotsInterfaceDeclaration)->name()));
 							} else if (auto const jotsEnumDeclaration = ts::isEnumDeclaration(jnodeChild)) {
-								tc::cont_emplace_back(vecjsymExportedSymbol, (*g_ojtsTypeChecker)->getSymbolAtLocation((*jotsEnumDeclaration)->name()));
+								tc::cont_emplace_back(vecjsymExportedSymbol, *(*g_ojtsTypeChecker)->getSymbolAtLocation((*jotsEnumDeclaration)->name()));
 							} else if (auto const jotsModuleDeclaration = ts::isModuleDeclaration(jnodeChild)) {
-								tc::cont_emplace_back(vecjsymExportedSymbol, (*g_ojtsTypeChecker)->getSymbolAtLocation((*jotsModuleDeclaration)->name()));
+								tc::cont_emplace_back(vecjsymExportedSymbol, *(*g_ojtsTypeChecker)->getSymbolAtLocation((*jotsModuleDeclaration)->name()));
 							} else if(auto const jotsTypeAliasDeclaration = ts::isTypeAliasDeclaration(jnodeChild)) {
-								tc::cont_emplace_back(vecjsymExportedSymbol, (*g_ojtsTypeChecker)->getSymbolAtLocation((*jotsTypeAliasDeclaration)->name()));
+								tc::cont_emplace_back(vecjsymExportedSymbol, *(*g_ojtsTypeChecker)->getSymbolAtLocation((*jotsTypeAliasDeclaration)->name()));
 							} else if (ts::SyntaxKind::EndOfFileToken == jnodeChild->kind()) {
 								// Do nothing
 							} else {
@@ -237,7 +237,7 @@ int main(int cArgs, char* apszArgs[]) {
 										tc::find_first_if<tc::return_element>(
 											jsfunctionlike.m_vecjsvariablelikeParameters,
 											[&](auto const& jsvariable) noexcept {
-												return jsvariable.m_strJsName==tc::explicit_cast<std::string>(ts::idText(ts::Identifier(ts::TypePredicateNode(*ojstypenode)->parameterName())));
+												return jsvariable.m_strJsName==tc::explicit_cast<std::string>(ts::idText(ts::TypePredicateNode(*ojstypenode)->parameterName().get<ts::Identifier>()));
 											}
 										)->m_strCppifiedName,
 										")"

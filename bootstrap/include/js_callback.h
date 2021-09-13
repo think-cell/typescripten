@@ -185,7 +185,7 @@ namespace tc::jst {
 						return creator(reinterpret_cast<PointerNumber>(pfunc), reinterpret_cast<PointerNumber>(arg0));
 					}()) {}
 
-				~CUniqueDetachableJsFunction() noexcept {
+				~CUniqueDetachableJsFunction() {
 					this->getEmval().template call<void>("detach");
 				}
 			};
@@ -201,7 +201,7 @@ namespace tc::jst {
 	static emscripten::val FieldName##_tc_js_wrapper(void* pvThis, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) noexcept { \
 		return ::tc::jst::callback_detail::MemberFunctionWrapper(&ClassName::FieldName##_tc_js_impl, pvThis, emvalThis, emvalArgs);               \
 	}                                                                                                                                             \
-	::tc::jst::callback_detail::CUniqueDetachableJsFunction<ReturnType Arguments> const FieldName{&FieldName##_tc_js_wrapper, this};              \
+	::tc::jst::callback_detail::CUniqueDetachableJsFunction<ReturnType Arguments> FieldName{&FieldName##_tc_js_wrapper, this};              \
 	ReturnType FieldName##_tc_js_impl Arguments noexcept
 
 // Use if member function has been forward declared with TC_JS_MEMBER_FUNCTION

@@ -80,7 +80,7 @@ int main() {
 		Promise<union_t<string, null>> p2 = p1->then(l1ok, l1fail);
 
 		static auto l2 = js_lambda_wrap([](union_t<string, null> x) noexcept {
-			_ASSERTEQUAL(tc::explicit_cast<std::string>(tc::explicit_cast<string>(x)), "ok");
+			_ASSERTEQUAL(tc::explicit_cast<std::string>(x.get<string>()), "ok");
 			std::cout << "Promise 2/3 success\n";
 			CompletePromiseTest();
 		});
@@ -100,7 +100,7 @@ int main() {
 		Promise<union_t<string, null>> p2 = p1->then(l1ok, l1fail);
 
 		static auto l2 = js_lambda_wrap([](union_t<string, null> x) noexcept {
-			static_cast<void>(static_cast<null>(x));
+			static_cast<void>(x.get<null>());
 			std::cout << "Promise 3/3 success\n";
 			CompletePromiseTest();
 		});
