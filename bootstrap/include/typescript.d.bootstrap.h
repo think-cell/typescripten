@@ -47,7 +47,7 @@ namespace tc::js::ts_ext {
 
 		template<typename Fn>
 		auto operator()(Fn fn) noexcept {
-			return _call<void>("forEach", tc::jst::js_lambda_wrap([&](tc::js::ts::Symbol value, tc::js::any, tc::js::any) noexcept {
+			return _call<void>("forEach", tc::jst::lambda([&](tc::js::ts::Symbol value, tc::js::any, tc::js::any) noexcept {
 				fn(tc_move(value));
 			}));
 		}

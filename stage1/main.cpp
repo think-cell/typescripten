@@ -100,7 +100,7 @@ int main(int cArgs, char* apszArgs[]) {
 						tc::cont_emplace_back(vecjsymExportedSymbol, *josymSourceFile);
 					} else {
 						tc::append(std::cerr, "Module not found for ", tc::explicit_cast<std::string>(jtsSourceFile->fileName()), ", treating at as a global library\n");
-						ts::forEachChild(jtsSourceFile, tc::jst::js_lambda_wrap([&](ts::Node jnodeChild) noexcept -> tc::js::any {
+						ts::forEachChild(jtsSourceFile, tc::jst::lambda([&](ts::Node jnodeChild) noexcept -> tc::js::any {
 							if (auto const jotsFunctionDeclaration = ts::isFunctionDeclaration(jnodeChild)) {
 								tc::cont_emplace_back(vecjsymExportedSymbol, *(*g_ojtsTypeChecker)->getSymbolAtLocation(*(*jotsFunctionDeclaration)->name()));
 							} else if (auto const jotsVariableStatement = ts::isVariableStatement(jnodeChild)) {

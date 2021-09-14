@@ -21,7 +21,7 @@ tc::break_or_continue ForEachChildTypeNode(tc::js::ts::Node jnode, Func fn) noex
         case erecurseCONTINUE:
         {
             tc::break_or_continue bc = tc::continue_;
-            tc::js::ts::forEachChild(jnode, tc::jst::js_lambda_wrap([&](tc::js::ts::Node jnodeInner) noexcept -> tc::js::any { 
+            tc::js::ts::forEachChild(jnode, tc::jst::lambda([&](tc::js::ts::Node jnodeInner) noexcept -> tc::js::any { 
                 if(tc::continue_==bc) {
                     bc = ForEachChildTypeNode(jnodeInner, fn); 
                 }

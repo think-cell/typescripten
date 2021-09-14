@@ -56,7 +56,7 @@ int main() {
 
 	tc::js::MyLib::double_u_underscore();
 
-	_ASSERTEQUAL(tc::js::MyLib::runCallback(tc::jst::js_lambda_wrap([](double a, double b) noexcept {
+	_ASSERTEQUAL(tc::js::MyLib::runCallback(tc::jst::lambda([](double a, double b) noexcept {
 		_ASSERTEQUAL(a, 20);
 		_ASSERTEQUAL(b, 30);
 		return a + b;
@@ -84,7 +84,7 @@ int main() {
 		tc::js::Promise<double> p1 = tc::js::MyLib::createPromise10();
 		tc::js::Promise<double> p2 = tc::js::MyLib::increasePromiseValue(p1);
 
-		static auto l2 = tc::jst::js_lambda_wrap([](double x) noexcept {
+		static auto l2 = tc::jst::lambda([](double x) noexcept {
 			_ASSERTEQUAL(x, 11);
 			tc::js::MyLib::completePromiseTest();
 		});

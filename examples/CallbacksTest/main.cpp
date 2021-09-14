@@ -111,9 +111,9 @@ void ensureJsFunctionDeduction(function<U>) {
 
 int main() {
 	{
-		std::cout << "===== js_lambda_wrap =====\n";
+		std::cout << "===== lambda =====\n";
 		#define CALL_SCOPED_CALLBACK(Name, ReturnType, Arguments, Body) \
-			RUN_TEST(Name, function<ReturnType Arguments>, tc::jst::js_lambda_wrap([]Arguments noexcept -> ReturnType Body));
+			RUN_TEST(Name, function<ReturnType Arguments>, tc::jst::lambda([]Arguments noexcept -> ReturnType Body));
 		FOR_ALL_CALLBACKS(CALL_SCOPED_CALLBACK)
 		#undef CALL_SCOPED_CALLBACK
 	}
@@ -131,7 +131,7 @@ int main() {
 	}
 	{
 		std::cout << "Calling callbacks through function\n";
-		auto cbStorage = tc::jst::js_lambda_wrap([](string const str) noexcept {
+		auto cbStorage = tc::jst::lambda([](string const str) noexcept {
 			return string(tc::concat("hello ", tc::explicit_cast<std::string>(str)));
 		});
 		ensureJsFunctionDeduction<function<string(string const)>>(cbStorage);
@@ -139,11 +139,11 @@ int main() {
 		_ASSERTEQUAL(tc::explicit_cast<std::string>(cb(string("world"))), "hello world");
 	}
 	{
-		std::cout << "Passing callbacks as function parameter with temporary js_lambda_wrap\n";
+		std::cout << "Passing callbacks as function parameter with temporary lambda\n";
 		auto test = [](function<string(string)> cb) {
 			_ASSERTEQUAL(tc::explicit_cast<std::string>(cb(string("world"))), "hello world");
 		};
-		test(tc::jst::js_lambda_wrap([](string const str) noexcept {
+		test(tc::jst::lambda([](string const str) noexcept {
 			return string(tc::concat("hello ", tc::explicit_cast<std::string>(str)));
 		}));
 	}

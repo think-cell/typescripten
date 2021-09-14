@@ -78,7 +78,8 @@ namespace tc::jst {
 							return fn(pass_this, emvalThis.template as<TThis>(), std::forward<decltype(args)>(args)...);
 						},
 						emvalThis,
-						emvalArgs);
+						emvalArgs
+					);
 				}
 			};
 
@@ -103,7 +104,8 @@ namespace tc::jst {
 							return fn(pass_all_arguments, emvalArgs.template as<TArgs>(), std::forward<decltype(args)>(args)...);
 						},
 						emvalThis,
-						emvalArgs);
+						emvalArgs
+					);
 				}
 			};
 		} // namespace no_adl
@@ -125,35 +127,36 @@ namespace tc::jst {
 					return (tc::void_cast<ThisType>(pvThis)->*pmfMember)(std::forward<decltype(args)>(args)...);
 				},
 				emvalThis,
-				emvalArgs);
+				emvalArgs
+			);
 		}
+
+		namespace no_adl {
+			template<typename>
+			struct function {};
+
+			template<typename R, typename... Args>
+			struct function<R(Args...)> : virtual object_base {
+				struct _tcjs_definitions {
+					using function_type = R(Args...);
+				};
+
+				static_assert(IsJsInteropable<R>::value);
+				// Implicit instantiation of CCallableWrapper to ensure Args are correct.
+				static_assert(callback_detail::CCallableWrapper<tc::type::list<Args...>>::c_bInstantiated);
+
+				R operator()(Args... args) noexcept {
+					// These are limitations of emscripten::val, can be worked around.
+					static_assert(std::is_same<tc::type::find_unique_if_result::type_not_found, tc::type::find_unique<tc::type::list<Args...>, pass_this_t>>::value, "Cannot call a JS function which needs 'this'");
+					static_assert(std::is_same<tc::type::find_unique_if_result::type_not_found, tc::type::find_unique<tc::type::list<Args...>, pass_all_arguments_t>>::value, "Cannot call a JS function which takes an array of arguments");
+					return _call_this<R>(tc_move(args)...);
+				}
+			};
+		} // namespace no_adl	
 	} // namespace callback_detail
 
-	namespace no_adl {
-		template<typename>
-		struct IJsFunction {};
-
-		template<typename R, typename... Args>
-		struct IJsFunction<R(Args...)> : virtual object_base {
-			struct _tcjs_definitions {
-				using function_type = R(Args...);
-			};
-
-			static_assert(IsJsInteropable<R>::value);
-			// Implicit instantiation of CCallableWrapper to ensure Args are correct.
-			static_assert(callback_detail::CCallableWrapper<tc::type::list<Args...>>::c_bInstantiated);
-
-			R operator()(Args... args) noexcept {
-				// These are limitations of emscripten::val, can be worked around.
-				static_assert(std::is_same<tc::type::find_unique_if_result::type_not_found, tc::type::find_unique<tc::type::list<Args...>, pass_this_t>>::value, "Cannot call a JS function which needs 'this'");
-				static_assert(std::is_same<tc::type::find_unique_if_result::type_not_found, tc::type::find_unique<tc::type::list<Args...>, pass_all_arguments_t>>::value, "Cannot call a JS function which takes an array of arguments");
-				return _call_this<R>(tc_move(args)...);
-			}
-		};
-	} // namespace no_adl
-	using no_adl::IJsFunction;
 	template<typename T>
-	using function = ref<IJsFunction<T>>;
+	using function = ref<callback_detail::no_adl::function<T>>;
 
 	namespace callback_detail {
 		using FirstArgument = void*;
@@ -171,11 +174,13 @@ namespace tc::jst {
 			// We do not care about slicing to ref<> or moving from this class, because
 			// it is only stored as a by-value const field.
 			template<typename T>
-			struct CUniqueDetachableJsFunction : private tc::nonmovable
+			struct CUniqueDetachableJsFunction 
+				: private tc::nonmovable
 				, private RequireRelaxedPointerSafety
-				, function<T> {
+				, tc::jst::function<T> 
+			{
 				CUniqueDetachableJsFunction(FunctionPointer pfunc, FirstArgument arg0) noexcept
-					: function<T>([&]() {
+					: tc::jst::function<T>([&]() {
 						static auto creator = []() {
 							EnsureJsCallbackCppIsLinked();
 							auto creator = emscripten::val::module_property("tc_js_callback_detail_js_CreateJsFunction");
@@ -221,40 +226,40 @@ namespace tc::jst {
 			// Helper class, should always be passed as a const value to avoid
 			// function(function&&) binding to it and moving out.
 			template<typename Fn>
-			struct js_lambda_wrap_impl final : CUniqueDetachableJsFunction<boost::callable_traits::function_type_t<Fn>> {
+			struct lambda_impl final : CUniqueDetachableJsFunction<boost::callable_traits::function_type_t<Fn>> {
 				using function_type = boost::callable_traits::function_type_t<Fn>;
 
 				static_assert(!std::is_reference<Fn>::value);
 				static_assert(boost::callable_traits::is_noexcept<Fn>::value, "Callbacks for JS should be noexcept");
 
 				template<typename FnSrc>
-				js_lambda_wrap_impl(FnSrc&& fn) noexcept
+				lambda_impl(FnSrc&& fn) noexcept
 					: CUniqueDetachableJsFunction<function_type>(&FnWrapper, this), m_fn(std::forward<FnSrc>(fn)) {}
 
 				// Explicitly disable two-way conversion enabled by IsEmvalWrapper below.
-				js_lambda_wrap_impl(emscripten::val) = delete;
+				lambda_impl(emscripten::val) = delete;
 
 			  private:
 				Fn m_fn;
 
 				static emscripten::val FnWrapper(void* pThis, emscripten::val const& emvalThis, emscripten::val const& emvalArgs) noexcept {
 					return callback_detail::CCallableWrapper<boost::callable_traits::args_t<Fn, tc::type::list>>()(
-						tc::void_cast<js_lambda_wrap_impl>(pThis)->m_fn,
+						tc::void_cast<lambda_impl>(pThis)->m_fn,
 						emvalThis,
 						emvalArgs);
 				}
 			};
 			template<typename Fn>
-			js_lambda_wrap_impl(Fn) -> js_lambda_wrap_impl<Fn>;
+			lambda_impl(Fn) -> lambda_impl<Fn>;
 		} // namespace no_adl
-		using no_adl::js_lambda_wrap_impl;
+		using no_adl::lambda_impl;
 	} // namespace callback_detail
 
 	template<typename Fn>
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wignored-qualifiers" // https://bugs.llvm.org/show_bug.cgi?id=43709 and https://github.com/emscripten-core/emscripten/issues/11123
-	auto const js_lambda_wrap(Fn&& fn) noexcept { // Returning const is important to avoid moving from the temporary.
+	auto const lambda(Fn&& fn) noexcept { // Returning const is important to avoid moving from the temporary.
 #pragma clang diagnostic pop
-		return callback_detail::js_lambda_wrap_impl(std::forward<Fn>(fn));
+		return callback_detail::lambda_impl(std::forward<Fn>(fn));
 	}
 } // namespace tc::jst
