@@ -32,14 +32,14 @@ namespace tc::js {
 		struct _js_console;
 
 		template<typename T>
-		using Array = ::tc::jst::js_ref<_js_Array<T>>;
+		using Array = ::tc::jst::ref<_js_Array<T>>;
 		template<typename T>
-		using ReadonlyArray = ::tc::jst::js_ref<_js_ReadonlyArray<T>>;
+		using ReadonlyArray = ::tc::jst::ref<_js_ReadonlyArray<T>>;
 		template<typename T>
-		using Promise = ::tc::jst::js_ref<_js_Promise<T>>;
+		using Promise = ::tc::jst::ref<_js_Promise<T>>;
 		template<typename K, typename V>
-		using Record = ::tc::jst::js_ref<_js_Record<K, V>>;
-		using console = ::tc::jst::js_ref<_js_console>;
+		using Record = ::tc::jst::ref<_js_Record<K, V>>;
+		using console = ::tc::jst::ref<_js_console>;
 
 		template<typename T>
 		struct _js_Array : virtual ::tc::jst::object_base {

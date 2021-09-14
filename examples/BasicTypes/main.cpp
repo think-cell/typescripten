@@ -178,7 +178,7 @@ int main() {
 			_ASSERT(123.5 == emval.as<double>());
 		}
 	}
-	// js_ref
+	// ref
 	{
 		struct ISomeObject : virtual jst::object_base {
 			struct _tcjs_definitions { // Optional
@@ -197,7 +197,7 @@ int main() {
 				return _call_this<double>();
 			}
 		};
-		using SomeObject = jst::js_ref<ISomeObject>;
+		using SomeObject = jst::ref<ISomeObject>;
 
 		static_assert(std::is_same<int, SomeObject::Foo>::value);
 		static_assert(std::is_same<js::string, decltype(std::declval<SomeObject>()->foo())>::value);

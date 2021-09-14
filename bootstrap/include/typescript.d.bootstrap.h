@@ -37,7 +37,7 @@ namespace tc::js::ts_ext {
 	struct _js_TypeParameter : virtual tc::js_defs::_impl_js_jts_dTypeParameter {
 		auto constraint() noexcept { return _getProperty<tc::jst::union_t<tc::js::undefined, tc::js::ts::Type>>("constraint"); }
 	};
-	using TypeParameter = tc::jst::js_ref<_js_TypeParameter>;
+	using TypeParameter = tc::jst::ref<_js_TypeParameter>;
 
 	// TODO: Generics
 	struct _js_SymbolTable : virtual tc::jst::object_base {
@@ -52,7 +52,7 @@ namespace tc::js::ts_ext {
 			}));
 		}
 	};
-	using SymbolTable = tc::jst::js_ref<_js_SymbolTable>;
+	using SymbolTable = tc::jst::ref<_js_SymbolTable>;
 
 	template<typename T>
 	ReadonlyArray<T> MakeReadOnlyArray(tc::js::any unk) noexcept {
@@ -62,7 +62,7 @@ namespace tc::js::ts_ext {
 	struct _js_HeritageClause : virtual tc::js_defs::_impl_js_jts_dHeritageClause {
 		auto types() noexcept { return _getProperty<ReadonlyArray<tc::js::ts::Node>>("types"); }
 	};
-	using HeritageClause = tc::jst::js_ref<_js_HeritageClause>;
+	using HeritageClause = tc::jst::ref<_js_HeritageClause>;
 
 	struct _js_Symbol : virtual tc::js_defs::_impl_js_jts_dSymbol {
 		inline auto parent() noexcept { return _getProperty<tc::jst::optional<tc::js::ts::Symbol>>("parent"); }
@@ -70,12 +70,12 @@ namespace tc::js::ts_ext {
 		inline auto exports() noexcept { return _getProperty<tc::jst::optional<tc::js::ts_ext::SymbolTable>>("exports"); }
 		inline auto globalExports() noexcept { return _getProperty<tc::jst::optional<tc::js::ts_ext::SymbolTable>>("globalExports"); }
 	};
-	using Symbol = tc::jst::js_ref<_js_Symbol>;
+	using Symbol = tc::jst::ref<_js_Symbol>;
 
 	struct _js_ClassLikeDeclaration : virtual tc::js_defs::_impl_js_jts_dClassDeclaration {
 		auto heritageClauses() noexcept { return _getProperty<tc::jst::optional<ReadonlyArray<tc::js::ts::HeritageClause>>>("heritageClauses"); }
 	};
-	using ClassLikeDeclaration = tc::jst::js_ref<_js_ClassLikeDeclaration>;
+	using ClassLikeDeclaration = tc::jst::ref<_js_ClassLikeDeclaration>;
 } // namespace tc::js::ts_ext
 
 namespace tc::js_defs {

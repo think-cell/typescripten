@@ -39,7 +39,7 @@ namespace tc::jst { // Library helper types are in tc::jst namespace
 		};
 
 		template<typename T>
-		struct js_ref;
+		struct ref;
 	} // namespace no_adl
 	using no_adl::IsJsHeterogeneousEnum;
 	using no_adl::IsJsIntegralEnum;
@@ -276,7 +276,7 @@ public:
 			// Base cast to a  common object type
 			// Without an 
 			template<typename T, std::enable_if_t<
-				tc::is_instance_or_derived<js_ref, T>::value
+				tc::is_instance_or_derived<ref, T>::value
 				&& (std::is_constructible<T, Ts>::value && ...)
 			>* = nullptr>
 			operator T() const& noexcept {
@@ -286,7 +286,7 @@ public:
 			template<typename T, std::enable_if_t<(std::is_same<Ts, T>::value || ...)>* = nullptr>
 			T get() const& noexcept {
 				// Checks for 'double' vs 'undefined'/'null' are performed by emscripten.
-				// Checks for 'js_ref'/'string' vs 'undefined'/'null' are performed by js_ref/string's ctor.
+				// Checks for 'ref'/'string' vs 'undefined'/'null' are performed by ref/string's ctor.
 				if constexpr (std::is_same<T, bool>::value) {
 					_ASSERT(m_emval.isTrue() || m_emval.isFalse());
 				}

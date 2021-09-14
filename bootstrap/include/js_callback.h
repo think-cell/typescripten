@@ -153,7 +153,7 @@ namespace tc::jst {
 	} // namespace no_adl
 	using no_adl::IJsFunction;
 	template<typename T>
-	using function = js_ref<IJsFunction<T>>;
+	using function = ref<IJsFunction<T>>;
 
 	namespace callback_detail {
 		using FirstArgument = void*;
@@ -168,7 +168,7 @@ namespace tc::jst {
 				}
 			};
 
-			// We do not care about slicing to js_ref<> or moving from this class, because
+			// We do not care about slicing to ref<> or moving from this class, because
 			// it is only stored as a by-value const field.
 			template<typename T>
 			struct CUniqueDetachableJsFunction : private tc::nonmovable

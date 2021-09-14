@@ -23,7 +23,7 @@ struct _js_SomeJsClass : virtual tc::jst::object_base {
 		return emscripten::val::module_property("SomeJsClass").new_(v);
 	}
 };
-using SomeJsClass = tc::jst::js_ref<_js_SomeJsClass>;
+using SomeJsClass = tc::jst::ref<_js_SomeJsClass>;
 
 int callback_counter;
 

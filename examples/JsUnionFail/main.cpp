@@ -12,7 +12,7 @@ using tc::js::undefined;
 using tc::js::any;
 using tc::js::null;
 using tc::jst::union_t;
-using tc::jst::js_ref;
+using tc::jst::ref;
 
 void derefUndefinedJsRefGet() noexcept {
 	union_t<undefined, object> const u;
@@ -54,7 +54,7 @@ void derefNullBoolGet() noexcept {
 	static_cast<void>(u.get<bool>());
 }
 
-EMSCRIPTEN_BINDINGS(js_union_fail) {
+EMSCRIPTEN_BINDINGS(union_fail) {
 	emscripten::function("derefUndefinedJsRefGet", &derefUndefinedJsRefGet);
 	emscripten::function("derefNullJsRefGet", &derefNullJsRefGet);
 	emscripten::function("derefUndefinedStringGet", &derefUndefinedStringGet);

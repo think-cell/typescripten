@@ -18,9 +18,9 @@ struct _js_MyJsDerived2 : virtual _js_MyJsBase {
 	static auto _tcjs_construct(js::string, js::string) noexcept { return emscripten::val::object(); }
 };
 
-using MyJsBase = jst::js_ref<_js_MyJsBase>;
-using MyJsDerived = jst::js_ref<_js_MyJsDerived>;
-using MyJsDerived2 = jst::js_ref<_js_MyJsDerived2>;
+using MyJsBase = jst::ref<_js_MyJsBase>;
+using MyJsDerived = jst::ref<_js_MyJsDerived>;
+using MyJsDerived2 = jst::ref<_js_MyJsDerived2>;
 
 int main() {
 	using UnionUndefined = jst::union_t<js::undefined, js::string, double, MyJsBase>;

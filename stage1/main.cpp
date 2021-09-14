@@ -378,7 +378,7 @@ int main(int cArgs, char* apszArgs[]) {
 			tc::join(tc::transform(vecpjsclassSorted, [](SJsClass const* pjsclass) noexcept {
 				return tc::concat(
 					"\tstruct _impl", pjsclass->m_strMangledName, ";\n"
-					"\tusing ", pjsclass->m_strMangledName, " = js_ref<_impl", pjsclass->m_strMangledName, ">;\n"
+					"\tusing ", pjsclass->m_strMangledName, " = ref<_impl", pjsclass->m_strMangledName, ">;\n"
 				);
 			})),
 			tc::join(tc::transform(vecpjstypealiasSorted, [&](SJsTypeAlias const* pjtypealias) noexcept {
