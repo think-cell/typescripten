@@ -80,16 +80,16 @@ namespace tc::js::ts_ext {
 
 namespace tc::js_defs {
 	// Manually implemented instead of DEFINE_CONTIGUOUS_ENUM + enumset to avoid manually checking that all enums are indeed contiguous.
-	inline tc::js::ts::SymbolFlags operator|(tc::js::ts::SymbolFlags a, tc::js::ts::SymbolFlags b) { return static_cast<tc::js::ts::SymbolFlags>(static_cast<int>(a) | static_cast<int>(b)); }
-	inline tc::js::ts::SymbolFlags operator&(tc::js::ts::SymbolFlags a, tc::js::ts::SymbolFlags b) { return static_cast<tc::js::ts::SymbolFlags>(static_cast<int>(a) & static_cast<int>(b)); }
-	inline tc::js::ts::SymbolFlags operator~(tc::js::ts::SymbolFlags a) { return static_cast<tc::js::ts::SymbolFlags>(~static_cast<int>(a)); }
+	constexpr tc::js::ts::SymbolFlags operator|(tc::js::ts::SymbolFlags a, tc::js::ts::SymbolFlags b) { return static_cast<tc::js::ts::SymbolFlags>(static_cast<int>(a) | static_cast<int>(b)); }
+	constexpr tc::js::ts::SymbolFlags operator&(tc::js::ts::SymbolFlags a, tc::js::ts::SymbolFlags b) { return static_cast<tc::js::ts::SymbolFlags>(static_cast<int>(a) & static_cast<int>(b)); }
+	constexpr tc::js::ts::SymbolFlags operator~(tc::js::ts::SymbolFlags a) { return static_cast<tc::js::ts::SymbolFlags>(~static_cast<int>(a)); }
 
-	inline tc::js::ts::TypeFlags operator|(tc::js::ts::TypeFlags a, tc::js::ts::TypeFlags b) { return static_cast<tc::js::ts::TypeFlags>(static_cast<int>(a) | static_cast<int>(b)); }
-	inline tc::js::ts::TypeFlags operator&(tc::js::ts::TypeFlags a, tc::js::ts::TypeFlags b) { return static_cast<tc::js::ts::TypeFlags>(static_cast<int>(a) & static_cast<int>(b)); }
+	constexpr tc::js::ts::TypeFlags operator|(tc::js::ts::TypeFlags a, tc::js::ts::TypeFlags b) { return static_cast<tc::js::ts::TypeFlags>(static_cast<int>(a) | static_cast<int>(b)); }
+	constexpr tc::js::ts::TypeFlags operator&(tc::js::ts::TypeFlags a, tc::js::ts::TypeFlags b) { return static_cast<tc::js::ts::TypeFlags>(static_cast<int>(a) & static_cast<int>(b)); }
 
-	inline tc::js::ts::ObjectFlags operator|(tc::js::ts::ObjectFlags a, tc::js::ts::ObjectFlags b) { return static_cast<tc::js::ts::ObjectFlags>(static_cast<int>(a) | static_cast<int>(b)); }
-	inline tc::js::ts::ObjectFlags operator&(tc::js::ts::ObjectFlags a, tc::js::ts::ObjectFlags b) { return static_cast<tc::js::ts::ObjectFlags>(static_cast<int>(a) & static_cast<int>(b)); }
+	constexpr tc::js::ts::ObjectFlags operator|(tc::js::ts::ObjectFlags a, tc::js::ts::ObjectFlags b) { return static_cast<tc::js::ts::ObjectFlags>(static_cast<int>(a) | static_cast<int>(b)); }
+	constexpr tc::js::ts::ObjectFlags operator&(tc::js::ts::ObjectFlags a, tc::js::ts::ObjectFlags b) { return static_cast<tc::js::ts::ObjectFlags>(static_cast<int>(a) & static_cast<int>(b)); }
 
-	inline tc::js::ts::ModifierFlags operator|(tc::js::ts::ModifierFlags a, tc::js::ts::ModifierFlags b) { return static_cast<tc::js::ts::ModifierFlags>(static_cast<int>(a) | static_cast<int>(b)); }
-	inline tc::js::ts::ModifierFlags operator&(tc::js::ts::ModifierFlags a, tc::js::ts::ModifierFlags b) { return static_cast<tc::js::ts::ModifierFlags>(static_cast<int>(a) & static_cast<int>(b)); }
+	constexpr tc::js::ts::ModifierFlags operator|(tc::js::ts::ModifierFlags a, tc::js::ts::ModifierFlags b) { return static_cast<tc::js::ts::ModifierFlags>(static_cast<int>(a) | static_cast<int>(b)); }
+	constexpr tc::js::ts::ModifierFlags operator&(tc::js::ts::ModifierFlags a, tc::js::ts::ModifierFlags b) { return static_cast<tc::js::ts::ModifierFlags>(static_cast<int>(a) & static_cast<int>(b)); }
 } // namespace tc::js_defs
