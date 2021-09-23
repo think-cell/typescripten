@@ -14,30 +14,13 @@ std::string FullyQualifiedName(ts::Symbol jsymType) noexcept {
 }
 
 namespace {
-	SMangledType WrapType(std::string strPrefix, tc::js::ReadonlyArray<ts::Type> atypeArguments, std::string strSuffix) noexcept {
+	template<typename Rng>
+	SMangledType WrapType(std::string const& strWithComments, std::string const& strCppCanonized, Rng const& atypeArguments) noexcept {
 		auto const vecmt = tc::make_vector(tc::transform(atypeArguments, [](ts::Type jtype) noexcept { return MangleType(jtype); }));
 		return {
-			tc::make_str<char>(strPrefix, tc::join_separated(tc::transform(vecmt, TC_MEMBER(.m_strWithComments)), ", "), strSuffix),
-			tc::make_str<char>(strPrefix, tc::join_separated(tc::transform(vecmt, TC_MEMBER(.m_strCppCanonized)), ", "), strSuffix)
+			tc::make_str<char>(strWithComments, "<", tc::join_separated(tc::transform(vecmt, TC_MEMBER(.m_strWithComments)), ", "), ">"),
+			tc::make_str<char>(strCppCanonized, "<", tc::join_separated(tc::transform(vecmt, TC_MEMBER(.m_strCppCanonized)), ", "), ">")
 		};
-	}
-
-	std::optional<SMangledType> MangleBootstrapType(ts::Symbol jsym, tc::js::ReadonlyArray<ts::Type> jatypeargs) noexcept {
-		std::string strTarget = FullyQualifiedName(jsym);
-		if ("Array" == strTarget) {
-			_ASSERTEQUAL(jatypeargs->length(), 1);
-			return WrapType("js::Array<", jatypeargs, ">");
-		} else if ("ReadonlyArray" == strTarget) {
-			_ASSERTEQUAL(jatypeargs->length(), 1);
-			return WrapType("js::ReadonlyArray<", jatypeargs, ">");
-		} else if ("Promise" == strTarget) {
-			_ASSERTEQUAL(jatypeargs->length(), 1);
-			return WrapType("js::Promise<", jatypeargs, ">");
-		} else if ("Record" == strTarget) {
-			_ASSERTEQUAL(jatypeargs->length(), 2);
-			return WrapType("js::Record<", jatypeargs, ">");
-		}
-		return std::nullopt;
 	}
 
 	SMangledType CommentType(std::string const strCppType, tc::js::ts::Type const jtypeRoot) noexcept {
@@ -106,25 +89,23 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 	case ts::TypeFlags::Null:
 		return {mangled_no_comments, "tc::js::null"};
 	// Never
-	// TypeParameter
+	case ts::TypeFlags::TypeParameter:
+		// TODO: TypeScript allows template parameter shadowing, C++ doesn't
+		// We currently don't disambiguate the template parameter names so we will
+		// produce a compiler error when a method redeclares the same template
+		// argument as a class.
+		return {mangled_no_comments, tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->typeToString(jtypeRoot))};
 	default:
 		{
 			if(bUseTypeAlias) {
 				if(auto const ojsymAlias = jtypeRoot->aliasSymbol()) {
 					if(ecpptypeTYPEALIAS & CppType(*ojsymAlias)) {
-						if(auto const oatypeargs = jtypeRoot->aliasTypeArguments()) {
-							if(auto omt = MangleBootstrapType(*ojsymAlias, *oatypeargs)) {
-								return *omt;
+						if(auto const ojstypealias = tc::cont_find<tc::return_element_or_null>(g_setjstypealias, FullyQualifiedName(*ojsymAlias))) {
+							if(auto const oatypeargs = jtypeRoot->aliasTypeArguments()) {
+								return WrapType(ojstypealias->m_strMangledName, ojstypealias->m_strMangledName, *oatypeargs);
 							} else {
-								return {
-									tc::make_str(
-										"tc::js::any /*UnsupportedGenericTypeAlias=", tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->typeToString(jtypeRoot)), "*/"
-									),
-									"tc::js::any"
-								};
-							} 
-						} else if(auto const ojstypealias = tc::cont_find<tc::return_element_or_null>(g_setjstypealias, FullyQualifiedName(*ojsymAlias))) {
-							return {mangled_no_comments, ojstypealias->m_strMangledName};
+								return {mangled_no_comments, ojstypealias->m_strMangledName};
+							}
 						} else {
 							return {
 								tc::make_str(
@@ -177,20 +158,23 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 			} else if(ts::TypeFlags::Object==jtypeRoot->getFlags()) {
 				ts::ObjectType jobjecttypeRoot(tc_move(jtypeRoot));
 				if (ts::ObjectFlags::Reference == jobjecttypeRoot->objectFlags()) {
-					ts::TypeReference jtypereferenceRoot(tc_move(jobjecttypeRoot));
-					if(auto josymTargetSymbol = jtypereferenceRoot->target()->getSymbol(); josymTargetSymbol) {
-						if(auto const oatypeargs = jtypereferenceRoot->typeArguments()) {
-							if(auto const omt = MangleBootstrapType(*josymTargetSymbol, *oatypeargs)) {
-								return *omt;
-							}
-						}
+					// When Collection is a generic class/interface, the return value Collection<K> 
+					// is a TypeReference to that generic interface:
+					//
+					// interface B<K, T> {
+					// 	get_collection(k: K) : Collection<K>;
+					// }
+					//
+					// Output with type arguments
+					//
+					ts::TypeReference jtypereferenceRoot(tc_move(jobjecttypeRoot));	
+					auto jtypeTarget = jtypereferenceRoot->target();
+					if(0!=static_cast<int>(ts::ObjectFlags::Tuple&jtypeTarget->objectFlags())) {
+						return WrapType("std::tuple", "std::tuple", *jtypereferenceRoot->typeArguments());
+					} else {
+						auto const mt = MangleType(jtypereferenceRoot->target());
+						return WrapType(mt.m_strWithComments, mt.m_strCppCanonized, *jtypereferenceRoot->typeArguments());
 					}
-					return {
-						tc::make_str(
-							"tc::js::any /*TypeReference=", tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->typeToString(jtypereferenceRoot)), "*/"
-						),
-						"tc::js::any"
-					};
 				} else if(ts::ObjectFlags::Anonymous == jobjecttypeRoot->objectFlags()) {
 					auto josymTypeSymbol = jobjecttypeRoot->getSymbol();
 					if(josymTypeSymbol && ts::SymbolFlags::TypeLiteral == (*josymTypeSymbol)->getFlags()) {
@@ -244,27 +228,24 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 					auto const jinterfacetypeRoot = *jointerfacetypeRoot;
 					// _ASSERT(ts::ObjectFlags::Interface==jobjecttypeRoot->objectFlags() || ts::ObjectFlags::Class==jobjecttypeRoot->objectFlags());
 					auto const strName = FullyQualifiedName(*jinterfacetypeRoot->getSymbol());
+					_ASSERT(!jinterfacetypeRoot->outerTypeParameters()); // TODO: Not supported at the moment
 
-					if(!jinterfacetypeRoot->typeParameters()
-					&& !jinterfacetypeRoot->outerTypeParameters()
-					&& !jinterfacetypeRoot->localTypeParameters()
-					&& (!jinterfacetypeRoot->thisType() 
-						|| tc::js::ts_ext::TypeParameter(*jinterfacetypeRoot->thisType())->constraint().getEmval().strictlyEquals(jinterfacetypeRoot.getEmval()))
-					){
-						if(auto ojsclass = tc::cont_find<tc::return_element_or_null>(g_setjsclass, FullyQualifiedName(*(*jointerfacetypeRoot)->getSymbol()))) {
-							return {mangled_no_comments, ojsclass->m_strMangledName};
-						} else {
-							return {
-								tc::make_str(
-									"tc::js::any /*UnknownClassOrInterface=", strName, "*/"
-								),
-								"tc::js::any"
-							};
-						}
-					} else {
+					if(auto ojsclass = tc::cont_find<tc::return_element_or_null>(g_setjsclass, strName)) {
+						// When jinterfaceRoot refers to interface C declared as  
+						// 	interface C<K, T> {}
+						// (*jointerfacetypeRoot)->typeParameters() returns the uninstantiated generic type parameters K, T
+						// We don't want to output them.
+						return {mangled_no_comments, ojsclass->m_strMangledName};
+					} else if(tc::binary_find_unique<tc::return_bool>(
+						as_constexpr(tc::make_array<tc::ptr_range<char const>>(tc::aggregate_tag, "Array", "Promise", "ReadonlyArray", "Record")), 
+						strName,
+						tc::lessfrom3way(tc::fn_lexicographical_compare_3way())
+					)) {
+						return {mangled_no_comments, tc::make_str("tc::js::", strName)};
+					} else { 
 						return {
 							tc::make_str(
-								"tc::js::any /*NonTrivialClassOrInterface=", strName, "*/"
+								"tc::js::any /*UnknownClassOrInterface=", strName, "*/"
 							),
 							"tc::js::any"
 						};

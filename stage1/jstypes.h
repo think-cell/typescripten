@@ -73,11 +73,18 @@ public:
 static_assert(std::is_nothrow_move_constructible<SJsVariableLike>::value);
 static_assert(std::is_nothrow_move_assignable<SJsVariableLike>::value);
 
+struct STypeParameter final {
+    std::string m_strName;
+
+    STypeParameter(tc::js::ts::TypeParameterDeclaration) noexcept;
+};
+
 struct SJsFunctionLike final {
     tc::js::ts::Symbol m_jsym;
     std::string m_strCppifiedName;
     tc::js::ts::Signature m_jsignature;
     std::vector<SJsVariableLike> m_vecjsvariablelikeParameters;
+    std::vector<STypeParameter> m_vectypeparam;
 
 private:
     // Cached
@@ -142,6 +149,8 @@ struct SJsClass final : public SJsScope, public boost::intrusive::set_base_hook<
     std::vector<SJsClass const*> m_vecpjsclassBase;
     std::vector<tc::js::ts::Symbol> m_vecjsymBaseUnknown;
 
+    std::vector<STypeParameter> m_vectypeparam;
+
     bool m_bHasImplicitDefaultConstructor;
 
     SJsClass(tc::js::ts::Symbol jsymClass) noexcept;
@@ -162,6 +171,8 @@ struct SJsTypeAlias final : public boost::intrusive::set_base_hook<boost::intrus
     std::string m_strQualifiedName;
     std::string m_strCppifiedName;
     std::string m_strMangledName;
+    
+    std::vector<STypeParameter> m_vectypeparam;
 
     SJsTypeAlias(tc::js::ts::Symbol jsym) noexcept;
     SJsTypeAlias(SJsTypeAlias&&) noexcept = default;

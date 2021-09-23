@@ -93,15 +93,19 @@ namespace {
     // and export them with using declarations.
     std::string MangleSymbolName(ts::Symbol jsymType, ENameContext enamectx) noexcept {
         std::string strMangled = "_js_j";
-        tc::for_each(FullyQualifiedName(jsymType), [&](char c) noexcept {
+        auto const strQualified = FullyQualifiedName(jsymType);
+        tc::for_each(strQualified, [&](char c) noexcept {
             switch (c) {
             case '_': tc::append(strMangled, "_u"); break;
             case ',': tc::append(strMangled, "_c"); break;
             case '.': tc::append(strMangled, "_d"); break;
             case '-': tc::append(strMangled, "_m"); break;
             case '"': tc::append(strMangled, "_q"); break;
-            default: 
-                _ASSERT(tc::isasciidigit(c) || tc::isasciilower(c) || tc::isasciiupper(c));
+            default:
+                if(!tc::isasciidigit(c) && !tc::isasciilower(c) && !tc::isasciiupper(c)) {
+                    tc::append(std::cerr, "Invalid character in symbol name ", strQualified, "\n");
+                    _ASSERTFALSE;
+                }
                 tc::cont_emplace_back(strMangled, c); break;
             }
         });
@@ -278,6 +282,35 @@ SMangledType const& SJsVariableLike::MangleType() const& noexcept {
     return *m_omtType;
 }
 
+STypeParameter::STypeParameter(ts::TypeParameterDeclaration typeparamdecl) noexcept
+    : m_strName(tc::explicit_cast<std::string>(tc::js::string(typeparamdecl->name()->escapedText())))
+{   
+    // FIXME: Support type constraints, double and enum template arguments
+    // , std::enable_if_t<std::is_base_of<A, K>::value>* = nullptr
+    if(auto const otypenode = typeparamdecl->constraint()) {
+        if(!(ts::SyntaxKind::NumberKeyword == (*otypenode)->kind()
+        || (ts::SyntaxKind::TypeReference == (*otypenode)->kind()
+            && [&]() noexcept {
+                auto jtype = (*g_ojtsTypeChecker)->getTypeFromTypeNode(*otypenode);
+                auto jsym = jtype->symbol();
+                if(ts::SymbolFlags::None!=((ts::SymbolFlags::RegularEnum|ts::SymbolFlags::Class|ts::SymbolFlags::Interface)&jsym->getFlags())) {
+                    return true;
+                } else {
+                    tc::append(std::cerr, "Cannot find symbol for type parameter declaration (", tc::as_dec(static_cast<int>(jsym->getFlags())) , ")\n");
+                    return false;
+                }
+            }()
+        )
+        || ts::SyntaxKind::TypeOperator == (*otypenode)->kind() // e.g. keyof declaration
+        || ts::SyntaxKind::UnionType == (*otypenode)->kind()
+        || ts::SyntaxKind::IndexedAccessType == (*otypenode)->kind()
+        )) {
+            tc::append(std::cerr, "Unsupported type parameter declaration ", tc::explicit_cast<std::string>(typeparamdecl->getFullText()), " (", tc::as_dec(static_cast<int>((*otypenode)->kind())), ")\n");
+            _ASSERTFALSE;
+        }
+    }
+}
+
 SJsFunctionLike::SJsFunctionLike(ts::Symbol jsym, ts::SignatureDeclaration jsigndecl) noexcept
     : m_jsym(jsym)
     , m_strCppifiedName(CppifyName(m_jsym, enamectxFUNCTION))
@@ -288,7 +321,8 @@ SJsFunctionLike::SJsFunctionLike(ts::Symbol jsym, ts::SignatureDeclaration jsign
             return SJsVariableLike(jsymParameter);
         }
     )))
-{
+    , m_vectypeparam(tc::make_vector(tc::transform(ts::getEffectiveTypeParameterDeclarations(jsigndecl), tc::fn_explicit_cast<STypeParameter>())))
+{ 
     if (ts::ModifierFlags::None != ts::getCombinedModifierFlags(jsigndecl) &&
         ts::ModifierFlags::Export != ts::getCombinedModifierFlags(jsigndecl) &&
         ts::ModifierFlags::Ambient != ts::getCombinedModifierFlags(jsigndecl)) {
@@ -401,6 +435,24 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
             }
         ));
     }
+
+    // We must get the type parameters via the declaration
+    // (*g_ojtsTypeChecker)->symbolToTypeParameterDeclarations(m_jsym) seems to return new nodes, i.e., syntax nodes
+    // without a text position in the source file. These cannot be transformed into types. 
+    
+    if(auto ojdeclwithtypeparam = [&]() noexcept -> std::optional<ts::DeclarationWithTypeParameters> {
+        auto jdecl = tc::front(m_jsym->declarations());
+        if(auto ojclassdecl = ts::isClassLike(jdecl)) {
+            return ts::DeclarationWithTypeParameters(*ojclassdecl);
+        } else if(auto ojinterfacedecl = ts::isInterfaceDeclaration(jdecl)) {
+            return ts::DeclarationWithTypeParameters(*ojinterfacedecl);
+        } else {
+            return std::nullopt;
+        }
+    }()) {
+        m_vectypeparam = tc::make_vector(tc::transform(ts::getEffectiveTypeParameterDeclarations(*ojdeclwithtypeparam), tc::fn_explicit_cast<STypeParameter>()));
+    }
+    // FIXME: Add assert that all declarations have the same type parameters
 
     if(static_cast<bool>(ts::SymbolFlags::Class&m_jsym->getFlags())) {
         // See logic at `src/compiler/transformers/es2015.ts`, `addConstructor`, `transformConstructorBody` and `createDefaultConstructorBody`:
@@ -519,20 +571,25 @@ void SJsClass::ResolveBaseClasses() & noexcept {
     }
 }
 
-SJsTypeAlias::SJsTypeAlias(ts::Symbol jsym) noexcept 
-    : m_jsym(jsym)
-    , m_jtypenode(tc::js::ts::TypeAliasDeclaration(
+tc::js::ts::TypeAliasDeclaration TypeAliasDeclaration(ts::Symbol jsym) noexcept {
+    return tc::js::ts::TypeAliasDeclaration(
         tc::find_first_if<tc::return_value>(
             jsym->declarations(), 
             [](tc::js::ts::Declaration decl) noexcept {
                 return tc::bool_cast(tc::js::ts::isTypeAliasDeclaration(decl));
             }
         )
-      )->type())
+    );
+}
+
+SJsTypeAlias::SJsTypeAlias(ts::Symbol jsym) noexcept 
+    : m_jsym(jsym)
+    , m_jtypenode(TypeAliasDeclaration(jsym)->type())
     , m_jtype((*g_ojtsTypeChecker)->getTypeFromTypeNode(m_jtypenode))
     , m_strQualifiedName(FullyQualifiedName(m_jsym))
     , m_strCppifiedName(CppifyName(m_jsym, enamectxTYPEALIAS))
     , m_strMangledName(MangleSymbolName(m_jsym, enamectxTYPEALIAS))
+    , m_vectypeparam(tc::make_vector(tc::transform(ts::getEffectiveTypeParameterDeclarations(TypeAliasDeclaration(jsym)), tc::fn_explicit_cast<STypeParameter>())))
 {}
 
 void SJsTypeAlias::Initialize() & noexcept {
