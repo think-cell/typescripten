@@ -146,8 +146,8 @@ struct SJsClass final : public SJsScope, public boost::intrusive::set_base_hook<
     std::vector<SJsFunctionLike> m_vecjsfunctionlikeCtor;
     std::vector<SJsFunctionLike> m_vecjsfunctionlikeMethod;
     std::vector<SJsVariableLike> m_vecjsvariablelikeProperty;
-    std::vector<SJsClass const*> m_vecpjsclassBase;
-    std::vector<tc::js::ts::Symbol> m_vecjsymBaseUnknown;
+    std::vector<SJsClass const*> m_vecpjsclassSortDependency;
+    std::vector<tc::js::ts::Type> m_vecjtypeBaseClass;
 
     std::vector<STypeParameter> m_vectypeparam;
 
@@ -171,7 +171,7 @@ struct SJsTypeAlias final : public boost::intrusive::set_base_hook<boost::intrus
     std::string m_strQualifiedName;
     std::string m_strCppifiedName;
     std::string m_strMangledName;
-    
+
     std::vector<STypeParameter> m_vectypeparam;
 
     SJsTypeAlias(tc::js::ts::Symbol jsym) noexcept;

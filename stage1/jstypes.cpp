@@ -508,7 +508,7 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
                             if(auto ojstypenode = (*ojsindexdecl)->type()) {
                                 if(auto ojsuniontypenode = ts::isUnionTypeNode(*ojstypenode)) {
                                     return tc::any_of(tc::js::ts_ext::MakeReadOnlyArray<ts::TypeNode>((*ojsuniontypenode)->types()), [](auto const& typenode) noexcept { return ts::SyntaxKind::UndefinedKeyword==typenode->kind(); }); 
-                                }
+                                 }
                             }
                         }
                         return false;
@@ -523,19 +523,20 @@ void SJsClass::Initialize() & noexcept {
 }
 
 void SJsClass::ResolveBaseClasses() & noexcept {
-    auto AddBaseClass = [this](ts::Symbol jsymBase) noexcept {
+    auto AddBaseClassDependency = [this](ts::Symbol jsymBase) noexcept {
         if(auto ojsclass = tc::cont_find<tc::return_element_or_null>(g_setjsclass, FullyQualifiedName(jsymBase))) {
-            tc::cont_emplace_back(m_vecpjsclassBase, std::addressof(*ojsclass));
-        } else {
-            tc::cont_emplace_back(m_vecjsymBaseUnknown, jsymBase);
+            tc::cont_emplace_back(m_vecpjsclassSortDependency, std::addressof(*ojsclass));
         }
     };
 
     if (auto jointerfacetypeClass = (*g_ojtsTypeChecker)->getDeclaredTypeOfSymbol(m_jsym)->isClassOrInterface()) {
         tc::for_each((*g_ojtsTypeChecker)->getBaseTypes(*jointerfacetypeClass),
-            [&](tc::js::ts::BaseType jtsBaseType) noexcept {
-                if (auto const jointerfacetypeBase = tc::reluctant_implicit_cast<ts::Type>(jtsBaseType)->isClassOrInterface()) {
-                    AddBaseClass(*(*jointerfacetypeBase)->getSymbol());
+            [&](tc::js::ts::BaseType jbasetype) noexcept {
+                tc::cont_emplace_back(m_vecjtypeBaseClass, jbasetype);
+
+                // FIXME: Add dependency for type arguments?
+                if(auto ojsym = tc::implicit_cast<ts::Type>(jbasetype)->getSymbol()) {
+                    AddBaseClassDependency(*ojsym);
                 }
             }
         );
@@ -548,9 +549,11 @@ void SJsClass::ResolveBaseClasses() & noexcept {
                         if(ts::SyntaxKind::ImplementsKeyword == jtsHeritageClause->token()) {
                             tc::for_each(tc::js::ts_ext::HeritageClause(jtsHeritageClause)->types(), [&](ts::Node jnodeImplementsType) noexcept {
                                 auto jtypeImplements = (*g_ojtsTypeChecker)->getTypeAtLocation(jnodeImplementsType);
+                                tc::cont_emplace_back(m_vecjtypeBaseClass, jtypeImplements);
+
                                 if(auto josymImplements = jtypeImplements->getSymbol()) {
-                                    AddBaseClass(*josymImplements);
-                                } else {
+                                    AddBaseClassDependency(*josymImplements);
+                                } else {    
                                     tc::append(std::cerr,
                                         "Unable to determine 'implements' symbol for class '",
                                         tc::explicit_cast<std::string>(m_jsym->getName()),

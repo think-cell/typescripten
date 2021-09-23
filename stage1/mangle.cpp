@@ -236,12 +236,8 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 						// (*jointerfacetypeRoot)->typeParameters() returns the uninstantiated generic type parameters K, T
 						// We don't want to output them.
 						return {mangled_no_comments, ojsclass->m_strMangledName};
-					} else if(tc::binary_find_unique<tc::return_bool>(
-						as_constexpr(tc::make_array<tc::ptr_range<char const>>(tc::aggregate_tag, "Array", "Promise", "ReadonlyArray", "Record")), 
-						strName,
-						tc::lessfrom3way(tc::fn_lexicographical_compare_3way())
-					)) {
-						return {mangled_no_comments, tc::make_str("tc::js::", strName)};
+					} else if(IsBootstrapType(strName)) {
+						return {mangled_no_comments, tc::make_str("_js_", strName)};
 					} else { 
 						return {
 							tc::make_str(

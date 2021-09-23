@@ -190,7 +190,7 @@ int main(int cArgs, char* apszArgs[]) {
 		std::vector<SJsClass const*> vecpjsclassSorted = SortDeclarationOrder(
 			g_setjsclass, 
 			[](SJsClass const& jsclass, auto ForEachChild) noexcept {
-				tc::for_each(jsclass.m_vecpjsclassBase, [&](SJsClass const* pjsclass) noexcept {
+				tc::for_each(jsclass.m_vecpjsclassSortDependency, [&](SJsClass const* pjsclass) noexcept {
 					ForEachChild(*pjsclass);
 				});
 			}
@@ -442,23 +442,19 @@ int main(int cArgs, char* apszArgs[]) {
 					"\tstruct _impl", pjsclass->m_strMangledName,
 					" : ",
 					tc_conditional_range(
-						tc::empty(pjsclass->m_vecpjsclassBase),
+						tc::empty(pjsclass->m_vecjtypeBaseClass),
 						"virtual object_base",
 						tc::join_separated(
-							tc::transform(pjsclass->m_vecpjsclassBase,
-								[](SJsClass const* pjsclass) noexcept {
-									return tc::concat("virtual _impl", pjsclass->m_strMangledName);
+							tc::transform(pjsclass->m_vecjtypeBaseClass,
+								[](auto jtype) noexcept {
+									// FIXME: MangleType should return optional
+									// FIXME: Prefixing _impl here is pretty ugly
+									return tc::concat("virtual _impl", MangleType(jtype).m_strCppCanonized);
 								}
 							),
 							", "
 						)
 					),
-					tc::join(tc::transform(
-						pjsclass->m_vecjsymBaseUnknown,
-						[](ts::Symbol jsym) noexcept {
-							return tc::concat("/* : ", FullyQualifiedName(jsym), " */");
-						}
-					)),
 					" {\n",
 					"\t\tstruct _tcjs_definitions {\n",
 					tc::join(tc::transform(
