@@ -20,8 +20,8 @@ void PrintSymbolTree(int const nOffset, ts::Symbol const jsymType) noexcept {
 	// jsymType()->exports: nested static types/methods/properties
 	// (*g_ojtsTypeChecker)->getExportsOfModule(jsymType): same as 'exports', but when called on a module with `export = Foo`, returns members of `Foo`, not `Foo` itself.
 	tc::append(std::cerr, tc::repeat_n(' ', nOffset + 2), "members\n");
-	if (tc::js::ts_ext::Symbol(jsymType)->members()) {
-		tc::for_each(*tc::js::ts_ext::Symbol(jsymType)->members(), [&](ts::Symbol const jsymChild) noexcept { PrintSymbolTree(nOffset + 4, jsymChild); });
+	if (jsymType->members()) {
+		tc::for_each(*jsymType->members(), [&](ts::Symbol const jsymChild) noexcept { PrintSymbolTree(nOffset + 4, jsymChild); });
 	}
 
 	if(static_cast<bool>(jsymType->getFlags() & ts::SymbolFlags::Module)) {
@@ -29,9 +29,9 @@ void PrintSymbolTree(int const nOffset, ts::Symbol const jsymType) noexcept {
 		tc::for_each((*g_ojtsTypeChecker)->getExportsOfModule(jsymType),
 			[&](ts::Symbol const jsymChild) noexcept { PrintSymbolTree(nOffset + 4, jsymChild); }
 		);
-	} else if (tc::js::ts_ext::Symbol(jsymType)->exports()) {
+	} else if (jsymType->exports()) {
 		tc::append(std::cerr, tc::repeat_n(' ', nOffset + 2), "exports\n");
-		tc::for_each(*tc::js::ts_ext::Symbol(jsymType)->exports(),
+		tc::for_each(*jsymType->exports(),
 			[&](ts::Symbol const jsymChild) noexcept { PrintSymbolTree(nOffset + 4, jsymChild); }
 		);
 	}

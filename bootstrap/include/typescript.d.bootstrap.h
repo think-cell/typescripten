@@ -31,53 +31,6 @@ and limitations under the License.
 
 #include "ts.d.inl"
 
-// Manual fixes
-namespace tc::js::ts_ext {
-	// TODO: Unclear why this is ok, this is not defined on TypeParameter
-	struct _js_TypeParameter : virtual tc::js_defs::_impl_js_jts_dTypeParameter {
-		auto constraint() noexcept { return _getProperty<tc::jst::union_t<tc::js::undefined, tc::js::ts::Type>>("constraint"); }
-	};
-	using TypeParameter = tc::jst::ref<_js_TypeParameter>;
-
-	// TODO: Generics
-	struct _js_SymbolTable : virtual tc::jst::object_base {
-		struct _tcjs_definitions {
-			using value_type = tc::js::ts::Symbol;
-		};
-
-		template<typename Fn>
-		auto operator()(Fn fn) noexcept {
-			return _call<void>("forEach", tc::jst::lambda([&](tc::js::ts::Symbol value, tc::js::any, tc::js::any) noexcept {
-				fn(tc_move(value));
-			}));
-		}
-	};
-	using SymbolTable = tc::jst::ref<_js_SymbolTable>;
-
-	template<typename T>
-	ReadonlyArray<T> MakeReadOnlyArray(tc::js::any unk) noexcept {
-		return ReadonlyArray<T>(unk);
-	}
-
-	struct _js_HeritageClause : virtual tc::js_defs::_impl_js_jts_dHeritageClause {
-		auto types() noexcept { return _getProperty<ReadonlyArray<tc::js::ts::Node>>("types"); }
-	};
-	using HeritageClause = tc::jst::ref<_js_HeritageClause>;
-
-	struct _js_Symbol : virtual tc::js_defs::_impl_js_jts_dSymbol {
-		inline auto parent() noexcept { return _getProperty<tc::jst::optional<tc::js::ts::Symbol>>("parent"); }
-		inline auto members() noexcept { return _getProperty<tc::jst::optional<tc::js::ts_ext::SymbolTable>>("members"); }
-		inline auto exports() noexcept { return _getProperty<tc::jst::optional<tc::js::ts_ext::SymbolTable>>("exports"); }
-		inline auto globalExports() noexcept { return _getProperty<tc::jst::optional<tc::js::ts_ext::SymbolTable>>("globalExports"); }
-	};
-	using Symbol = tc::jst::ref<_js_Symbol>;
-
-	struct _js_ClassLikeDeclaration : virtual tc::js_defs::_impl_js_jts_dClassDeclaration {
-		auto heritageClauses() noexcept { return _getProperty<tc::jst::optional<ReadonlyArray<tc::js::ts::HeritageClause>>>("heritageClauses"); }
-	};
-	using ClassLikeDeclaration = tc::jst::ref<_js_ClassLikeDeclaration>;
-} // namespace tc::js::ts_ext
-
 namespace tc::js_defs {
 	// Manually implemented instead of DEFINE_CONTIGUOUS_ENUM + enumset to avoid manually checking that all enums are indeed contiguous.
 	constexpr tc::js::ts::SymbolFlags operator|(tc::js::ts::SymbolFlags a, tc::js::ts::SymbolFlags b) { return static_cast<tc::js::ts::SymbolFlags>(static_cast<int>(a) | static_cast<int>(b)); }
@@ -93,3 +46,37 @@ namespace tc::js_defs {
 	constexpr tc::js::ts::ModifierFlags operator|(tc::js::ts::ModifierFlags a, tc::js::ts::ModifierFlags b) { return static_cast<tc::js::ts::ModifierFlags>(static_cast<int>(a) | static_cast<int>(b)); }
 	constexpr tc::js::ts::ModifierFlags operator&(tc::js::ts::ModifierFlags a, tc::js::ts::ModifierFlags b) { return static_cast<tc::js::ts::ModifierFlags>(static_cast<int>(a) & static_cast<int>(b)); }
 } // namespace tc::js_defs
+
+JS_RANGE_WITH_ITERATORS(tc::js::ts, NodeArray)
+
+namespace tc::js::ts_ext {
+	// TODO: Anonymous union type
+	template<typename T>
+	struct _js_IteratorValue : virtual tc::jst::object_base {
+		inline auto done() noexcept { return _getProperty<bool>("done"); }
+		inline auto value() noexcept { return _getProperty<T>("value"); }
+	};	
+	template<typename T> 
+	using IteratorValue = tc::jst::ref<_js_IteratorValue<T>>;
+}
+
+namespace tc::no_adl {
+	template< typename Map, typename T >
+	struct range_value< Map, tc::js::ts::UnderscoreEscapedMap<T>, void > final {
+		using type = T;
+	};
+}
+
+namespace tc::for_each_adl {
+	template<typename T, typename Sink>
+	auto for_each_impl(adl_tag_t, tc::js::ts::UnderscoreEscapedMap<T> const& map, Sink&& sink) noexcept {
+		auto it = map->values();
+		for(;;) {
+			auto iv = tc::js::ts_ext::IteratorValue<T>(it->next());
+			if(iv->done()) {
+				return tc::continue_;
+			}
+			RETURN_IF_BREAK(tc::continue_if_not_break(sink, iv->value()))
+		}
+	}
+}

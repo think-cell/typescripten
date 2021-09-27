@@ -62,8 +62,8 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 	case ts::TypeFlags::StringLiteral | ts::TypeFlags::EnumLiteral:
 	// Some enums e.g. ts.SymbolFlags are parsed as ts::TypeFlags::Union | ts::TypeFlags::EnumLiteral 
 	// They are handled below together with all other unions
-	{
-		auto jsymParentSymbol = *tc::js::ts_ext::Symbol(*jtypeRoot->getSymbol())->parent();
+	{		
+		auto jsymParentSymbol = *(*g_ojtsTypeChecker)->getTypeAtLocation(tc::front((*jtypeRoot->getSymbol())->declarations())->parent())->getSymbol();
 		_ASSERT(ts::SymbolFlags::RegularEnum == jsymParentSymbol->getFlags() ||
 			ts::SymbolFlags::ConstEnum == jsymParentSymbol->getFlags());
 
@@ -178,7 +178,7 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 				} else if(ts::ObjectFlags::Anonymous == jobjecttypeRoot->objectFlags()) {
 					auto josymTypeSymbol = jobjecttypeRoot->getSymbol();
 					if(josymTypeSymbol && ts::SymbolFlags::TypeLiteral == (*josymTypeSymbol)->getFlags()) {
-						auto const vecjsymMember = tc::make_vector(*tc::js::ts_ext::Symbol(*josymTypeSymbol)->members());
+						auto const vecjsymMember = tc::make_vector(*(*josymTypeSymbol)->members());
 						auto const rngstrMemberName = tc::transform(vecjsymMember, [](ts::Symbol const& jsymMember) noexcept {
 							return tc::explicit_cast<std::string>(jsymMember->getName());
 						});

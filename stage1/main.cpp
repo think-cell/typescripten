@@ -3,7 +3,6 @@
 #include "mangle.h"
 #include "walk_symbol.h"
 #include "jstypes.h"
-
 using tc::jst::create_js_object;
 using tc::js::string;
 using tc::jst::optional;
@@ -18,17 +17,43 @@ bool g_bGlobalScopeConstructionComplete = true;
 
 namespace {
 	std::string RetrieveSymbolFromCpp(ts::Symbol jsymSymbol) noexcept {
-		std::string strSymbolName = tc::explicit_cast<std::string>(jsymSymbol->getName());
-		return tc::explicit_cast<std::string>(
-			tc_conditional_range(
-				!tc::js::ts_ext::Symbol(jsymSymbol)->parent(),
-				tc::concat("emscripten::val::global(\"", StripQuotes(strSymbolName), "\")"),
-				tc::concat(
-					RetrieveSymbolFromCpp(*tc::js::ts_ext::Symbol(jsymSymbol)->parent()),
-					"[\"", StripQuotes(strSymbolName), "\"]"
-				)
-			)
-		);
+		auto const str = FullyQualifiedName(jsymSymbol);
+		std::string strResult;
+
+		auto strSplit = tc::as_pointers(str);
+		while(!tc::empty(strSplit)) {
+			auto const strLocal = [&]() noexcept {
+				if(tc::starts_with<tc::return_bool>(strSplit, "\"")) {
+					tc::drop_first_inplace(strSplit);
+					
+					auto itch = tc::find_first<tc::return_element>(strSplit, '\"');
+					auto str = tc::take(strSplit, itch);
+
+					tc::drop_inplace(strSplit, itch + 1);
+					if(!tc::empty(strSplit)) {
+						_ASSERT('.' == tc::front(strSplit));
+						tc::drop_first_inplace(strSplit);
+					}
+
+					return str;
+				} else if(auto itch = tc::find_first<tc::return_element_or_null>(strSplit, '.')) {
+					auto str = tc::take(strSplit, itch);
+					tc::drop_inplace(strSplit, itch + 1);
+					return str;
+				} else {
+					auto str = strSplit;
+					tc::drop_inplace(strSplit, tc::end(strSplit));
+					return str;
+				}
+			}();
+
+			if(tc::empty(strResult)) {
+				tc::append(strResult, "emscripten::val::global(\"", strLocal, "\")");
+			} else {
+				tc::append(strResult, "[\"", strLocal, "\"]");
+			}
+		}
+		return strResult;
 	}
 
 
@@ -104,7 +129,7 @@ int main(int cArgs, char* apszArgs[]) {
 							if (auto const jotsFunctionDeclaration = ts::isFunctionDeclaration(jnodeChild)) {
 								tc::cont_emplace_back(vecjsymExportedSymbol, *(*g_ojtsTypeChecker)->getSymbolAtLocation(*(*jotsFunctionDeclaration)->name()));
 							} else if (auto const jotsVariableStatement = ts::isVariableStatement(jnodeChild)) {
-								tc::for_each(tc::js::ts_ext::MakeReadOnlyArray<ts::VariableDeclaration>((*jotsVariableStatement)->declarationList()->declarations()), [&](ts::VariableDeclaration jtsVariableDeclaration) noexcept {
+								tc::for_each((*jotsVariableStatement)->declarationList()->declarations(), [&](ts::VariableDeclaration jtsVariableDeclaration) noexcept {
 									tc::cont_emplace_back(vecjsymExportedSymbol, *(*g_ojtsTypeChecker)->getSymbolAtLocation(jtsVariableDeclaration->name()));
 								});
 							} else if (auto const jotsClassDeclaration = ts::isClassDeclaration(jnodeChild)) {

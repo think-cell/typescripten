@@ -13,7 +13,7 @@ enum ECppType {
 BITMASK_OPS(ECppType);
 ECppType CppType(tc::js::ts::Symbol jsymType) noexcept;
 
-tc::ptr_range<char const> StripQuotes(std::string const& str) noexcept;
+tc::ptr_range<char const> StripQuotes(tc::ptr_range<char const> str) noexcept;
 
 DEFINE_ENUM(ENameContext, enamectx, (NONE)(ENUM)(CLASS)(TYPEALIAS)(FUNCTION));
 std::string CppifyName(tc::js::ts::Symbol jsymSymbol, ENameContext enamectx) noexcept;

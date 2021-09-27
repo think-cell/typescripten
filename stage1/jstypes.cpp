@@ -113,9 +113,8 @@ namespace {
     }
 }
 
-tc::ptr_range<char const> StripQuotes(std::string const& str) noexcept {
-    _ASSERT(!tc::empty(str));
-    auto strNoQuotes = tc::as_pointers(str);
+tc::ptr_range<char const> StripQuotes(tc::ptr_range<char const> strNoQuotes) noexcept {
+    _ASSERT(!tc::empty(strNoQuotes));
     if ('"' == tc::front(strNoQuotes) && '"' == tc::back(strNoQuotes)) {
         tc::drop_first_inplace(strNoQuotes);
         tc::drop_last_inplace(strNoQuotes);
@@ -156,7 +155,7 @@ std::string CppifyName(ts::Symbol jsym, ENameContext enamectx) noexcept {
     // so we are needlessly restrictive here. 
     std::string strResult;
     tc::for_each(
-        StripQuotes(tc::explicit_cast<std::string>(jsym->getName())),
+        StripQuotes(tc::as_pointers(tc::as_lvalue(tc::explicit_cast<std::string>(jsym->getName())))),
         [&](char c) noexcept {
             if(tc::isasciidigit(c) || tc::isasciilower(c) || tc::isasciiupper(c)) {
                 tc::cont_emplace_back(strResult, c);
@@ -207,7 +206,7 @@ SJsEnum::SJsEnum(ts::Symbol jsym) noexcept
     , m_strMangledName(MangleSymbolName(m_jsym, enamectxENUM))
     , m_vecjsenumoption(tc::make_vector(tc::transform(
         tc::filter(
-            *tc::js::ts_ext::Symbol(m_jsym)->exports(),
+            *m_jsym->exports(),
             [](ts::Symbol const jsymExport) noexcept {
                 return static_cast<bool>(ts::SymbolFlags::EnumMember&jsymExport->getFlags());
             }
@@ -403,7 +402,7 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
         )
     );
 
-    if(auto ojarrsymMembers = tc::js::ts_ext::Symbol(m_jsym)->members()) { 
+    if(auto ojarrsymMembers = m_jsym->members()) { 
         tc::for_each(
             tc::filter(*ojarrsymMembers, [](ts::Symbol jsymMember) noexcept {
                 // TODO: Support optional member functions
@@ -478,7 +477,7 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
             if(auto ojvardecl = ts::isVariableDeclaration(*ojdecl)) {
                 if(auto ojtypenode = (*ojvardecl)->type()) {
                     auto jstypeVariable = (*g_ojtsTypeChecker)->getTypeFromTypeNode(*ojtypenode);
-                    tc::for_each(*(tc::js::ts_ext::Symbol(jstypeVariable->symbol())->members()), [&](ts::Symbol jsymMember) noexcept {
+                    tc::for_each(*(jstypeVariable->symbol()->members()), [&](ts::Symbol jsymMember) noexcept {
                          tc::for_each(jsymMember->declarations(), [&](ts::Declaration jdecl) noexcept {
                              if(auto ojctorsignature = ts::isConstructSignatureDeclaration(jdecl)) {
                                   tc::cont_emplace_back(m_vecjsfunctionlikeCtor, SJsFunctionLike(jsymMember, *ojctorsignature));
@@ -507,8 +506,8 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
                         if(auto ojsindexdecl = ts::isIndexSignatureDeclaration(jsdecl)) {
                             if(auto ojstypenode = (*ojsindexdecl)->type()) {
                                 if(auto ojsuniontypenode = ts::isUnionTypeNode(*ojstypenode)) {
-                                    return tc::any_of(tc::js::ts_ext::MakeReadOnlyArray<ts::TypeNode>((*ojsuniontypenode)->types()), [](auto const& typenode) noexcept { return ts::SyntaxKind::UndefinedKeyword==typenode->kind(); }); 
-                                 }
+                                    return tc::any_of((*ojsuniontypenode)->types(), [](auto const& typenode) noexcept { return ts::SyntaxKind::UndefinedKeyword==typenode->kind(); }); 
+                                }
                             }
                         }
                         return false;
@@ -544,10 +543,10 @@ void SJsClass::ResolveBaseClasses() & noexcept {
         // The only missing part is `implements` for classes.
         tc::for_each(m_jsym->declarations(), [&](ts::Declaration jdeclClass) noexcept {
             if (auto joclassdeclarationClass = ts::isClassDeclaration(jdeclClass)) {
-                if (auto jorarrHeritageClause = tc::js::ts_ext::ClassLikeDeclaration(*joclassdeclarationClass)->heritageClauses()) {
+                if (auto jorarrHeritageClause = tc::implicit_cast<ts::ClassLikeDeclarationBase>(*joclassdeclarationClass)->heritageClauses()) {
                     tc::for_each(*jorarrHeritageClause, [&](ts::HeritageClause jtsHeritageClause) noexcept {
                         if(ts::SyntaxKind::ImplementsKeyword == jtsHeritageClause->token()) {
-                            tc::for_each(tc::js::ts_ext::HeritageClause(jtsHeritageClause)->types(), [&](ts::Node jnodeImplementsType) noexcept {
+                            tc::for_each(jtsHeritageClause->types(), [&](ts::Node jnodeImplementsType) noexcept {
                                 auto jtypeImplements = (*g_ojtsTypeChecker)->getTypeAtLocation(jnodeImplementsType);
                                 tc::cont_emplace_back(m_vecjtypeBaseClass, jtypeImplements);
 
