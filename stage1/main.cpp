@@ -342,8 +342,8 @@ int main(int cArgs, char* apszArgs[]) {
 
 		auto ClassExportTypeParamUsingDecl = [&](auto const& js) noexcept {
 			return tc::concat(
-				TemplateDecl("\t", js),
-				"\tusing ",
+				TemplateDecl("\t\t\t", js),
+				"\t\t\tusing ",
 				js.m_strCppifiedName,
 				" = ",
 				js.m_strMangledName,
@@ -354,7 +354,7 @@ int main(int cArgs, char* apszArgs[]) {
 
 		auto ClassExportTypeUsingDecl = [](auto const& js) noexcept {
 			return tc::concat(
-				"\tusing ",
+				"\t\t\tusing ",
 				js.m_strCppifiedName,
 				" = ",
 				js.m_strMangledName,
@@ -467,14 +467,13 @@ int main(int cArgs, char* apszArgs[]) {
 					"\tstruct _impl", pjsclass->m_strMangledName,
 					" : ",
 					tc_conditional_range(
-						tc::empty(pjsclass->m_vecjtypeBaseClass),
+						tc::empty(pjsclass->m_vecmtBaseClass),
 						"virtual object_base",
 						tc::join_separated(
-							tc::transform(pjsclass->m_vecjtypeBaseClass,
-								[](auto jtype) noexcept {
-									// FIXME: MangleType should return optional
-									// FIXME: Prefixing _impl here is pretty ugly
-									return tc::concat("virtual _impl", MangleType(jtype).m_strCppCanonized);
+							tc::transform(
+								pjsclass->m_vecmtBaseClass,
+								[](auto const& mt) noexcept {
+									return tc::concat("virtual _impl", mt.m_strCppCanonized);
 								}
 							),
 							", "
@@ -614,7 +613,7 @@ int main(int cArgs, char* apszArgs[]) {
 							return tc::concat(
 								TemplateDecl("\t", *pjsclass),
 								"\tinline auto ", strClassNamespace, "_tcjs_construct(", jsfunctionlike.CppifiedParametersWithCommentsDef(), ") noexcept {\n"
-									"\t\treturn ", pjsclass->m_strMangledName, "(", 
+									"\t\treturn ", pjsclass->m_strMangledName, TemplateArgs(*pjsclass), "(", 
 										strClassInstanceRetrieve, ".new_(", 
 											tc::join_separated(tc::transform(jsfunctionlike.m_vecjsvariablelikeParameters, TC_MEMBER(.m_strCppifiedName)), ", "), 
 										"));\n"
@@ -631,7 +630,7 @@ int main(int cArgs, char* apszArgs[]) {
 								tc_conditional_range(
 									static_cast<bool>(ts::SymbolFlags::Interface & pjsclass->m_jsym->getFlags()),
 									"emscripten::val::object()",
-									tc::concat(pjsclass->m_strMangledName, "(", strClassInstanceRetrieve, ".new_())")
+									tc::concat(pjsclass->m_strMangledName, TemplateArgs(*pjsclass), "(", strClassInstanceRetrieve, ".new_())")
 								),
 								";\n"
 							"\t}\n"

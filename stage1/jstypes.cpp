@@ -235,7 +235,7 @@ SJsVariableLike::SJsVariableLike(ts::Symbol jsym) noexcept
     , m_strCppifiedName(CppifyName(m_jsym, enamectxNONE))
     , m_jdeclVariableLike([&]() noexcept {
         auto rngvariabledecl = tc::filter(m_jsym->declarations(), [](ts::Declaration decl) noexcept { 
-            return tc::js::ts::isVariableDeclaration(decl) || tc::js::ts::isParameter(decl) || tc::js::ts::isPropertySignature(decl) || tc::js::ts::isPropertyDeclaration(decl);;
+            return tc::js::ts::isVariableDeclaration(decl) || tc::js::ts::isParameter(decl) || tc::js::ts::isPropertySignature(decl) || tc::js::ts::isPropertyDeclaration(decl);
         });
         _ASSERT(!tc::empty(rngvariabledecl));
         {
@@ -292,7 +292,7 @@ STypeParameter::STypeParameter(ts::TypeParameterDeclaration typeparamdecl) noexc
             && [&]() noexcept {
                 auto jtype = (*g_ojtsTypeChecker)->getTypeFromTypeNode(*otypenode);
                 auto jsym = jtype->symbol();
-                if(ts::SymbolFlags::None!=((ts::SymbolFlags::RegularEnum|ts::SymbolFlags::Class|ts::SymbolFlags::Interface)&jsym->getFlags())) {
+                if(ts::SymbolFlags::None!=((ts::SymbolFlags::RegularEnum|ts::SymbolFlags::Class|ts::SymbolFlags::Interface|ts::SymbolFlags::TypeParameter)&jsym->getFlags())) {
                     return true;
                 } else {
                     tc::append(std::cerr, "Cannot find symbol for type parameter declaration (", tc::as_dec(static_cast<int>(jsym->getFlags())) , ")\n");
@@ -303,6 +303,7 @@ STypeParameter::STypeParameter(ts::TypeParameterDeclaration typeparamdecl) noexc
         || ts::SyntaxKind::TypeOperator == (*otypenode)->kind() // e.g. keyof declaration
         || ts::SyntaxKind::UnionType == (*otypenode)->kind()
         || ts::SyntaxKind::IndexedAccessType == (*otypenode)->kind()
+        || ts::SyntaxKind::ArrayType == (*otypenode)->kind() // T extends any[]
         )) {
             tc::append(std::cerr, "Unsupported type parameter declaration ", tc::explicit_cast<std::string>(typeparamdecl->getFullText()), " (", tc::as_dec(static_cast<int>((*otypenode)->kind())), ")\n");
             _ASSERTFALSE;
@@ -372,7 +373,7 @@ std::string const& SJsFunctionLike::CanonizedParameterCppTypes() const& noexcept
     if(tc::empty(m_strCanonizedParameterCppTypes)) {
         m_strCanonizedParameterCppTypes = tc::explicit_cast<std::string>(tc::join_separated(
             tc::transform(m_vecjsvariablelikeParameters, [&](SJsVariableLike const& jsvariablelikeParameter) noexcept {
-                return jsvariablelikeParameter.MangleType().m_strCppCanonized;
+                return jsvariablelikeParameter.MangleType().ExpandType();
             }),
             ", "
         ));
@@ -426,7 +427,7 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
 
         m_vecjsvariablelikeProperty = tc::make_vector(tc::transform(
             tc::filter(*ojarrsymMembers, [](ts::Symbol jsymMember) noexcept {
-                _ASSERT(!static_cast<bool>(ts::SymbolFlags::Property & jsymMember->getFlags()) || !static_cast<bool>(~(ts::SymbolFlags::Property|ts::SymbolFlags::Optional) & jsymMember->getFlags()));
+                _ASSERT(!static_cast<bool>(ts::SymbolFlags::Property & jsymMember->getFlags()) || !static_cast<bool>(~(ts::SymbolFlags::Property|ts::SymbolFlags::Optional|ts::SymbolFlags::Transient) & jsymMember->getFlags()));
                 return static_cast<bool>(ts::SymbolFlags::Property & jsymMember->getFlags());
             }),
             [](ts::Symbol jsymProperty) noexcept {
@@ -531,7 +532,10 @@ void SJsClass::ResolveBaseClasses() & noexcept {
     if (auto jointerfacetypeClass = (*g_ojtsTypeChecker)->getDeclaredTypeOfSymbol(m_jsym)->isClassOrInterface()) {
         tc::for_each((*g_ojtsTypeChecker)->getBaseTypes(*jointerfacetypeClass),
             [&](tc::js::ts::BaseType jbasetype) noexcept {
-                tc::cont_emplace_back(m_vecjtypeBaseClass, jbasetype);
+                auto mt = MangleType(jbasetype);
+                if(mt) {
+                    tc::cont_emplace_back(m_vecmtBaseClass, tc_move(mt));
+                }
 
                 // FIXME: Add dependency for type arguments?
                 if(auto ojsym = tc::implicit_cast<ts::Type>(jbasetype)->getSymbol()) {
@@ -548,7 +552,10 @@ void SJsClass::ResolveBaseClasses() & noexcept {
                         if(ts::SyntaxKind::ImplementsKeyword == jtsHeritageClause->token()) {
                             tc::for_each(jtsHeritageClause->types(), [&](ts::Node jnodeImplementsType) noexcept {
                                 auto jtypeImplements = (*g_ojtsTypeChecker)->getTypeAtLocation(jnodeImplementsType);
-                                tc::cont_emplace_back(m_vecjtypeBaseClass, jtypeImplements);
+                                auto mt = MangleType(jtypeImplements);
+                                if(mt) {
+                                    tc::cont_emplace_back(m_vecmtBaseClass, tc_move(mt));
+                                }
 
                                 if(auto josymImplements = jtypeImplements->getSymbol()) {
                                     AddBaseClassDependency(*josymImplements);

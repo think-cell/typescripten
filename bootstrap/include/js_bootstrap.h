@@ -37,6 +37,11 @@ namespace tc::js_defs {
 	template<typename K, typename V> 
 	using _js_Record = ::tc::jst::ref<_impl_js_Record<K, V>>;
 
+	template<typename T> 
+	struct _impl_js_Iterable;
+	template<typename T> 
+	using _js_Iterable = ::tc::jst::ref<_impl_js_Iterable<T>>;
+
 	// TODO: Typescript Utility type https://www.typescriptlang.org/docs/handbook/utility-types.html
 
 	struct _impl_js_console;
@@ -49,6 +54,8 @@ namespace tc::js_defs {
 	using Promise = _js_Promise<T>;
 	template<typename K, typename V>
 	using Record = _js_Record<K, V>;
+	template<typename T>
+	using Iterable = _js_Iterable<T>;
 
 	using console = _js_console;
 
@@ -128,6 +135,10 @@ namespace tc::js_defs {
 	struct _impl_js_Promise<void> : virtual _impl_js_Promise<::tc::js::undefined> {
 		// JavaScript passes 'undefined' to what TypeScript calls 'void' promise.
 	};
+	
+	template<typename T>
+	struct _impl_js_Iterable : virtual ::tc::jst::object_base {
+	};
 
 	struct _impl_js_console : virtual ::tc::jst::object_base {
 		struct _tcjs_definitions {
@@ -172,7 +183,7 @@ namespace tc::js {
 
 inline bool IsBootstrapType(std::string const& strName) noexcept {
 	return tc::binary_find_unique<tc::return_bool>(
-		as_constexpr(tc::make_array<tc::ptr_range<char const>>(tc::aggregate_tag, "Array", "Promise", "ReadonlyArray", "Record")), 
+		as_constexpr(tc::make_array<tc::ptr_range<char const>>(tc::aggregate_tag, "Array", "Iterable", "Promise", "ReadonlyArray", "Record")), 
 		strName,
 		tc::lessfrom3way(tc::fn_lexicographical_compare_3way())
 	);

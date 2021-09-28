@@ -6,21 +6,35 @@
 
 std::string FullyQualifiedName(tc::js::ts::Symbol jsymType) noexcept;
 
-DEFINE_ADL_TAG_TYPE(mangled_no_comments)
+DEFINE_ADL_TAG_TYPE(mangling_error)
 
 struct SMangledType {
-	std::string m_strWithComments;
-	std::string m_strCppCanonized;
+	std::string m_strCppCanonized; // may be empty, i.e., type could not be mangled, implies tc::js::any
+	std::string m_strWithComments; // never empty, may include comment
 
-	SMangledType(mangled_no_comments_t, std::string strWithComments) noexcept
-		: m_strWithComments(std::move(strWithComments))
-		, m_strCppCanonized(m_strWithComments)
+	SMangledType(std::string strCppCanonized) noexcept
+		: m_strCppCanonized(strCppCanonized)
+		, m_strWithComments(tc_move(strCppCanonized))
+	{}
+	
+	SMangledType(std::string strCppCanonized, std::string strWithComments) noexcept
+		: m_strCppCanonized(tc_move(strCppCanonized))
+		, m_strWithComments(tc_move(strWithComments))
 	{}
 
-	SMangledType(std::string strWithComments, std::string strCppCanonized) noexcept
+	SMangledType(mangling_error_t, std::string strWithComments) noexcept
 		: m_strWithComments(std::move(strWithComments))
-		, m_strCppCanonized(std::move(strCppCanonized))
 	{}
+
+	std::string ExpandType() const& noexcept {
+		return tc::empty(m_strCppCanonized)
+			? tc::make_str("tc::js::any")
+			: m_strCppCanonized;
+	}
+
+	operator bool() const& noexcept {
+		return !tc::empty(m_strCppCanonized);
+	}
 };
 
 SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias = true) noexcept;

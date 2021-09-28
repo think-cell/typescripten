@@ -147,7 +147,7 @@ struct SJsClass final : public SJsScope, public boost::intrusive::set_base_hook<
     std::vector<SJsFunctionLike> m_vecjsfunctionlikeMethod;
     std::vector<SJsVariableLike> m_vecjsvariablelikeProperty;
     std::vector<SJsClass const*> m_vecpjsclassSortDependency;
-    std::vector<tc::js::ts::Type> m_vecjtypeBaseClass;
+    std::vector<SMangledType> m_vecmtBaseClass;
 
     std::vector<STypeParameter> m_vectypeparam;
 

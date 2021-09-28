@@ -2152,7 +2152,7 @@ namespace tc::js_defs {
 	using _js_jts_dserver_dTypesRegistryRequest = ref<_impl_js_jts_dserver_dTypesRegistryRequest>;
 	using _js_jts_dAccessorDeclaration = tc::jst::union_t<_js_jts_dGetAccessorDeclaration, _js_jts_dSetAccessorDeclaration>;
 	template<typename T>
-	using _js_jts_dAffectedFileResult = tc::js::any /*UnionWithUnsupportedSubtype=AffectedFileResult<T>[tc::js::undefined,tc::js::any] */;
+	using _js_jts_dAffectedFileResult = tc::js::any /*UnionWithUnsupportedSubtype=[tc::js::undefined,tc::js::any]*/;
 	using _js_jts_dArrayBindingElement = tc::jst::union_t<_js_jts_dBindingElement, _js_jts_dOmittedExpression>;
 	using _js_jts_dArrayBindingOrAssignmentPattern = tc::jst::union_t<_js_jts_dArrayBindingPattern, _js_jts_dArrayLiteralExpression>;
 	using _js_jts_dAssertionExpression = tc::jst::union_t<_js_jts_dAsExpression, _js_jts_dTypeAssertion>;
@@ -2258,604 +2258,604 @@ namespace tc::js_defs {
 	using _js_jts_dWriteFileCallback = tc::jst::function<void(tc::js::string, tc::js::string, bool /*false*/, tc::jst::union_t<tc::js::undefined, tc::jst::function<void(tc::js::string)>>, tc::jst::union_t<_js_ReadonlyArray<_js_jts_dSourceFile>, tc::js::undefined>)>;
 	struct _impl_js_j_qts_q : virtual object_base {
 		struct _tcjs_definitions {
-	using SyntaxKind = _js_jts_dSyntaxKind;
-	using NodeFlags = _js_jts_dNodeFlags;
-	using ModifierFlags = _js_jts_dModifierFlags;
-	using JsxFlags = _js_jts_dJsxFlags;
-	using TokenFlags = _js_jts_dTokenFlags;
-	using FlowFlags = _js_jts_dFlowFlags;
-	using ExitStatus = _js_jts_dExitStatus;
-	using NodeBuilderFlags = _js_jts_dNodeBuilderFlags;
-	using TypeFormatFlags = _js_jts_dTypeFormatFlags;
-	using SymbolFormatFlags = _js_jts_dSymbolFormatFlags;
-	using TypePredicateKind = _js_jts_dTypePredicateKind;
-	using SymbolFlags = _js_jts_dSymbolFlags;
-	using InternalSymbolName = _js_jts_dInternalSymbolName;
-	using TypeFlags = _js_jts_dTypeFlags;
-	using ObjectFlags = _js_jts_dObjectFlags;
-	using SignatureKind = _js_jts_dSignatureKind;
-	using IndexKind = _js_jts_dIndexKind;
-	using InferencePriority = _js_jts_dInferencePriority;
-	using DiagnosticCategory = _js_jts_dDiagnosticCategory;
-	using ModuleResolutionKind = _js_jts_dModuleResolutionKind;
-	using ModuleKind = _js_jts_dModuleKind;
-	using JsxEmit = _js_jts_dJsxEmit;
-	using NewLineKind = _js_jts_dNewLineKind;
-	using ScriptKind = _js_jts_dScriptKind;
-	using ScriptTarget = _js_jts_dScriptTarget;
-	using LanguageVariant = _js_jts_dLanguageVariant;
-	using WatchDirectoryFlags = _js_jts_dWatchDirectoryFlags;
-	using Extension = _js_jts_dExtension;
-	using EmitFlags = _js_jts_dEmitFlags;
-	using EmitHint = _js_jts_dEmitHint;
-	using ListFormat = _js_jts_dListFormat;
-	using FileWatcherEventKind = _js_jts_dFileWatcherEventKind;
-	using HighlightSpanKind = _js_jts_dHighlightSpanKind;
-	using IndentStyle = _js_jts_dIndentStyle;
-	using SymbolDisplayPartKind = _js_jts_dSymbolDisplayPartKind;
-	using OutliningSpanKind = _js_jts_dOutliningSpanKind;
-	using OutputFileType = _js_jts_dOutputFileType;
-	using EndOfLineState = _js_jts_dEndOfLineState;
-	using TokenClass = _js_jts_dTokenClass;
-	using ScriptElementKind = _js_jts_dScriptElementKind;
-	using ScriptElementKindModifier = _js_jts_dScriptElementKindModifier;
-	using ClassificationTypeNames = _js_jts_dClassificationTypeNames;
-	using ClassificationType = _js_jts_dClassificationType;
-	template<typename T>
-	using MapLike = _js_jts_dMapLike<T>;
-	template<typename T>
-	using SortedReadonlyArray = _js_jts_dSortedReadonlyArray<T>;
-	template<typename T>
-	using SortedArray = _js_jts_dSortedArray<T>;
-	template<typename T>
-	using ReadonlyMap = _js_jts_dReadonlyMap<T>;
-	template<typename T>
-	using Map = _js_jts_dMap<T>;
-	template<typename T>
-	using Iterator = _js_jts_dIterator<T>;
-	template<typename T>
-	using Push = _js_jts_dPush<T>;
-	using TextRange = _js_jts_dTextRange;
-	using Node = _js_jts_dNode;
-	using JSDocContainer = _js_jts_dJSDocContainer;
-	template<typename T>
-	using NodeArray = _js_jts_dNodeArray<T>;
-	template<typename TKind>
-	using Token = _js_jts_dToken<TKind>;
-	using Identifier = _js_jts_dIdentifier;
-	using TransientIdentifier = _js_jts_dTransientIdentifier;
-	using QualifiedName = _js_jts_dQualifiedName;
-	using Declaration = _js_jts_dDeclaration;
-	using NamedDeclaration = _js_jts_dNamedDeclaration;
-	using DeclarationStatement = _js_jts_dDeclarationStatement;
-	using ComputedPropertyName = _js_jts_dComputedPropertyName;
-	using Decorator = _js_jts_dDecorator;
-	using TypeParameterDeclaration = _js_jts_dTypeParameterDeclaration;
-	using SignatureDeclarationBase = _js_jts_dSignatureDeclarationBase;
-	using CallSignatureDeclaration = _js_jts_dCallSignatureDeclaration;
-	using ConstructSignatureDeclaration = _js_jts_dConstructSignatureDeclaration;
-	using VariableDeclaration = _js_jts_dVariableDeclaration;
-	using VariableDeclarationList = _js_jts_dVariableDeclarationList;
-	using ParameterDeclaration = _js_jts_dParameterDeclaration;
-	using BindingElement = _js_jts_dBindingElement;
-	using PropertySignature = _js_jts_dPropertySignature;
-	using PropertyDeclaration = _js_jts_dPropertyDeclaration;
-	using ObjectLiteralElement = _js_jts_dObjectLiteralElement;
-	using PropertyAssignment = _js_jts_dPropertyAssignment;
-	using ShorthandPropertyAssignment = _js_jts_dShorthandPropertyAssignment;
-	using SpreadAssignment = _js_jts_dSpreadAssignment;
-	using PropertyLikeDeclaration = _js_jts_dPropertyLikeDeclaration;
-	using ObjectBindingPattern = _js_jts_dObjectBindingPattern;
-	using ArrayBindingPattern = _js_jts_dArrayBindingPattern;
-	using FunctionLikeDeclarationBase = _js_jts_dFunctionLikeDeclarationBase;
-	using FunctionDeclaration = _js_jts_dFunctionDeclaration;
-	using MethodSignature = _js_jts_dMethodSignature;
-	using MethodDeclaration = _js_jts_dMethodDeclaration;
-	using ConstructorDeclaration = _js_jts_dConstructorDeclaration;
-	using SemicolonClassElement = _js_jts_dSemicolonClassElement;
-	using GetAccessorDeclaration = _js_jts_dGetAccessorDeclaration;
-	using SetAccessorDeclaration = _js_jts_dSetAccessorDeclaration;
-	using IndexSignatureDeclaration = _js_jts_dIndexSignatureDeclaration;
-	using TypeNode = _js_jts_dTypeNode;
-	using KeywordTypeNode = _js_jts_dKeywordTypeNode;
-	using ImportTypeNode = _js_jts_dImportTypeNode;
-	using ThisTypeNode = _js_jts_dThisTypeNode;
-	using FunctionOrConstructorTypeNodeBase = _js_jts_dFunctionOrConstructorTypeNodeBase;
-	using FunctionTypeNode = _js_jts_dFunctionTypeNode;
-	using ConstructorTypeNode = _js_jts_dConstructorTypeNode;
-	using NodeWithTypeArguments = _js_jts_dNodeWithTypeArguments;
-	using TypeReferenceNode = _js_jts_dTypeReferenceNode;
-	using TypePredicateNode = _js_jts_dTypePredicateNode;
-	using TypeQueryNode = _js_jts_dTypeQueryNode;
-	using TypeLiteralNode = _js_jts_dTypeLiteralNode;
-	using ArrayTypeNode = _js_jts_dArrayTypeNode;
-	using TupleTypeNode = _js_jts_dTupleTypeNode;
-	using OptionalTypeNode = _js_jts_dOptionalTypeNode;
-	using RestTypeNode = _js_jts_dRestTypeNode;
-	using UnionTypeNode = _js_jts_dUnionTypeNode;
-	using IntersectionTypeNode = _js_jts_dIntersectionTypeNode;
-	using ConditionalTypeNode = _js_jts_dConditionalTypeNode;
-	using InferTypeNode = _js_jts_dInferTypeNode;
-	using ParenthesizedTypeNode = _js_jts_dParenthesizedTypeNode;
-	using TypeOperatorNode = _js_jts_dTypeOperatorNode;
-	using IndexedAccessTypeNode = _js_jts_dIndexedAccessTypeNode;
-	using MappedTypeNode = _js_jts_dMappedTypeNode;
-	using LiteralTypeNode = _js_jts_dLiteralTypeNode;
-	using StringLiteral = _js_jts_dStringLiteral;
-	using Expression = _js_jts_dExpression;
-	using OmittedExpression = _js_jts_dOmittedExpression;
-	using PartiallyEmittedExpression = _js_jts_dPartiallyEmittedExpression;
-	using UnaryExpression = _js_jts_dUnaryExpression;
-	using UpdateExpression = _js_jts_dUpdateExpression;
-	using PrefixUnaryExpression = _js_jts_dPrefixUnaryExpression;
-	using PostfixUnaryExpression = _js_jts_dPostfixUnaryExpression;
-	using LeftHandSideExpression = _js_jts_dLeftHandSideExpression;
-	using MemberExpression = _js_jts_dMemberExpression;
-	using PrimaryExpression = _js_jts_dPrimaryExpression;
-	using NullLiteral = _js_jts_dNullLiteral;
-	using BooleanLiteral = _js_jts_dBooleanLiteral;
-	using ThisExpression = _js_jts_dThisExpression;
-	using SuperExpression = _js_jts_dSuperExpression;
-	using ImportExpression = _js_jts_dImportExpression;
-	using DeleteExpression = _js_jts_dDeleteExpression;
-	using TypeOfExpression = _js_jts_dTypeOfExpression;
-	using VoidExpression = _js_jts_dVoidExpression;
-	using AwaitExpression = _js_jts_dAwaitExpression;
-	using YieldExpression = _js_jts_dYieldExpression;
-	using SyntheticExpression = _js_jts_dSyntheticExpression;
-	using BinaryExpression = _js_jts_dBinaryExpression;
-	template<typename TOperator>
-	using AssignmentExpression = _js_jts_dAssignmentExpression<TOperator>;
-	using ObjectDestructuringAssignment = _js_jts_dObjectDestructuringAssignment;
-	using ArrayDestructuringAssignment = _js_jts_dArrayDestructuringAssignment;
-	using ConditionalExpression = _js_jts_dConditionalExpression;
-	using FunctionExpression = _js_jts_dFunctionExpression;
-	using ArrowFunction = _js_jts_dArrowFunction;
-	using LiteralLikeNode = _js_jts_dLiteralLikeNode;
-	using LiteralExpression = _js_jts_dLiteralExpression;
-	using RegularExpressionLiteral = _js_jts_dRegularExpressionLiteral;
-	using NoSubstitutionTemplateLiteral = _js_jts_dNoSubstitutionTemplateLiteral;
-	using NumericLiteral = _js_jts_dNumericLiteral;
-	using BigIntLiteral = _js_jts_dBigIntLiteral;
-	using TemplateHead = _js_jts_dTemplateHead;
-	using TemplateMiddle = _js_jts_dTemplateMiddle;
-	using TemplateTail = _js_jts_dTemplateTail;
-	using TemplateExpression = _js_jts_dTemplateExpression;
-	using TemplateSpan = _js_jts_dTemplateSpan;
-	using ParenthesizedExpression = _js_jts_dParenthesizedExpression;
-	using ArrayLiteralExpression = _js_jts_dArrayLiteralExpression;
-	using SpreadElement = _js_jts_dSpreadElement;
-	template<typename T>
-	using ObjectLiteralExpressionBase = _js_jts_dObjectLiteralExpressionBase<T>;
-	using ObjectLiteralExpression = _js_jts_dObjectLiteralExpression;
-	using PropertyAccessExpression = _js_jts_dPropertyAccessExpression;
-	using SuperPropertyAccessExpression = _js_jts_dSuperPropertyAccessExpression;
-	using PropertyAccessEntityNameExpression = _js_jts_dPropertyAccessEntityNameExpression;
-	using ElementAccessExpression = _js_jts_dElementAccessExpression;
-	using SuperElementAccessExpression = _js_jts_dSuperElementAccessExpression;
-	using CallExpression = _js_jts_dCallExpression;
-	using SuperCall = _js_jts_dSuperCall;
-	using ImportCall = _js_jts_dImportCall;
-	using ExpressionWithTypeArguments = _js_jts_dExpressionWithTypeArguments;
-	using NewExpression = _js_jts_dNewExpression;
-	using TaggedTemplateExpression = _js_jts_dTaggedTemplateExpression;
-	using AsExpression = _js_jts_dAsExpression;
-	using TypeAssertion = _js_jts_dTypeAssertion;
-	using NonNullExpression = _js_jts_dNonNullExpression;
-	using MetaProperty = _js_jts_dMetaProperty;
-	using JsxElement = _js_jts_dJsxElement;
-	using JsxTagNamePropertyAccess = _js_jts_dJsxTagNamePropertyAccess;
-	using JsxAttributes = _js_jts_dJsxAttributes;
-	using JsxOpeningElement = _js_jts_dJsxOpeningElement;
-	using JsxSelfClosingElement = _js_jts_dJsxSelfClosingElement;
-	using JsxFragment = _js_jts_dJsxFragment;
-	using JsxOpeningFragment = _js_jts_dJsxOpeningFragment;
-	using JsxClosingFragment = _js_jts_dJsxClosingFragment;
-	using JsxAttribute = _js_jts_dJsxAttribute;
-	using JsxSpreadAttribute = _js_jts_dJsxSpreadAttribute;
-	using JsxClosingElement = _js_jts_dJsxClosingElement;
-	using JsxExpression = _js_jts_dJsxExpression;
-	using JsxText = _js_jts_dJsxText;
-	using Statement = _js_jts_dStatement;
-	using NotEmittedStatement = _js_jts_dNotEmittedStatement;
-	using CommaListExpression = _js_jts_dCommaListExpression;
-	using EmptyStatement = _js_jts_dEmptyStatement;
-	using DebuggerStatement = _js_jts_dDebuggerStatement;
-	using MissingDeclaration = _js_jts_dMissingDeclaration;
-	using Block = _js_jts_dBlock;
-	using VariableStatement = _js_jts_dVariableStatement;
-	using ExpressionStatement = _js_jts_dExpressionStatement;
-	using IfStatement = _js_jts_dIfStatement;
-	using IterationStatement = _js_jts_dIterationStatement;
-	using DoStatement = _js_jts_dDoStatement;
-	using WhileStatement = _js_jts_dWhileStatement;
-	using ForStatement = _js_jts_dForStatement;
-	using ForInStatement = _js_jts_dForInStatement;
-	using ForOfStatement = _js_jts_dForOfStatement;
-	using BreakStatement = _js_jts_dBreakStatement;
-	using ContinueStatement = _js_jts_dContinueStatement;
-	using ReturnStatement = _js_jts_dReturnStatement;
-	using WithStatement = _js_jts_dWithStatement;
-	using SwitchStatement = _js_jts_dSwitchStatement;
-	using CaseBlock = _js_jts_dCaseBlock;
-	using CaseClause = _js_jts_dCaseClause;
-	using DefaultClause = _js_jts_dDefaultClause;
-	using LabeledStatement = _js_jts_dLabeledStatement;
-	using ThrowStatement = _js_jts_dThrowStatement;
-	using TryStatement = _js_jts_dTryStatement;
-	using CatchClause = _js_jts_dCatchClause;
-	using ClassLikeDeclarationBase = _js_jts_dClassLikeDeclarationBase;
-	using ClassDeclaration = _js_jts_dClassDeclaration;
-	using ClassExpression = _js_jts_dClassExpression;
-	using ClassElement = _js_jts_dClassElement;
-	using TypeElement = _js_jts_dTypeElement;
-	using InterfaceDeclaration = _js_jts_dInterfaceDeclaration;
-	using HeritageClause = _js_jts_dHeritageClause;
-	using TypeAliasDeclaration = _js_jts_dTypeAliasDeclaration;
-	using EnumMember = _js_jts_dEnumMember;
-	using EnumDeclaration = _js_jts_dEnumDeclaration;
-	using ModuleDeclaration = _js_jts_dModuleDeclaration;
-	using NamespaceDeclaration = _js_jts_dNamespaceDeclaration;
-	using JSDocNamespaceDeclaration = _js_jts_dJSDocNamespaceDeclaration;
-	using ModuleBlock = _js_jts_dModuleBlock;
-	using ImportEqualsDeclaration = _js_jts_dImportEqualsDeclaration;
-	using ExternalModuleReference = _js_jts_dExternalModuleReference;
-	using ImportDeclaration = _js_jts_dImportDeclaration;
-	using ImportClause = _js_jts_dImportClause;
-	using NamespaceImport = _js_jts_dNamespaceImport;
-	using NamespaceExportDeclaration = _js_jts_dNamespaceExportDeclaration;
-	using ExportDeclaration = _js_jts_dExportDeclaration;
-	using NamedImports = _js_jts_dNamedImports;
-	using NamedExports = _js_jts_dNamedExports;
-	using ImportSpecifier = _js_jts_dImportSpecifier;
-	using ExportSpecifier = _js_jts_dExportSpecifier;
-	using ExportAssignment = _js_jts_dExportAssignment;
-	using FileReference = _js_jts_dFileReference;
-	using CheckJsDirective = _js_jts_dCheckJsDirective;
-	using CommentRange = _js_jts_dCommentRange;
-	using SynthesizedComment = _js_jts_dSynthesizedComment;
-	using JSDocTypeExpression = _js_jts_dJSDocTypeExpression;
-	using JSDocType = _js_jts_dJSDocType;
-	using JSDocAllType = _js_jts_dJSDocAllType;
-	using JSDocUnknownType = _js_jts_dJSDocUnknownType;
-	using JSDocNonNullableType = _js_jts_dJSDocNonNullableType;
-	using JSDocNullableType = _js_jts_dJSDocNullableType;
-	using JSDocOptionalType = _js_jts_dJSDocOptionalType;
-	using JSDocFunctionType = _js_jts_dJSDocFunctionType;
-	using JSDocVariadicType = _js_jts_dJSDocVariadicType;
-	using JSDoc = _js_jts_dJSDoc;
-	using JSDocTag = _js_jts_dJSDocTag;
-	using JSDocUnknownTag = _js_jts_dJSDocUnknownTag;
-	using JSDocAugmentsTag = _js_jts_dJSDocAugmentsTag;
-	using JSDocClassTag = _js_jts_dJSDocClassTag;
-	using JSDocEnumTag = _js_jts_dJSDocEnumTag;
-	using JSDocThisTag = _js_jts_dJSDocThisTag;
-	using JSDocTemplateTag = _js_jts_dJSDocTemplateTag;
-	using JSDocReturnTag = _js_jts_dJSDocReturnTag;
-	using JSDocTypeTag = _js_jts_dJSDocTypeTag;
-	using JSDocTypedefTag = _js_jts_dJSDocTypedefTag;
-	using JSDocCallbackTag = _js_jts_dJSDocCallbackTag;
-	using JSDocSignature = _js_jts_dJSDocSignature;
-	using JSDocPropertyLikeTag = _js_jts_dJSDocPropertyLikeTag;
-	using JSDocPropertyTag = _js_jts_dJSDocPropertyTag;
-	using JSDocParameterTag = _js_jts_dJSDocParameterTag;
-	using JSDocTypeLiteral = _js_jts_dJSDocTypeLiteral;
-	using FlowLock = _js_jts_dFlowLock;
-	using AfterFinallyFlow = _js_jts_dAfterFinallyFlow;
-	using PreFinallyFlow = _js_jts_dPreFinallyFlow;
-	using FlowNodeBase = _js_jts_dFlowNodeBase;
-	using FlowStart = _js_jts_dFlowStart;
-	using FlowLabel = _js_jts_dFlowLabel;
-	using FlowAssignment = _js_jts_dFlowAssignment;
-	using FlowCondition = _js_jts_dFlowCondition;
-	using FlowSwitchClause = _js_jts_dFlowSwitchClause;
-	using FlowArrayMutation = _js_jts_dFlowArrayMutation;
-	using IncompleteType = _js_jts_dIncompleteType;
-	using AmdDependency = _js_jts_dAmdDependency;
-	using SourceFile = _js_jts_dSourceFile;
-	using Bundle = _js_jts_dBundle;
-	using InputFiles = _js_jts_dInputFiles;
-	using UnparsedSource = _js_jts_dUnparsedSource;
-	using UnparsedSection = _js_jts_dUnparsedSection;
-	using UnparsedPrologue = _js_jts_dUnparsedPrologue;
-	using UnparsedPrepend = _js_jts_dUnparsedPrepend;
-	using UnparsedTextLike = _js_jts_dUnparsedTextLike;
-	using UnparsedSyntheticReference = _js_jts_dUnparsedSyntheticReference;
-	using JsonSourceFile = _js_jts_dJsonSourceFile;
-	using TsConfigSourceFile = _js_jts_dTsConfigSourceFile;
-	using JsonMinusNumericLiteral = _js_jts_dJsonMinusNumericLiteral;
-	using JsonObjectExpressionStatement = _js_jts_dJsonObjectExpressionStatement;
-	using ScriptReferenceHost = _js_jts_dScriptReferenceHost;
-	using ParseConfigHost = _js_jts_dParseConfigHost;
-	using OperationCanceledException = _js_jts_dOperationCanceledException;
-	using CancellationToken = _js_jts_dCancellationToken;
-	using Program = _js_jts_dProgram;
-	using ResolvedProjectReference = _js_jts_dResolvedProjectReference;
-	using CustomTransformer = _js_jts_dCustomTransformer;
-	using CustomTransformers = _js_jts_dCustomTransformers;
-	using SourceMapSpan = _js_jts_dSourceMapSpan;
-	using EmitResult = _js_jts_dEmitResult;
-	using TypeChecker = _js_jts_dTypeChecker;
-	using TypePredicateBase = _js_jts_dTypePredicateBase;
-	using ThisTypePredicate = _js_jts_dThisTypePredicate;
-	using IdentifierTypePredicate = _js_jts_dIdentifierTypePredicate;
-	using Symbol = _js_jts_dSymbol;
-	template<typename T>
-	using ReadonlyUnderscoreEscapedMap = _js_jts_dReadonlyUnderscoreEscapedMap<T>;
-	template<typename T>
-	using UnderscoreEscapedMap = _js_jts_dUnderscoreEscapedMap<T>;
-	using Type = _js_jts_dType;
-	using LiteralType = _js_jts_dLiteralType;
-	using UniqueESSymbolType = _js_jts_dUniqueESSymbolType;
-	using StringLiteralType = _js_jts_dStringLiteralType;
-	using NumberLiteralType = _js_jts_dNumberLiteralType;
-	using BigIntLiteralType = _js_jts_dBigIntLiteralType;
-	using EnumType = _js_jts_dEnumType;
-	using ObjectType = _js_jts_dObjectType;
-	using InterfaceType = _js_jts_dInterfaceType;
-	using InterfaceTypeWithDeclaredMembers = _js_jts_dInterfaceTypeWithDeclaredMembers;
-	using TypeReference = _js_jts_dTypeReference;
-	using GenericType = _js_jts_dGenericType;
-	using TupleType = _js_jts_dTupleType;
-	using TupleTypeReference = _js_jts_dTupleTypeReference;
-	using UnionOrIntersectionType = _js_jts_dUnionOrIntersectionType;
-	using UnionType = _js_jts_dUnionType;
-	using IntersectionType = _js_jts_dIntersectionType;
-	using EvolvingArrayType = _js_jts_dEvolvingArrayType;
-	using InstantiableType = _js_jts_dInstantiableType;
-	using TypeParameter = _js_jts_dTypeParameter;
-	using IndexedAccessType = _js_jts_dIndexedAccessType;
-	using IndexType = _js_jts_dIndexType;
-	using ConditionalRoot = _js_jts_dConditionalRoot;
-	using ConditionalType = _js_jts_dConditionalType;
-	using SubstitutionType = _js_jts_dSubstitutionType;
-	using Signature = _js_jts_dSignature;
-	using IndexInfo = _js_jts_dIndexInfo;
-	using FileExtensionInfo = _js_jts_dFileExtensionInfo;
-	using DiagnosticMessage = _js_jts_dDiagnosticMessage;
-	using DiagnosticMessageChain = _js_jts_dDiagnosticMessageChain;
-	using Diagnostic = _js_jts_dDiagnostic;
-	using DiagnosticRelatedInformation = _js_jts_dDiagnosticRelatedInformation;
-	using DiagnosticWithLocation = _js_jts_dDiagnosticWithLocation;
-	using PluginImport = _js_jts_dPluginImport;
-	using ProjectReference = _js_jts_dProjectReference;
-	using CompilerOptions = _js_jts_dCompilerOptions;
-	using TypeAcquisition = _js_jts_dTypeAcquisition;
-	using LineAndCharacter = _js_jts_dLineAndCharacter;
-	using ParsedCommandLine = _js_jts_dParsedCommandLine;
-	using ExpandResult = _js_jts_dExpandResult;
-	using CreateProgramOptions = _js_jts_dCreateProgramOptions;
-	using ModuleResolutionHost = _js_jts_dModuleResolutionHost;
-	using ResolvedModule = _js_jts_dResolvedModule;
-	using ResolvedModuleFull = _js_jts_dResolvedModuleFull;
-	using PackageId = _js_jts_dPackageId;
-	using ResolvedModuleWithFailedLookupLocations = _js_jts_dResolvedModuleWithFailedLookupLocations;
-	using ResolvedTypeReferenceDirective = _js_jts_dResolvedTypeReferenceDirective;
-	using ResolvedTypeReferenceDirectiveWithFailedLookupLocations = _js_jts_dResolvedTypeReferenceDirectiveWithFailedLookupLocations;
-	using CompilerHost = _js_jts_dCompilerHost;
-	using SourceMapRange = _js_jts_dSourceMapRange;
-	using SourceMapSource = _js_jts_dSourceMapSource;
-	using EmitHelper = _js_jts_dEmitHelper;
-	using UnscopedEmitHelper = _js_jts_dUnscopedEmitHelper;
-	using TransformationContext = _js_jts_dTransformationContext;
-	template<typename T>
-	using TransformationResult = _js_jts_dTransformationResult<T>;
-	using Printer = _js_jts_dPrinter;
-	using PrintHandlers = _js_jts_dPrintHandlers;
-	using PrinterOptions = _js_jts_dPrinterOptions;
-	using GetEffectiveTypeRootsHost = _js_jts_dGetEffectiveTypeRootsHost;
-	using TextSpan = _js_jts_dTextSpan;
-	using TextChangeRange = _js_jts_dTextChangeRange;
-	using SyntaxList = _js_jts_dSyntaxList;
-	using UserPreferences = _js_jts_dUserPreferences;
-	using PseudoBigInt = _js_jts_dPseudoBigInt;
-	using System = _js_jts_dSystem;
-	using FileWatcher = _js_jts_dFileWatcher;
-	using Scanner = _js_jts_dScanner;
-	using ConfigFileDiagnosticsReporter = _js_jts_dConfigFileDiagnosticsReporter;
-	using ParseConfigFileHost = _js_jts_dParseConfigFileHost;
-	using ParsedTsconfig = _js_jts_dParsedTsconfig;
-	using ExtendedConfigCacheEntry = _js_jts_dExtendedConfigCacheEntry;
-	using ModuleResolutionCache = _js_jts_dModuleResolutionCache;
-	using NonRelativeModuleNameResolutionCache = _js_jts_dNonRelativeModuleNameResolutionCache;
-	using PerModuleNameCache = _js_jts_dPerModuleNameCache;
-	using FormatDiagnosticsHost = _js_jts_dFormatDiagnosticsHost;
-	using ResolveProjectReferencePathHost = _js_jts_dResolveProjectReferencePathHost;
-	using EmitOutput = _js_jts_dEmitOutput;
-	using OutputFile = _js_jts_dOutputFile;
-	using BuilderProgramHost = _js_jts_dBuilderProgramHost;
-	using BuilderProgram = _js_jts_dBuilderProgram;
-	using SemanticDiagnosticsBuilderProgram = _js_jts_dSemanticDiagnosticsBuilderProgram;
-	using EmitAndSemanticDiagnosticsBuilderProgram = _js_jts_dEmitAndSemanticDiagnosticsBuilderProgram;
-	using WatchHost = _js_jts_dWatchHost;
-	template<typename T>
-	using ProgramHost = _js_jts_dProgramHost<T>;
-	template<typename T>
-	using WatchCompilerHost = _js_jts_dWatchCompilerHost<T>;
-	template<typename T>
-	using WatchCompilerHostOfFilesAndCompilerOptions = _js_jts_dWatchCompilerHostOfFilesAndCompilerOptions<T>;
-	template<typename T>
-	using WatchCompilerHostOfConfigFile = _js_jts_dWatchCompilerHostOfConfigFile<T>;
-	template<typename T>
-	using Watch = _js_jts_dWatch<T>;
-	template<typename T>
-	using WatchOfConfigFile = _js_jts_dWatchOfConfigFile<T>;
-	template<typename T>
-	using WatchOfFilesAndCompilerOptions = _js_jts_dWatchOfFilesAndCompilerOptions<T>;
-	using server = _js_jts_dserver;
-	using SourceFileLike = _js_jts_dSourceFileLike;
-	using IScriptSnapshot = _js_jts_dIScriptSnapshot;
-	using ScriptSnapshot = _js_jts_dScriptSnapshot;
-	using PreProcessedFileInfo = _js_jts_dPreProcessedFileInfo;
-	using HostCancellationToken = _js_jts_dHostCancellationToken;
-	using InstallPackageOptions = _js_jts_dInstallPackageOptions;
-	using LanguageServiceHost = _js_jts_dLanguageServiceHost;
-	using LanguageService = _js_jts_dLanguageService;
-	using JsxClosingTagInfo = _js_jts_dJsxClosingTagInfo;
-	using CombinedCodeFixScope = _js_jts_dCombinedCodeFixScope;
-	using GetCompletionsAtPositionOptions = _js_jts_dGetCompletionsAtPositionOptions;
-	using SignatureHelpItemsOptions = _js_jts_dSignatureHelpItemsOptions;
-	using SignatureHelpInvokedReason = _js_jts_dSignatureHelpInvokedReason;
-	using SignatureHelpCharacterTypedReason = _js_jts_dSignatureHelpCharacterTypedReason;
-	using SignatureHelpRetriggeredReason = _js_jts_dSignatureHelpRetriggeredReason;
-	using ApplyCodeActionCommandResult = _js_jts_dApplyCodeActionCommandResult;
-	using Classifications = _js_jts_dClassifications;
-	using ClassifiedSpan = _js_jts_dClassifiedSpan;
-	using NavigationBarItem = _js_jts_dNavigationBarItem;
-	using NavigationTree = _js_jts_dNavigationTree;
-	using TodoCommentDescriptor = _js_jts_dTodoCommentDescriptor;
-	using TodoComment = _js_jts_dTodoComment;
-	using TextChange = _js_jts_dTextChange;
-	using FileTextChanges = _js_jts_dFileTextChanges;
-	using CodeAction = _js_jts_dCodeAction;
-	using CodeFixAction = _js_jts_dCodeFixAction;
-	using CombinedCodeActions = _js_jts_dCombinedCodeActions;
-	using InstallPackageAction = _js_jts_dInstallPackageAction;
-	using ApplicableRefactorInfo = _js_jts_dApplicableRefactorInfo;
-	using RefactorActionInfo = _js_jts_dRefactorActionInfo;
-	using RefactorEditInfo = _js_jts_dRefactorEditInfo;
-	using TextInsertion = _js_jts_dTextInsertion;
-	using DocumentSpan = _js_jts_dDocumentSpan;
-	using RenameLocation = _js_jts_dRenameLocation;
-	using ReferenceEntry = _js_jts_dReferenceEntry;
-	using ImplementationLocation = _js_jts_dImplementationLocation;
-	using DocumentHighlights = _js_jts_dDocumentHighlights;
-	using HighlightSpan = _js_jts_dHighlightSpan;
-	using NavigateToItem = _js_jts_dNavigateToItem;
-	using EditorOptions = _js_jts_dEditorOptions;
-	using EditorSettings = _js_jts_dEditorSettings;
-	using FormatCodeOptions = _js_jts_dFormatCodeOptions;
-	using FormatCodeSettings = _js_jts_dFormatCodeSettings;
-	using DefinitionInfo = _js_jts_dDefinitionInfo;
-	using DefinitionInfoAndBoundSpan = _js_jts_dDefinitionInfoAndBoundSpan;
-	using ReferencedSymbolDefinitionInfo = _js_jts_dReferencedSymbolDefinitionInfo;
-	using ReferencedSymbol = _js_jts_dReferencedSymbol;
-	using SymbolDisplayPart = _js_jts_dSymbolDisplayPart;
-	using JSDocTagInfo = _js_jts_dJSDocTagInfo;
-	using QuickInfo = _js_jts_dQuickInfo;
-	using RenameInfoSuccess = _js_jts_dRenameInfoSuccess;
-	using RenameInfoFailure = _js_jts_dRenameInfoFailure;
-	using RenameInfoOptions = _js_jts_dRenameInfoOptions;
-	using SignatureHelpParameter = _js_jts_dSignatureHelpParameter;
-	using SelectionRange = _js_jts_dSelectionRange;
-	using SignatureHelpItem = _js_jts_dSignatureHelpItem;
-	using SignatureHelpItems = _js_jts_dSignatureHelpItems;
-	using CompletionInfo = _js_jts_dCompletionInfo;
-	using CompletionEntry = _js_jts_dCompletionEntry;
-	using CompletionEntryDetails = _js_jts_dCompletionEntryDetails;
-	using OutliningSpan = _js_jts_dOutliningSpan;
-	using ClassificationResult = _js_jts_dClassificationResult;
-	using ClassificationInfo = _js_jts_dClassificationInfo;
-	using Classifier = _js_jts_dClassifier;
-	using DocumentRegistry = _js_jts_dDocumentRegistry;
-	using TranspileOptions = _js_jts_dTranspileOptions;
-	using TranspileOutput = _js_jts_dTranspileOutput;
-	using HasType = _js_jts_dHasType;
-	using HasInitializer = _js_jts_dHasInitializer;
-	using HasExpressionInitializer = _js_jts_dHasExpressionInitializer;
-	using DotDotDotToken = _js_jts_dDotDotDotToken;
-	using QuestionToken = _js_jts_dQuestionToken;
-	using ExclamationToken = _js_jts_dExclamationToken;
-	using ColonToken = _js_jts_dColonToken;
-	using EqualsToken = _js_jts_dEqualsToken;
-	using AsteriskToken = _js_jts_dAsteriskToken;
-	using EqualsGreaterThanToken = _js_jts_dEqualsGreaterThanToken;
-	using ReadonlyToken = _js_jts_dReadonlyToken;
-	using AwaitKeywordToken = _js_jts_dAwaitKeywordToken;
-	using PlusToken = _js_jts_dPlusToken;
-	using MinusToken = _js_jts_dMinusToken;
-	using Modifier = _js_jts_dModifier;
-	using ModifiersArray = _js_jts_dModifiersArray;
-	using EntityName = _js_jts_dEntityName;
-	using PropertyName = _js_jts_dPropertyName;
-	using DeclarationName = _js_jts_dDeclarationName;
-	using SignatureDeclaration = _js_jts_dSignatureDeclaration;
-	using BindingName = _js_jts_dBindingName;
-	using ObjectLiteralElementLike = _js_jts_dObjectLiteralElementLike;
-	using VariableLikeDeclaration = _js_jts_dVariableLikeDeclaration;
-	using BindingPattern = _js_jts_dBindingPattern;
-	using ArrayBindingElement = _js_jts_dArrayBindingElement;
-	using FunctionLikeDeclaration = _js_jts_dFunctionLikeDeclaration;
-	using FunctionLike = _js_jts_dFunctionLike;
-	using AccessorDeclaration = _js_jts_dAccessorDeclaration;
-	using FunctionOrConstructorTypeNode = _js_jts_dFunctionOrConstructorTypeNode;
-	using TypeReferenceType = _js_jts_dTypeReferenceType;
-	using UnionOrIntersectionTypeNode = _js_jts_dUnionOrIntersectionTypeNode;
-	using StringLiteralLike = _js_jts_dStringLiteralLike;
-	using IncrementExpression = _js_jts_dIncrementExpression;
-	using BinaryOperatorToken = _js_jts_dBinaryOperatorToken;
-	using AssignmentOperatorToken = _js_jts_dAssignmentOperatorToken;
-	using DestructuringAssignment = _js_jts_dDestructuringAssignment;
-	using BindingOrAssignmentElement = _js_jts_dBindingOrAssignmentElement;
-	using BindingOrAssignmentElementRestIndicator = _js_jts_dBindingOrAssignmentElementRestIndicator;
-	using BindingOrAssignmentElementTarget = _js_jts_dBindingOrAssignmentElementTarget;
-	using ObjectBindingOrAssignmentPattern = _js_jts_dObjectBindingOrAssignmentPattern;
-	using ArrayBindingOrAssignmentPattern = _js_jts_dArrayBindingOrAssignmentPattern;
-	using AssignmentPattern = _js_jts_dAssignmentPattern;
-	using BindingOrAssignmentPattern = _js_jts_dBindingOrAssignmentPattern;
-	using FunctionBody = _js_jts_dFunctionBody;
-	using ConciseBody = _js_jts_dConciseBody;
-	using TemplateLiteral = _js_jts_dTemplateLiteral;
-	using EntityNameExpression = _js_jts_dEntityNameExpression;
-	using EntityNameOrEntityNameExpression = _js_jts_dEntityNameOrEntityNameExpression;
-	using SuperProperty = _js_jts_dSuperProperty;
-	using CallLikeExpression = _js_jts_dCallLikeExpression;
-	using AssertionExpression = _js_jts_dAssertionExpression;
-	using JsxOpeningLikeElement = _js_jts_dJsxOpeningLikeElement;
-	using JsxAttributeLike = _js_jts_dJsxAttributeLike;
-	using JsxTagNameExpression = _js_jts_dJsxTagNameExpression;
-	using JsxChild = _js_jts_dJsxChild;
-	using BlockLike = _js_jts_dBlockLike;
-	using ForInitializer = _js_jts_dForInitializer;
-	using ForInOrOfStatement = _js_jts_dForInOrOfStatement;
-	using BreakOrContinueStatement = _js_jts_dBreakOrContinueStatement;
-	using CaseOrDefaultClause = _js_jts_dCaseOrDefaultClause;
-	using ObjectTypeDeclaration = _js_jts_dObjectTypeDeclaration;
-	using DeclarationWithTypeParameters = _js_jts_dDeclarationWithTypeParameters;
-	using DeclarationWithTypeParameterChildren = _js_jts_dDeclarationWithTypeParameterChildren;
-	using ClassLikeDeclaration = _js_jts_dClassLikeDeclaration;
-	using ModuleName = _js_jts_dModuleName;
-	using ModuleBody = _js_jts_dModuleBody;
-	using NamespaceBody = _js_jts_dNamespaceBody;
-	using JSDocNamespaceBody = _js_jts_dJSDocNamespaceBody;
-	using ModuleReference = _js_jts_dModuleReference;
-	using NamedImportBindings = _js_jts_dNamedImportBindings;
-	using NamedImportsOrExports = _js_jts_dNamedImportsOrExports;
-	using ImportOrExportSpecifier = _js_jts_dImportOrExportSpecifier;
-	using JSDocTypeReferencingNode = _js_jts_dJSDocTypeReferencingNode;
-	using FlowNode = _js_jts_dFlowNode;
-	using FlowType = _js_jts_dFlowType;
-	using UnparsedSourceText = _js_jts_dUnparsedSourceText;
-	using UnparsedNode = _js_jts_dUnparsedNode;
-	using WriteFileCallback = _js_jts_dWriteFileCallback;
-	using CustomTransformerFactory = _js_jts_dCustomTransformerFactory;
-	using TypePredicate = _js_jts_dTypePredicate;
-	using SymbolTable = _js_jts_dSymbolTable;
-	using DestructuringPattern = _js_jts_dDestructuringPattern;
-	using BaseType = _js_jts_dBaseType;
-	using StructuredType = _js_jts_dStructuredType;
-	using TypeVariable = _js_jts_dTypeVariable;
-	using JsFileExtensionInfo = _js_jts_dJsFileExtensionInfo;
-	using EmitHelperUniqueNameCallback = _js_jts_dEmitHelperUniqueNameCallback;
-	template<typename T>
-	using TransformerFactory = _js_jts_dTransformerFactory<T>;
-	template<typename T>
-	using Transformer = _js_jts_dTransformer<T>;
-	using Visitor = _js_jts_dVisitor;
-	using FileWatcherCallback = _js_jts_dFileWatcherCallback;
-	using DirectoryWatcherCallback = _js_jts_dDirectoryWatcherCallback;
-	using ErrorCallback = _js_jts_dErrorCallback;
-	using TemplateLiteralToken = _js_jts_dTemplateLiteralToken;
-	using DiagnosticReporter = _js_jts_dDiagnosticReporter;
-	template<typename T>
-	using AffectedFileResult = _js_jts_dAffectedFileResult<T>;
-	using WatchStatusReporter = _js_jts_dWatchStatusReporter;
-	template<typename T>
-	using CreateProgram = _js_jts_dCreateProgram<T>;
-	using OrganizeImportsScope = _js_jts_dOrganizeImportsScope;
-	using SignatureHelpTriggerReason = _js_jts_dSignatureHelpTriggerReason;
-	using CodeActionCommand = _js_jts_dCodeActionCommand;
-	using RenameInfo = _js_jts_dRenameInfo;
+			using SyntaxKind = _js_jts_dSyntaxKind;
+			using NodeFlags = _js_jts_dNodeFlags;
+			using ModifierFlags = _js_jts_dModifierFlags;
+			using JsxFlags = _js_jts_dJsxFlags;
+			using TokenFlags = _js_jts_dTokenFlags;
+			using FlowFlags = _js_jts_dFlowFlags;
+			using ExitStatus = _js_jts_dExitStatus;
+			using NodeBuilderFlags = _js_jts_dNodeBuilderFlags;
+			using TypeFormatFlags = _js_jts_dTypeFormatFlags;
+			using SymbolFormatFlags = _js_jts_dSymbolFormatFlags;
+			using TypePredicateKind = _js_jts_dTypePredicateKind;
+			using SymbolFlags = _js_jts_dSymbolFlags;
+			using InternalSymbolName = _js_jts_dInternalSymbolName;
+			using TypeFlags = _js_jts_dTypeFlags;
+			using ObjectFlags = _js_jts_dObjectFlags;
+			using SignatureKind = _js_jts_dSignatureKind;
+			using IndexKind = _js_jts_dIndexKind;
+			using InferencePriority = _js_jts_dInferencePriority;
+			using DiagnosticCategory = _js_jts_dDiagnosticCategory;
+			using ModuleResolutionKind = _js_jts_dModuleResolutionKind;
+			using ModuleKind = _js_jts_dModuleKind;
+			using JsxEmit = _js_jts_dJsxEmit;
+			using NewLineKind = _js_jts_dNewLineKind;
+			using ScriptKind = _js_jts_dScriptKind;
+			using ScriptTarget = _js_jts_dScriptTarget;
+			using LanguageVariant = _js_jts_dLanguageVariant;
+			using WatchDirectoryFlags = _js_jts_dWatchDirectoryFlags;
+			using Extension = _js_jts_dExtension;
+			using EmitFlags = _js_jts_dEmitFlags;
+			using EmitHint = _js_jts_dEmitHint;
+			using ListFormat = _js_jts_dListFormat;
+			using FileWatcherEventKind = _js_jts_dFileWatcherEventKind;
+			using HighlightSpanKind = _js_jts_dHighlightSpanKind;
+			using IndentStyle = _js_jts_dIndentStyle;
+			using SymbolDisplayPartKind = _js_jts_dSymbolDisplayPartKind;
+			using OutliningSpanKind = _js_jts_dOutliningSpanKind;
+			using OutputFileType = _js_jts_dOutputFileType;
+			using EndOfLineState = _js_jts_dEndOfLineState;
+			using TokenClass = _js_jts_dTokenClass;
+			using ScriptElementKind = _js_jts_dScriptElementKind;
+			using ScriptElementKindModifier = _js_jts_dScriptElementKindModifier;
+			using ClassificationTypeNames = _js_jts_dClassificationTypeNames;
+			using ClassificationType = _js_jts_dClassificationType;
+			template<typename T>
+			using MapLike = _js_jts_dMapLike<T>;
+			template<typename T>
+			using SortedReadonlyArray = _js_jts_dSortedReadonlyArray<T>;
+			template<typename T>
+			using SortedArray = _js_jts_dSortedArray<T>;
+			template<typename T>
+			using ReadonlyMap = _js_jts_dReadonlyMap<T>;
+			template<typename T>
+			using Map = _js_jts_dMap<T>;
+			template<typename T>
+			using Iterator = _js_jts_dIterator<T>;
+			template<typename T>
+			using Push = _js_jts_dPush<T>;
+			using TextRange = _js_jts_dTextRange;
+			using Node = _js_jts_dNode;
+			using JSDocContainer = _js_jts_dJSDocContainer;
+			template<typename T>
+			using NodeArray = _js_jts_dNodeArray<T>;
+			template<typename TKind>
+			using Token = _js_jts_dToken<TKind>;
+			using Identifier = _js_jts_dIdentifier;
+			using TransientIdentifier = _js_jts_dTransientIdentifier;
+			using QualifiedName = _js_jts_dQualifiedName;
+			using Declaration = _js_jts_dDeclaration;
+			using NamedDeclaration = _js_jts_dNamedDeclaration;
+			using DeclarationStatement = _js_jts_dDeclarationStatement;
+			using ComputedPropertyName = _js_jts_dComputedPropertyName;
+			using Decorator = _js_jts_dDecorator;
+			using TypeParameterDeclaration = _js_jts_dTypeParameterDeclaration;
+			using SignatureDeclarationBase = _js_jts_dSignatureDeclarationBase;
+			using CallSignatureDeclaration = _js_jts_dCallSignatureDeclaration;
+			using ConstructSignatureDeclaration = _js_jts_dConstructSignatureDeclaration;
+			using VariableDeclaration = _js_jts_dVariableDeclaration;
+			using VariableDeclarationList = _js_jts_dVariableDeclarationList;
+			using ParameterDeclaration = _js_jts_dParameterDeclaration;
+			using BindingElement = _js_jts_dBindingElement;
+			using PropertySignature = _js_jts_dPropertySignature;
+			using PropertyDeclaration = _js_jts_dPropertyDeclaration;
+			using ObjectLiteralElement = _js_jts_dObjectLiteralElement;
+			using PropertyAssignment = _js_jts_dPropertyAssignment;
+			using ShorthandPropertyAssignment = _js_jts_dShorthandPropertyAssignment;
+			using SpreadAssignment = _js_jts_dSpreadAssignment;
+			using PropertyLikeDeclaration = _js_jts_dPropertyLikeDeclaration;
+			using ObjectBindingPattern = _js_jts_dObjectBindingPattern;
+			using ArrayBindingPattern = _js_jts_dArrayBindingPattern;
+			using FunctionLikeDeclarationBase = _js_jts_dFunctionLikeDeclarationBase;
+			using FunctionDeclaration = _js_jts_dFunctionDeclaration;
+			using MethodSignature = _js_jts_dMethodSignature;
+			using MethodDeclaration = _js_jts_dMethodDeclaration;
+			using ConstructorDeclaration = _js_jts_dConstructorDeclaration;
+			using SemicolonClassElement = _js_jts_dSemicolonClassElement;
+			using GetAccessorDeclaration = _js_jts_dGetAccessorDeclaration;
+			using SetAccessorDeclaration = _js_jts_dSetAccessorDeclaration;
+			using IndexSignatureDeclaration = _js_jts_dIndexSignatureDeclaration;
+			using TypeNode = _js_jts_dTypeNode;
+			using KeywordTypeNode = _js_jts_dKeywordTypeNode;
+			using ImportTypeNode = _js_jts_dImportTypeNode;
+			using ThisTypeNode = _js_jts_dThisTypeNode;
+			using FunctionOrConstructorTypeNodeBase = _js_jts_dFunctionOrConstructorTypeNodeBase;
+			using FunctionTypeNode = _js_jts_dFunctionTypeNode;
+			using ConstructorTypeNode = _js_jts_dConstructorTypeNode;
+			using NodeWithTypeArguments = _js_jts_dNodeWithTypeArguments;
+			using TypeReferenceNode = _js_jts_dTypeReferenceNode;
+			using TypePredicateNode = _js_jts_dTypePredicateNode;
+			using TypeQueryNode = _js_jts_dTypeQueryNode;
+			using TypeLiteralNode = _js_jts_dTypeLiteralNode;
+			using ArrayTypeNode = _js_jts_dArrayTypeNode;
+			using TupleTypeNode = _js_jts_dTupleTypeNode;
+			using OptionalTypeNode = _js_jts_dOptionalTypeNode;
+			using RestTypeNode = _js_jts_dRestTypeNode;
+			using UnionTypeNode = _js_jts_dUnionTypeNode;
+			using IntersectionTypeNode = _js_jts_dIntersectionTypeNode;
+			using ConditionalTypeNode = _js_jts_dConditionalTypeNode;
+			using InferTypeNode = _js_jts_dInferTypeNode;
+			using ParenthesizedTypeNode = _js_jts_dParenthesizedTypeNode;
+			using TypeOperatorNode = _js_jts_dTypeOperatorNode;
+			using IndexedAccessTypeNode = _js_jts_dIndexedAccessTypeNode;
+			using MappedTypeNode = _js_jts_dMappedTypeNode;
+			using LiteralTypeNode = _js_jts_dLiteralTypeNode;
+			using StringLiteral = _js_jts_dStringLiteral;
+			using Expression = _js_jts_dExpression;
+			using OmittedExpression = _js_jts_dOmittedExpression;
+			using PartiallyEmittedExpression = _js_jts_dPartiallyEmittedExpression;
+			using UnaryExpression = _js_jts_dUnaryExpression;
+			using UpdateExpression = _js_jts_dUpdateExpression;
+			using PrefixUnaryExpression = _js_jts_dPrefixUnaryExpression;
+			using PostfixUnaryExpression = _js_jts_dPostfixUnaryExpression;
+			using LeftHandSideExpression = _js_jts_dLeftHandSideExpression;
+			using MemberExpression = _js_jts_dMemberExpression;
+			using PrimaryExpression = _js_jts_dPrimaryExpression;
+			using NullLiteral = _js_jts_dNullLiteral;
+			using BooleanLiteral = _js_jts_dBooleanLiteral;
+			using ThisExpression = _js_jts_dThisExpression;
+			using SuperExpression = _js_jts_dSuperExpression;
+			using ImportExpression = _js_jts_dImportExpression;
+			using DeleteExpression = _js_jts_dDeleteExpression;
+			using TypeOfExpression = _js_jts_dTypeOfExpression;
+			using VoidExpression = _js_jts_dVoidExpression;
+			using AwaitExpression = _js_jts_dAwaitExpression;
+			using YieldExpression = _js_jts_dYieldExpression;
+			using SyntheticExpression = _js_jts_dSyntheticExpression;
+			using BinaryExpression = _js_jts_dBinaryExpression;
+			template<typename TOperator>
+			using AssignmentExpression = _js_jts_dAssignmentExpression<TOperator>;
+			using ObjectDestructuringAssignment = _js_jts_dObjectDestructuringAssignment;
+			using ArrayDestructuringAssignment = _js_jts_dArrayDestructuringAssignment;
+			using ConditionalExpression = _js_jts_dConditionalExpression;
+			using FunctionExpression = _js_jts_dFunctionExpression;
+			using ArrowFunction = _js_jts_dArrowFunction;
+			using LiteralLikeNode = _js_jts_dLiteralLikeNode;
+			using LiteralExpression = _js_jts_dLiteralExpression;
+			using RegularExpressionLiteral = _js_jts_dRegularExpressionLiteral;
+			using NoSubstitutionTemplateLiteral = _js_jts_dNoSubstitutionTemplateLiteral;
+			using NumericLiteral = _js_jts_dNumericLiteral;
+			using BigIntLiteral = _js_jts_dBigIntLiteral;
+			using TemplateHead = _js_jts_dTemplateHead;
+			using TemplateMiddle = _js_jts_dTemplateMiddle;
+			using TemplateTail = _js_jts_dTemplateTail;
+			using TemplateExpression = _js_jts_dTemplateExpression;
+			using TemplateSpan = _js_jts_dTemplateSpan;
+			using ParenthesizedExpression = _js_jts_dParenthesizedExpression;
+			using ArrayLiteralExpression = _js_jts_dArrayLiteralExpression;
+			using SpreadElement = _js_jts_dSpreadElement;
+			template<typename T>
+			using ObjectLiteralExpressionBase = _js_jts_dObjectLiteralExpressionBase<T>;
+			using ObjectLiteralExpression = _js_jts_dObjectLiteralExpression;
+			using PropertyAccessExpression = _js_jts_dPropertyAccessExpression;
+			using SuperPropertyAccessExpression = _js_jts_dSuperPropertyAccessExpression;
+			using PropertyAccessEntityNameExpression = _js_jts_dPropertyAccessEntityNameExpression;
+			using ElementAccessExpression = _js_jts_dElementAccessExpression;
+			using SuperElementAccessExpression = _js_jts_dSuperElementAccessExpression;
+			using CallExpression = _js_jts_dCallExpression;
+			using SuperCall = _js_jts_dSuperCall;
+			using ImportCall = _js_jts_dImportCall;
+			using ExpressionWithTypeArguments = _js_jts_dExpressionWithTypeArguments;
+			using NewExpression = _js_jts_dNewExpression;
+			using TaggedTemplateExpression = _js_jts_dTaggedTemplateExpression;
+			using AsExpression = _js_jts_dAsExpression;
+			using TypeAssertion = _js_jts_dTypeAssertion;
+			using NonNullExpression = _js_jts_dNonNullExpression;
+			using MetaProperty = _js_jts_dMetaProperty;
+			using JsxElement = _js_jts_dJsxElement;
+			using JsxTagNamePropertyAccess = _js_jts_dJsxTagNamePropertyAccess;
+			using JsxAttributes = _js_jts_dJsxAttributes;
+			using JsxOpeningElement = _js_jts_dJsxOpeningElement;
+			using JsxSelfClosingElement = _js_jts_dJsxSelfClosingElement;
+			using JsxFragment = _js_jts_dJsxFragment;
+			using JsxOpeningFragment = _js_jts_dJsxOpeningFragment;
+			using JsxClosingFragment = _js_jts_dJsxClosingFragment;
+			using JsxAttribute = _js_jts_dJsxAttribute;
+			using JsxSpreadAttribute = _js_jts_dJsxSpreadAttribute;
+			using JsxClosingElement = _js_jts_dJsxClosingElement;
+			using JsxExpression = _js_jts_dJsxExpression;
+			using JsxText = _js_jts_dJsxText;
+			using Statement = _js_jts_dStatement;
+			using NotEmittedStatement = _js_jts_dNotEmittedStatement;
+			using CommaListExpression = _js_jts_dCommaListExpression;
+			using EmptyStatement = _js_jts_dEmptyStatement;
+			using DebuggerStatement = _js_jts_dDebuggerStatement;
+			using MissingDeclaration = _js_jts_dMissingDeclaration;
+			using Block = _js_jts_dBlock;
+			using VariableStatement = _js_jts_dVariableStatement;
+			using ExpressionStatement = _js_jts_dExpressionStatement;
+			using IfStatement = _js_jts_dIfStatement;
+			using IterationStatement = _js_jts_dIterationStatement;
+			using DoStatement = _js_jts_dDoStatement;
+			using WhileStatement = _js_jts_dWhileStatement;
+			using ForStatement = _js_jts_dForStatement;
+			using ForInStatement = _js_jts_dForInStatement;
+			using ForOfStatement = _js_jts_dForOfStatement;
+			using BreakStatement = _js_jts_dBreakStatement;
+			using ContinueStatement = _js_jts_dContinueStatement;
+			using ReturnStatement = _js_jts_dReturnStatement;
+			using WithStatement = _js_jts_dWithStatement;
+			using SwitchStatement = _js_jts_dSwitchStatement;
+			using CaseBlock = _js_jts_dCaseBlock;
+			using CaseClause = _js_jts_dCaseClause;
+			using DefaultClause = _js_jts_dDefaultClause;
+			using LabeledStatement = _js_jts_dLabeledStatement;
+			using ThrowStatement = _js_jts_dThrowStatement;
+			using TryStatement = _js_jts_dTryStatement;
+			using CatchClause = _js_jts_dCatchClause;
+			using ClassLikeDeclarationBase = _js_jts_dClassLikeDeclarationBase;
+			using ClassDeclaration = _js_jts_dClassDeclaration;
+			using ClassExpression = _js_jts_dClassExpression;
+			using ClassElement = _js_jts_dClassElement;
+			using TypeElement = _js_jts_dTypeElement;
+			using InterfaceDeclaration = _js_jts_dInterfaceDeclaration;
+			using HeritageClause = _js_jts_dHeritageClause;
+			using TypeAliasDeclaration = _js_jts_dTypeAliasDeclaration;
+			using EnumMember = _js_jts_dEnumMember;
+			using EnumDeclaration = _js_jts_dEnumDeclaration;
+			using ModuleDeclaration = _js_jts_dModuleDeclaration;
+			using NamespaceDeclaration = _js_jts_dNamespaceDeclaration;
+			using JSDocNamespaceDeclaration = _js_jts_dJSDocNamespaceDeclaration;
+			using ModuleBlock = _js_jts_dModuleBlock;
+			using ImportEqualsDeclaration = _js_jts_dImportEqualsDeclaration;
+			using ExternalModuleReference = _js_jts_dExternalModuleReference;
+			using ImportDeclaration = _js_jts_dImportDeclaration;
+			using ImportClause = _js_jts_dImportClause;
+			using NamespaceImport = _js_jts_dNamespaceImport;
+			using NamespaceExportDeclaration = _js_jts_dNamespaceExportDeclaration;
+			using ExportDeclaration = _js_jts_dExportDeclaration;
+			using NamedImports = _js_jts_dNamedImports;
+			using NamedExports = _js_jts_dNamedExports;
+			using ImportSpecifier = _js_jts_dImportSpecifier;
+			using ExportSpecifier = _js_jts_dExportSpecifier;
+			using ExportAssignment = _js_jts_dExportAssignment;
+			using FileReference = _js_jts_dFileReference;
+			using CheckJsDirective = _js_jts_dCheckJsDirective;
+			using CommentRange = _js_jts_dCommentRange;
+			using SynthesizedComment = _js_jts_dSynthesizedComment;
+			using JSDocTypeExpression = _js_jts_dJSDocTypeExpression;
+			using JSDocType = _js_jts_dJSDocType;
+			using JSDocAllType = _js_jts_dJSDocAllType;
+			using JSDocUnknownType = _js_jts_dJSDocUnknownType;
+			using JSDocNonNullableType = _js_jts_dJSDocNonNullableType;
+			using JSDocNullableType = _js_jts_dJSDocNullableType;
+			using JSDocOptionalType = _js_jts_dJSDocOptionalType;
+			using JSDocFunctionType = _js_jts_dJSDocFunctionType;
+			using JSDocVariadicType = _js_jts_dJSDocVariadicType;
+			using JSDoc = _js_jts_dJSDoc;
+			using JSDocTag = _js_jts_dJSDocTag;
+			using JSDocUnknownTag = _js_jts_dJSDocUnknownTag;
+			using JSDocAugmentsTag = _js_jts_dJSDocAugmentsTag;
+			using JSDocClassTag = _js_jts_dJSDocClassTag;
+			using JSDocEnumTag = _js_jts_dJSDocEnumTag;
+			using JSDocThisTag = _js_jts_dJSDocThisTag;
+			using JSDocTemplateTag = _js_jts_dJSDocTemplateTag;
+			using JSDocReturnTag = _js_jts_dJSDocReturnTag;
+			using JSDocTypeTag = _js_jts_dJSDocTypeTag;
+			using JSDocTypedefTag = _js_jts_dJSDocTypedefTag;
+			using JSDocCallbackTag = _js_jts_dJSDocCallbackTag;
+			using JSDocSignature = _js_jts_dJSDocSignature;
+			using JSDocPropertyLikeTag = _js_jts_dJSDocPropertyLikeTag;
+			using JSDocPropertyTag = _js_jts_dJSDocPropertyTag;
+			using JSDocParameterTag = _js_jts_dJSDocParameterTag;
+			using JSDocTypeLiteral = _js_jts_dJSDocTypeLiteral;
+			using FlowLock = _js_jts_dFlowLock;
+			using AfterFinallyFlow = _js_jts_dAfterFinallyFlow;
+			using PreFinallyFlow = _js_jts_dPreFinallyFlow;
+			using FlowNodeBase = _js_jts_dFlowNodeBase;
+			using FlowStart = _js_jts_dFlowStart;
+			using FlowLabel = _js_jts_dFlowLabel;
+			using FlowAssignment = _js_jts_dFlowAssignment;
+			using FlowCondition = _js_jts_dFlowCondition;
+			using FlowSwitchClause = _js_jts_dFlowSwitchClause;
+			using FlowArrayMutation = _js_jts_dFlowArrayMutation;
+			using IncompleteType = _js_jts_dIncompleteType;
+			using AmdDependency = _js_jts_dAmdDependency;
+			using SourceFile = _js_jts_dSourceFile;
+			using Bundle = _js_jts_dBundle;
+			using InputFiles = _js_jts_dInputFiles;
+			using UnparsedSource = _js_jts_dUnparsedSource;
+			using UnparsedSection = _js_jts_dUnparsedSection;
+			using UnparsedPrologue = _js_jts_dUnparsedPrologue;
+			using UnparsedPrepend = _js_jts_dUnparsedPrepend;
+			using UnparsedTextLike = _js_jts_dUnparsedTextLike;
+			using UnparsedSyntheticReference = _js_jts_dUnparsedSyntheticReference;
+			using JsonSourceFile = _js_jts_dJsonSourceFile;
+			using TsConfigSourceFile = _js_jts_dTsConfigSourceFile;
+			using JsonMinusNumericLiteral = _js_jts_dJsonMinusNumericLiteral;
+			using JsonObjectExpressionStatement = _js_jts_dJsonObjectExpressionStatement;
+			using ScriptReferenceHost = _js_jts_dScriptReferenceHost;
+			using ParseConfigHost = _js_jts_dParseConfigHost;
+			using OperationCanceledException = _js_jts_dOperationCanceledException;
+			using CancellationToken = _js_jts_dCancellationToken;
+			using Program = _js_jts_dProgram;
+			using ResolvedProjectReference = _js_jts_dResolvedProjectReference;
+			using CustomTransformer = _js_jts_dCustomTransformer;
+			using CustomTransformers = _js_jts_dCustomTransformers;
+			using SourceMapSpan = _js_jts_dSourceMapSpan;
+			using EmitResult = _js_jts_dEmitResult;
+			using TypeChecker = _js_jts_dTypeChecker;
+			using TypePredicateBase = _js_jts_dTypePredicateBase;
+			using ThisTypePredicate = _js_jts_dThisTypePredicate;
+			using IdentifierTypePredicate = _js_jts_dIdentifierTypePredicate;
+			using Symbol = _js_jts_dSymbol;
+			template<typename T>
+			using ReadonlyUnderscoreEscapedMap = _js_jts_dReadonlyUnderscoreEscapedMap<T>;
+			template<typename T>
+			using UnderscoreEscapedMap = _js_jts_dUnderscoreEscapedMap<T>;
+			using Type = _js_jts_dType;
+			using LiteralType = _js_jts_dLiteralType;
+			using UniqueESSymbolType = _js_jts_dUniqueESSymbolType;
+			using StringLiteralType = _js_jts_dStringLiteralType;
+			using NumberLiteralType = _js_jts_dNumberLiteralType;
+			using BigIntLiteralType = _js_jts_dBigIntLiteralType;
+			using EnumType = _js_jts_dEnumType;
+			using ObjectType = _js_jts_dObjectType;
+			using InterfaceType = _js_jts_dInterfaceType;
+			using InterfaceTypeWithDeclaredMembers = _js_jts_dInterfaceTypeWithDeclaredMembers;
+			using TypeReference = _js_jts_dTypeReference;
+			using GenericType = _js_jts_dGenericType;
+			using TupleType = _js_jts_dTupleType;
+			using TupleTypeReference = _js_jts_dTupleTypeReference;
+			using UnionOrIntersectionType = _js_jts_dUnionOrIntersectionType;
+			using UnionType = _js_jts_dUnionType;
+			using IntersectionType = _js_jts_dIntersectionType;
+			using EvolvingArrayType = _js_jts_dEvolvingArrayType;
+			using InstantiableType = _js_jts_dInstantiableType;
+			using TypeParameter = _js_jts_dTypeParameter;
+			using IndexedAccessType = _js_jts_dIndexedAccessType;
+			using IndexType = _js_jts_dIndexType;
+			using ConditionalRoot = _js_jts_dConditionalRoot;
+			using ConditionalType = _js_jts_dConditionalType;
+			using SubstitutionType = _js_jts_dSubstitutionType;
+			using Signature = _js_jts_dSignature;
+			using IndexInfo = _js_jts_dIndexInfo;
+			using FileExtensionInfo = _js_jts_dFileExtensionInfo;
+			using DiagnosticMessage = _js_jts_dDiagnosticMessage;
+			using DiagnosticMessageChain = _js_jts_dDiagnosticMessageChain;
+			using Diagnostic = _js_jts_dDiagnostic;
+			using DiagnosticRelatedInformation = _js_jts_dDiagnosticRelatedInformation;
+			using DiagnosticWithLocation = _js_jts_dDiagnosticWithLocation;
+			using PluginImport = _js_jts_dPluginImport;
+			using ProjectReference = _js_jts_dProjectReference;
+			using CompilerOptions = _js_jts_dCompilerOptions;
+			using TypeAcquisition = _js_jts_dTypeAcquisition;
+			using LineAndCharacter = _js_jts_dLineAndCharacter;
+			using ParsedCommandLine = _js_jts_dParsedCommandLine;
+			using ExpandResult = _js_jts_dExpandResult;
+			using CreateProgramOptions = _js_jts_dCreateProgramOptions;
+			using ModuleResolutionHost = _js_jts_dModuleResolutionHost;
+			using ResolvedModule = _js_jts_dResolvedModule;
+			using ResolvedModuleFull = _js_jts_dResolvedModuleFull;
+			using PackageId = _js_jts_dPackageId;
+			using ResolvedModuleWithFailedLookupLocations = _js_jts_dResolvedModuleWithFailedLookupLocations;
+			using ResolvedTypeReferenceDirective = _js_jts_dResolvedTypeReferenceDirective;
+			using ResolvedTypeReferenceDirectiveWithFailedLookupLocations = _js_jts_dResolvedTypeReferenceDirectiveWithFailedLookupLocations;
+			using CompilerHost = _js_jts_dCompilerHost;
+			using SourceMapRange = _js_jts_dSourceMapRange;
+			using SourceMapSource = _js_jts_dSourceMapSource;
+			using EmitHelper = _js_jts_dEmitHelper;
+			using UnscopedEmitHelper = _js_jts_dUnscopedEmitHelper;
+			using TransformationContext = _js_jts_dTransformationContext;
+			template<typename T>
+			using TransformationResult = _js_jts_dTransformationResult<T>;
+			using Printer = _js_jts_dPrinter;
+			using PrintHandlers = _js_jts_dPrintHandlers;
+			using PrinterOptions = _js_jts_dPrinterOptions;
+			using GetEffectiveTypeRootsHost = _js_jts_dGetEffectiveTypeRootsHost;
+			using TextSpan = _js_jts_dTextSpan;
+			using TextChangeRange = _js_jts_dTextChangeRange;
+			using SyntaxList = _js_jts_dSyntaxList;
+			using UserPreferences = _js_jts_dUserPreferences;
+			using PseudoBigInt = _js_jts_dPseudoBigInt;
+			using System = _js_jts_dSystem;
+			using FileWatcher = _js_jts_dFileWatcher;
+			using Scanner = _js_jts_dScanner;
+			using ConfigFileDiagnosticsReporter = _js_jts_dConfigFileDiagnosticsReporter;
+			using ParseConfigFileHost = _js_jts_dParseConfigFileHost;
+			using ParsedTsconfig = _js_jts_dParsedTsconfig;
+			using ExtendedConfigCacheEntry = _js_jts_dExtendedConfigCacheEntry;
+			using ModuleResolutionCache = _js_jts_dModuleResolutionCache;
+			using NonRelativeModuleNameResolutionCache = _js_jts_dNonRelativeModuleNameResolutionCache;
+			using PerModuleNameCache = _js_jts_dPerModuleNameCache;
+			using FormatDiagnosticsHost = _js_jts_dFormatDiagnosticsHost;
+			using ResolveProjectReferencePathHost = _js_jts_dResolveProjectReferencePathHost;
+			using EmitOutput = _js_jts_dEmitOutput;
+			using OutputFile = _js_jts_dOutputFile;
+			using BuilderProgramHost = _js_jts_dBuilderProgramHost;
+			using BuilderProgram = _js_jts_dBuilderProgram;
+			using SemanticDiagnosticsBuilderProgram = _js_jts_dSemanticDiagnosticsBuilderProgram;
+			using EmitAndSemanticDiagnosticsBuilderProgram = _js_jts_dEmitAndSemanticDiagnosticsBuilderProgram;
+			using WatchHost = _js_jts_dWatchHost;
+			template<typename T>
+			using ProgramHost = _js_jts_dProgramHost<T>;
+			template<typename T>
+			using WatchCompilerHost = _js_jts_dWatchCompilerHost<T>;
+			template<typename T>
+			using WatchCompilerHostOfFilesAndCompilerOptions = _js_jts_dWatchCompilerHostOfFilesAndCompilerOptions<T>;
+			template<typename T>
+			using WatchCompilerHostOfConfigFile = _js_jts_dWatchCompilerHostOfConfigFile<T>;
+			template<typename T>
+			using Watch = _js_jts_dWatch<T>;
+			template<typename T>
+			using WatchOfConfigFile = _js_jts_dWatchOfConfigFile<T>;
+			template<typename T>
+			using WatchOfFilesAndCompilerOptions = _js_jts_dWatchOfFilesAndCompilerOptions<T>;
+			using server = _js_jts_dserver;
+			using SourceFileLike = _js_jts_dSourceFileLike;
+			using IScriptSnapshot = _js_jts_dIScriptSnapshot;
+			using ScriptSnapshot = _js_jts_dScriptSnapshot;
+			using PreProcessedFileInfo = _js_jts_dPreProcessedFileInfo;
+			using HostCancellationToken = _js_jts_dHostCancellationToken;
+			using InstallPackageOptions = _js_jts_dInstallPackageOptions;
+			using LanguageServiceHost = _js_jts_dLanguageServiceHost;
+			using LanguageService = _js_jts_dLanguageService;
+			using JsxClosingTagInfo = _js_jts_dJsxClosingTagInfo;
+			using CombinedCodeFixScope = _js_jts_dCombinedCodeFixScope;
+			using GetCompletionsAtPositionOptions = _js_jts_dGetCompletionsAtPositionOptions;
+			using SignatureHelpItemsOptions = _js_jts_dSignatureHelpItemsOptions;
+			using SignatureHelpInvokedReason = _js_jts_dSignatureHelpInvokedReason;
+			using SignatureHelpCharacterTypedReason = _js_jts_dSignatureHelpCharacterTypedReason;
+			using SignatureHelpRetriggeredReason = _js_jts_dSignatureHelpRetriggeredReason;
+			using ApplyCodeActionCommandResult = _js_jts_dApplyCodeActionCommandResult;
+			using Classifications = _js_jts_dClassifications;
+			using ClassifiedSpan = _js_jts_dClassifiedSpan;
+			using NavigationBarItem = _js_jts_dNavigationBarItem;
+			using NavigationTree = _js_jts_dNavigationTree;
+			using TodoCommentDescriptor = _js_jts_dTodoCommentDescriptor;
+			using TodoComment = _js_jts_dTodoComment;
+			using TextChange = _js_jts_dTextChange;
+			using FileTextChanges = _js_jts_dFileTextChanges;
+			using CodeAction = _js_jts_dCodeAction;
+			using CodeFixAction = _js_jts_dCodeFixAction;
+			using CombinedCodeActions = _js_jts_dCombinedCodeActions;
+			using InstallPackageAction = _js_jts_dInstallPackageAction;
+			using ApplicableRefactorInfo = _js_jts_dApplicableRefactorInfo;
+			using RefactorActionInfo = _js_jts_dRefactorActionInfo;
+			using RefactorEditInfo = _js_jts_dRefactorEditInfo;
+			using TextInsertion = _js_jts_dTextInsertion;
+			using DocumentSpan = _js_jts_dDocumentSpan;
+			using RenameLocation = _js_jts_dRenameLocation;
+			using ReferenceEntry = _js_jts_dReferenceEntry;
+			using ImplementationLocation = _js_jts_dImplementationLocation;
+			using DocumentHighlights = _js_jts_dDocumentHighlights;
+			using HighlightSpan = _js_jts_dHighlightSpan;
+			using NavigateToItem = _js_jts_dNavigateToItem;
+			using EditorOptions = _js_jts_dEditorOptions;
+			using EditorSettings = _js_jts_dEditorSettings;
+			using FormatCodeOptions = _js_jts_dFormatCodeOptions;
+			using FormatCodeSettings = _js_jts_dFormatCodeSettings;
+			using DefinitionInfo = _js_jts_dDefinitionInfo;
+			using DefinitionInfoAndBoundSpan = _js_jts_dDefinitionInfoAndBoundSpan;
+			using ReferencedSymbolDefinitionInfo = _js_jts_dReferencedSymbolDefinitionInfo;
+			using ReferencedSymbol = _js_jts_dReferencedSymbol;
+			using SymbolDisplayPart = _js_jts_dSymbolDisplayPart;
+			using JSDocTagInfo = _js_jts_dJSDocTagInfo;
+			using QuickInfo = _js_jts_dQuickInfo;
+			using RenameInfoSuccess = _js_jts_dRenameInfoSuccess;
+			using RenameInfoFailure = _js_jts_dRenameInfoFailure;
+			using RenameInfoOptions = _js_jts_dRenameInfoOptions;
+			using SignatureHelpParameter = _js_jts_dSignatureHelpParameter;
+			using SelectionRange = _js_jts_dSelectionRange;
+			using SignatureHelpItem = _js_jts_dSignatureHelpItem;
+			using SignatureHelpItems = _js_jts_dSignatureHelpItems;
+			using CompletionInfo = _js_jts_dCompletionInfo;
+			using CompletionEntry = _js_jts_dCompletionEntry;
+			using CompletionEntryDetails = _js_jts_dCompletionEntryDetails;
+			using OutliningSpan = _js_jts_dOutliningSpan;
+			using ClassificationResult = _js_jts_dClassificationResult;
+			using ClassificationInfo = _js_jts_dClassificationInfo;
+			using Classifier = _js_jts_dClassifier;
+			using DocumentRegistry = _js_jts_dDocumentRegistry;
+			using TranspileOptions = _js_jts_dTranspileOptions;
+			using TranspileOutput = _js_jts_dTranspileOutput;
+			using HasType = _js_jts_dHasType;
+			using HasInitializer = _js_jts_dHasInitializer;
+			using HasExpressionInitializer = _js_jts_dHasExpressionInitializer;
+			using DotDotDotToken = _js_jts_dDotDotDotToken;
+			using QuestionToken = _js_jts_dQuestionToken;
+			using ExclamationToken = _js_jts_dExclamationToken;
+			using ColonToken = _js_jts_dColonToken;
+			using EqualsToken = _js_jts_dEqualsToken;
+			using AsteriskToken = _js_jts_dAsteriskToken;
+			using EqualsGreaterThanToken = _js_jts_dEqualsGreaterThanToken;
+			using ReadonlyToken = _js_jts_dReadonlyToken;
+			using AwaitKeywordToken = _js_jts_dAwaitKeywordToken;
+			using PlusToken = _js_jts_dPlusToken;
+			using MinusToken = _js_jts_dMinusToken;
+			using Modifier = _js_jts_dModifier;
+			using ModifiersArray = _js_jts_dModifiersArray;
+			using EntityName = _js_jts_dEntityName;
+			using PropertyName = _js_jts_dPropertyName;
+			using DeclarationName = _js_jts_dDeclarationName;
+			using SignatureDeclaration = _js_jts_dSignatureDeclaration;
+			using BindingName = _js_jts_dBindingName;
+			using ObjectLiteralElementLike = _js_jts_dObjectLiteralElementLike;
+			using VariableLikeDeclaration = _js_jts_dVariableLikeDeclaration;
+			using BindingPattern = _js_jts_dBindingPattern;
+			using ArrayBindingElement = _js_jts_dArrayBindingElement;
+			using FunctionLikeDeclaration = _js_jts_dFunctionLikeDeclaration;
+			using FunctionLike = _js_jts_dFunctionLike;
+			using AccessorDeclaration = _js_jts_dAccessorDeclaration;
+			using FunctionOrConstructorTypeNode = _js_jts_dFunctionOrConstructorTypeNode;
+			using TypeReferenceType = _js_jts_dTypeReferenceType;
+			using UnionOrIntersectionTypeNode = _js_jts_dUnionOrIntersectionTypeNode;
+			using StringLiteralLike = _js_jts_dStringLiteralLike;
+			using IncrementExpression = _js_jts_dIncrementExpression;
+			using BinaryOperatorToken = _js_jts_dBinaryOperatorToken;
+			using AssignmentOperatorToken = _js_jts_dAssignmentOperatorToken;
+			using DestructuringAssignment = _js_jts_dDestructuringAssignment;
+			using BindingOrAssignmentElement = _js_jts_dBindingOrAssignmentElement;
+			using BindingOrAssignmentElementRestIndicator = _js_jts_dBindingOrAssignmentElementRestIndicator;
+			using BindingOrAssignmentElementTarget = _js_jts_dBindingOrAssignmentElementTarget;
+			using ObjectBindingOrAssignmentPattern = _js_jts_dObjectBindingOrAssignmentPattern;
+			using ArrayBindingOrAssignmentPattern = _js_jts_dArrayBindingOrAssignmentPattern;
+			using AssignmentPattern = _js_jts_dAssignmentPattern;
+			using BindingOrAssignmentPattern = _js_jts_dBindingOrAssignmentPattern;
+			using FunctionBody = _js_jts_dFunctionBody;
+			using ConciseBody = _js_jts_dConciseBody;
+			using TemplateLiteral = _js_jts_dTemplateLiteral;
+			using EntityNameExpression = _js_jts_dEntityNameExpression;
+			using EntityNameOrEntityNameExpression = _js_jts_dEntityNameOrEntityNameExpression;
+			using SuperProperty = _js_jts_dSuperProperty;
+			using CallLikeExpression = _js_jts_dCallLikeExpression;
+			using AssertionExpression = _js_jts_dAssertionExpression;
+			using JsxOpeningLikeElement = _js_jts_dJsxOpeningLikeElement;
+			using JsxAttributeLike = _js_jts_dJsxAttributeLike;
+			using JsxTagNameExpression = _js_jts_dJsxTagNameExpression;
+			using JsxChild = _js_jts_dJsxChild;
+			using BlockLike = _js_jts_dBlockLike;
+			using ForInitializer = _js_jts_dForInitializer;
+			using ForInOrOfStatement = _js_jts_dForInOrOfStatement;
+			using BreakOrContinueStatement = _js_jts_dBreakOrContinueStatement;
+			using CaseOrDefaultClause = _js_jts_dCaseOrDefaultClause;
+			using ObjectTypeDeclaration = _js_jts_dObjectTypeDeclaration;
+			using DeclarationWithTypeParameters = _js_jts_dDeclarationWithTypeParameters;
+			using DeclarationWithTypeParameterChildren = _js_jts_dDeclarationWithTypeParameterChildren;
+			using ClassLikeDeclaration = _js_jts_dClassLikeDeclaration;
+			using ModuleName = _js_jts_dModuleName;
+			using ModuleBody = _js_jts_dModuleBody;
+			using NamespaceBody = _js_jts_dNamespaceBody;
+			using JSDocNamespaceBody = _js_jts_dJSDocNamespaceBody;
+			using ModuleReference = _js_jts_dModuleReference;
+			using NamedImportBindings = _js_jts_dNamedImportBindings;
+			using NamedImportsOrExports = _js_jts_dNamedImportsOrExports;
+			using ImportOrExportSpecifier = _js_jts_dImportOrExportSpecifier;
+			using JSDocTypeReferencingNode = _js_jts_dJSDocTypeReferencingNode;
+			using FlowNode = _js_jts_dFlowNode;
+			using FlowType = _js_jts_dFlowType;
+			using UnparsedSourceText = _js_jts_dUnparsedSourceText;
+			using UnparsedNode = _js_jts_dUnparsedNode;
+			using WriteFileCallback = _js_jts_dWriteFileCallback;
+			using CustomTransformerFactory = _js_jts_dCustomTransformerFactory;
+			using TypePredicate = _js_jts_dTypePredicate;
+			using SymbolTable = _js_jts_dSymbolTable;
+			using DestructuringPattern = _js_jts_dDestructuringPattern;
+			using BaseType = _js_jts_dBaseType;
+			using StructuredType = _js_jts_dStructuredType;
+			using TypeVariable = _js_jts_dTypeVariable;
+			using JsFileExtensionInfo = _js_jts_dJsFileExtensionInfo;
+			using EmitHelperUniqueNameCallback = _js_jts_dEmitHelperUniqueNameCallback;
+			template<typename T>
+			using TransformerFactory = _js_jts_dTransformerFactory<T>;
+			template<typename T>
+			using Transformer = _js_jts_dTransformer<T>;
+			using Visitor = _js_jts_dVisitor;
+			using FileWatcherCallback = _js_jts_dFileWatcherCallback;
+			using DirectoryWatcherCallback = _js_jts_dDirectoryWatcherCallback;
+			using ErrorCallback = _js_jts_dErrorCallback;
+			using TemplateLiteralToken = _js_jts_dTemplateLiteralToken;
+			using DiagnosticReporter = _js_jts_dDiagnosticReporter;
+			template<typename T>
+			using AffectedFileResult = _js_jts_dAffectedFileResult<T>;
+			using WatchStatusReporter = _js_jts_dWatchStatusReporter;
+			template<typename T>
+			using CreateProgram = _js_jts_dCreateProgram<T>;
+			using OrganizeImportsScope = _js_jts_dOrganizeImportsScope;
+			using SignatureHelpTriggerReason = _js_jts_dSignatureHelpTriggerReason;
+			using CodeActionCommand = _js_jts_dCodeActionCommand;
+			using RenameInfo = _js_jts_dRenameInfo;
 			template<typename T>
 			static auto addEmitHelper(T node, _js_jts_dEmitHelper helper) noexcept;
 			template<typename T>
@@ -3447,7 +3447,7 @@ namespace tc::js_defs {
 			static auto transform(tc::jst::union_t<T, _js_Array<T>> source, _js_Array<_js_jts_dTransformerFactory<T>> transformers, tc::jst::union_t<_js_jts_dCompilerOptions, tc::js::undefined> compilerOptions = tc::js::undefined()) noexcept;
 			static auto transpile(tc::js::string input, tc::jst::union_t<_js_jts_dCompilerOptions, tc::js::undefined> compilerOptions = tc::js::undefined(), tc::jst::union_t<tc::js::string, tc::js::undefined> fileName = tc::js::undefined(), tc::jst::union_t<_js_Array<_js_jts_dDiagnostic>, tc::js::undefined> diagnostics = tc::js::undefined(), tc::jst::union_t<tc::js::string, tc::js::undefined> moduleName = tc::js::undefined()) noexcept;
 			static auto transpileModule(tc::js::string input, _js_jts_dTranspileOptions transpileOptions) noexcept;
-			static auto unescapeLeadingUnderscores(tc::js::any /*UnionWithUnsupportedSubtype=__String[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any] */ identifier) noexcept;
+			static auto unescapeLeadingUnderscores(tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any]*/ identifier) noexcept;
 			static auto updateArrayBindingPattern(_js_jts_dArrayBindingPattern node, _js_ReadonlyArray<_js_jts_dArrayBindingElement> elements) noexcept;
 			static auto updateArrayLiteral(_js_jts_dArrayLiteralExpression node, _js_ReadonlyArray<_js_jts_dExpression> elements) noexcept;
 			static auto updateArrayTypeNode(_js_jts_dArrayTypeNode node, _js_jts_dTypeNode elementType) noexcept;
@@ -3583,7 +3583,7 @@ namespace tc::js_defs {
 			template<typename T>
 			static auto visitEachChild(T node, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context) noexcept;
 			template<typename T>
-			static auto visitEachChild(tc::jst::union_t<T, tc::js::undefined> node, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context, tc::js::any /*UnionWithUnsupportedSubtype={ <T extends Node>(nodes: NodeArray<T> | undefined, visitor: Visitor, test?: ((node: Node) => boolean) | undefined, start?: number | undefined, count?: number | undefined): NodeArray<T>; <T extends Node>(nodes: NodeArray<...> | undefined, visitor: Visitor, test?: ((node: Node) => boolean) | undefined, start?: number...[tc::js::undefined,tc::js::any] */ nodesVisitor = tc::js::undefined(), tc::jst::union_t<_js_jts_dVisitor, tc::js::undefined> tokenVisitor = tc::js::undefined()) noexcept;
+			static auto visitEachChild(tc::jst::union_t<T, tc::js::undefined> node, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context, tc::js::any /*UnionWithUnsupportedSubtype=[tc::js::undefined,tc::js::any]*/ nodesVisitor = tc::js::undefined(), tc::jst::union_t<_js_jts_dVisitor, tc::js::undefined> tokenVisitor = tc::js::undefined()) noexcept;
 			static auto visitFunctionBody(_js_jts_dBlock node, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context) noexcept;
 			static auto visitFunctionBody(_js_jts_dConciseBody node, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context) noexcept;
 			static auto visitFunctionBody(tc::jst::union_t<_js_jts_dBlock, tc::js::undefined> node, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context) noexcept;
@@ -3592,7 +3592,7 @@ namespace tc::js_defs {
 			static auto visitNode(tc::jst::union_t<T, tc::js::undefined> node = tc::js::undefined(), tc::jst::union_t<_js_jts_dVisitor, tc::js::undefined> visitor = tc::js::undefined(), tc::jst::union_t<tc::js::undefined, tc::jst::function<bool /*false*/(_js_jts_dNode)>> test = tc::js::undefined(), tc::jst::union_t<tc::js::undefined, tc::jst::function<T(_js_jts_dNodeArray<_js_jts_dNode>)>> lift = tc::js::undefined()) noexcept;
 			template<typename T>
 			static auto visitNodes(tc::jst::union_t<_js_jts_dNodeArray<T>, tc::js::undefined> nodes, _js_jts_dVisitor visitor, tc::jst::union_t<tc::js::undefined, tc::jst::function<bool /*false*/(_js_jts_dNode)>> test = tc::js::undefined(), tc::jst::union_t<double, tc::js::undefined> start = tc::js::undefined(), tc::jst::union_t<double, tc::js::undefined> count = tc::js::undefined()) noexcept;
-			static auto visitParameterList(tc::jst::union_t<_js_jts_dNodeArray<_js_jts_dParameterDeclaration>, tc::js::undefined> nodes, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context, tc::js::any /*UnionWithUnsupportedSubtype={ <T extends Node>(nodes: NodeArray<T> | undefined, visitor: Visitor, test?: ((node: Node) => boolean) | undefined, start?: number | undefined, count?: number | undefined): NodeArray<T>; <T extends Node>(nodes: NodeArray<...> | undefined, visitor: Visitor, test?: ((node: Node) => boolean) | undefined, start?: number...[tc::js::undefined,tc::js::any] */ nodesVisitor = tc::js::undefined()) noexcept;
+			static auto visitParameterList(tc::jst::union_t<_js_jts_dNodeArray<_js_jts_dParameterDeclaration>, tc::js::undefined> nodes, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context, tc::js::any /*UnionWithUnsupportedSubtype=[tc::js::undefined,tc::js::any]*/ nodesVisitor = tc::js::undefined()) noexcept;
 			static auto walkUpBindingElementsAndPatterns(_js_jts_dBindingElement binding) noexcept;
 			static auto createStatement() noexcept;
 			static void createStatement(tc::js::any /*AnonymousType=(expression: Expression) => ExpressionStatement*/ v) noexcept;
@@ -4191,7 +4191,7 @@ namespace tc::js_defs {
 		auto fixName() noexcept;
 		void fixName(tc::js::string v) noexcept;
 		auto fixId() noexcept;
-		void fixId(tc::js::any /*UnionWithUnsupportedSubtype={} | undefined[tc::js::undefined,tc::js::any] */ v) noexcept;
+		void fixId(tc::js::any /*UnionWithUnsupportedSubtype=[tc::js::undefined,tc::js::any]*/ v) noexcept;
 		auto fixAllDescription() noexcept;
 		void fixAllDescription(tc::jst::union_t<tc::js::string, tc::js::undefined> v) noexcept;
 	};
@@ -4709,7 +4709,7 @@ namespace tc::js_defs {
 		struct _tcjs_definitions {
 		};
 		auto reportsUnnecessary() noexcept;
-		void reportsUnnecessary(tc::js::any /*UnionWithUnsupportedSubtype={} | undefined[tc::js::undefined,tc::js::any] */ v) noexcept;
+		void reportsUnnecessary(tc::js::any /*UnionWithUnsupportedSubtype=[tc::js::undefined,tc::js::any]*/ v) noexcept;
 		auto source() noexcept;
 		void source(tc::jst::union_t<tc::js::string, tc::js::undefined> v) noexcept;
 		auto relatedInformation() noexcept;
@@ -4727,7 +4727,7 @@ namespace tc::js_defs {
 		auto message() noexcept;
 		void message(tc::js::string v) noexcept;
 		auto reportsUnnecessary() noexcept;
-		void reportsUnnecessary(tc::js::any /*UnionWithUnsupportedSubtype={} | undefined[tc::js::undefined,tc::js::any] */ v) noexcept;
+		void reportsUnnecessary(tc::js::any /*UnionWithUnsupportedSubtype=[tc::js::undefined,tc::js::any]*/ v) noexcept;
 	};
 	struct _impl_js_jts_dDiagnosticMessageChain : virtual object_base {
 		struct _tcjs_definitions {
@@ -5309,7 +5309,7 @@ namespace tc::js_defs {
 		auto kind() noexcept;
 		void kind(_js_jts_dSyntaxKind /*SyntaxKind.Identifier*/ v) noexcept;
 		auto escapedText() noexcept;
-		void escapedText(tc::js::any /*UnionWithUnsupportedSubtype=__String[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any] */ v) noexcept;
+		void escapedText(tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any]*/ v) noexcept;
 		auto originalKeywordKind() noexcept;
 		void originalKeywordKind(tc::jst::union_t<_js_jts_dSyntaxKind /*SyntaxKind.GetAccessor*/, tc::js::undefined> v) noexcept;
 		auto isInJSDocNamespace() noexcept;
@@ -5583,7 +5583,7 @@ namespace tc::js_defs {
 		auto kind() noexcept;
 		void kind(_js_jts_dSyntaxKind /*SyntaxKind.JSDocComment*/ v) noexcept;
 		auto parent() noexcept;
-		void parent(tc::js::any /*UnionWithUnsupportedSubtype=HasJSDoc[_js_jts_dParameterDeclaration,_js_jts_dCallSignatureDeclaration,_js_jts_dConstructSignatureDeclaration,_js_jts_dMethodSignature,_js_jts_dPropertySignature,_js_jts_dArrowFunction,_js_jts_dParenthesizedExpression,_js_jts_dSpreadAssignment,_js_jts_dShorthandPropertyAssignment,_js_jts_dPropertyAssignment,_js_jts_dFunctionExpression,_js_jts_dLabeledStatement,_js_jts_dExpressionStatement,_js_jts_dVariableStatement,_js_jts_dFunctionDeclaration,_js_jts_dConstructorDeclaration,_js_jts_dMethodDeclaration,_js_jts_dPropertyDeclaration,_js_jts_dGetAccessorDeclaration,_js_jts_dSetAccessorDeclaration,_js_jts_dClassDeclaration,_js_jts_dClassExpression,_js_jts_dInterfaceDeclaration,_js_jts_dTypeAliasDeclaration,_js_jts_dEnumMember,_js_jts_dEnumDeclaration,_js_jts_dModuleDeclaration,_js_jts_dImportEqualsDeclaration,_js_jts_dIndexSignatureDeclaration,_js_jts_dFunctionTypeNode,_js_jts_dConstructorTypeNode,_js_jts_dJSDocFunctionType,_js_jts_dExportDeclaration,tc::js::any] */ v) noexcept;
+		void parent(tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dParameterDeclaration,_js_jts_dCallSignatureDeclaration,_js_jts_dConstructSignatureDeclaration,_js_jts_dMethodSignature,_js_jts_dPropertySignature,_js_jts_dArrowFunction,_js_jts_dParenthesizedExpression,_js_jts_dSpreadAssignment,_js_jts_dShorthandPropertyAssignment,_js_jts_dPropertyAssignment,_js_jts_dFunctionExpression,_js_jts_dLabeledStatement,_js_jts_dExpressionStatement,_js_jts_dVariableStatement,_js_jts_dFunctionDeclaration,_js_jts_dConstructorDeclaration,_js_jts_dMethodDeclaration,_js_jts_dPropertyDeclaration,_js_jts_dGetAccessorDeclaration,_js_jts_dSetAccessorDeclaration,_js_jts_dClassDeclaration,_js_jts_dClassExpression,_js_jts_dInterfaceDeclaration,_js_jts_dTypeAliasDeclaration,_js_jts_dEnumMember,_js_jts_dEnumDeclaration,_js_jts_dModuleDeclaration,_js_jts_dImportEqualsDeclaration,_js_jts_dIndexSignatureDeclaration,_js_jts_dFunctionTypeNode,_js_jts_dConstructorTypeNode,_js_jts_dJSDocFunctionType,_js_jts_dExportDeclaration,tc::js::any]*/ v) noexcept;
 		auto tags() noexcept;
 		void tags(tc::jst::union_t<_js_jts_dNodeArray<_js_jts_dJSDocTag>, tc::js::undefined> v) noexcept;
 		auto comment() noexcept;
@@ -6807,9 +6807,9 @@ namespace tc::js_defs {
 		};
 		auto size() noexcept;
 		auto entries() noexcept;
-		auto forEach(tc::jst::function<void(T, tc::js::any /*UnionWithUnsupportedSubtype=__String[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any] */)> action) noexcept;
-		auto get(tc::js::any /*UnionWithUnsupportedSubtype=__String[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any] */ key) noexcept;
-		auto has(tc::js::any /*UnionWithUnsupportedSubtype=__String[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any] */ key) noexcept;
+		auto forEach(tc::jst::function<void(T, tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any]*/)> action) noexcept;
+		auto get(tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any]*/ key) noexcept;
+		auto has(tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any]*/ key) noexcept;
 		auto keys() noexcept;
 		auto values() noexcept;
 	};
@@ -7289,7 +7289,7 @@ namespace tc::js_defs {
 		auto flags() noexcept;
 		void flags(_js_jts_dSymbolFlags /*SymbolFlags.None*/ v) noexcept;
 		auto escapedName() noexcept;
-		void escapedName(tc::js::any /*UnionWithUnsupportedSubtype=__String[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any] */ v) noexcept;
+		void escapedName(tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any]*/ v) noexcept;
 		auto declarations() noexcept;
 		void declarations(_js_Array<_js_jts_dDeclaration> v) noexcept;
 		auto valueDeclaration() noexcept;
@@ -7599,7 +7599,7 @@ namespace tc::js_defs {
 		auto readonly() noexcept;
 		void readonly(bool /*false*/ v) noexcept;
 		auto associatedNames() noexcept;
-		void associatedNames(tc::jst::union_t<_js_Array<tc::js::any /*UnionWithUnsupportedSubtype=__String[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any] */>, tc::js::undefined> v) noexcept;
+		void associatedNames(tc::jst::union_t<_js_Array<tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any]*/>, tc::js::undefined> v) noexcept;
 	};
 	struct _impl_js_jts_dTupleTypeNode : virtual _impl_js_jts_dTypeNode {
 		struct _tcjs_definitions {
@@ -7791,8 +7791,8 @@ namespace tc::js_defs {
 		struct _tcjs_definitions {
 		};
 		auto clear() noexcept;
-		auto delete_(tc::js::any /*UnionWithUnsupportedSubtype=__String[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any] */ key) noexcept;
-		auto set(tc::js::any /*UnionWithUnsupportedSubtype=__String[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any] */ key, T value) noexcept;
+		auto delete_(tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any]*/ key) noexcept;
+		auto set(tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any]*/ key, T value) noexcept;
 	};
 	struct _impl_js_jts_dUnionType : virtual _impl_js_jts_dUnionOrIntersectionType {
 		struct _tcjs_definitions {
@@ -7812,7 +7812,7 @@ namespace tc::js_defs {
 		auto symbol() noexcept;
 		void symbol(_js_jts_dSymbol v) noexcept;
 		auto escapedName() noexcept;
-		void escapedName(tc::js::any /*UnionWithUnsupportedSubtype=__String[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any] */ v) noexcept;
+		void escapedName(tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any]*/ v) noexcept;
 	};
 	struct _impl_js_jts_dUnparsedSection : virtual _impl_js_jts_dNode {
 		struct _tcjs_definitions {
@@ -8019,20 +8019,20 @@ namespace tc::js_defs {
 	};
 	struct _impl_js_jts_dserver : virtual object_base {
 		struct _tcjs_definitions {
-	using TypingInstallerResponse = _js_jts_dserver_dTypingInstallerResponse;
-	using TypingInstallerRequestWithProjectName = _js_jts_dserver_dTypingInstallerRequestWithProjectName;
-	using DiscoverTypings = _js_jts_dserver_dDiscoverTypings;
-	using CloseProject = _js_jts_dserver_dCloseProject;
-	using TypesRegistryRequest = _js_jts_dserver_dTypesRegistryRequest;
-	using InstallPackageRequest = _js_jts_dserver_dInstallPackageRequest;
-	using PackageInstalledResponse = _js_jts_dserver_dPackageInstalledResponse;
-	using InitializationFailedResponse = _js_jts_dserver_dInitializationFailedResponse;
-	using ProjectResponse = _js_jts_dserver_dProjectResponse;
-	using InvalidateCachedTypings = _js_jts_dserver_dInvalidateCachedTypings;
-	using InstallTypes = _js_jts_dserver_dInstallTypes;
-	using BeginInstallTypes = _js_jts_dserver_dBeginInstallTypes;
-	using EndInstallTypes = _js_jts_dserver_dEndInstallTypes;
-	using SetTypings = _js_jts_dserver_dSetTypings;
+			using TypingInstallerResponse = _js_jts_dserver_dTypingInstallerResponse;
+			using TypingInstallerRequestWithProjectName = _js_jts_dserver_dTypingInstallerRequestWithProjectName;
+			using DiscoverTypings = _js_jts_dserver_dDiscoverTypings;
+			using CloseProject = _js_jts_dserver_dCloseProject;
+			using TypesRegistryRequest = _js_jts_dserver_dTypesRegistryRequest;
+			using InstallPackageRequest = _js_jts_dserver_dInstallPackageRequest;
+			using PackageInstalledResponse = _js_jts_dserver_dPackageInstalledResponse;
+			using InitializationFailedResponse = _js_jts_dserver_dInitializationFailedResponse;
+			using ProjectResponse = _js_jts_dserver_dProjectResponse;
+			using InvalidateCachedTypings = _js_jts_dserver_dInvalidateCachedTypings;
+			using InstallTypes = _js_jts_dserver_dInstallTypes;
+			using BeginInstallTypes = _js_jts_dserver_dBeginInstallTypes;
+			using EndInstallTypes = _js_jts_dserver_dEndInstallTypes;
+			using SetTypings = _js_jts_dserver_dSetTypings;
 		};
 	};
 	struct _impl_js_jts_dserver_dTypingInstallerResponse : virtual object_base {
@@ -8830,7 +8830,7 @@ namespace tc::js_defs {
 		 emscripten::val::global("ts")["disposeEmitNodes"](sourceFile);
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::escapeLeadingUnderscores(tc::js::string identifier) noexcept {
-		return emscripten::val::global("ts")["escapeLeadingUnderscores"](identifier).template as<tc::js::any /*UnionWithUnsupportedSubtype=__String[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any] */>();
+		return emscripten::val::global("ts")["escapeLeadingUnderscores"](identifier).template as<tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any]*/>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::findConfigFile(tc::js::string searchPath, tc::jst::function<bool /*false*/(tc::js::string)> fileExists, tc::jst::union_t<tc::js::string, tc::js::undefined> configName) noexcept {
 		return emscripten::val::global("ts")["findConfigFile"](searchPath, fileExists, configName).template as<tc::jst::union_t<tc::js::string, tc::js::undefined>>();
@@ -10632,7 +10632,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::transpileModule(tc::js::string input, _js_jts_dTranspileOptions transpileOptions) noexcept {
 		return emscripten::val::global("ts")["transpileModule"](input, transpileOptions).template as<_js_jts_dTranspileOutput>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::unescapeLeadingUnderscores(tc::js::any /*UnionWithUnsupportedSubtype=__String[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any] */ identifier) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::unescapeLeadingUnderscores(tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any]*/ identifier) noexcept {
 		return emscripten::val::global("ts")["unescapeLeadingUnderscores"](identifier).template as<tc::js::string>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::updateArrayBindingPattern(_js_jts_dArrayBindingPattern node, _js_ReadonlyArray<_js_jts_dArrayBindingElement> elements) noexcept {
@@ -11036,7 +11036,7 @@ namespace tc::js_defs {
 		return emscripten::val::global("ts")["visitEachChild"](node, visitor, context).template as<T>();
 	}
 	template<typename T>
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::visitEachChild(tc::jst::union_t<T, tc::js::undefined> node, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context, tc::js::any /*UnionWithUnsupportedSubtype={ <T extends Node>(nodes: NodeArray<T> | undefined, visitor: Visitor, test?: ((node: Node) => boolean) | undefined, start?: number | undefined, count?: number | undefined): NodeArray<T>; <T extends Node>(nodes: NodeArray<...> | undefined, visitor: Visitor, test?: ((node: Node) => boolean) | undefined, start?: number...[tc::js::undefined,tc::js::any] */ nodesVisitor, tc::jst::union_t<_js_jts_dVisitor, tc::js::undefined> tokenVisitor) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::visitEachChild(tc::jst::union_t<T, tc::js::undefined> node, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context, tc::js::any /*UnionWithUnsupportedSubtype=[tc::js::undefined,tc::js::any]*/ nodesVisitor, tc::jst::union_t<_js_jts_dVisitor, tc::js::undefined> tokenVisitor) noexcept {
 		return emscripten::val::global("ts")["visitEachChild"](node, visitor, context, nodesVisitor, tokenVisitor).template as<tc::jst::union_t<T, tc::js::undefined>>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::visitFunctionBody(_js_jts_dBlock node, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context) noexcept {
@@ -11059,7 +11059,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::visitNodes(tc::jst::union_t<_js_jts_dNodeArray<T>, tc::js::undefined> nodes, _js_jts_dVisitor visitor, tc::jst::union_t<tc::js::undefined, tc::jst::function<bool /*false*/(_js_jts_dNode)>> test, tc::jst::union_t<double, tc::js::undefined> start, tc::jst::union_t<double, tc::js::undefined> count) noexcept {
 		return emscripten::val::global("ts")["visitNodes"](nodes, visitor, test, start, count).template as<_js_jts_dNodeArray<T>>();
 	}
-	inline auto _impl_js_j_qts_q::_tcjs_definitions::visitParameterList(tc::jst::union_t<_js_jts_dNodeArray<_js_jts_dParameterDeclaration>, tc::js::undefined> nodes, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context, tc::js::any /*UnionWithUnsupportedSubtype={ <T extends Node>(nodes: NodeArray<T> | undefined, visitor: Visitor, test?: ((node: Node) => boolean) | undefined, start?: number | undefined, count?: number | undefined): NodeArray<T>; <T extends Node>(nodes: NodeArray<...> | undefined, visitor: Visitor, test?: ((node: Node) => boolean) | undefined, start?: number...[tc::js::undefined,tc::js::any] */ nodesVisitor) noexcept {
+	inline auto _impl_js_j_qts_q::_tcjs_definitions::visitParameterList(tc::jst::union_t<_js_jts_dNodeArray<_js_jts_dParameterDeclaration>, tc::js::undefined> nodes, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context, tc::js::any /*UnionWithUnsupportedSubtype=[tc::js::undefined,tc::js::any]*/ nodesVisitor) noexcept {
 		return emscripten::val::global("ts")["visitParameterList"](nodes, visitor, context, nodesVisitor).template as<_js_jts_dNodeArray<_js_jts_dParameterDeclaration>>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::walkUpBindingElementsAndPatterns(_js_jts_dBindingElement binding) noexcept {
@@ -11561,8 +11561,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dCodeAction::commands(tc::jst::union_t<_js_Array<_js_jts_dInstallPackageAction>, tc::js::undefined> v) noexcept { this->template _setProperty("commands", v); }
 	inline auto _impl_js_jts_dCodeFixAction::fixName() noexcept { return this->template _getProperty<tc::js::string>("fixName"); }
 	inline void _impl_js_jts_dCodeFixAction::fixName(tc::js::string v) noexcept { this->template _setProperty("fixName", v); }
-	inline auto _impl_js_jts_dCodeFixAction::fixId() noexcept { return this->template _getProperty<tc::js::any /*UnionWithUnsupportedSubtype={} | undefined[tc::js::undefined,tc::js::any] */>("fixId"); }
-	inline void _impl_js_jts_dCodeFixAction::fixId(tc::js::any /*UnionWithUnsupportedSubtype={} | undefined[tc::js::undefined,tc::js::any] */ v) noexcept { this->template _setProperty("fixId", v); }
+	inline auto _impl_js_jts_dCodeFixAction::fixId() noexcept { return this->template _getProperty<tc::js::any /*UnionWithUnsupportedSubtype=[tc::js::undefined,tc::js::any]*/>("fixId"); }
+	inline void _impl_js_jts_dCodeFixAction::fixId(tc::js::any /*UnionWithUnsupportedSubtype=[tc::js::undefined,tc::js::any]*/ v) noexcept { this->template _setProperty("fixId", v); }
 	inline auto _impl_js_jts_dCodeFixAction::fixAllDescription() noexcept { return this->template _getProperty<tc::jst::union_t<tc::js::string, tc::js::undefined>>("fixAllDescription"); }
 	inline void _impl_js_jts_dCodeFixAction::fixAllDescription(tc::jst::union_t<tc::js::string, tc::js::undefined> v) noexcept { this->template _setProperty("fixAllDescription", v); }
 	inline auto _impl_js_jts_dCombinedCodeActions::changes() noexcept { return this->template _getProperty<_js_ReadonlyArray<_js_jts_dFileTextChanges>>("changes"); }
@@ -11967,8 +11967,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dDiagnosticRelatedInformation::length(tc::jst::union_t<double, tc::js::undefined> v) noexcept { this->template _setProperty("length", v); }
 	inline auto _impl_js_jts_dDiagnosticRelatedInformation::messageText() noexcept { return this->template _getProperty<tc::jst::union_t<_js_jts_dDiagnosticMessageChain, tc::js::string>>("messageText"); }
 	inline void _impl_js_jts_dDiagnosticRelatedInformation::messageText(tc::jst::union_t<_js_jts_dDiagnosticMessageChain, tc::js::string> v) noexcept { this->template _setProperty("messageText", v); }
-	inline auto _impl_js_jts_dDiagnostic::reportsUnnecessary() noexcept { return this->template _getProperty<tc::js::any /*UnionWithUnsupportedSubtype={} | undefined[tc::js::undefined,tc::js::any] */>("reportsUnnecessary"); }
-	inline void _impl_js_jts_dDiagnostic::reportsUnnecessary(tc::js::any /*UnionWithUnsupportedSubtype={} | undefined[tc::js::undefined,tc::js::any] */ v) noexcept { this->template _setProperty("reportsUnnecessary", v); }
+	inline auto _impl_js_jts_dDiagnostic::reportsUnnecessary() noexcept { return this->template _getProperty<tc::js::any /*UnionWithUnsupportedSubtype=[tc::js::undefined,tc::js::any]*/>("reportsUnnecessary"); }
+	inline void _impl_js_jts_dDiagnostic::reportsUnnecessary(tc::js::any /*UnionWithUnsupportedSubtype=[tc::js::undefined,tc::js::any]*/ v) noexcept { this->template _setProperty("reportsUnnecessary", v); }
 	inline auto _impl_js_jts_dDiagnostic::source() noexcept { return this->template _getProperty<tc::jst::union_t<tc::js::string, tc::js::undefined>>("source"); }
 	inline void _impl_js_jts_dDiagnostic::source(tc::jst::union_t<tc::js::string, tc::js::undefined> v) noexcept { this->template _setProperty("source", v); }
 	inline auto _impl_js_jts_dDiagnostic::relatedInformation() noexcept { return this->template _getProperty<tc::jst::union_t<_js_Array<_js_jts_dDiagnosticRelatedInformation>, tc::js::undefined>>("relatedInformation"); }
@@ -11981,8 +11981,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dDiagnosticMessage::code(double v) noexcept { this->template _setProperty("code", v); }
 	inline auto _impl_js_jts_dDiagnosticMessage::message() noexcept { return this->template _getProperty<tc::js::string>("message"); }
 	inline void _impl_js_jts_dDiagnosticMessage::message(tc::js::string v) noexcept { this->template _setProperty("message", v); }
-	inline auto _impl_js_jts_dDiagnosticMessage::reportsUnnecessary() noexcept { return this->template _getProperty<tc::js::any /*UnionWithUnsupportedSubtype={} | undefined[tc::js::undefined,tc::js::any] */>("reportsUnnecessary"); }
-	inline void _impl_js_jts_dDiagnosticMessage::reportsUnnecessary(tc::js::any /*UnionWithUnsupportedSubtype={} | undefined[tc::js::undefined,tc::js::any] */ v) noexcept { this->template _setProperty("reportsUnnecessary", v); }
+	inline auto _impl_js_jts_dDiagnosticMessage::reportsUnnecessary() noexcept { return this->template _getProperty<tc::js::any /*UnionWithUnsupportedSubtype=[tc::js::undefined,tc::js::any]*/>("reportsUnnecessary"); }
+	inline void _impl_js_jts_dDiagnosticMessage::reportsUnnecessary(tc::js::any /*UnionWithUnsupportedSubtype=[tc::js::undefined,tc::js::any]*/ v) noexcept { this->template _setProperty("reportsUnnecessary", v); }
 	inline auto _impl_js_jts_dDiagnosticMessageChain::messageText() noexcept { return this->template _getProperty<tc::js::string>("messageText"); }
 	inline void _impl_js_jts_dDiagnosticMessageChain::messageText(tc::js::string v) noexcept { this->template _setProperty("messageText", v); }
 	inline auto _impl_js_jts_dDiagnosticMessageChain::category() noexcept { return this->template _getProperty<_js_jts_dDiagnosticCategory /*DiagnosticCategory.Warning*/>("category"); }
@@ -12365,8 +12365,8 @@ namespace tc::js_defs {
 	}
 	inline auto _impl_js_jts_dIdentifier::kind() noexcept { return this->template _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.Identifier*/>("kind"); }
 	inline void _impl_js_jts_dIdentifier::kind(_js_jts_dSyntaxKind /*SyntaxKind.Identifier*/ v) noexcept { this->template _setProperty("kind", v); }
-	inline auto _impl_js_jts_dIdentifier::escapedText() noexcept { return this->template _getProperty<tc::js::any /*UnionWithUnsupportedSubtype=__String[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any] */>("escapedText"); }
-	inline void _impl_js_jts_dIdentifier::escapedText(tc::js::any /*UnionWithUnsupportedSubtype=__String[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any] */ v) noexcept { this->template _setProperty("escapedText", v); }
+	inline auto _impl_js_jts_dIdentifier::escapedText() noexcept { return this->template _getProperty<tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any]*/>("escapedText"); }
+	inline void _impl_js_jts_dIdentifier::escapedText(tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any]*/ v) noexcept { this->template _setProperty("escapedText", v); }
 	inline auto _impl_js_jts_dIdentifier::originalKeywordKind() noexcept { return this->template _getProperty<tc::jst::union_t<_js_jts_dSyntaxKind /*SyntaxKind.GetAccessor*/, tc::js::undefined>>("originalKeywordKind"); }
 	inline void _impl_js_jts_dIdentifier::originalKeywordKind(tc::jst::union_t<_js_jts_dSyntaxKind /*SyntaxKind.GetAccessor*/, tc::js::undefined> v) noexcept { this->template _setProperty("originalKeywordKind", v); }
 	inline auto _impl_js_jts_dIdentifier::isInJSDocNamespace() noexcept { return this->template _getProperty<tc::jst::union_t<bool /*false*/, tc::js::undefined>>("isInJSDocNamespace"); }
@@ -12527,12 +12527,12 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dIntersectionTypeNode::types(_js_jts_dNodeArray<_js_jts_dTypeNode> v) noexcept { this->template _setProperty("types", v); }
 	template<typename T>
 	inline auto _impl_js_jts_dIterator<T>::next() noexcept {
-		return this->template _call<tc::js::any /*UnionWithUnsupportedSubtype={ value: T; done: false; } | { value: never; done: true; }[tc::js::any,tc::js::any] */>("next");
+		return this->template _call<tc::js::any /*UnionWithUnsupportedSubtype=[tc::js::any,tc::js::any]*/>("next");
 	}
 	inline auto _impl_js_jts_dJSDoc::kind() noexcept { return this->template _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.JSDocComment*/>("kind"); }
 	inline void _impl_js_jts_dJSDoc::kind(_js_jts_dSyntaxKind /*SyntaxKind.JSDocComment*/ v) noexcept { this->template _setProperty("kind", v); }
-	inline auto _impl_js_jts_dJSDoc::parent() noexcept { return this->template _getProperty<tc::js::any /*UnionWithUnsupportedSubtype=HasJSDoc[_js_jts_dParameterDeclaration,_js_jts_dCallSignatureDeclaration,_js_jts_dConstructSignatureDeclaration,_js_jts_dMethodSignature,_js_jts_dPropertySignature,_js_jts_dArrowFunction,_js_jts_dParenthesizedExpression,_js_jts_dSpreadAssignment,_js_jts_dShorthandPropertyAssignment,_js_jts_dPropertyAssignment,_js_jts_dFunctionExpression,_js_jts_dLabeledStatement,_js_jts_dExpressionStatement,_js_jts_dVariableStatement,_js_jts_dFunctionDeclaration,_js_jts_dConstructorDeclaration,_js_jts_dMethodDeclaration,_js_jts_dPropertyDeclaration,_js_jts_dGetAccessorDeclaration,_js_jts_dSetAccessorDeclaration,_js_jts_dClassDeclaration,_js_jts_dClassExpression,_js_jts_dInterfaceDeclaration,_js_jts_dTypeAliasDeclaration,_js_jts_dEnumMember,_js_jts_dEnumDeclaration,_js_jts_dModuleDeclaration,_js_jts_dImportEqualsDeclaration,_js_jts_dIndexSignatureDeclaration,_js_jts_dFunctionTypeNode,_js_jts_dConstructorTypeNode,_js_jts_dJSDocFunctionType,_js_jts_dExportDeclaration,tc::js::any] */>("parent"); }
-	inline void _impl_js_jts_dJSDoc::parent(tc::js::any /*UnionWithUnsupportedSubtype=HasJSDoc[_js_jts_dParameterDeclaration,_js_jts_dCallSignatureDeclaration,_js_jts_dConstructSignatureDeclaration,_js_jts_dMethodSignature,_js_jts_dPropertySignature,_js_jts_dArrowFunction,_js_jts_dParenthesizedExpression,_js_jts_dSpreadAssignment,_js_jts_dShorthandPropertyAssignment,_js_jts_dPropertyAssignment,_js_jts_dFunctionExpression,_js_jts_dLabeledStatement,_js_jts_dExpressionStatement,_js_jts_dVariableStatement,_js_jts_dFunctionDeclaration,_js_jts_dConstructorDeclaration,_js_jts_dMethodDeclaration,_js_jts_dPropertyDeclaration,_js_jts_dGetAccessorDeclaration,_js_jts_dSetAccessorDeclaration,_js_jts_dClassDeclaration,_js_jts_dClassExpression,_js_jts_dInterfaceDeclaration,_js_jts_dTypeAliasDeclaration,_js_jts_dEnumMember,_js_jts_dEnumDeclaration,_js_jts_dModuleDeclaration,_js_jts_dImportEqualsDeclaration,_js_jts_dIndexSignatureDeclaration,_js_jts_dFunctionTypeNode,_js_jts_dConstructorTypeNode,_js_jts_dJSDocFunctionType,_js_jts_dExportDeclaration,tc::js::any] */ v) noexcept { this->template _setProperty("parent", v); }
+	inline auto _impl_js_jts_dJSDoc::parent() noexcept { return this->template _getProperty<tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dParameterDeclaration,_js_jts_dCallSignatureDeclaration,_js_jts_dConstructSignatureDeclaration,_js_jts_dMethodSignature,_js_jts_dPropertySignature,_js_jts_dArrowFunction,_js_jts_dParenthesizedExpression,_js_jts_dSpreadAssignment,_js_jts_dShorthandPropertyAssignment,_js_jts_dPropertyAssignment,_js_jts_dFunctionExpression,_js_jts_dLabeledStatement,_js_jts_dExpressionStatement,_js_jts_dVariableStatement,_js_jts_dFunctionDeclaration,_js_jts_dConstructorDeclaration,_js_jts_dMethodDeclaration,_js_jts_dPropertyDeclaration,_js_jts_dGetAccessorDeclaration,_js_jts_dSetAccessorDeclaration,_js_jts_dClassDeclaration,_js_jts_dClassExpression,_js_jts_dInterfaceDeclaration,_js_jts_dTypeAliasDeclaration,_js_jts_dEnumMember,_js_jts_dEnumDeclaration,_js_jts_dModuleDeclaration,_js_jts_dImportEqualsDeclaration,_js_jts_dIndexSignatureDeclaration,_js_jts_dFunctionTypeNode,_js_jts_dConstructorTypeNode,_js_jts_dJSDocFunctionType,_js_jts_dExportDeclaration,tc::js::any]*/>("parent"); }
+	inline void _impl_js_jts_dJSDoc::parent(tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dParameterDeclaration,_js_jts_dCallSignatureDeclaration,_js_jts_dConstructSignatureDeclaration,_js_jts_dMethodSignature,_js_jts_dPropertySignature,_js_jts_dArrowFunction,_js_jts_dParenthesizedExpression,_js_jts_dSpreadAssignment,_js_jts_dShorthandPropertyAssignment,_js_jts_dPropertyAssignment,_js_jts_dFunctionExpression,_js_jts_dLabeledStatement,_js_jts_dExpressionStatement,_js_jts_dVariableStatement,_js_jts_dFunctionDeclaration,_js_jts_dConstructorDeclaration,_js_jts_dMethodDeclaration,_js_jts_dPropertyDeclaration,_js_jts_dGetAccessorDeclaration,_js_jts_dSetAccessorDeclaration,_js_jts_dClassDeclaration,_js_jts_dClassExpression,_js_jts_dInterfaceDeclaration,_js_jts_dTypeAliasDeclaration,_js_jts_dEnumMember,_js_jts_dEnumDeclaration,_js_jts_dModuleDeclaration,_js_jts_dImportEqualsDeclaration,_js_jts_dIndexSignatureDeclaration,_js_jts_dFunctionTypeNode,_js_jts_dConstructorTypeNode,_js_jts_dJSDocFunctionType,_js_jts_dExportDeclaration,tc::js::any]*/ v) noexcept { this->template _setProperty("parent", v); }
 	inline auto _impl_js_jts_dJSDoc::tags() noexcept { return this->template _getProperty<tc::jst::union_t<_js_jts_dNodeArray<_js_jts_dJSDocTag>, tc::js::undefined>>("tags"); }
 	inline void _impl_js_jts_dJSDoc::tags(tc::jst::union_t<_js_jts_dNodeArray<_js_jts_dJSDocTag>, tc::js::undefined> v) noexcept { this->template _setProperty("tags", v); }
 	inline auto _impl_js_jts_dJSDoc::comment() noexcept { return this->template _getProperty<tc::jst::union_t<tc::js::string, tc::js::undefined>>("comment"); }
@@ -12878,7 +12878,7 @@ namespace tc::js_defs {
 		return this->template _call<tc::jst::union_t<_js_jts_dSymbol, tc::js::undefined>>("getCompletionEntrySymbol", fileName, position, name, source);
 	}
 	inline auto _impl_js_jts_dLanguageService::getCompletionsAtPosition(tc::js::string fileName, double position, tc::jst::union_t<_js_jts_dGetCompletionsAtPositionOptions, tc::js::undefined> options) noexcept {
-		return this->template _call<tc::js::any /*UnionWithUnsupportedSubtype=WithMetadata<CompletionInfo> | undefined[tc::js::undefined,tc::js::any] */>("getCompletionsAtPosition", fileName, position, options);
+		return this->template _call<tc::js::any /*UnionWithUnsupportedSubtype=[tc::js::undefined,tc::js::any]*/>("getCompletionsAtPosition", fileName, position, options);
 	}
 	inline auto _impl_js_jts_dLanguageService::getDefinitionAndBoundSpan(tc::js::string fileName, double position) noexcept {
 		return this->template _call<tc::jst::union_t<_js_jts_dDefinitionInfoAndBoundSpan, tc::js::undefined>>("getDefinitionAndBoundSpan", fileName, position);
@@ -13522,23 +13522,23 @@ namespace tc::js_defs {
 	inline auto _impl_js_jts_dReadonlyUnderscoreEscapedMap<T>::size() noexcept { return this->template _getProperty<double>("size"); }
 	template<typename T>
 	inline auto _impl_js_jts_dReadonlyUnderscoreEscapedMap<T>::entries() noexcept {
-		return this->template _call<_js_jts_dIterator<std::tuple<tc::js::any /*UnionWithUnsupportedSubtype=__String[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any] */, T>>>("entries");
+		return this->template _call<_js_jts_dIterator<std::tuple<tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any]*/, T>>>("entries");
 	}
 	template<typename T>
-	inline auto _impl_js_jts_dReadonlyUnderscoreEscapedMap<T>::forEach(tc::jst::function<void(T, tc::js::any /*UnionWithUnsupportedSubtype=__String[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any] */)> action) noexcept {
+	inline auto _impl_js_jts_dReadonlyUnderscoreEscapedMap<T>::forEach(tc::jst::function<void(T, tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any]*/)> action) noexcept {
 		 this->template _call<void>("forEach", action);
 	}
 	template<typename T>
-	inline auto _impl_js_jts_dReadonlyUnderscoreEscapedMap<T>::get(tc::js::any /*UnionWithUnsupportedSubtype=__String[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any] */ key) noexcept {
+	inline auto _impl_js_jts_dReadonlyUnderscoreEscapedMap<T>::get(tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any]*/ key) noexcept {
 		return this->template _call<tc::jst::union_t<T, tc::js::undefined>>("get", key);
 	}
 	template<typename T>
-	inline auto _impl_js_jts_dReadonlyUnderscoreEscapedMap<T>::has(tc::js::any /*UnionWithUnsupportedSubtype=__String[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any] */ key) noexcept {
+	inline auto _impl_js_jts_dReadonlyUnderscoreEscapedMap<T>::has(tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any]*/ key) noexcept {
 		return this->template _call<bool /*false*/>("has", key);
 	}
 	template<typename T>
 	inline auto _impl_js_jts_dReadonlyUnderscoreEscapedMap<T>::keys() noexcept {
-		return this->template _call<_js_jts_dIterator<tc::js::any /*UnionWithUnsupportedSubtype=__String[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any] */>>("keys");
+		return this->template _call<_js_jts_dIterator<tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any]*/>>("keys");
 	}
 	template<typename T>
 	inline auto _impl_js_jts_dReadonlyUnderscoreEscapedMap<T>::values() noexcept {
@@ -13904,8 +13904,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dSwitchStatement::possiblyExhaustive(tc::jst::union_t<bool /*false*/, tc::js::undefined> v) noexcept { this->template _setProperty("possiblyExhaustive", v); }
 	inline auto _impl_js_jts_dSymbol::flags() noexcept { return this->template _getProperty<_js_jts_dSymbolFlags /*SymbolFlags.None*/>("flags"); }
 	inline void _impl_js_jts_dSymbol::flags(_js_jts_dSymbolFlags /*SymbolFlags.None*/ v) noexcept { this->template _setProperty("flags", v); }
-	inline auto _impl_js_jts_dSymbol::escapedName() noexcept { return this->template _getProperty<tc::js::any /*UnionWithUnsupportedSubtype=__String[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any] */>("escapedName"); }
-	inline void _impl_js_jts_dSymbol::escapedName(tc::js::any /*UnionWithUnsupportedSubtype=__String[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any] */ v) noexcept { this->template _setProperty("escapedName", v); }
+	inline auto _impl_js_jts_dSymbol::escapedName() noexcept { return this->template _getProperty<tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any]*/>("escapedName"); }
+	inline void _impl_js_jts_dSymbol::escapedName(tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any]*/ v) noexcept { this->template _setProperty("escapedName", v); }
 	inline auto _impl_js_jts_dSymbol::declarations() noexcept { return this->template _getProperty<_js_Array<_js_jts_dDeclaration>>("declarations"); }
 	inline void _impl_js_jts_dSymbol::declarations(_js_Array<_js_jts_dDeclaration> v) noexcept { this->template _setProperty("declarations", v); }
 	inline auto _impl_js_jts_dSymbol::valueDeclaration() noexcept { return this->template _getProperty<tc::jst::union_t<_js_jts_dDeclaration, tc::js::undefined>>("valueDeclaration"); }
@@ -13924,7 +13924,7 @@ namespace tc::js_defs {
 		return this->template _call<_js_Array<_js_jts_dSymbolDisplayPart>>("getDocumentationComment", typeChecker);
 	}
 	inline auto _impl_js_jts_dSymbol::getEscapedName() noexcept {
-		return this->template _call<tc::js::any /*UnionWithUnsupportedSubtype=__String[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any] */>("getEscapedName");
+		return this->template _call<tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any]*/>("getEscapedName");
 	}
 	inline auto _impl_js_jts_dSymbol::getFlags() noexcept {
 		return this->template _call<_js_jts_dSymbolFlags /*SymbolFlags.None*/>("getFlags");
@@ -14171,8 +14171,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dTupleType::hasRestElement(bool /*false*/ v) noexcept { this->template _setProperty("hasRestElement", v); }
 	inline auto _impl_js_jts_dTupleType::readonly() noexcept { return this->template _getProperty<bool /*false*/>("readonly"); }
 	inline void _impl_js_jts_dTupleType::readonly(bool /*false*/ v) noexcept { this->template _setProperty("readonly", v); }
-	inline auto _impl_js_jts_dTupleType::associatedNames() noexcept { return this->template _getProperty<tc::jst::union_t<_js_Array<tc::js::any /*UnionWithUnsupportedSubtype=__String[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any] */>, tc::js::undefined>>("associatedNames"); }
-	inline void _impl_js_jts_dTupleType::associatedNames(tc::jst::union_t<_js_Array<tc::js::any /*UnionWithUnsupportedSubtype=__String[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any] */>, tc::js::undefined> v) noexcept { this->template _setProperty("associatedNames", v); }
+	inline auto _impl_js_jts_dTupleType::associatedNames() noexcept { return this->template _getProperty<tc::jst::union_t<_js_Array<tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any]*/>, tc::js::undefined>>("associatedNames"); }
+	inline void _impl_js_jts_dTupleType::associatedNames(tc::jst::union_t<_js_Array<tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any]*/>, tc::js::undefined> v) noexcept { this->template _setProperty("associatedNames", v); }
 	inline auto _impl_js_jts_dTupleTypeNode::kind() noexcept { return this->template _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.TupleType*/>("kind"); }
 	inline void _impl_js_jts_dTupleTypeNode::kind(_js_jts_dSyntaxKind /*SyntaxKind.TupleType*/ v) noexcept { this->template _setProperty("kind", v); }
 	inline auto _impl_js_jts_dTupleTypeNode::elementTypes() noexcept { return this->template _getProperty<_js_jts_dNodeArray<_js_jts_dTypeNode>>("elementTypes"); }
@@ -14341,7 +14341,7 @@ namespace tc::js_defs {
 		return this->template _call<T>("runWithCancellationToken", token, cb);
 	}
 	inline auto _impl_js_jts_dTypeChecker::signatureToSignatureDeclaration(_js_jts_dSignature signature, _js_jts_dSyntaxKind /*SyntaxKind.Unknown*/ kind, tc::jst::union_t<_js_jts_dNode, tc::js::undefined> enclosingDeclaration, tc::jst::union_t<_js_jts_dNodeBuilderFlags /*NodeBuilderFlags.OmitParameterModifiers*/, tc::js::undefined> flags) noexcept {
-		return this->template _call<tc::js::any /*UnionWithUnsupportedSubtype=(CallSignatureDeclaration & { typeArguments?: NodeArray<TypeNode> | undefined; }) | (ConstructSignatureDeclaration & { typeArguments?: NodeArray<TypeNode> | undefined; }) | ... 12 more ... | undefined[tc::js::undefined,tc::js::any,tc::js::any,tc::js::any,tc::js::any,tc::js::any,tc::js::any,tc::js::any,tc::js::any,tc::js::any,tc::js::any,tc::js::any,tc::js::any,tc::js::any,tc::js::any] */>("signatureToSignatureDeclaration", signature, kind, enclosingDeclaration, flags);
+		return this->template _call<tc::js::any /*UnionWithUnsupportedSubtype=[tc::js::undefined,tc::js::any,tc::js::any,tc::js::any,tc::js::any,tc::js::any,tc::js::any,tc::js::any,tc::js::any,tc::js::any,tc::js::any,tc::js::any,tc::js::any,tc::js::any,tc::js::any]*/>("signatureToSignatureDeclaration", signature, kind, enclosingDeclaration, flags);
 	}
 	inline auto _impl_js_jts_dTypeChecker::signatureToString(_js_jts_dSignature signature, tc::jst::union_t<_js_jts_dNode, tc::js::undefined> enclosingDeclaration, tc::jst::union_t<_js_jts_dTypeFormatFlags /*TypeFormatFlags.UseTypeOfFunction*/, tc::js::undefined> flags, tc::jst::union_t<_js_jts_dSignatureKind /*SignatureKind.Call*/, tc::js::undefined> kind) noexcept {
 		return this->template _call<tc::js::string>("signatureToString", signature, enclosingDeclaration, flags, kind);
@@ -14423,11 +14423,11 @@ namespace tc::js_defs {
 		 this->template _call<void>("clear");
 	}
 	template<typename T>
-	inline auto _impl_js_jts_dUnderscoreEscapedMap<T>::delete_(tc::js::any /*UnionWithUnsupportedSubtype=__String[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any] */ key) noexcept {
+	inline auto _impl_js_jts_dUnderscoreEscapedMap<T>::delete_(tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any]*/ key) noexcept {
 		return this->template _call<bool /*false*/>("delete", key);
 	}
 	template<typename T>
-	inline auto _impl_js_jts_dUnderscoreEscapedMap<T>::set(tc::js::any /*UnionWithUnsupportedSubtype=__String[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any] */ key, T value) noexcept {
+	inline auto _impl_js_jts_dUnderscoreEscapedMap<T>::set(tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any]*/ key, T value) noexcept {
 		return this->template _call<this>("set", key, value);
 	}
 	inline auto _impl_js_jts_dUnionTypeNode::kind() noexcept { return this->template _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.UnionType*/>("kind"); }
@@ -14436,8 +14436,8 @@ namespace tc::js_defs {
 	inline void _impl_js_jts_dUnionTypeNode::types(_js_jts_dNodeArray<_js_jts_dTypeNode> v) noexcept { this->template _setProperty("types", v); }
 	inline auto _impl_js_jts_dUniqueESSymbolType::symbol() noexcept { return this->template _getProperty<_js_jts_dSymbol>("symbol"); }
 	inline void _impl_js_jts_dUniqueESSymbolType::symbol(_js_jts_dSymbol v) noexcept { this->template _setProperty("symbol", v); }
-	inline auto _impl_js_jts_dUniqueESSymbolType::escapedName() noexcept { return this->template _getProperty<tc::js::any /*UnionWithUnsupportedSubtype=__String[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any] */>("escapedName"); }
-	inline void _impl_js_jts_dUniqueESSymbolType::escapedName(tc::js::any /*UnionWithUnsupportedSubtype=__String[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any] */ v) noexcept { this->template _setProperty("escapedName", v); }
+	inline auto _impl_js_jts_dUniqueESSymbolType::escapedName() noexcept { return this->template _getProperty<tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any]*/>("escapedName"); }
+	inline void _impl_js_jts_dUniqueESSymbolType::escapedName(tc::js::any /*UnionWithUnsupportedSubtype=[_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,_js_jts_dInternalSymbolName,tc::js::any,tc::js::any]*/ v) noexcept { this->template _setProperty("escapedName", v); }
 	inline auto _impl_js_jts_dUnparsedSection::kind() noexcept { return this->template _getProperty<_js_jts_dSyntaxKind /*SyntaxKind.Unknown*/>("kind"); }
 	inline void _impl_js_jts_dUnparsedSection::kind(_js_jts_dSyntaxKind /*SyntaxKind.Unknown*/ v) noexcept { this->template _setProperty("kind", v); }
 	inline auto _impl_js_jts_dUnparsedSection::data() noexcept { return this->template _getProperty<tc::jst::union_t<tc::js::string, tc::js::undefined>>("data"); }
