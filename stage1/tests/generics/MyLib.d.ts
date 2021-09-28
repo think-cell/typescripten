@@ -1,12 +1,26 @@
+
+interface NodeListOf<TNode> {
+//     length: number;
+//     item(index: number): TNode;
+//     /**
+//      * Performs the specified action for each node in an list.
+//      * @param callbackfn  A function that accepts up to three arguments. forEach calls the callbackfn function one time for each element in the list.
+//      * @param thisArg  An object to which the this keyword can refer in the callbackfn function. If thisArg is omitted, undefined is used as the this value.
+//      */
+     forEach(callbackfn: (value: TNode, key: number, parent: NodeListOf<TNode>) => void, thisArg?: any): void;
+//     // [index: number]: TNode;
+}
+
 interface A {
-    some_property() : string;
+    // some_property() : string;
+    p: Record<string, number>;
 }
 
 interface Collection<K> {
     item(index: number) : K;
     item_or_null(index: number) : K | null;
 
-    item_generic<T>(index: T) : K | null;
+    // item_generic<T>(index: T) : K | null;
     // TypeScript permits type parameter shadowing, but C++ will not
     // item_generic_shadowing<K extends A>(index: number) : K;
 
