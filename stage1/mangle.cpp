@@ -80,7 +80,7 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 	// Some enums e.g. ts.SymbolFlags are parsed as ts::TypeFlags::Union | ts::TypeFlags::EnumLiteral 
 	// They are handled below together with all other unions
 	{		
-		auto jsymParentSymbol = *(*g_ojtsTypeChecker)->getTypeAtLocation(tc::front((*jtypeRoot->getSymbol())->declarations())->parent())->getSymbol();
+		auto jsymParentSymbol = *(*g_ojtsTypeChecker)->getTypeAtLocation(tc::front(*(*jtypeRoot->getSymbol())->declarations())->parent())->getSymbol();
 		_ASSERT(ts::SymbolFlags::RegularEnum == jsymParentSymbol->getFlags() ||
 			ts::SymbolFlags::ConstEnum == jsymParentSymbol->getFlags());
 
@@ -189,7 +189,7 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 						// }
 
 						auto mt = MangleClassOrInterface(*jtypereferenceRoot->target()->isClassOrInterface()); // Can we have a type reference to anything else?
-						if(auto ojatypearg = jtypereferenceRoot->typeArguments(); ojatypearg && mt) {
+						if(auto ojatypearg = jtypereferenceRoot->typeArguments(); ojatypearg && !tc::empty(*ojatypearg) && mt) {
 							return WrapType(mt.m_strWithComments, mt.m_strCppCanonized, *ojatypearg);
 						} else {
 							return mt;
@@ -205,9 +205,9 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 						if(tc::equal(rngstrMemberName, tc::single("__call"))) {
 							ts::Symbol jsymSignature = tc::front(vecjsymMember);
 							_ASSERTEQUAL(jsymSignature->getFlags(), ts::SymbolFlags::Signature);
-							if(1==jsymSignature->declarations()->length()) {
+							if(1==(*jsymSignature->declarations())->length()) {
 								ts::Signature const jtsSignature = *(*g_ojtsTypeChecker)->getSignatureFromDeclaration(
-									ts::CallSignatureDeclaration(tc::front(jsymSignature->declarations()))
+									ts::CallSignatureDeclaration(tc::front(*jsymSignature->declarations()))
 								);
 								auto mtReturnType = MangleType(jtsSignature->getReturnType());
 								auto const vecmtParameters = tc::make_vector(tc::transform(jtsSignature->getParameters(),

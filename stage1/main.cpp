@@ -225,11 +225,10 @@ int main(int cArgs, char* apszArgs[]) {
 							)) { // stop dfs when the child class is not part of our source files
 								ForEachChild(*itjstypealias);
 							}
+							return erecurseSKIP;
 						}
-						return erecurseSKIP;
-					} else {
-						return erecurseCONTINUE;
-					}
+					} 
+					return erecurseCONTINUE;
 				});
 			}
 		);
@@ -271,7 +270,7 @@ int main(int cArgs, char* apszArgs[]) {
 					// The actual callable JS function printed by CallExpression() returns a bool. The typescript compiler performs a cast when the function returns true.
 					// Here we do the same in C++.
 					tc::concat(
-						"\t\tstd::optional<", MangleType((*g_ojtsTypeChecker)->getTypeFromTypeNode(ts::TypePredicateNode(*ojstypenode)->type())).m_strWithComments ,"> result;\n"
+						"\t\tstd::optional<", MangleType((*g_ojtsTypeChecker)->getTypeFromTypeNode(*ts::TypePredicateNode(*ojstypenode)->type())).m_strWithComments ,"> result;\n"
 						"\t\tif(", CallExpression(), ") {\n"
 							"\t\t\tresult.emplace(", 
 								tc_conditional_range(
