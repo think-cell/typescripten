@@ -42,8 +42,6 @@ namespace tc::js_defs {
 	template<typename T> 
 	using _js_Iterable = ::tc::jst::ref<_impl_js_Iterable<T>>;
 
-	// TODO: Typescript Utility type https://www.typescriptlang.org/docs/handbook/utility-types.html
-
 	struct _impl_js_console;
 	using _js_console = ::tc::jst::ref<_impl_js_console>;
 	template<typename T>

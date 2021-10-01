@@ -102,7 +102,7 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 		return {"tc::js::null"};
 	// Never
 	case ts::TypeFlags::TypeParameter:
-		// TODO: TypeScript allows template parameter shadowing, C++ doesn't
+		// TypeScript allows template parameter shadowing, C++ doesn't
 		// We currently don't disambiguate the template parameter names so we will
 		// produce a compiler error when a method redeclares the same template
 		// argument as a class.
@@ -145,7 +145,7 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 					// NOTE: sort_unique works with final names which go to C++. It may potentially hide
 					// some errors in mangling (e.g. if two different types map to the same type in C++).
 					tc::sort_unique_inplace(vecmtType, [&](SMangledType const& a, SMangledType const& b) noexcept {
-						return a.m_strCppCanonized < b.m_strCppCanonized; // TODO: glue duplicates' m_strWithComments
+						return a.m_strCppCanonized < b.m_strCppCanonized;
 					});
 					_ASSERT(!tc::empty(vecmtType));
 					if (1 == tc::size(vecmtType)) {

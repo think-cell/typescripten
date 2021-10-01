@@ -284,8 +284,10 @@ SMangledType const& SJsVariableLike::MangleType() const& noexcept {
 STypeParameter::STypeParameter(ts::TypeParameterDeclaration typeparamdecl) noexcept
     : m_strName(tc::explicit_cast<std::string>(tc::js::string(typeparamdecl->name()->escapedText())))
 {   
-    // FIXME: Support type constraints, double and enum template arguments
-    // , std::enable_if_t<std::is_base_of<A, K>::value>* = nullptr
+    // FIXME: https://github.com/think-cell/tcjs/issues/3
+    // Support double and enum template arguments
+    // Support type constraints that can be expressed in C++, e.g., check <T extends Node> 
+    // by enabling class with template<typename T, std::enable_if_t<std::is_base_of<tc::js::ts::Node, T>::value>* = nullptr>
     if(auto const otypenode = typeparamdecl->constraint()) {
         if(!(ts::SyntaxKind::NumberKeyword == (*otypenode)->kind()
         || (ts::SyntaxKind::TypeReference == (*otypenode)->kind()
@@ -407,6 +409,7 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
         tc::for_each(
             tc::filter(*ojarrsymMembers, [](ts::Symbol jsymMember) noexcept {
                 // TODO: Support optional member functions
+                // https://github.com/think-cell/tcjs/issues/13
                 return static_cast<bool>((ts::SymbolFlags::Method|ts::SymbolFlags::Constructor) & jsymMember->getFlags())
                     && !static_cast<bool>(ts::SymbolFlags::Optional & jsymMember->getFlags());
             }),
@@ -439,6 +442,7 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
     // We must get the type parameters via the declaration
     // (*g_ojtsTypeChecker)->symbolToTypeParameterDeclarations(m_jsym) seems to return new nodes, i.e., syntax nodes
     // without a text position in the source file. These cannot be transformed into types. 
+    // FIXME: Add assert that all declarations have the same type parameters
     
     if(auto ojdeclwithtypeparam = [&]() noexcept -> std::optional<ts::DeclarationWithTypeParameters> {
         auto jdecl = tc::front(m_jsym->declarations());
@@ -452,7 +456,6 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
     }()) {
         m_vectypeparam = tc::make_vector(tc::transform(ts::getEffectiveTypeParameterDeclarations(*ojdeclwithtypeparam), tc::fn_explicit_cast<STypeParameter>()));
     }
-    // FIXME: Add assert that all declarations have the same type parameters
 
     if(static_cast<bool>(ts::SymbolFlags::Class&m_jsym->getFlags())) {
         // See logic at `src/compiler/transformers/es2015.ts`, `addConstructor`, `transformConstructorBody` and `createDefaultConstructorBody`:

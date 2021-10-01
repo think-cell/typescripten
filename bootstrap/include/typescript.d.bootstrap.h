@@ -50,7 +50,7 @@ namespace tc::js_defs {
 JS_RANGE_WITH_ITERATORS(tc::js::ts, NodeArray)
 
 namespace tc::js::ts_ext {
-	// TODO: Anonymous union type
+	// TODO: Anonymous union type https://github.com/think-cell/tcjs/issues/16
 	template<typename T>
 	struct _js_IteratorValue : virtual tc::jst::object_base {
 		inline auto done() noexcept { return _getProperty<bool>("done"); }
