@@ -205,36 +205,37 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 						if(tc::equal(rngstrMemberName, tc::single("__call"))) {
 							ts::Symbol jsymSignature = tc::front(vecjsymMember);
 							_ASSERTEQUAL(jsymSignature->getFlags(), ts::SymbolFlags::Signature);
-							_ASSERTEQUAL(jsymSignature->declarations()->length(), 1);
-							ts::Signature const jtsSignature = *(*g_ojtsTypeChecker)->getSignatureFromDeclaration(
-								ts::CallSignatureDeclaration(tc::front(jsymSignature->declarations()))
-							);
-							auto mtReturnType = MangleType(jtsSignature->getReturnType());
-							auto const vecmtParameters = tc::make_vector(tc::transform(jtsSignature->getParameters(),
-								[&](ts::Symbol const jsymParameter) noexcept -> SMangledType {
-									SJsVariableLike jsvariable(jsymParameter);
-									return jsvariable.MangleType();
-								}
-							));
+							if(1==jsymSignature->declarations()->length()) {
+								ts::Signature const jtsSignature = *(*g_ojtsTypeChecker)->getSignatureFromDeclaration(
+									ts::CallSignatureDeclaration(tc::front(jsymSignature->declarations()))
+								);
+								auto mtReturnType = MangleType(jtsSignature->getReturnType());
+								auto const vecmtParameters = tc::make_vector(tc::transform(jtsSignature->getParameters(),
+									[&](ts::Symbol const jsymParameter) noexcept -> SMangledType {
+										SJsVariableLike jsvariable(jsymParameter);
+										return jsvariable.MangleType();
+									}
+								));
 
-							return {
-								tc::make_str(
-									"tc::jst::function<", mtReturnType.ExpandType(), "(", tc::join_separated(tc::transform(vecmtParameters, TC_MEMBER(.ExpandType())), ", "), ">"
-								),
-								tc::make_str(
-									"tc::jst::function<", mtReturnType.m_strWithComments, "(", tc::join_separated(tc::transform(vecmtParameters, TC_MEMBER(.m_strWithComments)), ", "), ")>"
-								)
-							};
-						} else {
-							return {
-								mangling_error, 
-								tc::make_str(
-									"tc::js::any /*AnonymousTypeWithLiteralType=", 
-										tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->typeToString(jobjecttypeRoot)), 
-										"[", tc::join_separated(rngstrMemberName, ", "), "]*/"
-								)
-							};
-						}
+								return {
+									tc::make_str(
+										"tc::jst::function<", mtReturnType.ExpandType(), "(", tc::join_separated(tc::transform(vecmtParameters, TC_MEMBER(.ExpandType())), ", "), ">"
+									),
+									tc::make_str(
+										"tc::jst::function<", mtReturnType.m_strWithComments, "(", tc::join_separated(tc::transform(vecmtParameters, TC_MEMBER(.m_strWithComments)), ", "), ")>"
+									)
+								};
+							}
+						} 
+						
+						return {
+							mangling_error, 
+							tc::make_str(
+								"tc::js::any /*AnonymousTypeWithLiteralType=", 
+									tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->typeToString(jobjecttypeRoot)), 
+									"[", tc::join_separated(rngstrMemberName, ", "), "]*/"
+							)
+						};
 					} else {
 						return {mangling_error, tc::make_str("tc::js::any /*AnonymousType=", tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->typeToString(jobjecttypeRoot)), "*/")};
 					}

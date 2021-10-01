@@ -288,17 +288,25 @@ STypeParameter::STypeParameter(ts::TypeParameterDeclaration typeparamdecl) noexc
     // Support double and enum template arguments
     // Support type constraints that can be expressed in C++, e.g., check <T extends Node> 
     // by enabling class with template<typename T, std::enable_if_t<std::is_base_of<tc::js::ts::Node, T>::value>* = nullptr>
+    // Currently, we are only enumerating the cases that are occurring here to know what we have to support.
     if(auto const otypenode = typeparamdecl->constraint()) {
         if(!(ts::SyntaxKind::NumberKeyword == (*otypenode)->kind()
         || (ts::SyntaxKind::TypeReference == (*otypenode)->kind()
             && [&]() noexcept {
+                auto CheckSymbol = [](ts::Symbol jsym) noexcept {
+                    if(ts::SymbolFlags::None!=((ts::SymbolFlags::RegularEnum|ts::SymbolFlags::Class|ts::SymbolFlags::Interface|ts::SymbolFlags::TypeParameter|ts::SymbolFlags::TypeAlias)&jsym->getFlags())) {
+                        return true;
+                    } else {
+                        tc::append(std::cerr, "Cannot find symbol for type parameter declaration (", tc::as_dec(static_cast<int>(jsym->getFlags())) , ")\n");
+                        return false;
+                    }
+                };
+
                 auto jtype = (*g_ojtsTypeChecker)->getTypeFromTypeNode(*otypenode);
-                auto jsym = jtype->symbol();
-                if(ts::SymbolFlags::None!=((ts::SymbolFlags::RegularEnum|ts::SymbolFlags::Class|ts::SymbolFlags::Interface|ts::SymbolFlags::TypeParameter)&jsym->getFlags())) {
-                    return true;
+                if(auto ojsym = jtype->getSymbol()) { // getSymbol is correctly marked as returning Symbol|undefined
+                    return CheckSymbol(*ojsym);
                 } else {
-                    tc::append(std::cerr, "Cannot find symbol for type parameter declaration (", tc::as_dec(static_cast<int>(jsym->getFlags())) , ")\n");
-                    return false;
+                    return CheckSymbol(*jtype->aliasSymbol());
                 }
             }()
         )
