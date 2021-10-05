@@ -5,7 +5,6 @@
 	"cpp": [
 		"main.cpp",
 		"mangle.cpp",
-		"walk_symbol.cpp",
 		"jstypes.cpp"
 	]
 }
