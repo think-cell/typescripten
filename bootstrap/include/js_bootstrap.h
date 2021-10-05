@@ -6,7 +6,6 @@
 #include "for_each.h"
 #include "tc_move.h"
 #include "type_traits.h"
-
 #include "js_callback.h"
 #include "js_types.h"
 
@@ -187,6 +186,18 @@ inline bool IsBootstrapType(std::string const& strName) noexcept {
 	);
 }
 
+#define JS_HAS_MEM_FN_XXX_TRAIT_DEF( name, ... ) \
+	template<typename U> \
+	struct has_mem_fn_ ## name { \
+	private: \
+		template<typename T> static auto test(int) -> decltype(std::declval<T>()->name ( __VA_ARGS__ ), std::true_type()); \
+		template<typename> static std::false_type test(...); \
+	public: \
+		static constexpr bool value = std::is_same<decltype(test<U>(0)), std::true_type>::value; \
+	};
+
+JS_HAS_MEM_FN_XXX_TRAIT_DEF(item, std::declval<double>())
+
 // Define iterator types for tc::js::Array and tc::js::ReadonlyArray
 #define JS_RANGE_WITH_ITERATORS(JsNamespace, JsType)                                                               \
 	namespace tc::jst::range_detail {                                                                              \
@@ -197,8 +208,15 @@ inline bool IsBootstrapType(std::string const& strName) noexcept {
 				JsNamespace::JsType<T> m_t;                                                                        \
                                                                                                                    \
 			  public:                                                                                              \
-				FGet##JsType##Index(JsNamespace::JsType<T> t) : m_t(tc_move(t)){};                                 \
-				T operator()(int i) const& noexcept {                                                              \
+				FGet##JsType##Index(JsNamespace::JsType<T> t) : m_t(tc_move(t)) {}                                 \
+																												   \
+				template<typename S = T, std::enable_if_t< has_mem_fn_item<JsNamespace::JsType<S>>::value >* = nullptr>				\
+				auto operator()(int i) const& noexcept {                                                              \
+					return m_t->item(i);                                                                           \
+				}                                                                                                  \
+																												   \
+				template<typename S = T, std::enable_if_t< !has_mem_fn_item<JsNamespace::JsType<S>>::value >* = nullptr>				\
+				auto operator()(int i) const& noexcept {                                                              \
 					return m_t[i];                                                                                 \
 				}                                                                                                  \
 			};                                                                                                     \
