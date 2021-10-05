@@ -175,14 +175,6 @@ int main(int cArgs, char* apszArgs[]) {
 			tc::sort_unique_inplace(vecjsymExportedSymbol, tc::projected(tc::fn_less(), [](ts::Symbol jsym) noexcept {
 				return FullyQualifiedName(jsym);
 			}));
-
-			tc::for_each(
-				vecjsymExportedSymbol,
-				[](ts::Symbol jsymSourceFile) noexcept {
-					tc::append(std::cerr, "Global symbol/module name is ", tc::explicit_cast<std::string>(jsymSourceFile->getName()), "\n");
-					PrintSymbolTree(0, jsymSourceFile);
-				}
-			);
 			
 			return vecjsymExportedSymbol;
 		}()
