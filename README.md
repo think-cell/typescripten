@@ -2,15 +2,40 @@
 
 # typescripten
 
-Generate type-safe JavaScript bindings for C++/emscripten from TypeScript interface definition files. 
+Calling JavaScript code from C++ via [emscripten::val](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/embind.html#using-val-to-transliterate-javascript-to-c) offers no type-safety. 
 
-If you have a typescript module `MyLib.d.ts`
+_typescripten_ uses [TypeScript interface definition files](https://github.com/DefinitelyTyped/DefinitelyTyped) to generate type-safe C++ interfaces for JavaScript and TypeScript libraries. 
+Compare the JavaScript statements in the comments to the C++ code:
+
+    int main() {
+        // var elem = document.createElement("p")
+        auto elem = js::document()->createElement(js::string("p"));
+
+        // elem.innerText = "Hello CppCon 2021"
+        elem->innerText(js::string("Hello CppCon 2021"));
+
+        // elem.style.fontSize = 20.0
+        elem->style()->fontSize(js::string("20vh"));
+
+        // document.body.appendChild(elem)
+        js::document()->body()->appendChild(elem);
+    }
+
+_typescripten_ uses the [parser API provided by typescript](https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API). It is now self-hosting, i.e., it can the parse interface definition file for the typescript parser itself.
+
+[A short overview of _typescripten_ has been presented at CppNow 2021](https://youtu.be/Cmud1jO__VA)  
+
+[_typescripten_ will be presented more fully at CppCon 2021](https://sched.co/nvAY)
+
+# Example
+
+Let's say you have a typescript module `MyLib.d.ts` for a JavaScript library you have written yourself, or maybe for a JavaScript API to some web service:
 
     declare namespace MyLib {
         function appendNumber(a: string, b: number): string;
     }
 
-Running the **typescripten** compiler on this file will produce the C++ header `MyLib.d.h`
+Running the _typescripten_ compiler on this file will produce the C++ header `MyLib.d.h`
 
     namespace tc::js_defs {
         using namespace jst; // no ADL
@@ -29,8 +54,7 @@ Running the **typescripten** compiler on this file will produce the C++ header `
         using MyLib = js_defs::_js_jMyLib;
     } // namespace tc::js
 
-
-which lets us use `MyLib` from C++ in a type-safe way
+By including the generated header you can use `MyLib` from C++ in a type-safe way.
 
     #include "MyLib.d.h"
     #include <iostream>
@@ -44,9 +68,37 @@ which lets us use `MyLib` from C++ in a type-safe way
         ) << std::endl;
     }
 
-See `stage1/tests` for more examples. Some TypeScript constructs are not yet supported. 
+See `examples` and `stage1/tests` for more examples. 
 
 Close analogues are Rust's [stdweb](https://github.com/koute/stdweb) and [wasm-bindgen](https://github.com/rustwasm/wasm-bindgen).
+
+# TypeScript language support
+
+`bootstrap/` contains the code to support basic Typescript types and language features
+- `any`, `undefined`, `null` and `string` types
+- Support for mixed enums like
+```
+    enum E {
+        a, 
+        b = "I'm a string",
+        c = 5.0
+    }
+```
+- Passing C++ functions and lambdas as callbacks to JavaScript
+- union types `A|B|C` expressed as template class `union_t<A, B, C>`
+- JavaScript library types like `Array`, `ReadonlyArray`, `Promise` and `Iterable`. [These should be themselves generated in the future.](https://github.com/think-cell/tcjs/issues/17)
+
+_typescripten_ supports
+- type guards
+- type aliases
+- optional arguments and optional member properties
+- generics, see [https://github.com/think-cell/tcjs/issues/3](https://github.com/think-cell/tcjs/issues/3)
+
+Some TypeScript constructs are not yet supported. Better support for generic type constraints and indexed access types are high priority and coming soon. 
+
+# Exploring the TypeScript compiler API
+
+Both the [TypeScript Playground](https://www.typescriptlang.org/play) and the [TypeScript AST Viewer](https://ts-ast-viewer.com/#) (Check the JS debug console!) are invaluable when you want to improve _typescripten_. 
 
 # Dependencies
 
@@ -61,83 +113,6 @@ Close analogues are Rust's [stdweb](https://github.com/koute/stdweb) and [wasm-b
 * Copy `build-config-example.*` to `build-config.*` and edit the files to set the correct paths to emscripten, boost and the think-cell library
 * Run `examples/testall.py` to execute some test cases for the elementary **typescripten** C++/JavaScript interop classes in `bootstrap`
 * Run `cd stage1` and `./build.sh` or `build.cmd` to build the **typescripten** compiler for typescript interface definition files.  
-
-# Misc thoughts
-* C++ callbacks passed to JS are always `noexcept` because exceptions cannot be passed between JS and C++ at the moment.
-* Member functions converted to callbacks are always called with a non-const-this.
-* Methods for `js_*` types do not have consistent const-qualifiers at the moment, so do not use const qualifiers on them.
-* `ref` may be inherited from, assuming you're ok with slicing (e.g. `CUniqueDetachableJsFunction`).
-  Allowed slicing is argument in favor of `std::is_convertible`/`std::is_constructible`, not
-  `tc::is_safely_convertible`, `tc::is_safely_constructible`.
-* It may make sense to replace `tc::remove_cvref_t` with `tc::decay_t` in some places so it works with e.g. `vector<bool>::reference`.
-* It may make sense to decay subtypes of `ref` to `ref`.
-* `union_t` currently does not force any specific order of arguments, probably it should to some extent
-  (even though most instances will be autogenerated).
-* Standard `std::variant` construction is somewhat more restrictive than `union_t`:
-  the former requires successful overload resolution, the latter requires that the
-  argument is convertible to at least one option.
-
-## Namespaces vs classes
-TypeScript disambiguates between instantiated namespaces (`ValueModule`) and
-non-instantiated (`NamespaceModule`), see `TypeScript/src/compiler/binder.ts:getModuleInstanceStateWorker`.
-The former is visible in the emitted JS, the latter is fully erased.
-```
-namespace Foo {  // NamespaceModule: non-instantiated in JS. May only export (recursively)
-                 // interfaces, enums, type aliases. No classes or functions.
-    interface MyInterface { }
-}
-namespace Bar {  // ValueModule: instantiated because class should become a function in JS.
-    class MyClass { }
-}
-```
-
-In C++, we have `namespace` and `class`.
-The former, in some sense, may only contain `static` functions and variables.
-It may be a good idea to emit some namespaces to `namespace` instead of `ref<>`
-so `using namespace` works and variable declarations do not.
-However, we have to disambiguate them manually and generate slightly different code
-for `namespace` and `class`.
-
-## Syntax for static functions and static variables
-Interfaces are not emitted to JavaScript.
-
-A class in JavaScript is a special constructor function which should be
-called with a `new Foo()` syntax instead of `Foo()`.
-Moreover, any function is an object itself, and an object may have any properties it want.
-So, a class may have nested classes.
-TypeScript will see it as `Class | ValueModule`:
-```
-export class Foo {  // Class | ValueModule
-    someMethod() { }  // Method
-    a: number;  // Property
-}
-export namespace Foo {
-    export function someFunction() { }  // Function
-    export var a: number;  // FunctionScopedVariable
-}
-```
-Similarly, it's possible to have `Interface | ValueModule`, but it will be emitted
-to JS as a simple namespace, because interfaces are not emitted.
-```
-interface Bar {
-    method(): void;
-}
-namespace Bar {
-    var a: number;
-    function someFunction() {}
-}
-```
-If we have `Bar` which is `Interface | ValueModule`, in C++ we should make sure that:
-
-1. `Bar` is a valid base type for corresponding classes and interfaces.
-2. `Bar` cannot be instantiated on its own.
-   Hence, we cannot say "a TS namespace is a `ref<>` with default constructor",
-   like it was the case with `console()->log(....)`.
-3. We can somehow call static functions from `Bar`.
-
-Hence, we conclude that standard C++ syntax should be used: `Bar::someFunction()`.
-As `Bar` for interfaces is an alias for `ref<>`, we should make sure
-`ref<>` has corresponding static function and does not have any members with names.
 
 # Naming conventions
 * Global variables start with `g_`.
