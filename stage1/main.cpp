@@ -234,22 +234,27 @@ int main(int cArgs, char* apszArgs[]) {
 		);
 
 		auto TemplateDecl = [](auto const& strPrefix, auto const& js) noexcept {
-			return tc_conditional_range(
-				!tc::empty(js.m_vectypeparam),
-				tc::concat(
-					strPrefix,
-					"template<", 
-					tc::join_separated(
-						tc::transform(js.m_vectypeparam,
-							[](auto const& typeparam) noexcept {
-								return tc::concat("typename ", typeparam.m_strName);
-							}
+			return [&](auto&& sink) noexcept {
+				if(!tc::empty(js.m_vectypeparam)) {
+					tc::for_each(tc::concat(strPrefix, "template<"), sink);
+
+					tc::for_each(tc::join_separated(
+							tc::transform(js.m_vectypeparam,
+								[](auto const& typeparam) noexcept {
+									return tc_conditional_range(
+										etypeparamTYPE==typeparam.m_etypeparam,
+										tc::concat("typename ", typeparam.m_strName),
+										tc::concat(typeparam.Type(), " ", typeparam.m_strName)
+									);
+								}
+							),
+							", "
 						),
-						", "
-					),
-					">\n"
-				)
-			);
+						sink
+					);
+					tc::for_each(">\n", sink);
+				}
+			};
 		};
 		
 		auto TemplateArgs = [](auto const& js) noexcept {
@@ -453,7 +458,7 @@ int main(int cArgs, char* apszArgs[]) {
 				);
 			})),
 			tc::join(tc::transform(vecpjsclassSorted, [&](SJsClass const* pjsclass) noexcept {
-				return tc::make_str(
+				return tc::make_str<char>(
 					TemplateDecl("\t", *pjsclass),
 					"\tstruct _impl", pjsclass->m_strMangledName,
 					" : ",
@@ -635,6 +640,7 @@ int main(int cArgs, char* apszArgs[]) {
 								FunctionImpl(
 									strClassNamespace,
 									[&]() noexcept {
+										// Literal -> Enum Type
 										return tc::concat("this->template _call<", MangleType(jsfunctionlike.m_jsignature->getReturnType()).m_strWithComments, ">(", 
 											tc::join_separated(
 												tc::concat(

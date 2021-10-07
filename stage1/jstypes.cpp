@@ -10,6 +10,27 @@ using tc::js::any;
 
 extern std::optional<tc::js::ts::TypeChecker> g_ojtsTypeChecker;
 
+ts::Symbol SymbolOrAliasSymbol(ts::Type jtype) noexcept {
+    if(auto ojsym = jtype->getSymbol()) { // getSymbol is correctly marked as returning Symbol|undefined
+        return *ojsym;
+    } else if(auto ojsym = jtype->aliasSymbol()) {
+        return *ojsym;
+    } else {
+        _ASSERTFALSE;
+    }
+}
+
+tc::js::ts::TypeAliasDeclaration TypeAliasDeclaration(ts::Symbol jsym) noexcept {
+    return tc::js::ts::TypeAliasDeclaration(
+        tc::find_first_if<tc::return_value>(
+            *jsym->declarations(), 
+            [](tc::js::ts::Declaration decl) noexcept {
+                return tc::bool_cast(tc::js::ts::isTypeAliasDeclaration(decl));
+            }
+        )
+    );
+}
+
 ECppType CppType(ts::Symbol jsymType) noexcept {
     ECppType ecpptype = ecpptypeIGNORE;
 	if(static_cast<bool>((ts::SymbolFlags::RegularEnum|ts::SymbolFlags::ConstEnum) & jsymType->getFlags())) {
@@ -40,14 +61,7 @@ ECppType CppType(ts::Symbol jsymType) noexcept {
 			}
 		};
 
-		auto const jtype = (*g_ojtsTypeChecker)->getTypeFromTypeNode(tc::js::ts::TypeAliasDeclaration(
-            tc::find_first_if<tc::return_value>(
-                *jsymType->declarations(), 
-                [](tc::js::ts::Declaration decl) noexcept {
-                    return tc::bool_cast(tc::js::ts::isTypeAliasDeclaration(decl));
-                }
-            )
-        )->type());
+		auto const jtype = (*g_ojtsTypeChecker)->getTypeFromTypeNode(TypeAliasDeclaration(jsymType)->type());
 		auto const ojuniontype = jtype->isUnion();
 		if((ojuniontype && tc::all_of((*ojuniontype)->types(), IsObject))
 		|| IsObject(jtype)) {
@@ -213,6 +227,24 @@ SJsEnum::SJsEnum(ts::Symbol jsym) noexcept
         ),
         tc::fn_explicit_cast<SJsEnumOption>()
     )))
+    , m_cTypes(
+        [&]() noexcept -> int {
+            if(auto ojunion = (*g_ojtsTypeChecker)->getTypeAtLocation(
+                tc::find_first_if<tc::return_value>(
+                    *m_jsym->declarations(), 
+                    [](auto jdecl) noexcept {
+                        return ts::isEnumDeclaration(jdecl);
+                    }
+                )
+            )->isUnion()) {
+                // unless all enum members have specified values,
+                // an enum is not a union of literals
+                return tc::size((*ojunion)->types());
+            } else {
+                return tc::size(m_vecjsenumoption);
+            }   
+        }()
+    )
     , m_bIsIntegral(tc::all_of(
         m_vecjsenumoption,
         [](SJsEnumOption const& opt) noexcept {
@@ -282,43 +314,50 @@ SMangledType const& SJsVariableLike::MangleType() const& noexcept {
 }
 
 STypeParameter::STypeParameter(ts::TypeParameterDeclaration typeparamdecl) noexcept
-    : m_strName(tc::explicit_cast<std::string>(tc::js::string(typeparamdecl->name()->escapedText())))
+    : m_etypeparam(etypeparamTYPE)
+    , m_strName(tc::explicit_cast<std::string>(tc::js::string(typeparamdecl->name()->escapedText())))
 {   
     // FIXME: https://github.com/think-cell/tcjs/issues/3
-    // Support double and enum template arguments
     // Support type constraints that can be expressed in C++, e.g., check <T extends Node> 
     // by enabling class with template<typename T, std::enable_if_t<std::is_base_of<tc::js::ts::Node, T>::value>* = nullptr>
-    // Currently, we are only enumerating the cases that are occurring here to know what we have to support.
     if(auto const otypenode = typeparamdecl->constraint()) {
-        if(!(ts::SyntaxKind::NumberKeyword == (*otypenode)->kind()
-        || (ts::SyntaxKind::TypeReference == (*otypenode)->kind()
-            && [&]() noexcept {
-                auto CheckSymbol = [](ts::Symbol jsym) noexcept {
-                    if(ts::SymbolFlags::None!=((ts::SymbolFlags::RegularEnum|ts::SymbolFlags::Class|ts::SymbolFlags::Interface|ts::SymbolFlags::TypeParameter|ts::SymbolFlags::TypeAlias)&jsym->getFlags())) {
-                        return true;
-                    } else {
-                        tc::append(std::cerr, "Cannot find symbol for type parameter declaration (", tc::as_dec(static_cast<int>(jsym->getFlags())) , ")\n");
-                        return false;
-                    }
-                };
+        auto UnsupportedConstraint = [&]() noexcept {
+            tc::append(std::cerr, "[warning] Unsupported type constraint declaration ", tc::explicit_cast<std::string>(typeparamdecl->getFullText()), " (", tc::as_dec(static_cast<int>((*otypenode)->kind())), ")\n");
+        };
 
-                auto jtype = (*g_ojtsTypeChecker)->getTypeFromTypeNode(*otypenode);
-                if(auto ojsym = jtype->getSymbol()) { // getSymbol is correctly marked as returning Symbol|undefined
-                    return CheckSymbol(*ojsym);
-                } else {
-                    return CheckSymbol(*jtype->aliasSymbol());
-                }
-            }()
-        )
-        || ts::SyntaxKind::TypeOperator == (*otypenode)->kind() // e.g. keyof declaration
-        || ts::SyntaxKind::UnionType == (*otypenode)->kind()
-        || ts::SyntaxKind::IndexedAccessType == (*otypenode)->kind()
-        || ts::SyntaxKind::ArrayType == (*otypenode)->kind() // T extends any[]
-        )) {
-            tc::append(std::cerr, "Unsupported type parameter declaration ", tc::explicit_cast<std::string>(typeparamdecl->getFullText()), " (", tc::as_dec(static_cast<int>((*otypenode)->kind())), ")\n");
-            _ASSERTFALSE;
+        if(ts::SyntaxKind::NumberKeyword == (*otypenode)->kind()) {
+            m_etypeparam = etypeparamNUMBER;
+        } else if(ts::SyntaxKind::TypeReference == (*otypenode)->kind()) {
+            auto jtype = (*g_ojtsTypeChecker)->getTypeFromTypeNode(*otypenode);
+            if((ts::TypeFlags::EnumLiteral | ts::TypeFlags::Union) == jtype->getFlags()) {
+                m_etypeparam = etypeparamENUM;
+                m_ojtype = jtype;
+            } else if(static_cast<bool>(ts::TypeFlags::Union&jtype->getFlags())
+            && tc::all_of(ts::UnionType(jtype)->types(), [](auto jtypeInternal) noexcept {
+                return (ts::TypeFlags::NumberLiteral | ts::TypeFlags::EnumLiteral)==jtypeInternal->getFlags();
+            })) {
+                // FIXME: Check if all literals belong to single enum
+                m_etypeparam = etypeparamENUM;
+                m_ojtype = jtype;
+            } else {
+                // ts::SymbolFlags::Class|ts::SymbolFlags::Interface|ts::SymbolFlags::TypeParameter|ts::SymbolFlags::TypeAlias
+                UnsupportedConstraint();
+            }
+        } else {
+            // ts::SyntaxKind::TypeOperator == (*otypenode)->kind() // e.g. keyof declaration
+            // || ts::SyntaxKind::UnionType == (*otypenode)->kind()
+            // || ts::SyntaxKind::IndexedAccessType == (*otypenode)->kind()
+            // || ts::SyntaxKind::ArrayType == (*otypenode)->kind() // T extends any[]
+            UnsupportedConstraint();
         }
     }
+}
+
+std::string STypeParameter::Type() const& noexcept {
+    _ASSERT(etypeparamTYPE!=m_etypeparam);
+    return etypeparamNUMBER==m_etypeparam
+        ? tc::make_str("double")
+        : MangleType(*m_ojtype).ExpandType();
 }
 
 SJsFunctionLike::SJsFunctionLike(ts::Symbol jsym, ts::SignatureDeclaration jsigndecl) noexcept
@@ -347,6 +386,27 @@ SJsFunctionLike::SJsFunctionLike(ts::Symbol jsym, ts::SignatureDeclaration jsign
     }
 }
 
+namespace {
+    // FIXME: We must generalize this
+    // https://github.com/think-cell/tcjs/issues/3
+    // All data structures should point to their parent (e.g. parameter -> function -> class -> class)
+    // In circumstances where we want to mangle type parameters as types, we need to walk this list 
+    // and resolve the type parameter to a type.
+    SMangledType MangleVariableTypeParameterAsType(SJsFunctionLike const& jsfunction, SJsVariableLike const& jsvariable) noexcept {
+        auto mt = jsvariable.MangleType();
+        if(ts::TypeFlags::TypeParameter==jsvariable.m_jtypeDeclared->getFlags()) {
+            if(auto const ittypeparam = tc::find_first<tc::return_element_or_null>(
+                tc::transform(jsfunction.m_vectypeparam, TC_MEMBER(.m_strName)), mt.ExpandType()
+            ).element_base()) {
+                if(etypeparamTYPE != ittypeparam->m_etypeparam) {
+                    return {ittypeparam->Type()};
+                }
+            }
+        } 
+        return mt;
+    }
+}
+
 std::string SJsFunctionLike::CppifiedParametersWithCommentsDecl() const& noexcept {
     // Trailing function arguments of type 'x | undefined' can be defaulted to undefined
     auto const itjsvariablelike = tc::find_last_if<tc::return_border_after_or_begin>(m_vecjsvariablelikeParameters, [](auto const& jsvariablelike) noexcept {
@@ -359,11 +419,11 @@ std::string SJsFunctionLike::CppifiedParametersWithCommentsDecl() const& noexcep
     });
     return tc::explicit_cast<std::string>(tc::join_separated(
         tc::concat(
-            tc::transform(tc::take(m_vecjsvariablelikeParameters, itjsvariablelike), [](SJsVariableLike const& jsvariablelikeParameter) noexcept {
-                return tc::concat(jsvariablelikeParameter.MangleType().m_strWithComments, " ", jsvariablelikeParameter.m_strCppifiedName);
+            tc::transform(tc::take(m_vecjsvariablelikeParameters, itjsvariablelike), [this](SJsVariableLike const& jsvariablelikeParameter) noexcept {
+                return tc::concat(MangleVariableTypeParameterAsType(*this, jsvariablelikeParameter).m_strWithComments, " ", jsvariablelikeParameter.m_strCppifiedName);
             }),
-            tc::transform(tc::drop(m_vecjsvariablelikeParameters, itjsvariablelike), [](SJsVariableLike const& jsvariablelikeParameter) noexcept {
-                return tc::concat(jsvariablelikeParameter.MangleType().m_strWithComments, " ", jsvariablelikeParameter.m_strCppifiedName, " = tc::js::undefined()");
+            tc::transform(tc::drop(m_vecjsvariablelikeParameters, itjsvariablelike), [this](SJsVariableLike const& jsvariablelikeParameter) noexcept {
+                return tc::concat(MangleVariableTypeParameterAsType(*this, jsvariablelikeParameter).m_strWithComments, " ", jsvariablelikeParameter.m_strCppifiedName, " = tc::js::undefined()");
             })
         ),
         ", "
@@ -373,7 +433,7 @@ std::string SJsFunctionLike::CppifiedParametersWithCommentsDecl() const& noexcep
 std::string SJsFunctionLike::CppifiedParametersWithCommentsDef() const& noexcept {
     return tc::explicit_cast<std::string>(tc::join_separated(
         tc::transform(m_vecjsvariablelikeParameters, [&](SJsVariableLike const& jsvariablelikeParameter) noexcept {
-            return tc::concat(jsvariablelikeParameter.MangleType().m_strWithComments, " ", jsvariablelikeParameter.m_strCppifiedName);
+            return tc::concat(MangleVariableTypeParameterAsType(*this, jsvariablelikeParameter).m_strWithComments, " ", jsvariablelikeParameter.m_strCppifiedName);
         }),
         ", "
     ));
@@ -413,6 +473,24 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
         )
     );
 
+    // We must get the type parameters via the declaration
+    // (*g_ojtsTypeChecker)->symbolToTypeParameterDeclarations(m_jsym) seems to return new nodes, i.e., syntax nodes
+    // without a text position in the source file. These cannot be transformed into types. 
+    // FIXME: Add assert that all declarations have the same type parameters
+    
+    if(auto ojdeclwithtypeparam = [&]() noexcept -> std::optional<ts::DeclarationWithTypeParameters> {
+        auto jdecl = tc::front(*m_jsym->declarations());
+        if(auto ojclassdecl = ts::isClassLike(jdecl)) {
+            return ts::DeclarationWithTypeParameters(*ojclassdecl);
+        } else if(auto ojinterfacedecl = ts::isInterfaceDeclaration(jdecl)) {
+            return ts::DeclarationWithTypeParameters(*ojinterfacedecl);
+        } else {
+            return std::nullopt;
+        }
+    }()) {
+        m_vectypeparam = tc::make_vector(tc::transform(ts::getEffectiveTypeParameterDeclarations(*ojdeclwithtypeparam), tc::fn_explicit_cast<STypeParameter>()));
+    }
+
     if(auto ojarrsymMembers = m_jsym->members()) { 
         tc::for_each(
             tc::filter(*ojarrsymMembers, [](ts::Symbol jsymMember) noexcept {
@@ -445,24 +523,6 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
                 return SJsVariableLike(jsymProperty);
             }
         ));
-    }
-
-    // We must get the type parameters via the declaration
-    // (*g_ojtsTypeChecker)->symbolToTypeParameterDeclarations(m_jsym) seems to return new nodes, i.e., syntax nodes
-    // without a text position in the source file. These cannot be transformed into types. 
-    // FIXME: Add assert that all declarations have the same type parameters
-    
-    if(auto ojdeclwithtypeparam = [&]() noexcept -> std::optional<ts::DeclarationWithTypeParameters> {
-        auto jdecl = tc::front(*m_jsym->declarations());
-        if(auto ojclassdecl = ts::isClassLike(jdecl)) {
-            return ts::DeclarationWithTypeParameters(*ojclassdecl);
-        } else if(auto ojinterfacedecl = ts::isInterfaceDeclaration(jdecl)) {
-            return ts::DeclarationWithTypeParameters(*ojinterfacedecl);
-        } else {
-            return std::nullopt;
-        }
-    }()) {
-        m_vectypeparam = tc::make_vector(tc::transform(ts::getEffectiveTypeParameterDeclarations(*ojdeclwithtypeparam), tc::fn_explicit_cast<STypeParameter>()));
     }
 
     if(static_cast<bool>(ts::SymbolFlags::Class&m_jsym->getFlags())) {
@@ -587,17 +647,6 @@ void SJsClass::ResolveBaseClasses() & noexcept {
     } else {
         // Do nothing: e.g. namespaces.
     }
-}
-
-tc::js::ts::TypeAliasDeclaration TypeAliasDeclaration(ts::Symbol jsym) noexcept {
-    return tc::js::ts::TypeAliasDeclaration(
-        tc::find_first_if<tc::return_value>(
-            *jsym->declarations(), 
-            [](tc::js::ts::Declaration decl) noexcept {
-                return tc::bool_cast(tc::js::ts::isTypeAliasDeclaration(decl));
-            }
-        )
-    );
 }
 
 SJsTypeAlias::SJsTypeAlias(ts::Symbol jsym) noexcept 

@@ -13,6 +13,7 @@ enum ECppType {
 BITMASK_OPS(ECppType);
 ECppType CppType(tc::js::ts::Symbol jsymType) noexcept;
 
+tc::js::ts::Symbol SymbolOrAliasSymbol(tc::js::ts::Type jtype) noexcept;
 tc::ptr_range<char const> StripQuotes(tc::ptr_range<char const> str) noexcept;
 
 DEFINE_ENUM(ENameContext, enamectx, (NONE)(ENUM)(CLASS)(TYPEALIAS)(FUNCTION));
@@ -40,6 +41,13 @@ struct SJsEnum final : public boost::intrusive::set_base_hook<boost::intrusive::
     std::string m_strMangledName;
 
     std::vector<SJsEnumOption> m_vecjsenumoption;
+    // enum E {
+    //  a = 0,
+    //  b = 1,
+    //  c = 1
+    // }
+    // has 3 enum options but only two sub types.
+    int m_cTypes; 
     bool m_bIsIntegral;
 
     SJsEnum(tc::js::ts::Symbol jsymEnum) noexcept;
@@ -73,10 +81,15 @@ public:
 static_assert(std::is_nothrow_move_constructible<SJsVariableLike>::value);
 static_assert(std::is_nothrow_move_assignable<SJsVariableLike>::value);
 
+DEFINE_ENUM(ETypeParameter, etypeparam, (TYPE)(ENUM)(NUMBER))
+
 struct STypeParameter final {
+    ETypeParameter m_etypeparam;
     std::string m_strName;
+    tc::jst::optional<tc::js::ts::Type> m_ojtype;
 
     STypeParameter(tc::js::ts::TypeParameterDeclaration) noexcept;
+    std::string Type() const& noexcept;
 };
 
 struct SJsFunctionLike final {
