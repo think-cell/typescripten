@@ -1,19 +1,21 @@
 #include "jstypes.h"
 
-using tc::js::Array;
-using tc::js::console;
-using tc::js::ReadonlyArray;
 using tc::js::ts;
-using tc::jst::optional;
-using tc::js::string;
-using tc::js::any;
+namespace jst = tc::jst;
+namespace js = tc::js;
 
 extern std::optional<tc::js::ts::TypeChecker> g_ojtsTypeChecker;
 
-ts::Symbol SymbolOrAliasSymbol(ts::Type jtype) noexcept {
+tc::jst::optional<tc::js::ts::Symbol> OptSymbolOrAliasSymbol(ts::Type jtype) noexcept {
     if(auto ojsym = jtype->getSymbol()) { // getSymbol is correctly marked as returning Symbol|undefined
-        return *ojsym;
-    } else if(auto ojsym = jtype->aliasSymbol()) {
+        return ojsym;
+    } else {
+        return jtype->aliasSymbol();
+    }
+}
+
+tc::js::ts::Symbol SymbolOrAliasSymbol(ts::Type jtype) noexcept {
+    if(auto ojsym = OptSymbolOrAliasSymbol(jtype)) {
         return *ojsym;
     } else {
         _ASSERTFALSE;
@@ -207,7 +209,7 @@ SJsEnumOption::SJsEnumOption(ts::Symbol jsym) noexcept
     if (junionOptionValue.getEmval().isNumber()) {
         m_vardblstrValue = junionOptionValue.get<double>();
     } else if (junionOptionValue.getEmval().isString()) {
-        m_vardblstrValue = tc::explicit_cast<std::string>(junionOptionValue.get<string>());
+        m_vardblstrValue = tc::explicit_cast<std::string>(junionOptionValue.get<js::string>());
     } else {
         _ASSERT(junionOptionValue.getEmval().isUndefined());
     }
@@ -644,6 +646,8 @@ void SJsClass::ResolveBaseClasses() & noexcept {
                 }
             }
         });
+
+        tc::sort_unique_inplace(m_vecmtBaseClass); // lib.dom.ts has duplicate base classes
     } else {
         // Do nothing: e.g. namespaces.
     }

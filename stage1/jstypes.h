@@ -13,6 +13,7 @@ enum ECppType {
 BITMASK_OPS(ECppType);
 ECppType CppType(tc::js::ts::Symbol jsymType) noexcept;
 
+tc::jst::optional<tc::js::ts::Symbol> OptSymbolOrAliasSymbol(tc::js::ts::Type jtype) noexcept;
 tc::js::ts::Symbol SymbolOrAliasSymbol(tc::js::ts::Type jtype) noexcept;
 tc::ptr_range<char const> StripQuotes(tc::ptr_range<char const> str) noexcept;
 

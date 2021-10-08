@@ -12,29 +12,13 @@ struct SMangledType {
 	std::string m_strCppCanonized; // may be empty, i.e., type could not be mangled, implies tc::js::any
 	std::string m_strWithComments; // never empty, may include comment
 
-	SMangledType(std::string strCppCanonized) noexcept
-		: m_strCppCanonized(strCppCanonized)
-		, m_strWithComments(tc_move(strCppCanonized))
-	{}
-	
-	SMangledType(std::string strCppCanonized, std::string strWithComments) noexcept
-		: m_strCppCanonized(tc_move(strCppCanonized))
-		, m_strWithComments(tc_move(strWithComments))
-	{}
+	SMangledType(std::string strCppCanonized) noexcept;	
+	SMangledType(std::string strCppCanonized, std::string strWithComments) noexcept;
+	SMangledType(mangling_error_t, std::string strWithComments) noexcept;
 
-	SMangledType(mangling_error_t, std::string strWithComments) noexcept
-		: m_strWithComments(std::move(strWithComments))
-	{}
-
-	std::string ExpandType() const& noexcept {
-		return tc::empty(m_strCppCanonized)
-			? tc::make_str("tc::js::any")
-			: m_strCppCanonized;
-	}
-
-	operator bool() const& noexcept {
-		return !tc::empty(m_strCppCanonized);
-	}
+	std::string ExpandType() const& noexcept;
+	operator bool() const& noexcept;
+	friend bool operator<(SMangledType const& lhs, SMangledType const& rhs) noexcept;
 };
 
 SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias = true) noexcept;

@@ -15,6 +15,34 @@ std::string FullyQualifiedName(ts::Symbol jsymType) noexcept {
 	return tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->getFullyQualifiedName(jsymType));
 }
 
+SMangledType::SMangledType(std::string strCppCanonized) noexcept
+	: m_strCppCanonized(strCppCanonized)
+	, m_strWithComments(tc_move(strCppCanonized))
+{}
+
+SMangledType::SMangledType(std::string strCppCanonized, std::string strWithComments) noexcept
+	: m_strCppCanonized(tc_move(strCppCanonized))
+	, m_strWithComments(tc_move(strWithComments))
+{}
+
+SMangledType::SMangledType(mangling_error_t, std::string strWithComments) noexcept
+	: m_strWithComments(std::move(strWithComments))
+{}
+
+std::string SMangledType::ExpandType() const& noexcept {
+	return tc::empty(m_strCppCanonized)
+		? tc::make_str("tc::js::any")
+		: m_strCppCanonized;
+}
+
+SMangledType::operator bool() const& noexcept {
+	return !tc::empty(m_strCppCanonized);
+}
+
+bool operator<(SMangledType const& lhs, SMangledType const& rhs) noexcept {
+	return lhs.m_strCppCanonized < rhs.m_strCppCanonized;
+}
+
 namespace {
 	SMangledType CommentType(std::string strCppType, tc::js::ts::Type const jtypeRoot) noexcept {
 		return {
@@ -69,6 +97,8 @@ namespace {
 					return MangleEnumLiteral(jtype);
 				} else if(auto ojuniontype = jtype->isUnion()) {
 					_ASSERT(tc::all_of((*ojuniontype)->types(), [](auto jtypeUnionOption) noexcept { return (ts::TypeFlags::NumberLiteral | ts::TypeFlags::EnumLiteral)==jtypeUnionOption->getFlags(); }));
+					// Here we replace an expression like Token<Enum.a | Enum.b | Enum.c> with Token<Enum.a> which is of course not true. 
+					// Token<Enum.a | Enum.b | Enum.c> means that Token takes a non-type parameter with one of these three values. 
 					return CommentType(MangleEnumLiteral(tc::front((*ojuniontype)->types())).m_strCppCanonized, jtype);
 				}
 				// TypeFlags::TypeParameter
@@ -247,9 +277,7 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 					if(tc::all_of(vecmtType)) {
 						// NOTE: sort_unique works with final names which go to C++. It may potentially hide
 						// some errors in mangling (e.g. if two different types map to the same type in C++).
-						tc::sort_unique_inplace(vecmtType, [&](SMangledType const& a, SMangledType const& b) noexcept {
-							return a.m_strCppCanonized < b.m_strCppCanonized;
-						});
+						tc::sort_unique_inplace(vecmtType);
 						_ASSERT(!tc::empty(vecmtType));
 
 						if(cExpectedUnionTypes != cUnionTypes) {

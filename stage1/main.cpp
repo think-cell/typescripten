@@ -218,14 +218,26 @@ int main(int cArgs, char* apszArgs[]) {
 			[&](SJsTypeAlias const& jstypealias, auto ForEachChild) noexcept {
 				ForEachChildTypeNode(jstypealias.m_jtypenode, [&](ts::TypeNode jtypenode) noexcept {
 					if(ts::SyntaxKind::TypeReference==jtypenode->kind()) {
-						if(auto const ojsym = (*g_ojtsTypeChecker)->getTypeFromTypeNode(jtypenode)->aliasSymbol()) {
+						auto jtype = (*g_ojtsTypeChecker)->getTypeFromTypeNode(jtypenode);
+						if(auto const ojsym = jtype->aliasSymbol()) {
 							if(auto const itjstypealias = tc::cont_find<tc::return_element_or_null>(
 								g_setjstypealias,
 								FullyQualifiedName(*ojsym)
 							)) { // stop dfs when the child class is not part of our source files
 								ForEachChild(*itjstypealias);
 							}
-							return erecurseSKIP;
+						}
+						if(auto oatypeargs = ts::TypeReference(jtype)->typeArguments()) {
+							tc::for_each(*oatypeargs, [&](auto jtype) noexcept {
+								if(auto ojsym = OptSymbolOrAliasSymbol(jtype)) {
+									if(auto const itjstypealias = tc::cont_find<tc::return_element_or_null>(
+										g_setjstypealias,
+										FullyQualifiedName(*ojsym)
+									)) { // stop dfs when the child class is not part of our source files
+										ForEachChild(*itjstypealias);
+									}
+								}
+							});
 						}
 					} 
 					return erecurseCONTINUE;
@@ -640,7 +652,6 @@ int main(int cArgs, char* apszArgs[]) {
 								FunctionImpl(
 									strClassNamespace,
 									[&]() noexcept {
-										// Literal -> Enum Type
 										return tc::concat("this->template _call<", MangleType(jsfunctionlike.m_jsignature->getReturnType()).m_strWithComments, ">(", 
 											tc::join_separated(
 												tc::concat(
