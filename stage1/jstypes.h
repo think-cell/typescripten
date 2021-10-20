@@ -75,6 +75,7 @@ public:
     SJsVariableLike(SJsVariableLike&&) noexcept = default;
     SJsVariableLike& operator=(SJsVariableLike&&) noexcept = default;
 
+    bool IsVoid() const& noexcept;
     SMangledType const& MangleType() const& noexcept;
 };
 static_assert(std::is_nothrow_move_constructible<SJsVariableLike>::value);
@@ -267,21 +268,28 @@ void SJsScope::Initialize(Rng&& rngjsym) & noexcept {
         }
     );
 
-    m_vecjsvariablelikeExport = tc::make_vector(tc::transform(
+    m_vecjsvariablelikeExport = tc::make_vector(
         tc::filter(
-            rngjsym,
-            [](tc::js::ts::Symbol jsymExport) noexcept {
-                // TODO: Leave equality check here for now. 
-                // tc::js::ts::SymbolFlags::FunctionScopedVariable|tc::js::ts::SymbolFlags::Interface is not turned into a variable but is 
-                // merged into a class
-                return tc::js::ts::SymbolFlags::FunctionScopedVariable == jsymExport->getFlags()
-                    || tc::js::ts::SymbolFlags::BlockScopedVariable == jsymExport->getFlags();
+            tc::transform(
+                tc::filter(
+                    rngjsym,
+                    [](tc::js::ts::Symbol jsymExport) noexcept {
+                        // TODO: Leave equality check here for now. 
+                        // tc::js::ts::SymbolFlags::FunctionScopedVariable|tc::js::ts::SymbolFlags::Interface is not turned into a variable but is 
+                        // merged into a class
+                        return tc::js::ts::SymbolFlags::FunctionScopedVariable == jsymExport->getFlags()
+                            || tc::js::ts::SymbolFlags::BlockScopedVariable == jsymExport->getFlags();
+                    }
+                ),
+                [](tc::js::ts::Symbol jsymVariable) noexcept {
+                    return SJsVariableLike(jsymVariable);
+                }
+            ),
+            [](auto const& jsvariablelike) noexcept {
+                return !jsvariablelike.IsVoid();
             }
-        ),
-        [](tc::js::ts::Symbol jsymVariable) noexcept {
-            return SJsVariableLike(jsymVariable);
-        }
-    ));
+        )
+    );
 
     // Merge variable redeclarations inplace 
     tc::sort_accumulate_each_unique_range(

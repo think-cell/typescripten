@@ -45,6 +45,9 @@ namespace tc::js_defs {
 
 	constexpr tc::js::ts::ModifierFlags operator|(tc::js::ts::ModifierFlags a, tc::js::ts::ModifierFlags b) { return static_cast<tc::js::ts::ModifierFlags>(static_cast<int>(a) | static_cast<int>(b)); }
 	constexpr tc::js::ts::ModifierFlags operator&(tc::js::ts::ModifierFlags a, tc::js::ts::ModifierFlags b) { return static_cast<tc::js::ts::ModifierFlags>(static_cast<int>(a) & static_cast<int>(b)); }
+
+	constexpr tc::js::ts::NodeFlags operator|(tc::js::ts::NodeFlags a, tc::js::ts::NodeFlags b) { return static_cast<tc::js::ts::NodeFlags>(static_cast<int>(a) | static_cast<int>(b)); }
+	constexpr tc::js::ts::NodeFlags operator&(tc::js::ts::NodeFlags a, tc::js::ts::NodeFlags b) { return static_cast<tc::js::ts::NodeFlags>(static_cast<int>(a) & static_cast<int>(b)); }
 } // namespace tc::js_defs
 
 JS_RANGE_WITH_ITERATORS(tc::js::ts, NodeArray)

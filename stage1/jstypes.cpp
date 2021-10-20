@@ -275,7 +275,10 @@ SJsVariableLike::SJsVariableLike(ts::Symbol jsym) noexcept
         return tc::front(rngvariabledecl);
     }())
     , m_jtypeDeclared((*g_ojtsTypeChecker)->getTypeOfSymbolAtLocation(m_jsym, m_jdeclVariableLike))
-    , m_bReadonly(static_cast<bool>(ts::getCombinedModifierFlags(m_jdeclVariableLike) & ts::ModifierFlags::Readonly))
+    , m_bReadonly(static_cast<bool>(ts::getCombinedModifierFlags(m_jdeclVariableLike) & ts::ModifierFlags::Readonly)
+        // To check if a variable is declared const, we have to go to the parent of the variable declaration
+        //      declare const a, b: void;
+        || static_cast<bool>(ts::NodeFlags::Const&m_jdeclVariableLike->parent()->flags()))
 {
     ts::ModifierFlags const nModifierFlags = ts::getCombinedModifierFlags(m_jdeclVariableLike);
     if (ts::ModifierFlags::None != nModifierFlags &&
@@ -291,6 +294,10 @@ SJsVariableLike::SJsVariableLike(ts::Symbol jsym) noexcept
         );
         _ASSERTFALSE;
     }
+}
+
+bool SJsVariableLike::IsVoid() const& noexcept {
+    return ts::TypeFlags::Void==m_jtypeDeclared->getFlags();
 }
 
 SMangledType const& SJsVariableLike::MangleType() const& noexcept {
@@ -501,15 +508,22 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
             }
         );
 
-        m_vecjsvariablelikeProperty = tc::make_vector(tc::transform(
-            tc::filter(*ojarrsymMembers, [](ts::Symbol jsymMember) noexcept {
-                _ASSERT(!static_cast<bool>(ts::SymbolFlags::Property & jsymMember->getFlags()) || !static_cast<bool>(~(ts::SymbolFlags::Property|ts::SymbolFlags::Optional|ts::SymbolFlags::Transient) & jsymMember->getFlags()));
-                return static_cast<bool>(ts::SymbolFlags::Property & jsymMember->getFlags());
-            }),
-            [](ts::Symbol jsymProperty) noexcept {
-                return SJsVariableLike(jsymProperty);
-            }
-        ));
+        m_vecjsvariablelikeProperty = tc::make_vector(
+            tc::filter(
+                tc::transform(
+                    tc::filter(*ojarrsymMembers, [](ts::Symbol jsymMember) noexcept {
+                        _ASSERT(!static_cast<bool>(ts::SymbolFlags::Property & jsymMember->getFlags()) || !static_cast<bool>(~(ts::SymbolFlags::Property|ts::SymbolFlags::Optional|ts::SymbolFlags::Transient) & jsymMember->getFlags()));
+                        return static_cast<bool>(ts::SymbolFlags::Property & jsymMember->getFlags());
+                    }),
+                    [](ts::Symbol jsymProperty) noexcept {
+                        return SJsVariableLike(jsymProperty);
+                    }
+                ),
+                [](auto const& jsvariablelike) noexcept {
+                    return !jsvariablelike.IsVoid();
+                }
+            )
+        );
     }
 
     if(static_cast<bool>(ts::SymbolFlags::Class&m_jsym->getFlags())) {

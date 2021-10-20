@@ -3910,17 +3910,13 @@ namespace tc::js_defs {
 			static auto visitParameterList(tc::jst::union_t<_js_jts_dNodeArray<_js_jts_dParameterDeclaration>, tc::js::undefined> nodes, _js_jts_dVisitor visitor, _js_jts_dTransformationContext context, tc::jst::union_t<_js_jts_dNodesVisitor, tc::js::undefined> nodesVisitor = tc::js::undefined()) noexcept;
 			static auto walkUpBindingElementsAndPatterns(_js_jts_dBindingElement binding) noexcept;
 			static auto factory() noexcept;
-			static void factory(_js_jts_dNodeFactory v) noexcept;
 			static auto servicesVersion() noexcept;
-			static void servicesVersion(tc::js::string /*"0.8"*/ v) noexcept;
 			static auto sys() noexcept;
 			static void sys(_js_jts_dSystem v) noexcept;
 			static auto unchangedTextChangeRange() noexcept;
 			static void unchangedTextChangeRange(_js_jts_dTextChangeRange v) noexcept;
 			static auto version() noexcept;
-			static void version(tc::js::string v) noexcept;
 			static auto versionMajorMinor() noexcept;
-			static void versionMajorMinor(tc::js::string /*"4.4"*/ v) noexcept;
 		};
 	};
 	struct _impl_js_jts_dAmdDependency : virtual object_base {
@@ -3999,7 +3995,7 @@ namespace tc::js_defs {
 		auto _declarationBrand() noexcept;
 		void _declarationBrand(tc::js::any v) noexcept;
 	};
-	struct _impl_js_jts_dBinaryExpression : virtual _impl_js_jts_dExpression, virtual _impl_js_jts_dDeclaration {
+	struct _impl_js_jts_dBinaryExpression : virtual _impl_js_jts_dDeclaration, virtual _impl_js_jts_dExpression {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
@@ -4077,7 +4073,7 @@ namespace tc::js_defs {
 		};
 		static auto _tcjs_construct() noexcept;
 	};
-	struct _impl_js_jts_dSignatureDeclarationBase : virtual _impl_js_jts_dNamedDeclaration, virtual _impl_js_jts_dJSDocContainer {
+	struct _impl_js_jts_dSignatureDeclarationBase : virtual _impl_js_jts_dJSDocContainer, virtual _impl_js_jts_dNamedDeclaration {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
@@ -4232,7 +4228,7 @@ namespace tc::js_defs {
 		auto name() noexcept;
 		auto initializer() noexcept;
 	};
-	struct _impl_js_jts_dStatement : virtual _impl_js_jts_dNode, virtual _impl_js_jts_dJSDocContainer {
+	struct _impl_js_jts_dStatement : virtual _impl_js_jts_dJSDocContainer, virtual _impl_js_jts_dNode {
 		struct _tcjs_definitions {
 		};
 		auto _statementBrand() noexcept;
@@ -4327,7 +4323,7 @@ namespace tc::js_defs {
 		auto prepends() noexcept;
 		auto sourceFiles() noexcept;
 	};
-	struct _impl_js_jts_dCallExpression : virtual _impl_js_jts_dLeftHandSideExpression, virtual _impl_js_jts_dDeclaration {
+	struct _impl_js_jts_dCallExpression : virtual _impl_js_jts_dDeclaration, virtual _impl_js_jts_dLeftHandSideExpression {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
@@ -4432,7 +4428,7 @@ namespace tc::js_defs {
 		auto enabled() noexcept;
 		void enabled(bool /*false*/ v) noexcept;
 	};
-	struct _impl_js_jts_dClassLikeDeclarationBase : virtual _impl_js_jts_dNamedDeclaration, virtual _impl_js_jts_dJSDocContainer {
+	struct _impl_js_jts_dClassLikeDeclarationBase : virtual _impl_js_jts_dJSDocContainer, virtual _impl_js_jts_dNamedDeclaration {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
@@ -4952,14 +4948,14 @@ namespace tc::js_defs {
 		};
 		auto kind() noexcept;
 	};
-	struct _impl_js_jts_dConstructorDeclaration : virtual _impl_js_jts_dFunctionLikeDeclarationBase, virtual _impl_js_jts_dClassElement, virtual _impl_js_jts_dJSDocContainer {
+	struct _impl_js_jts_dConstructorDeclaration : virtual _impl_js_jts_dClassElement, virtual _impl_js_jts_dFunctionLikeDeclarationBase, virtual _impl_js_jts_dJSDocContainer {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
 		auto parent() noexcept;
 		auto body() noexcept;
 	};
-	struct _impl_js_jts_dFunctionOrConstructorTypeNodeBase : virtual _impl_js_jts_dTypeNode, virtual _impl_js_jts_dSignatureDeclarationBase {
+	struct _impl_js_jts_dFunctionOrConstructorTypeNodeBase : virtual _impl_js_jts_dSignatureDeclarationBase, virtual _impl_js_jts_dTypeNode {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
@@ -5219,7 +5215,7 @@ namespace tc::js_defs {
 		auto values() noexcept;
 	};
 	template<typename K, typename V>
-	struct _impl_js_jts_dESMap : virtual _impl_js_jts_dReadonlyESMap<K, V>, virtual _impl_js_jts_dCollection<K> {
+	struct _impl_js_jts_dESMap : virtual _impl_js_jts_dCollection<K>, virtual _impl_js_jts_dReadonlyESMap<K, V> {
 		struct _tcjs_definitions {
 		};
 		auto set(K key, V value) noexcept;
@@ -5322,7 +5318,7 @@ namespace tc::js_defs {
 		auto name() noexcept;
 		auto members() noexcept;
 	};
-	struct _impl_js_jts_dEnumMember : virtual _impl_js_jts_dNamedDeclaration, virtual _impl_js_jts_dJSDocContainer {
+	struct _impl_js_jts_dEnumMember : virtual _impl_js_jts_dJSDocContainer, virtual _impl_js_jts_dNamedDeclaration {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
@@ -5600,14 +5596,14 @@ namespace tc::js_defs {
 		auto getCurrentDirectory() noexcept;
 		auto getNewLine() noexcept;
 	};
-	struct _impl_js_jts_dFunctionDeclaration : virtual _impl_js_jts_dFunctionLikeDeclarationBase, virtual _impl_js_jts_dDeclarationStatement {
+	struct _impl_js_jts_dFunctionDeclaration : virtual _impl_js_jts_dDeclarationStatement, virtual _impl_js_jts_dFunctionLikeDeclarationBase {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
 		auto name() noexcept;
 		auto body() noexcept;
 	};
-	struct _impl_js_jts_dFunctionExpression : virtual _impl_js_jts_dPrimaryExpression, virtual _impl_js_jts_dFunctionLikeDeclarationBase, virtual _impl_js_jts_dJSDocContainer {
+	struct _impl_js_jts_dFunctionExpression : virtual _impl_js_jts_dFunctionLikeDeclarationBase, virtual _impl_js_jts_dJSDocContainer, virtual _impl_js_jts_dPrimaryExpression {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
@@ -5642,7 +5638,7 @@ namespace tc::js_defs {
 		void _objectLiteralBrand(tc::js::any v) noexcept;
 		auto name() noexcept;
 	};
-	struct _impl_js_jts_dGetAccessorDeclaration : virtual _impl_js_jts_dFunctionLikeDeclarationBase, virtual _impl_js_jts_dClassElement, virtual _impl_js_jts_dTypeElement, virtual _impl_js_jts_dObjectLiteralElement, virtual _impl_js_jts_dJSDocContainer {
+	struct _impl_js_jts_dGetAccessorDeclaration : virtual _impl_js_jts_dClassElement, virtual _impl_js_jts_dFunctionLikeDeclarationBase, virtual _impl_js_jts_dJSDocContainer, virtual _impl_js_jts_dObjectLiteralElement, virtual _impl_js_jts_dTypeElement {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
@@ -5720,7 +5716,7 @@ namespace tc::js_defs {
 		auto getLength() noexcept;
 		auto getText(double start, double end) noexcept;
 	};
-	struct _impl_js_jts_dIdentifier : virtual _impl_js_jts_dPrimaryExpression, virtual _impl_js_jts_dDeclaration {
+	struct _impl_js_jts_dIdentifier : virtual _impl_js_jts_dDeclaration, virtual _impl_js_jts_dPrimaryExpression {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
@@ -5854,7 +5850,7 @@ namespace tc::js_defs {
 		auto declaration() noexcept;
 		void declaration(tc::jst::union_t<_js_jts_dIndexSignatureDeclaration, tc::js::undefined> v) noexcept;
 	};
-	struct _impl_js_jts_dIndexSignatureDeclaration : virtual _impl_js_jts_dSignatureDeclarationBase, virtual _impl_js_jts_dClassElement, virtual _impl_js_jts_dTypeElement {
+	struct _impl_js_jts_dIndexSignatureDeclaration : virtual _impl_js_jts_dClassElement, virtual _impl_js_jts_dSignatureDeclarationBase, virtual _impl_js_jts_dTypeElement {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
@@ -6070,7 +6066,7 @@ namespace tc::js_defs {
 		auto kind() noexcept;
 		void kind(_js_jts_dSyntaxKind v) noexcept;
 	};
-	struct _impl_js_jts_dJSDocEnumTag : virtual _impl_js_jts_dJSDocTag, virtual _impl_js_jts_dDeclaration {
+	struct _impl_js_jts_dJSDocEnumTag : virtual _impl_js_jts_dDeclaration, virtual _impl_js_jts_dJSDocTag {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
@@ -6182,7 +6178,7 @@ namespace tc::js_defs {
 		};
 		auto kind() noexcept;
 	};
-	struct _impl_js_jts_dJSDocPropertyLikeTag : virtual _impl_js_jts_dJSDocTag, virtual _impl_js_jts_dDeclaration {
+	struct _impl_js_jts_dJSDocPropertyLikeTag : virtual _impl_js_jts_dDeclaration, virtual _impl_js_jts_dJSDocTag {
 		struct _tcjs_definitions {
 		};
 		auto parent() noexcept;
@@ -6233,7 +6229,7 @@ namespace tc::js_defs {
 		auto kind() noexcept;
 		auto name() noexcept;
 	};
-	struct _impl_js_jts_dJSDocSignature : virtual _impl_js_jts_dJSDocType, virtual _impl_js_jts_dDeclaration {
+	struct _impl_js_jts_dJSDocSignature : virtual _impl_js_jts_dDeclaration, virtual _impl_js_jts_dJSDocType {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
@@ -6380,7 +6376,7 @@ namespace tc::js_defs {
 		auto initializer() noexcept;
 	};
 	template<typename T>
-	struct _impl_js_jts_dObjectLiteralExpressionBase : virtual _impl_js_jts_dPrimaryExpression, virtual _impl_js_jts_dDeclaration {
+	struct _impl_js_jts_dObjectLiteralExpressionBase : virtual _impl_js_jts_dDeclaration, virtual _impl_js_jts_dPrimaryExpression {
 		struct _tcjs_definitions {
 		};
 		auto properties() noexcept;
@@ -6613,7 +6609,7 @@ namespace tc::js_defs {
 		};
 		static auto _tcjs_construct() noexcept;
 	};
-	struct _impl_js_jts_dMappedTypeNode : virtual _impl_js_jts_dTypeNode, virtual _impl_js_jts_dDeclaration {
+	struct _impl_js_jts_dMappedTypeNode : virtual _impl_js_jts_dDeclaration, virtual _impl_js_jts_dTypeNode {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
@@ -6630,7 +6626,7 @@ namespace tc::js_defs {
 		auto keywordToken() noexcept;
 		auto name() noexcept;
 	};
-	struct _impl_js_jts_dMethodDeclaration : virtual _impl_js_jts_dFunctionLikeDeclarationBase, virtual _impl_js_jts_dClassElement, virtual _impl_js_jts_dObjectLiteralElement, virtual _impl_js_jts_dJSDocContainer {
+	struct _impl_js_jts_dMethodDeclaration : virtual _impl_js_jts_dClassElement, virtual _impl_js_jts_dFunctionLikeDeclarationBase, virtual _impl_js_jts_dJSDocContainer, virtual _impl_js_jts_dObjectLiteralElement {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
@@ -6681,7 +6677,7 @@ namespace tc::js_defs {
 		};
 		auto getOrCreateCacheForModuleName(tc::js::string nonRelativeModuleName, tc::jst::union_t<_js_jts_dResolvedProjectReference, tc::js::undefined> redirectedReference = tc::js::undefined()) noexcept;
 	};
-	struct _impl_js_jts_dModuleResolutionCache : virtual _impl_js_jts_dPerDirectoryResolutionCache<_js_jts_dResolvedModuleWithFailedLookupLocations>, virtual _impl_js_jts_dNonRelativeModuleNameResolutionCache, virtual _impl_js_jts_dPackageJsonInfoCache {
+	struct _impl_js_jts_dModuleResolutionCache : virtual _impl_js_jts_dNonRelativeModuleNameResolutionCache, virtual _impl_js_jts_dPackageJsonInfoCache, virtual _impl_js_jts_dPerDirectoryResolutionCache<_js_jts_dResolvedModuleWithFailedLookupLocations> {
 		struct _tcjs_definitions {
 		};
 		auto getPackageJsonInfoCache() noexcept;
@@ -6700,7 +6696,7 @@ namespace tc::js_defs {
 		auto parent() noexcept;
 		auto elements() noexcept;
 	};
-	struct _impl_js_jts_dNamedTupleMember : virtual _impl_js_jts_dTypeNode, virtual _impl_js_jts_dJSDocContainer, virtual _impl_js_jts_dDeclaration {
+	struct _impl_js_jts_dNamedTupleMember : virtual _impl_js_jts_dDeclaration, virtual _impl_js_jts_dJSDocContainer, virtual _impl_js_jts_dTypeNode {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
@@ -6793,7 +6789,7 @@ namespace tc::js_defs {
 		auto childItems() noexcept;
 		void childItems(tc::jst::union_t<_js_Array<_js_jts_dNavigationTree>, tc::js::undefined> v) noexcept;
 	};
-	struct _impl_js_jts_dNewExpression : virtual _impl_js_jts_dPrimaryExpression, virtual _impl_js_jts_dDeclaration {
+	struct _impl_js_jts_dNewExpression : virtual _impl_js_jts_dDeclaration, virtual _impl_js_jts_dPrimaryExpression {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
@@ -6807,7 +6803,7 @@ namespace tc::js_defs {
 		auto rawText() noexcept;
 		void rawText(tc::jst::union_t<tc::js::string, tc::js::undefined> v) noexcept;
 	};
-	struct _impl_js_jts_dNoSubstitutionTemplateLiteral : virtual _impl_js_jts_dLiteralExpression, virtual _impl_js_jts_dTemplateLiteralLikeNode, virtual _impl_js_jts_dDeclaration {
+	struct _impl_js_jts_dNoSubstitutionTemplateLiteral : virtual _impl_js_jts_dDeclaration, virtual _impl_js_jts_dLiteralExpression, virtual _impl_js_jts_dTemplateLiteralLikeNode {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
@@ -7294,7 +7290,7 @@ namespace tc::js_defs {
 		auto value() noexcept;
 		void value(double v) noexcept;
 	};
-	struct _impl_js_jts_dNumericLiteral : virtual _impl_js_jts_dLiteralExpression, virtual _impl_js_jts_dDeclaration {
+	struct _impl_js_jts_dNumericLiteral : virtual _impl_js_jts_dDeclaration, virtual _impl_js_jts_dLiteralExpression {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
@@ -7372,7 +7368,7 @@ namespace tc::js_defs {
 		auto version() noexcept;
 		void version(tc::js::string v) noexcept;
 	};
-	struct _impl_js_jts_dParameterDeclaration : virtual _impl_js_jts_dNamedDeclaration, virtual _impl_js_jts_dJSDocContainer {
+	struct _impl_js_jts_dParameterDeclaration : virtual _impl_js_jts_dJSDocContainer, virtual _impl_js_jts_dNamedDeclaration {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
@@ -7383,7 +7379,7 @@ namespace tc::js_defs {
 		auto type() noexcept;
 		auto initializer() noexcept;
 	};
-	struct _impl_js_jts_dParenthesizedExpression : virtual _impl_js_jts_dPrimaryExpression, virtual _impl_js_jts_dJSDocContainer {
+	struct _impl_js_jts_dParenthesizedExpression : virtual _impl_js_jts_dJSDocContainer, virtual _impl_js_jts_dPrimaryExpression {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
@@ -7404,7 +7400,7 @@ namespace tc::js_defs {
 		auto readDirectory(tc::js::string rootDir, _js_ReadonlyArray<tc::js::string> extensions, tc::jst::union_t<_js_ReadonlyArray<tc::js::string>, tc::js::undefined> excludes, _js_ReadonlyArray<tc::js::string> includes, tc::jst::union_t<double, tc::js::undefined> depth = tc::js::undefined()) noexcept;
 		auto readFile(tc::js::string path) noexcept;
 	};
-	struct _impl_js_jts_dParseConfigFileHost : virtual _impl_js_jts_dParseConfigHost, virtual _impl_js_jts_dConfigFileDiagnosticsReporter {
+	struct _impl_js_jts_dParseConfigFileHost : virtual _impl_js_jts_dConfigFileDiagnosticsReporter, virtual _impl_js_jts_dParseConfigHost {
 		struct _tcjs_definitions {
 		};
 		auto getCurrentDirectory() noexcept;
@@ -7600,7 +7596,7 @@ namespace tc::js_defs {
 		auto expression() noexcept;
 		auto name() noexcept;
 	};
-	struct _impl_js_jts_dPropertyAssignment : virtual _impl_js_jts_dObjectLiteralElement, virtual _impl_js_jts_dJSDocContainer {
+	struct _impl_js_jts_dPropertyAssignment : virtual _impl_js_jts_dJSDocContainer, virtual _impl_js_jts_dObjectLiteralElement {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
@@ -7626,7 +7622,7 @@ namespace tc::js_defs {
 		};
 		auto name() noexcept;
 	};
-	struct _impl_js_jts_dPropertySignature : virtual _impl_js_jts_dTypeElement, virtual _impl_js_jts_dJSDocContainer {
+	struct _impl_js_jts_dPropertySignature : virtual _impl_js_jts_dJSDocContainer, virtual _impl_js_jts_dTypeElement {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
@@ -7930,13 +7926,13 @@ namespace tc::js_defs {
 		auto parent() noexcept;
 	};
 	template<typename T>
-	struct _impl_js_jts_dSet : virtual _impl_js_jts_dReadonlySet<T>, virtual _impl_js_jts_dCollection<T> {
+	struct _impl_js_jts_dSet : virtual _impl_js_jts_dCollection<T>, virtual _impl_js_jts_dReadonlySet<T> {
 		struct _tcjs_definitions {
 		};
 		auto add(T value) noexcept;
 		auto delete_(T value) noexcept;
 	};
-	struct _impl_js_jts_dSetAccessorDeclaration : virtual _impl_js_jts_dFunctionLikeDeclarationBase, virtual _impl_js_jts_dClassElement, virtual _impl_js_jts_dTypeElement, virtual _impl_js_jts_dObjectLiteralElement, virtual _impl_js_jts_dJSDocContainer {
+	struct _impl_js_jts_dSetAccessorDeclaration : virtual _impl_js_jts_dClassElement, virtual _impl_js_jts_dFunctionLikeDeclarationBase, virtual _impl_js_jts_dJSDocContainer, virtual _impl_js_jts_dObjectLiteralElement, virtual _impl_js_jts_dTypeElement {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
@@ -7944,7 +7940,7 @@ namespace tc::js_defs {
 		auto name() noexcept;
 		auto body() noexcept;
 	};
-	struct _impl_js_jts_dShorthandPropertyAssignment : virtual _impl_js_jts_dObjectLiteralElement, virtual _impl_js_jts_dJSDocContainer {
+	struct _impl_js_jts_dShorthandPropertyAssignment : virtual _impl_js_jts_dJSDocContainer, virtual _impl_js_jts_dObjectLiteralElement {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
@@ -8142,7 +8138,7 @@ namespace tc::js_defs {
 		auto sourceIndex() noexcept;
 		void sourceIndex(double v) noexcept;
 	};
-	struct _impl_js_jts_dSpreadAssignment : virtual _impl_js_jts_dObjectLiteralElement, virtual _impl_js_jts_dJSDocContainer {
+	struct _impl_js_jts_dSpreadAssignment : virtual _impl_js_jts_dJSDocContainer, virtual _impl_js_jts_dObjectLiteralElement {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
@@ -8156,7 +8152,7 @@ namespace tc::js_defs {
 		auto parent() noexcept;
 		auto expression() noexcept;
 	};
-	struct _impl_js_jts_dStringLiteral : virtual _impl_js_jts_dLiteralExpression, virtual _impl_js_jts_dDeclaration {
+	struct _impl_js_jts_dStringLiteral : virtual _impl_js_jts_dDeclaration, virtual _impl_js_jts_dLiteralExpression {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
@@ -8637,7 +8633,7 @@ namespace tc::js_defs {
 		auto typeToString(_js_jts_dType type, tc::jst::union_t<_js_jts_dNode, tc::js::undefined> enclosingDeclaration = tc::js::undefined(), tc::jst::union_t<_js_jts_dTypeFormatFlags, tc::js::undefined> flags = tc::js::undefined()) noexcept;
 		auto typeToTypeNode(_js_jts_dType type, tc::jst::union_t<_js_jts_dNode, tc::js::undefined> enclosingDeclaration = tc::js::undefined(), tc::jst::union_t<_js_jts_dNodeBuilderFlags, tc::js::undefined> flags = tc::js::undefined()) noexcept;
 	};
-	struct _impl_js_jts_dTypeLiteralNode : virtual _impl_js_jts_dTypeNode, virtual _impl_js_jts_dDeclaration {
+	struct _impl_js_jts_dTypeLiteralNode : virtual _impl_js_jts_dDeclaration, virtual _impl_js_jts_dTypeNode {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
@@ -8686,7 +8682,7 @@ namespace tc::js_defs {
 		auto kind() noexcept;
 		auto exprName() noexcept;
 	};
-	struct _impl_js_jts_dTypeReferenceDirectiveResolutionCache : virtual _impl_js_jts_dPerDirectoryResolutionCache<_js_jts_dResolvedTypeReferenceDirectiveWithFailedLookupLocations>, virtual _impl_js_jts_dPackageJsonInfoCache {
+	struct _impl_js_jts_dTypeReferenceDirectiveResolutionCache : virtual _impl_js_jts_dPackageJsonInfoCache, virtual _impl_js_jts_dPerDirectoryResolutionCache<_js_jts_dResolvedTypeReferenceDirectiveWithFailedLookupLocations> {
 		struct _tcjs_definitions {
 		};
 	};
@@ -8798,7 +8794,7 @@ namespace tc::js_defs {
 		auto kind() noexcept;
 		auto updateOutputFileStatmps() noexcept;
 	};
-	struct _impl_js_jts_dVariableDeclaration : virtual _impl_js_jts_dNamedDeclaration, virtual _impl_js_jts_dJSDocContainer {
+	struct _impl_js_jts_dVariableDeclaration : virtual _impl_js_jts_dJSDocContainer, virtual _impl_js_jts_dNamedDeclaration {
 		struct _tcjs_definitions {
 		};
 		auto kind() noexcept;
@@ -8840,7 +8836,7 @@ namespace tc::js_defs {
 		};
 	};
 	template<typename T>
-	struct _impl_js_jts_dWatchCompilerHostOfConfigFile : virtual _impl_js_jts_dWatchCompilerHost<T>, virtual _impl_js_jts_dConfigFileDiagnosticsReporter {
+	struct _impl_js_jts_dWatchCompilerHostOfConfigFile : virtual _impl_js_jts_dConfigFileDiagnosticsReporter, virtual _impl_js_jts_dWatchCompilerHost<T> {
 		struct _tcjs_definitions {
 		};
 		auto configFileName() noexcept;
@@ -11394,17 +11390,13 @@ namespace tc::js_defs {
 		return emscripten::val::global("ts")["walkUpBindingElementsAndPatterns"](binding).template as<tc::jst::union_t<_js_jts_dParameterDeclaration, _js_jts_dVariableDeclaration>>();
 	}
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::factory() noexcept { return emscripten::val::global("ts")["factory"].template as<_js_jts_dNodeFactory>(); }
-	inline void _impl_js_j_qts_q::_tcjs_definitions::factory(_js_jts_dNodeFactory v) noexcept { emscripten::val::global("ts").set("factory", v); }
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::servicesVersion() noexcept { return emscripten::val::global("ts")["servicesVersion"].template as<tc::js::string /*"0.8"*/>(); }
-	inline void _impl_js_j_qts_q::_tcjs_definitions::servicesVersion(tc::js::string /*"0.8"*/ v) noexcept { emscripten::val::global("ts").set("servicesVersion", v); }
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::sys() noexcept { return emscripten::val::global("ts")["sys"].template as<_js_jts_dSystem>(); }
 	inline void _impl_js_j_qts_q::_tcjs_definitions::sys(_js_jts_dSystem v) noexcept { emscripten::val::global("ts").set("sys", v); }
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::unchangedTextChangeRange() noexcept { return emscripten::val::global("ts")["unchangedTextChangeRange"].template as<_js_jts_dTextChangeRange>(); }
 	inline void _impl_js_j_qts_q::_tcjs_definitions::unchangedTextChangeRange(_js_jts_dTextChangeRange v) noexcept { emscripten::val::global("ts").set("unchangedTextChangeRange", v); }
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::version() noexcept { return emscripten::val::global("ts")["version"].template as<tc::js::string>(); }
-	inline void _impl_js_j_qts_q::_tcjs_definitions::version(tc::js::string v) noexcept { emscripten::val::global("ts").set("version", v); }
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::versionMajorMinor() noexcept { return emscripten::val::global("ts")["versionMajorMinor"].template as<tc::js::string /*"4.4"*/>(); }
-	inline void _impl_js_j_qts_q::_tcjs_definitions::versionMajorMinor(tc::js::string /*"4.4"*/ v) noexcept { emscripten::val::global("ts").set("versionMajorMinor", v); }
 	inline auto _impl_js_jts_dAmdDependency::path() noexcept { return this->template _getProperty<tc::js::string>("path"); }
 	inline void _impl_js_jts_dAmdDependency::path(tc::js::string v) noexcept { this->template _setProperty("path", v); }
 	inline auto _impl_js_jts_dAmdDependency::name() noexcept { return this->template _getProperty<tc::jst::union_t<tc::js::string, tc::js::undefined>>("name"); }
