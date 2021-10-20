@@ -112,24 +112,25 @@ Both the [TypeScript Playground](https://www.typescriptlang.org/play) and the [T
 
 * Copy `build-config-example.*` to `build-config.*` and edit the files to set the correct paths to emscripten, boost and the think-cell library
 * Run `examples/testall.py` to execute some test cases for the elementary **typescripten** C++/JavaScript interop classes in `bootstrap`
-* Run `cd stage1` and `./build.sh` or `build.cmd` to build the **typescripten** compiler for typescript interface definition files.  
+* Run `cd stage1` and `./build.sh` or `build.cmd` to build the **typescripten** compiler
+* To process TypeScript interface definition files, go to their location, e.g., `cd stage1/tests/generics/` and run `node ../../main.js MyLib.d.ts`
 
 # Naming conventions
-* Global variables start with `g_`.
-* Member fields start with `m_`.
-* All variables are prefixed with a type tag: `<type-tag>Name`.
-    * `Name` is camel-case.
-    * There should be no duplicates between type tag and name, e.g. `vecstrArguments`, not `vecstrArgumentsVector`.
-* Functions' and variables' names are `CamelCase`.
-* `int`'s type tag is `n`, e.g. `nArguments`.
-* `std::string`'s type tag is `str`.
-* `std::vector<T>`'s type tag is `vec<type-tag-of-T>`, name is singular, e.g. `vecstrArguments`.
-* `ref<T>`'s type tag is `j<type-tag-of-T>`
-    * `ts::Symbol`'s type tag is `sym`.
-    * `optional<T>`'s type tag is `o<type-tag-of-T>`.
-    * E.g. `ref<optional<ts::Symbol>> josymDeclaration;`
-* For (almost) singleton objects from TypeScript Compiler API: `jts<exact-type-name-from-typescript>`.
-    * "Almost singleton" ~ "does not require any name in local scope, type is enough".
-    * The decision is made on a per-class basis, e.g. `Symbol` is never "almost singleton" to avoid confusion.
-    * E.g. `(*g_ojtsTypeChecker)`.
-* Optional singleton objects are `jots<exact-type-name-from-typescript>`.
+We use [Hungarian Notation](https://en.wikipedia.org/wiki/Hungarian_notation) in our code base, i.e.,
+* Global variables start with `g_`
+* Member fields start with `m_`
+* Constants start with `c_`
+
+All variables are prefixed with a type tag `<type-tag>Name`
+* `Name` is camel-case
+* `int`'s type tag is `n`, e.g. `nArguments`
+* `std::string`'s type tag is `str`
+* `std::vector<T>`'s type tag is `vec<type-tag-of-T>`, name is singular, e.g. `vecstrArguments`
+* `jst::ref<T>`'s type tag is `j<type-tag-of-T>`
+* `ts::Symbol`'s type tag is `sym`.
+* `jst::optional<T>`'s type tag is `o<type-tag-of-T>`.
+
+**Example:** `jst::ref<jst::optional<ts::Symbol>> josymDeclaration;`
+
+There should be no duplicates between type tag and name, e.g. `vecstrArguments`, not `vecstrArgumentsVector`
+
