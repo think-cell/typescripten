@@ -13,8 +13,6 @@ enum ECppType {
 BITMASK_OPS(ECppType);
 ECppType CppType(tc::js::ts::Symbol jsymType) noexcept;
 
-tc::jst::optional<tc::js::ts::Symbol> OptSymbolOrAliasSymbol(tc::js::ts::Type jtype) noexcept;
-tc::js::ts::Symbol SymbolOrAliasSymbol(tc::js::ts::Type jtype) noexcept;
 tc::ptr_range<char const> StripQuotes(tc::ptr_range<char const> str) noexcept;
 
 DEFINE_ENUM(ENameContext, enamectx, (NONE)(ENUM)(CLASS)(TYPEALIAS)(FUNCTION));
@@ -81,8 +79,6 @@ public:
 };
 static_assert(std::is_nothrow_move_constructible<SJsVariableLike>::value);
 static_assert(std::is_nothrow_move_assignable<SJsVariableLike>::value);
-
-DEFINE_ENUM(ETypeParameter, etypeparam, (TYPE)(ENUM)(NUMBER))
 
 struct STypeParameter final {
     ETypeParameter m_etypeparam;

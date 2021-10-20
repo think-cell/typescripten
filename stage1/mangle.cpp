@@ -3,16 +3,29 @@
 #include "mangle.h"
 #include "walk_symbol.h"
 #include "jstypes.h"
-
-using tc::js::ts;
-namespace jst = tc::jst;
-namespace js = tc::js;
+#include "mangle.inl"
 
 extern std::optional<tc::js::ts::TypeChecker> g_ojtsTypeChecker;
 extern bool g_bGlobalScopeConstructionComplete;
 
 std::string FullyQualifiedName(ts::Symbol jsymType) noexcept {
 	return tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->getFullyQualifiedName(jsymType));
+}
+
+tc::jst::optional<tc::js::ts::Symbol> OptSymbolOrAliasSymbol(ts::Type jtype) noexcept {
+    if(auto ojsym = jtype->getSymbol()) { // getSymbol is correctly marked as returning Symbol|undefined
+        return ojsym;
+    } else {
+        return jtype->aliasSymbol();
+    }
+}
+
+tc::js::ts::Symbol SymbolOrAliasSymbol(ts::Type jtype) noexcept {
+    if(auto ojsym = OptSymbolOrAliasSymbol(jtype)) {
+        return *ojsym;
+    } else {
+        _ASSERTFALSE;
+    }
 }
 
 SMangledType::SMangledType(std::string strCppCanonized) noexcept
@@ -44,100 +57,41 @@ bool operator<(SMangledType const& lhs, SMangledType const& rhs) noexcept {
 }
 
 namespace {
-	SMangledType CommentType(std::string strCppType, tc::js::ts::Type const jtypeRoot) noexcept {
-		return {
-			strCppType, 
-			tc::make_str(
-				strCppType,
-				" /*",
-				tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->typeToString(jtypeRoot)),
-				"*/"
-			)
-		};
-	}
-
-	std::tuple<SMangledType, SJsEnum const*> LookupEnumFromLiteral(ts::Type jtype) noexcept {
-		auto jsym = SymbolOrAliasSymbol(jtype);
-		auto jsymParentSymbol = SymbolOrAliasSymbol((*g_ojtsTypeChecker)->getTypeAtLocation(tc::front(*jsym->declarations())->parent()));
-		_ASSERT(ts::SymbolFlags::RegularEnum == jsymParentSymbol->getFlags() 
-			|| ts::SymbolFlags::ConstEnum == jsymParentSymbol->getFlags()
-		);
-
-		if(auto ojsenum = tc::cont_find<tc::return_element_or_null>(g_setjsenum, FullyQualifiedName(jsymParentSymbol))) {
-			return std::make_tuple(SMangledType(ojsenum->m_strMangledName), std::addressof(*ojsenum));
-		} else {
-			return std::make_tuple(SMangledType(mangling_error, tc::make_str("tc::js::any /*UnknownMangledEnum=", FullyQualifiedName(jsym), "*/")), nullptr);
-		}
-	}
-
-	template<typename Rng, typename RngType>
-	SMangledType MangleTypeArguments(std::string const& strWithComments, std::string const& strCppCanonized, Rng const& atypeArguments, RngType const& rngetype) noexcept {
-		auto MangleEnumLiteral = [](ts::Type jtypeLit) noexcept -> SMangledType {
-			auto jsym = SymbolOrAliasSymbol(jtypeLit);
-			auto tupmtojsenum = LookupEnumFromLiteral(jtypeLit);
-
-			if(std::get<1>(tupmtojsenum)) {
-				auto const& jsenum = *std::get<1>(tupmtojsenum);
-				auto const strName = tc::explicit_cast<std::string>(jsym->getName()); 
-				if(auto ojsenumoption = tc::find_first<tc::return_element_or_null>(
-					tc::transform(jsenum.m_vecjsenumoption, TC_MEMBER(.m_strJsName)),
-					strName
-				).element_base()) {
-					return {tc::make_str(jsenum.m_strMangledName, "::", ojsenumoption->m_strCppifiedName)};
-				} 
-			}
-			return std::get<0>(tupmtojsenum);
-		};
-		_ASSERT(tc::size(atypeArguments)==tc::size(rngetype));
-
-		auto const vecmt = tc::make_vector(tc::transform(tc::zip(atypeArguments, rngetype), [&](ts::Type jtype, ETypeParameter etypeparam) noexcept -> SMangledType {
-			// Type arguments are the only place where we do not want to replace enum literals with enum types
-			if(etypeparamENUM==etypeparam) {
-				if((ts::TypeFlags::NumberLiteral | ts::TypeFlags::EnumLiteral)==jtype->getFlags()) {
-					return MangleEnumLiteral(jtype);
-				} else if(auto ojuniontype = jtype->isUnion()) {
-					_ASSERT(tc::all_of((*ojuniontype)->types(), [](auto jtypeUnionOption) noexcept { return (ts::TypeFlags::NumberLiteral | ts::TypeFlags::EnumLiteral)==jtypeUnionOption->getFlags(); }));
-					// Here we replace an expression like Token<Enum.a | Enum.b | Enum.c> with Token<Enum.a> which is of course not true. 
-					// Token<Enum.a | Enum.b | Enum.c> means that Token takes a non-type parameter with one of these three values. 
-					return CommentType(MangleEnumLiteral(tc::front((*ojuniontype)->types())).m_strCppCanonized, jtype);
-				}
-				// TypeFlags::TypeParameter
-			} else if(etypeparamNUMBER==etypeparam) {
-				_ASSERTFALSE;
-			} 
-			return MangleType(jtype); 
-		}));
-		
-		return {
-			tc::make_str<char>(strCppCanonized, "<", tc::join_separated(tc::transform(vecmt, TC_MEMBER(.ExpandType())), ", "), ">"),
-			tc::make_str<char>(strWithComments, "<", tc::join_separated(tc::transform(vecmt, TC_MEMBER(.m_strWithComments)), ", "), ">")
-		};
-	}
-
-	SMangledType MangleClassOrInterface(ts::InterfaceType jinterfacetypeRoot, jst::optional<js::ReadonlyArray<ts::Type>> oajtypeArgs = js::undefined()) noexcept {
+	SMangledType MangleClassOrInterface(ts::InterfaceType jinterfacetypeRoot, jst::optional<js::ReadonlyArray<ts::Type>> oajtypeArgs = js::undefined()) noexcept {	
 		auto const strName = FullyQualifiedName(*jinterfacetypeRoot->getSymbol());
 		_ASSERT(!jinterfacetypeRoot->outerTypeParameters()); // TODO: Not supported at the moment
 
-		if(auto ojsclass = tc::cont_find<tc::return_element_or_null>(g_setjsclass, strName)) {
-			// When jinterfaceRoot refers to interface C declared as  
-			// 	interface C<K, T> {}
-			// (*jointerfacetypeRoot)->typeParameters() returns the uninstantiated generic type parameters K, T
-			// We don't want to output them.
-			if(oajtypeArgs && !tc::empty(*oajtypeArgs)) {
-				return MangleTypeArguments(ojsclass->m_strMangledName, ojsclass->m_strMangledName, *oajtypeArgs, tc::transform(ojsclass->m_vectypeparam, TC_MEMBER(.m_etypeparam)));
-			} else {
-				return {ojsclass->m_strMangledName};
-			}
-		} else if(IsBootstrapType(strName)) {
-			auto str = tc::make_str("_js_", strName);
-			if(oajtypeArgs && !tc::empty(*oajtypeArgs)) {
-				return MangleTypeArguments(str, str, *oajtypeArgs, tc::repeat_n(tc::size(*oajtypeArgs), etypeparamTYPE));
-			} else {
-				return {str};
-			}
-		} else { 
-			return {mangling_error, tc::make_str("tc::js::any /*UnknownClassOrInterface=", strName, "*/")};
+		if(oajtypeArgs && !tc::empty(*oajtypeArgs)) {
+			return ::MangleClassOrInterface(strName, *oajtypeArgs);
+		} else {
+			return ::MangleClassOrInterface(strName, tc::make_empty_range<ts::Type>());
 		}
+	}
+}
+
+SMangledType CommentType(std::string strCppType, tc::js::ts::Type const jtypeRoot) noexcept {
+	return {
+		strCppType, 
+		tc::make_str(
+			strCppType,
+			" /*",
+			tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->typeToString(jtypeRoot)),
+			"*/"
+		)
+	};
+}
+
+std::tuple<SMangledType, SJsEnum const*> LookupEnumFromLiteral(ts::Type jtype) noexcept {
+	auto jsym = SymbolOrAliasSymbol(jtype);
+	auto jsymParentSymbol = SymbolOrAliasSymbol((*g_ojtsTypeChecker)->getTypeAtLocation(tc::front(*jsym->declarations())->parent()));
+	_ASSERT(ts::SymbolFlags::RegularEnum == jsymParentSymbol->getFlags() 
+		|| ts::SymbolFlags::ConstEnum == jsymParentSymbol->getFlags()
+	);
+
+	if(auto ojsenum = tc::cont_find<tc::return_element_or_null>(g_setjsenum, FullyQualifiedName(jsymParentSymbol))) {
+		return std::make_tuple(SMangledType(ojsenum->m_strMangledName), std::addressof(*ojsenum));
+	} else {
+		return std::make_tuple(SMangledType(mangling_error, tc::make_str("tc::js::any /*UnknownMangledEnum=", FullyQualifiedName(jsym), "*/")), nullptr);
 	}
 }
 

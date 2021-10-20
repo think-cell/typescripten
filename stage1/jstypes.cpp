@@ -1,26 +1,11 @@
 #include "jstypes.h"
+#include "mangle.inl"
 
 using tc::js::ts;
 namespace jst = tc::jst;
 namespace js = tc::js;
 
 extern std::optional<tc::js::ts::TypeChecker> g_ojtsTypeChecker;
-
-tc::jst::optional<tc::js::ts::Symbol> OptSymbolOrAliasSymbol(ts::Type jtype) noexcept {
-    if(auto ojsym = jtype->getSymbol()) { // getSymbol is correctly marked as returning Symbol|undefined
-        return ojsym;
-    } else {
-        return jtype->aliasSymbol();
-    }
-}
-
-tc::js::ts::Symbol SymbolOrAliasSymbol(ts::Type jtype) noexcept {
-    if(auto ojsym = OptSymbolOrAliasSymbol(jtype)) {
-        return *ojsym;
-    } else {
-        _ASSERTFALSE;
-    }
-}
 
 tc::js::ts::TypeAliasDeclaration TypeAliasDeclaration(ts::Symbol jsym) noexcept {
     return tc::js::ts::TypeAliasDeclaration(
@@ -678,14 +663,56 @@ SMangledType SJsTypeAlias::MangleType() const& noexcept {
     // using FooBar2 = FooBar;
     //
     // This does not work in all cases, see https://github.com/microsoft/TypeScript/issues/28197
-    return ::MangleType(
-        m_jtype, 
-        /*bUseTypeAlias*/ [&]() noexcept {
-            if (auto const ojsymAlias = m_jtype->aliasSymbol())
-            {
-                return !tc::equal(tc::explicit_cast<std::string>((*ojsymAlias)->name()), tc::explicit_cast<std::string>(m_jsym->name()));
-            }
-            return false;
-        }()
-    );
+    if(ts::TypeFlags::Object==m_jtype->flags()
+    && static_cast<bool>(ts::ObjectFlags::Mapped&ts::ObjectType(m_jtype)->objectFlags())
+    && static_cast<bool>(ts::ObjectFlags::Instantiated&ts::ObjectType(m_jtype)->objectFlags())) {
+        // If the right-hand side of a type alias is e.g. a Record, e.g., 
+        //   type Exports = Record<number, Table>;
+        // the rhs is a "Mapped" type, i.e., 
+        // Record has an [] operator: 
+        //
+        // type Record<K extends keyof any, T> = {
+        //    [P in K]: T;
+        // };
+        //
+        // and "Instantiated" which probably means it is an instantiated generic type.
+        // We cannot mangle m_jtype because that suddenly refers to the generic type 
+        // and not the specific instance. This is different when Record<K, T> is the type
+        // of a property or a base class. So we special case this here.
+        _ASSERT(ts::SyntaxKind::TypeReference==m_jtypenode->kind());
+        ts::TypeReferenceNode jtyperefnode(m_jtypenode);
+
+        return MangleClassOrInterface(
+            FullyQualifiedName([&]() noexcept {
+                // In that scenario, Record at least has both a symbol (named __type) and an aliasSymbol "Record":
+                // 
+                // type Record<K extends keyof any, T> = {
+                //     [P in K]: T;
+                // };
+                //
+                // Seems to be true for most basic definitions in lib.es5.d.ts
+                // Prefer the alias symbol
+                auto jtype = (*g_ojtsTypeChecker)->getTypeAtLocation(jtyperefnode->typeName());
+                if(auto ojsym = jtype->aliasSymbol()) {
+                    return *ojsym;
+                }
+                return *jtype->getSymbol();
+            }()), 
+            tc::transform(*jtyperefnode->typeArguments(), [](auto const& jtypenode) noexcept {
+                return (*g_ojtsTypeChecker)->getTypeFromTypeNode(jtypenode);
+            })
+        );
+
+    } else {
+        return ::MangleType(
+            m_jtype, 
+            /*bUseTypeAlias*/ [&]() noexcept {
+                if (auto const ojsymAlias = m_jtype->aliasSymbol())
+                {
+                    return !tc::equal(tc::explicit_cast<std::string>((*ojsymAlias)->name()), tc::explicit_cast<std::string>(m_jsym->name()));
+                }
+                return false;
+            }()
+        );
+    }
 }

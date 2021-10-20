@@ -4,7 +4,15 @@
 #include <utility>
 #include "typescript.d.bootstrap.h"
 
-std::string FullyQualifiedName(tc::js::ts::Symbol jsymType) noexcept;
+using tc::js::ts;
+namespace jst = tc::jst;
+namespace js = tc::js;
+
+std::string FullyQualifiedName(ts::Symbol jsymType) noexcept;
+tc::jst::optional<tc::js::ts::Symbol> OptSymbolOrAliasSymbol(tc::js::ts::Type jtype) noexcept;
+tc::js::ts::Symbol SymbolOrAliasSymbol(tc::js::ts::Type jtype) noexcept;
+
+DEFINE_ENUM(ETypeParameter, etypeparam, (TYPE)(ENUM)(NUMBER))
 
 DEFINE_ADL_TAG_TYPE(mangling_error)
 
@@ -21,4 +29,4 @@ struct SMangledType {
 	friend bool operator<(SMangledType const& lhs, SMangledType const& rhs) noexcept;
 };
 
-SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias = true) noexcept;
+SMangledType MangleType(ts::Type jtypeRoot, bool bUseTypeAlias = true) noexcept;

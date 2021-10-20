@@ -1,5 +1,13 @@
 declare function TestFunction() : test2.FooBar;
 
+interface Global {}
+interface Memory {}
+interface Table {}
+
+type ExportValue = Function | Global | Memory | Table;
+
+type Exports = Record<string, ExportValue>;
+
 type GlobalFooBar = test2.A | test.B;
 type GlobalFn = (a: test2.FooBar3) => test.FooBar;
 type GenericValueType<T> = T;

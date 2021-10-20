@@ -9,4 +9,6 @@ int main() {
 	static_assert(std::is_same<tc::js::test::FooBar, tc::jst::union_t<tc::js::test::SBar, tc::js::test::SFoo>>::value);
 	static_assert(std::is_same<tc::js::test::FooBar, tc::js::test2::FooBar2>::value);
 	static_assert(std::is_same<tc::js::test::FooBar, tc::js::test2::FooBar>::value);
+
+	static_assert(std::is_same<tc::js::Exports, tc::js::Record<tc::js::string, tc::js::ExportValue>>::value);
 }
