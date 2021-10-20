@@ -16,6 +16,7 @@
 #include <boost/range/iterator.hpp>
 
 namespace tc::js_defs {
+	// These bootstrap types (except TypeScript builtins) should eventually be generated too e.g. from lib.es5.d.ts
 	template<typename T> 
 	struct _impl_js_Array;
 	template<typename T> 
@@ -25,6 +26,9 @@ namespace tc::js_defs {
 	struct _impl_js_ReadonlyArray;
 	template<typename T> 
 	using _js_ReadonlyArray = ::tc::jst::ref<_impl_js_ReadonlyArray<T>>;
+ 
+	struct _impl_js_Function;	
+	using _js_Function = ::tc::jst::ref<_impl_js_Function>;
 
 	template<typename T> 
 	struct _impl_js_Promise;
@@ -43,14 +47,21 @@ namespace tc::js_defs {
 
 	struct _impl_js_console;
 	using _js_console = ::tc::jst::ref<_impl_js_console>;
+
 	template<typename T>
 	using Array = _js_Array<T>;
+	
 	template<typename T>
 	using ReadonlyArray = _js_ReadonlyArray<T>;
+	
 	template<typename T>
 	using Promise = _js_Promise<T>;
+
+	using Function = _js_Function;
+	
 	template<typename K, typename V>
 	using Record = _js_Record<K, V>;
+	
 	template<typename T>
 	using Iterable = _js_Iterable<T>;
 
@@ -133,6 +144,21 @@ namespace tc::js_defs {
 		// JavaScript passes 'undefined' to what TypeScript calls 'void' promise.
 	};
 	
+	struct _impl_js_Function : virtual ::tc::jst::object_base {
+		struct _tcjs_definitions {
+		};
+
+		// apply(this: Function, thisArg: any, argArray?: any): any;
+		// call(this: Function, thisArg: any, ...argArray: any[]): any;
+		// bind(this: Function, thisArg: any, ...argArray: any[]): any;
+		auto length() noexcept { return ::tc::explicit_cast<int>(_getProperty<double>("length")); }
+		auto prototype() noexcept { return _getProperty<::tc::js::any>("prototype"); }
+
+		auto toString() noexcept {
+			return _call<js::string>("toString");
+		}
+	};
+
 	template<typename T>
 	struct _impl_js_Iterable : virtual ::tc::jst::object_base {
 	};
@@ -180,7 +206,7 @@ namespace tc::js {
 
 inline bool IsBootstrapType(std::string const& strName) noexcept {
 	return tc::binary_find_unique<tc::return_bool>(
-		as_constexpr(tc::make_array<tc::ptr_range<char const>>(tc::aggregate_tag, "Array", "Iterable", "Promise", "ReadonlyArray", "Record")), 
+		as_constexpr(tc::make_array<tc::ptr_range<char const>>(tc::aggregate_tag, "Array", "Function", "Iterable", "Promise", "ReadonlyArray", "Record")), 
 		strName,
 		tc::lessfrom3way(tc::fn_lexicographical_compare_3way())
 	);
