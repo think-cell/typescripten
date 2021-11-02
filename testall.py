@@ -41,15 +41,15 @@ if __name__ == "__main__":
                         if e.stdout:
                             print(e.stdout.decode())
 
-    RunTests(os.path.join(strScriptPath, "examples"))
+    RunTests(os.path.join(strScriptPath, "bootstrap/tests"))
 
     try:
         print("================= Building typescripten compiler")
-        os.chdir(os.path.join(strScriptPath, "stage1"))
-        subprocess.check_output([os.path.join(strScriptPath, "stage1", "build.sh" if os.name=="posix" else "build.cmd")], stderr=subprocess.STDOUT)
+        os.chdir(os.path.join(strScriptPath, "typescripten"))
+        subprocess.check_output([os.path.join(strScriptPath, "typescripten", "build.sh" if os.name=="posix" else "build.cmd")], stderr=subprocess.STDOUT)
         print("[SUCCESS]\n")
 
-        RunTests(os.path.join(strScriptPath, "stage1", "tests"))
+        RunTests(os.path.join(strScriptPath, "typescripten", "tests"))
 
         print("{}/{} succeeded".format(nTestsSucceeded, nTests))
         exit(0 if nTests==nTestsSucceeded else 1)

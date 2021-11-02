@@ -122,7 +122,7 @@ rule CXX_EXECUTABLE_LINKER
   restat = $RESTAT
 
 rule TCJS 
-  command = """ + ExecShellCommand("node ${TCJSDIR}/stage1/main.js $in > $out 2>${INTDIR}/tcjs.log") + """
+  command = """ + ExecShellCommand("node ${TCJSDIR}/typescripten/main.js $in > $out 2>${INTDIR}/tcjs.log") + """
 
 """)
 

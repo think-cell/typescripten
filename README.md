@@ -68,7 +68,7 @@ By including the generated header you can use `MyLib` from C++ in a type-safe wa
         ) << std::endl;
     }
 
-See `examples` and `stage1/tests` for more examples. 
+See `bootstrap/tests` and `typescripten/tests` for more examples. 
 
 Close analogues are Rust's [stdweb](https://github.com/koute/stdweb) and [wasm-bindgen](https://github.com/rustwasm/wasm-bindgen).
 
@@ -111,9 +111,9 @@ Both the [TypeScript Playground](https://www.typescriptlang.org/play) and the [T
 # Setup
 
 * Copy `build-config-example.*` to `build-config.*` and edit the files to set the correct paths to emscripten, boost and the think-cell library
-* Run `examples/testall.py` to execute some test cases for the elementary **typescripten** C++/JavaScript interop classes in `bootstrap`
-* Run `cd stage1` and `./build.sh` or `build.cmd` to build the **typescripten** compiler
-* To process TypeScript interface definition files, go to their location, e.g., `cd stage1/tests/generics/` and run `node ../../main.js MyLib.d.ts`
+* Run `testall.py` to run test cases
+* Run `cd typescripten` and `./build.sh` or `build.cmd` to build the **typescripten** compiler
+* To process TypeScript interface definition files, go to their location, e.g., `cd typescripten/tests/generics/` and run `node ../../main.js MyLib.d.ts`
 
 # Naming conventions
 We use [Hungarian Notation](https://en.wikipedia.org/wiki/Hungarian_notation) in our code base, i.e.,

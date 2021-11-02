@@ -6,7 +6,7 @@
         {
             "label": "Build Compiler",
             "type": "shell",
-            "command": "cd stage1 && ./build.sh",
+            "command": "cd typescripten && ./build.sh",
             "problemMatcher": [],
             "group": {
                 "kind": "build",
