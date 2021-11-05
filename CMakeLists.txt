@@ -51,7 +51,7 @@ set(TYPESCRIPTEN_LINK_OPTIONS
 add_subdirectory(typescripten)
 
 # Build the typescripten compiler. 
-add_custom_target(install_node_packages npm install)
+add_custom_target(typescripten_install_node_packages npm install)
 add_subdirectory(typescriptenc)
 
 # Testing only available if this is the main app

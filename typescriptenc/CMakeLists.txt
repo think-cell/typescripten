@@ -30,8 +30,8 @@ target_precompile_headers(typescriptenc
 
 target_compile_options(typescriptenc PRIVATE ${TYPESCRIPTEN_COMPILE_OPTIONS})
 
-em_link_pre_js(typescripten main-pre.js)
+em_link_pre_js(typescriptenc main-pre.js)
 
 target_link_options(typescriptenc PRIVATE ${TYPESCRIPTEN_LINK_OPTIONS})
-add_dependencies(typescriptenc install_node_packages)
+add_dependencies(typescriptenc typescripten_install_node_packages)
 target_link_libraries(typescriptenc typescripten Boost::boost)
