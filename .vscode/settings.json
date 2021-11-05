@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "*.emcpp": "cpp",
+        "*.ppttc": "json",
+        "iostream": "cpp",
+        "iosfwd": "cpp"
+    }
+}

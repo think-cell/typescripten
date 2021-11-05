@@ -85,7 +85,14 @@ SetJsClass g_setjsclass;
 SetJsTypeAlias g_setjstypealias;
 
 int main(int cArgs, char* apszArgs[]) {
-	_ASSERT(2 <= cArgs);
+	if(cArgs < 2) {
+		tc::append(
+			std::cerr, 
+			"Not enough arguments\n"
+			"Syntax: node typescriptenc.js <TypeScript interface definition.d.ts> [-o <output>]\n"		
+		);
+		return 1;	
+	}
 
 	ts::CompilerOptions const jtsCompilerOptions(create_js_object);
 	jtsCompilerOptions->strict(true);
