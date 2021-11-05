@@ -1,9 +1,5 @@
 #pragma once
 
-#include <string>
-#include <utility>
-#include "typescript.d.bootstrap.h"
-
 using tc::js::ts;
 namespace jst = tc::jst;
 namespace js = tc::js;

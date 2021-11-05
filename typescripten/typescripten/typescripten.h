@@ -1,13 +1,13 @@
 #pragma once
 
-#include "break_or_continue.h"
-#include "explicit_cast.h"
-#include "meta.h"
-#include "for_each.h"
-#include "tc_move.h"
-#include "type_traits.h"
-#include "js_callback.h"
-#include "js_types.h"
+#include <tc/break_or_continue.h>
+#include <tc/explicit_cast.h>
+#include <tc/meta.h>
+#include <tc/for_each.h>
+#include <tc/tc_move.h>
+#include <tc/type_traits.h>
+#include <typescripten/callback.h>
+#include <typescripten/ref.h>
 
 #include <emscripten/val.h>
 #include <type_traits>

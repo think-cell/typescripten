@@ -1,8 +1,8 @@
 #pragma once
 
 #include <boost/intrusive/set.hpp>
-#include "algorithm.h"
-#include "return_decltype.h"
+#include <tc/algorithm.h>
+#include <tc/return_decltype.h>
 
 namespace tc {
 	template< template<typename> class RangeReturn, typename Arg, typename Key, typename ...Options  >

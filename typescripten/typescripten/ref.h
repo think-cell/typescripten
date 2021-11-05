@@ -1,10 +1,11 @@
 #pragma once
 
-#include "assert_defs.h"
-#include "js_types.h"
-#include "noncopyable.h"
-#include "tc_move.h"
-#include "type_traits.h"
+#include <tc/assert_defs.h>
+#include <tc/noncopyable.h>
+#include <tc/tc_move.h>
+#include <tc/type_traits.h>
+
+#include <typescripten/types.h>
 #include <emscripten/val.h>
 #include <string>
 #include <type_traits>

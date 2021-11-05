@@ -8,12 +8,15 @@
 #include <vector>
 #include <utility>
 #include <optional>
-#include "conditional_range.h"
-#include "explicit_cast.h"
-#include "assert_defs.h"
-#include "range.h"
-#include "join_adaptor.h"
-#include "js_bootstrap.h"
+
+#include <tc/conditional_range.h>
+#include <tc/explicit_cast.h>
+#include <tc/assert_defs.h>
+#include <tc/range.h>
+#include <tc/join_adaptor.h>
+
+#include <typescripten/typescripten.h>
+#include <typescripten/typescript.d.bootstrap.h>
 
 namespace tc {
 template<>

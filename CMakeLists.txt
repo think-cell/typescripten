@@ -47,8 +47,11 @@ set(TYPESCRIPTEN_LINK_OPTIONS
   "$<$<CONFIG:RELEASE>:-Oz;-flto;-g0;--emit-symbol-map;>"
 )
 
-add_subdirectory(bootstrap)
+# Build the support library. Any user of typescripten generated headers has to link against typescripten target
 add_subdirectory(typescripten)
+
+# Build the typescripten compiler. 
+add_subdirectory(typescriptenc)
 
 # Testing only available if this is the main app
 # Emergency override MODERN_CMAKE_BUILD_TESTING provided as well

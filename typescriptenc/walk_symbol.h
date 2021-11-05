@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-#include "typescript.d.bootstrap.h"
 
 enum ERecurse {
     erecurseCONTINUE,

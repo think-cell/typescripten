@@ -1,12 +1,12 @@
 #pragma once
-#include "casts.h"
+#include <tc/casts.h>
 
-#include "assert_defs.h"
-#include "noncopyable.h"
-#include "tag_type.h"
-#include "tc_move.h"
-#include "type_list.h"
-#include "type_traits.h"
+#include <tc/assert_defs.h>
+#include <tc/noncopyable.h>
+#include <tc/tag_type.h>
+#include <tc/tc_move.h>
+#include <tc/type_list.h>
+#include <tc/type_traits.h>
 #include <boost/callable_traits.hpp>
 
 #include <cstdint>
@@ -16,7 +16,7 @@
 #include <type_traits>
 #include <utility>
 
-#include "js_ref.h"
+#include <typescripten/ref.h>
 
 namespace tc::jst {
 	// ---------------------------------------- Passing member functions to JS ----------------------------------------

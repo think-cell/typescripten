@@ -21,11 +21,12 @@ See the Apache Version 2.0 License for specific language governing permissions
 and limitations under the License.
 ***************************************************************************** */
 
-#include "assert_defs.h"
-#include "explicit_cast.h"
-#include "js_bootstrap.h"
-#include "js_callback.h"
-#include "js_types.h"
+#include <tc/assert_defs.h>
+#include <tc/explicit_cast.h>
+#include <typescripten/typescripten.h>
+#include <typescripten/callback.h>
+#include <typescripten/types.h>
+
 #include <emscripten/val.h>
 #include <optional>
 

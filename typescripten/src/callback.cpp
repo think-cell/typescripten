@@ -1,4 +1,4 @@
-#include "js_callback.h"
+#include <typescripten/callback.h>
 #include <emscripten/bind.h>
 
 namespace tc::jst {

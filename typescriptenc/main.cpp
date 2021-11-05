@@ -1,8 +1,9 @@
 #include "precompiled.h"
-#include "typescript.d.bootstrap.h"
+
 #include "mangle.h"
 #include "walk_symbol.h"
 #include "jstypes.h"
+
 using tc::jst::create_js_object;
 using tc::js::string;
 using tc::jst::optional;

@@ -1,5 +1,5 @@
 #include "precompiled.h"
-#include "typescript.d.bootstrap.h"
+
 #include "mangle.h"
 #include "walk_symbol.h"
 #include "jstypes.h"

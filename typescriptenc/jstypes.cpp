@@ -1,3 +1,5 @@
+#include "precompiled.h"
+
 #include "jstypes.h"
 #include "mangle.inl"
 
