@@ -3,10 +3,10 @@
 #include <initializer_list>
 #include <string>
 #include <type_traits>
-#include "explicit_cast.h"
-#include "range.h"
-#include "assert_defs.h"
-#include "js_bootstrap.h"
+#include <tc/explicit_cast.h>
+#include <tc/range.h>
+#include <tc/assert_defs.h>
+#include <typescripten/typescripten.h>
 
 using tc::js::string;
 using tc::js::any;

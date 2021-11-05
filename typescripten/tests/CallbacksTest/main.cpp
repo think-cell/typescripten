@@ -1,12 +1,11 @@
 #include <emscripten/val.h>
 #include <iostream>
 #include <type_traits>
-#include "explicit_cast.h"
-#include "type_traits.h"
-#include "range.h"
-#include "assert_defs.h"
-#include "js_callback.h"
-#include "js_bootstrap.h"
+#include <tc/explicit_cast.h>
+#include <tc/type_traits.h>
+#include <tc/range.h>
+#include <tc/assert_defs.h>
+#include <typescripten/typescripten.h>
 
 using tc::jst::create_js_object;
 using tc::js::string;

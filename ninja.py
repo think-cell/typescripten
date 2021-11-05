@@ -59,10 +59,10 @@ if __name__ == "__main__":
 	
 	# read files that should be passed to emscripten as --pre-js arguments
 	strPreJsDependencies = ""
-	liststrPreJs = dictNinja.get("prejs", []) + ["${TCJSDIR}/bootstrap/src/js_callback.js"]
+	liststrPreJs = dictNinja.get("prejs", []) + ["${TCJSDIR}/typescripten/src/callback.js"]
 	strPreJsDependencies = " | " + " ".join(map(TransformSourcePath, liststrPreJs))
 
-	liststrCpp = dictNinja["cpp"] + ["${TCJSDIR}/bootstrap/src/js_callback.cpp"]
+	liststrCpp = dictNinja["cpp"] + ["${TCJSDIR}/typescripten/src/callback.cpp"]
 
 	# calculate which files emscripten will output depending on the linker flags
 	strImplicitOutputs = ""
@@ -99,7 +99,7 @@ if __name__ == "__main__":
 			+ "".join(map(lambda strPreJs: " --pre-js " + TransformSourcePath(strPreJs), liststrPreJs))
 			+ "\n"
 		)
-		fBuildNinja.write("INCLUDES = -isystem${BOOST_PATH} -isystem${THINK_CELL_PUBLIC_PATH} -I${TCJSDIR}/bootstrap/include" + "\n")
+		fBuildNinja.write("INCLUDES = -isystem${BOOST_PATH} -isystem${THINK_CELL_PUBLIC_PATH} -I${TCJSDIR}/typescripten" + "\n")
 
 		def ExecShellCommand(strCommand):
 			if os.name=="posix":

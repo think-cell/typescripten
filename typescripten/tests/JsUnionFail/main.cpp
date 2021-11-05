@@ -1,10 +1,9 @@
 #include <emscripten/val.h>
 #include <emscripten/bind.h>
-#include "explicit_cast.h"
-#include "range.h"
-#include "assert_defs.h"
-#include "js_types.h"
-#include "js_ref.h"
+#include <tc/explicit_cast.h>
+#include <tc/range.h>
+#include <tc/assert_defs.h>
+#include <typescripten/typescripten.h>
 
 using tc::jst::object;
 using tc::js::string;

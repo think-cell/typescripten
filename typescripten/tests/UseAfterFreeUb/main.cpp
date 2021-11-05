@@ -1,7 +1,7 @@
 #include <emscripten/val.h>
 #include <emscripten/bind.h>
-#include "assert_defs.h"
-#include "js_types.h"
+#include <tc/assert_defs.h>
+#include <typescripten/typescripten.h>
 
 using tc::js::string;
 

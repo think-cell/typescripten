@@ -1,9 +1,4 @@
-#include <stdio.h>
-#include <string>
-#include "explicit_cast.h"
-#include "assert_defs.h"
-#include "range.h"
-#include "typescript.d.bootstrap.h"
+#include "../../precompiled.h"
 
 using tc::jst::create_js_object;
 using tc::js::string;

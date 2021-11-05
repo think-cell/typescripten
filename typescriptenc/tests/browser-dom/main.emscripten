@@ -1,7 +1,7 @@
 {
     "tcjs": {
         "output": "lib.dom.d.h",
-		"inputs": ["../../node_modules/typescript/lib/lib.dom.d.ts"]
+		"inputs": ["../../../node_modules/typescript/lib/lib.dom.d.ts"]
     },
     "cpp": [
         "main.cpp"
