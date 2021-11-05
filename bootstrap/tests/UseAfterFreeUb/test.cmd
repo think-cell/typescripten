@@ -1,2 +1,2 @@
-@call ..\..\build-config.cmd
+@call ..\..\..\build-config.cmd
 node main.js

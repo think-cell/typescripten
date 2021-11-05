@@ -1,5 +1,5 @@
 #!/bin/bash
 set -ueo pipefail
-source ../../build-config.sh
+source ../../../build-config.sh
 npm install
-../../ninja.py main.emscripten debug
+../../../ninja.py main.emscripten debug
