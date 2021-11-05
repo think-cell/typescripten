@@ -25,7 +25,7 @@ _typescripten_ uses the [parser API provided by typescript](https://github.com/M
 
 [A short overview of _typescripten_ has been presented at CppNow 2021](https://youtu.be/Cmud1jO__VA)  
 
-[_typescripten_ will be presented more fully at CppCon 2021](https://sched.co/nvAY)
+[_typescripten_ has been presented more fully at CppCon 2021. The recording will be published later in 2021.](https://sched.co/nvAY)
 
 # Example
 
@@ -68,13 +68,13 @@ By including the generated header you can use `MyLib` from C++ in a type-safe wa
         ) << std::endl;
     }
 
-See `bootstrap/tests` and `typescripten/tests` for more examples. 
+See `typescripten/tests` and `typescriptenc/tests` for more examples. 
 
 Close analogues are Rust's [stdweb](https://github.com/koute/stdweb) and [wasm-bindgen](https://github.com/rustwasm/wasm-bindgen).
 
 # TypeScript language support
 
-`bootstrap/` contains the code to support basic Typescript types and language features
+`typescripten/` contains the code to support basic Typescript types and language features
 - `any`, `undefined`, `null` and `string` types
 - Support for mixed enums like
 ```
@@ -106,14 +106,41 @@ Both the [TypeScript Playground](https://www.typescriptlang.org/play) and the [T
 * [Emscripten](https://emscripten.org/) 2.0.18 or newer (Node.js and NPM are included)
 * [think-cell public library](https://github.com/think-cell/range/tree/clang_12_cpp2a)
 * [boost 1.73.0](https://dl.bintray.com/boostorg/release/1.73.0/source/)
-* [ninja](https://ninja-build.org)
 
 # Setup
 
-* Copy `build-config-example.*` to `build-config.*` and edit the files to set the correct paths to emscripten, boost and the think-cell library
-* Run `testall.py` to run test cases
-* Run `cd typescripten` and `./build.sh` or `build.cmd` to build the **typescripten** compiler
-* To process TypeScript interface definition files, go to their location, e.g., `cd typescripten/tests/generics/` and run `node ../../main.js MyLib.d.ts`
+It is easiest to use `typescripten` via CMake. In your CMake file add the following:
+
+```CMake
+# Download typescripten (The name must not be changed)
+include(FetchContent)
+FetchContent_Declare(
+  typescripten
+  GIT_REPOSITORY https://github.com/think-cell/typescripten
+)
+FetchContent_MakeAvailable(typescripten)
+
+# Include the CMake helper function
+include(${typescripten_SOURCE_DIR}/cmake/TypeScripten.cmake)
+
+# Install the types you need via npm
+add_custom_target(install_node_packages npm install)
+
+# Add your executable target
+add_executable(test ...)
+
+# Compile the downloaded TypeScript interface definitions (here lib.dom.d.ts)
+# into a header and add dependencies so that the build order is 
+# install_node_packages < typescripten compiler < test
+add_typescripten_target(
+  TARGET test
+  INPUTS ${PROJECT_SOURCE_DIR}/node_modules/typescript/lib/lib.dom.d.ts
+  OUTPUT lib.dom.d.h
+  DEPENDSON install_node_packages
+)
+```
+
+See `example` and its associated README. The tests still run with the legacy Ninja-based generator and will be moved to CMake as well. 
 
 # Naming conventions
 We use [Hungarian Notation](https://en.wikipedia.org/wiki/Hungarian_notation) in our code base, i.e.,
