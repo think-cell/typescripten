@@ -13,7 +13,7 @@ endif()
 include(FetchContent)
 FetchContent_Declare(
   typescripten
-  GIT_REPOSITORY /Users/stheophil/Programming/tcjs
+  GIT_REPOSITORY https://github.com/think-cell/typescripten
 )
 FetchContent_MakeAvailable(typescripten)
 include(${typescripten_SOURCE_DIR}/cmake/TypeScripten.cmake)
