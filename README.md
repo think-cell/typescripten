@@ -140,6 +140,8 @@ add_typescripten_target(
 )
 ```
 
+Now you can include `<lib.dom.d.h>` in your C++ files. 
+
 See `example` and its associated README. The tests still run with the legacy Ninja-based generator and will be moved to CMake as well. 
 
 # Naming conventions
