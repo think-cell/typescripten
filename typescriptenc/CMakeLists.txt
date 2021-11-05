@@ -6,9 +6,28 @@ add_executable(typescriptenc
     mangle.cpp
     mangle.h
     mangle.inl
-    precompiled.h
     walk_symbol.h
 )
+
+target_precompile_headers(typescriptenc
+  PRIVATE
+    <chrono>
+    <cmath>
+    <string>
+    <iostream>
+    <variant>
+    <vector>
+    <utility>
+    <optional>
+    <tc/conditional_range.h>
+    <tc/explicit_cast.h>
+    <tc/assert_defs.h>
+    <tc/range.h>
+    <tc/join_adaptor.h>
+    <typescripten/typescripten.h>
+    "typescript.d.bootstrap.h"
+)
+
 target_compile_options(typescriptenc PRIVATE ${TYPESCRIPTEN_COMPILE_OPTIONS})
 
 em_link_pre_js(typescripten main-pre.js)

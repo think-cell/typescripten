@@ -16,7 +16,7 @@
 #include <tc/join_adaptor.h>
 
 #include <typescripten/typescripten.h>
-#include <typescripten/typescript.d.bootstrap.h>
+#include "typescript.d.bootstrap.h"
 
 namespace tc {
 template<>
