@@ -283,10 +283,7 @@ SJsVariableLike::SJsVariableLike(ts::Symbol jsym) noexcept
         || static_cast<bool>(ts::NodeFlags::Const&m_jdeclVariableLike->parent()->flags()))
 {
     ts::ModifierFlags const nModifierFlags = ts::getCombinedModifierFlags(m_jdeclVariableLike);
-    if (ts::ModifierFlags::None != nModifierFlags &&
-        ts::ModifierFlags::Export != nModifierFlags &&
-        ts::ModifierFlags::Readonly != nModifierFlags &&
-        ts::ModifierFlags::Ambient != ts::getCombinedModifierFlags(m_jdeclVariableLike)) {
+    if(ts::ModifierFlags::None != (~(ts::ModifierFlags::Export|ts::ModifierFlags::Readonly|ts::ModifierFlags::Ambient) & nModifierFlags)) {
         tc::append(std::cerr,
             "Unknown getCombinedModifierFlags for jdeclVariableLike ",
             m_strJsName,
@@ -368,9 +365,7 @@ SJsFunctionLike::SJsFunctionLike(ts::Symbol jsym, ts::SignatureDeclaration jsign
     )))
     , m_vectypeparam(tc::make_vector(tc::transform(ts::getEffectiveTypeParameterDeclarations(jsigndecl), tc::fn_explicit_cast<STypeParameter>())))
 { 
-    if (ts::ModifierFlags::None != ts::getCombinedModifierFlags(jsigndecl) &&
-        ts::ModifierFlags::Export != ts::getCombinedModifierFlags(jsigndecl) &&
-        ts::ModifierFlags::Ambient != ts::getCombinedModifierFlags(jsigndecl)) {
+    if(ts::ModifierFlags::None!=(~(ts::ModifierFlags::Export|ts::ModifierFlags::Ambient) & ts::getCombinedModifierFlags(jsigndecl))) {
         tc::append(std::cerr,
             "Unknown getCombinedModifierFlags for jsigndecl ",
             tc::explicit_cast<std::string>(m_jsym->getName()),

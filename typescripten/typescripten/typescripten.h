@@ -8,6 +8,7 @@
 #include <tc/type_traits.h>
 #include <typescripten/callback.h>
 #include <typescripten/ref.h>
+#include <typescripten/types.h>
 
 #include <emscripten/val.h>
 #include <type_traits>
@@ -21,12 +22,17 @@ namespace tc::js_defs {
 	struct _impl_js_Array;
 	template<typename T> 
 	using _js_Array = ::tc::jst::ref<_impl_js_Array<T>>;
-
+	
 	template<typename T> 
 	struct _impl_js_ReadonlyArray;
 	template<typename T> 
 	using _js_ReadonlyArray = ::tc::jst::ref<_impl_js_ReadonlyArray<T>>;
  
+	template<typename K, typename V> 
+	struct _impl_js_Map;
+	template<typename K, typename V> 
+	using _js_Map = ::tc::jst::ref<_impl_js_Map<K, V>>;
+
 	struct _impl_js_Function;	
 	using _js_Function = ::tc::jst::ref<_impl_js_Function>;
 
@@ -54,6 +60,9 @@ namespace tc::js_defs {
 	template<typename T>
 	using ReadonlyArray = _js_ReadonlyArray<T>;
 	
+	template<typename K, typename V>
+	using Map = _js_Map<K, V>;
+
 	template<typename T>
 	using Promise = _js_Promise<T>;
 
@@ -100,6 +109,17 @@ namespace tc::js_defs {
 	struct _impl_js_ReadonlyArray : virtual _impl_js_Array<T> {
 		auto push(T const& item) noexcept = delete;
 		void _setIndex(int i, T value) noexcept = delete;
+	};
+
+	template<typename K, typename V>
+	struct _impl_js_Map : virtual ::tc::jst::object_base {
+		static_assert(::tc::jst::IsJsInteropable<K>::value);
+		static_assert(::tc::jst::IsJsInteropable<V>::value);
+		
+		auto get(K k) noexcept { return _call<::tc::jst::optional<K>>("get", k); }
+		auto has(K k) noexcept { return _call<bool>("has", k); }
+    	auto set(K k, V v) noexcept { return _call<::tc::js_defs::Map<K, V>>("set", k, v); }
+		auto size() noexcept { return ::tc::explicit_cast<int>(_getProperty<double>("size")); }
 	};
 
 	template<typename K, typename V>
@@ -197,6 +217,7 @@ namespace tc::js {
 	using tc::js_defs::console;
 	using tc::js_defs::Promise;
 	using tc::js_defs::ReadonlyArray;
+	using tc::js_defs::Map;
 	using tc::js_defs::Record;
 
 	inline auto stackTrace() noexcept { // Expects non-standard `stackTrace()` function in JS to be available globally.
@@ -206,7 +227,7 @@ namespace tc::js {
 
 inline bool IsBootstrapType(std::string const& strName) noexcept {
 	return tc::binary_find_unique<tc::return_bool>(
-		as_constexpr(tc::make_array<tc::ptr_range<char const>>(tc::aggregate_tag, "Array", "Function", "Iterable", "Promise", "ReadonlyArray", "Record")), 
+		as_constexpr(tc::make_array<tc::ptr_range<char const>>(tc::aggregate_tag, "Array", "Function", "Iterable", "Map", "Promise", "ReadonlyArray", "Record")), 
 		strName,
 		tc::lessfrom3way(tc::fn_lexicographical_compare_3way())
 	);

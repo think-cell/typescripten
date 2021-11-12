@@ -84,37 +84,9 @@ SetJsEnum g_setjsenum;
 SetJsClass g_setjsclass;
 SetJsTypeAlias g_setjstypealias;
 
-int main(int cArgs, char* apszArgs[]) {
-	if(cArgs < 2) {
-		tc::append(
-			std::cerr, 
-			"Not enough arguments\n"
-			"Syntax: node typescriptenc.js <TypeScript interface definition.d.ts> [-o <output>]\n"		
-		);
-		return 1;	
-	}
-
-	ts::CompilerOptions const jtsCompilerOptions(create_js_object);
-	jtsCompilerOptions->strict(true);
-	jtsCompilerOptions->target(ts::ScriptTarget::ES5);
-	jtsCompilerOptions->module(ts::ModuleKind::CommonJS);
-
-	auto const rngstrFileNames = tc::counted(boost::next(apszArgs), cArgs - 1);
-	tc::for_each(rngstrFileNames, [](tc::ptr_range<char> rngch) noexcept {
-		tc::for_each(rngch, [](auto& ch) noexcept { 
-			if('\\'==ch) ch = '/'; // typescript createProgram does not support backslashes 
-		});
-	});
-	ts::Program const jtsProgram = ts::createProgram(ReadonlyArray<string>(create_js_object, rngstrFileNames), jtsCompilerOptions);
+template<typename Rng>
+void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept {
 	*g_ojtsTypeChecker = jtsProgram->getTypeChecker();
-
-	{
-		auto const jtsReadOnlyArrayDiagnostics = ts::getPreEmitDiagnostics(jtsProgram);
-		if (jtsReadOnlyArrayDiagnostics->length()) {
-			console::log(ts::formatDiagnosticsWithColorAndContext(jtsReadOnlyArrayDiagnostics, ts::FormatDiagnosticsHost(ts::createCompilerHost(jtsCompilerOptions).getEmval())));
-			return 1;
-		}
-	}
 
 	// Iterate over source files, enumerate global symbols and then walk the tree of child symbols
 	SJsScope scopeGlobal(
@@ -758,5 +730,72 @@ int main(int cArgs, char* apszArgs[]) {
 			"} // namespace tc::js\n"
 		);
 	}
-	return 0;
+}
+
+int main(int cArgs, char* apszArgs[]) {
+#ifdef DEBUG_DEVTOOLS 
+	// See Debugging.md for an explanation on how to setup interactive debugging with Chrome DevTools
+	static struct Callback final {
+		ts::CompilerOptions m_jtsCompilerOptions;
+
+		Callback() noexcept 
+			: m_jtsCompilerOptions(jst::create_js_object) 
+		{
+			m_jtsCompilerOptions->strict(true);
+			m_jtsCompilerOptions->target(ts::ScriptTarget::ES5);
+			m_jtsCompilerOptions->module(ts::ModuleKind::CommonJS);
+		}
+
+		TC_JS_MEMBER_FUNCTION(Callback, WithDefaultMap, void, (js::Map<js::string, js::string> mapstrstr)) {
+			mapstrstr->set(
+				js::string("index.ts"), 
+				js::string(emscripten::val::global("document").call<emscripten::val>("getElementById", emscripten::val("text"))["innerHTML"])
+			);
+
+			auto rngstrFileNames = tc::single("index.ts");
+			
+			auto const jtsHost = tc::js::tsvfs::createVirtualCompilerHost(
+				tc::js::tsvfs::createSystem(mapstrstr), 
+				m_jtsCompilerOptions, 
+				tc::js::any(emscripten::val::global("ts"))
+			);
+			auto const jtsProgram = ts::createProgram(ReadonlyArray<string>(create_js_object, rngstrFileNames), m_jtsCompilerOptions, ts::CompilerHost(host.getEmval()["compilerHost"]));
+			CompileProgram(jtsProgram, rngstrFileNames);
+		}
+	} cb;
+
+	tc::js::tsvfs::createDefaultMapFromCDN()(cb.m_jtsCompilerOptions, ts::version(), true, tc::js::any(emscripten::val::global("ts")), js::undefined(), js::undefined(), js::undefined())->then(cb.WithDefaultMap);
+#else
+	if(cArgs < 2) {
+		tc::append(
+			std::cerr, 
+			"Not enough arguments\n"
+			"Syntax: node typescriptenc.js <TypeScript interface definition.d.ts> [-o <output>]\n"		
+		);
+		return 1;	
+	}
+
+	auto const rngstrFileNames = tc::counted(boost::next(apszArgs), cArgs - 1);
+	tc::for_each(rngstrFileNames, [](tc::ptr_range<char> rngch) noexcept {
+		tc::for_each(rngch, [](auto& ch) noexcept { 
+			if('\\'==ch) ch = '/'; // typescript createProgram does not support backslashes 
+		});
+	});
+
+	ts::CompilerOptions const jtsCompilerOptions(create_js_object);
+	jtsCompilerOptions->strict(true);
+	jtsCompilerOptions->target(ts::ScriptTarget::ES5);
+	jtsCompilerOptions->module(ts::ModuleKind::CommonJS);
+
+	ts::Program const jtsProgram = ts::createProgram(ReadonlyArray<string>(create_js_object, rngstrFileNames), jtsCompilerOptions);
+	{
+		auto const jtsReadOnlyArrayDiagnostics = ts::getPreEmitDiagnostics(jtsProgram);
+		if (jtsReadOnlyArrayDiagnostics->length()) {
+			console::log(ts::formatDiagnosticsWithColorAndContext(jtsReadOnlyArrayDiagnostics, ts::FormatDiagnosticsHost(ts::createCompilerHost(jtsCompilerOptions).getEmval())));
+			return 1;
+		}
+	}
+
+	CompileProgram(jtsProgram, rngstrFileNames);
+#endif
 }
