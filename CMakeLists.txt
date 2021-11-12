@@ -37,14 +37,14 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(TYPESCRIPTEN_COMPILE_OPTIONS 
   "-Wall" "-Wextra" "-fdiagnostics-absolute-paths" "-fno-char8_t" "-Wno-unused-parameter"
-  "$<$<CONFIG:DEBUG>:-D_DEBUG;-gsource-map;>"
-  "$<$<CONFIG:RELEASE>:-Oz;-flto;-g0;>"
+  "$<$<CONFIG:DEBUG>:-D_DEBUG;-g;>"
+  "$<$<CONFIG:RELEASE>:-Oz;-flto;-gseparate-dwarf;>"
 )
 
 set(TYPESCRIPTEN_LINK_OPTIONS 
   "-fno-char8_t" "--bind" "SHELL:-s DEMANGLE_SUPPORT=1"
-  "$<$<CONFIG:DEBUG>:-gsource-map;--source-map-base;http://localhost:8000/;SHELL:-s SAFE_HEAP=1;SHELL:-s ASSERTIONS=2;>"
-  "$<$<CONFIG:RELEASE>:-Oz;-flto;-g0;--emit-symbol-map;>"
+  "$<$<CONFIG:DEBUG>:-g;SHELL:-s SAFE_HEAP=1;SHELL:-s ASSERTIONS=2;>"
+  "$<$<CONFIG:RELEASE>:-Oz;-flto;-gseparate-dwarf;>"
 )
 
 # Build the support library. Any user of typescripten generated headers has to link against typescripten target

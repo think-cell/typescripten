@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+ <html>
+   <head>
+     <meta charset="utf-8" />
+     <title>Debug with Chrome DevTools</title>
+   </head>
+   <body>
+    <textarea id="text" style="width:80%; height: 80vh; font-size: 14pt; font-family: 'Courier New', Courier, monospace;">
+  // Declare namespace X twice and define it as a type alias too
+	declare namespace X {
+		// Declare X.Y as an interface and a variable 
+		export interface Y {
+			a: number;
+		}
+
+		// Declare X.Z three times as class, namespace and interface
+		export class Z {
+			b: number;
+		}
+	}
+    </textarea>
+    <script src="main.js"></script>
+   </body>
+ </html>

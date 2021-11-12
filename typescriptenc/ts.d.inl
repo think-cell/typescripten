@@ -1419,6 +1419,10 @@ namespace tc::js_defs {
 	using namespace jst; // no ADL
 	struct _impl_js_j_qts_q;
 	using _js_j_qts_q = ref<_impl_js_j_qts_q>;
+	struct _impl_js_j_qtsvfs_q;
+	using _js_j_qtsvfs_q = ref<_impl_js_j_qtsvfs_q>;
+	struct _impl_js_j_qtsvfs_q_dVirtualTypeScriptEnvironment;
+	using _js_j_qtsvfs_q_dVirtualTypeScriptEnvironment = ref<_impl_js_j_qtsvfs_q_dVirtualTypeScriptEnvironment>;
 	struct _impl_js_jts_dAmdDependency;
 	using _js_jts_dAmdDependency = ref<_impl_js_jts_dAmdDependency>;
 	struct _impl_js_jts_dApplicableRefactorInfo;
@@ -3918,6 +3922,35 @@ namespace tc::js_defs {
 			static auto version() noexcept;
 			static auto versionMajorMinor() noexcept;
 		};
+	};
+	struct _impl_js_j_qtsvfs_q : virtual object_base {
+		struct _tcjs_definitions {
+			using VirtualTypeScriptEnvironment = _js_j_qtsvfs_q_dVirtualTypeScriptEnvironment;
+			static auto createFSBackedSystem(_js_Map<tc::js::string, tc::js::string> files, tc::js::string _projectRoot, tc::js::any /*AnonymousType=typeof ts*/ ts) noexcept;
+			static auto createSystem(_js_Map<tc::js::string, tc::js::string> files) noexcept;
+			static auto createVirtualCompilerHost(_js_jts_dSystem sys, _js_jts_dCompilerOptions compilerOptions, tc::js::any /*AnonymousType=typeof ts*/ ts) noexcept;
+			static auto createVirtualLanguageServiceHost(_js_jts_dSystem sys, _js_Array<tc::js::string> rootFiles, _js_jts_dCompilerOptions compilerOptions, tc::js::any /*AnonymousType=typeof ts*/ ts, tc::jst::union_t<_js_jts_dCustomTransformers, tc::js::undefined> customTransformers = tc::js::undefined()) noexcept;
+			static auto createVirtualTypeScriptEnvironment(_js_jts_dSystem sys, _js_Array<tc::js::string> rootFiles, tc::js::any /*AnonymousType=typeof ts*/ ts, tc::jst::union_t<_js_jts_dCompilerOptions, tc::js::undefined> compilerOptions = tc::js::undefined(), tc::jst::union_t<_js_jts_dCustomTransformers, tc::js::undefined> customTransformers = tc::js::undefined()) noexcept;
+			static auto addAllFilesFromFolder() noexcept;
+			static auto addFilesForTypesIntoFolder() noexcept;
+			static auto createDefaultMapFromCDN() noexcept;
+			static auto createDefaultMapFromNodeModules() noexcept;
+			static auto knownLibFilesForCompilerOptions() noexcept;
+		};
+	};
+	struct _impl_js_j_qtsvfs_q_dVirtualTypeScriptEnvironment : virtual object_base {
+		struct _tcjs_definitions {
+		};
+		auto sys() noexcept;
+		void sys(_js_jts_dSystem v) noexcept;
+		auto languageService() noexcept;
+		void languageService(_js_jts_dLanguageService v) noexcept;
+		auto getSourceFile() noexcept;
+		void getSourceFile(tc::jst::function<tc::jst::union_t<_js_jts_dSourceFile, tc::js::undefined>(tc::js::string)> v) noexcept;
+		auto createFile() noexcept;
+		void createFile(tc::jst::function<void(tc::js::string, tc::js::string)> v) noexcept;
+		auto updateFile() noexcept;
+		void updateFile(tc::jst::function<void(tc::js::string, tc::js::string, tc::jst::union_t<_js_jts_dTextSpan, tc::js::undefined>)> v) noexcept;
 	};
 	struct _impl_js_jts_dAmdDependency : virtual object_base {
 		struct _tcjs_definitions {
@@ -11397,6 +11430,36 @@ namespace tc::js_defs {
 	inline void _impl_js_j_qts_q::_tcjs_definitions::unchangedTextChangeRange(_js_jts_dTextChangeRange v) noexcept { emscripten::val::global("ts").set("unchangedTextChangeRange", v); }
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::version() noexcept { return emscripten::val::global("ts")["version"].template as<tc::js::string>(); }
 	inline auto _impl_js_j_qts_q::_tcjs_definitions::versionMajorMinor() noexcept { return emscripten::val::global("ts")["versionMajorMinor"].template as<tc::js::string /*"4.4"*/>(); }
+	inline auto _impl_js_j_qtsvfs_q::_tcjs_definitions::createFSBackedSystem(_js_Map<tc::js::string, tc::js::string> files, tc::js::string _projectRoot, tc::js::any /*AnonymousType=typeof ts*/ ts) noexcept {
+		return emscripten::val::global("tsvfs")["createFSBackedSystem"](files, _projectRoot, ts).template as<_js_jts_dSystem>();
+	}
+	inline auto _impl_js_j_qtsvfs_q::_tcjs_definitions::createSystem(_js_Map<tc::js::string, tc::js::string> files) noexcept {
+		return emscripten::val::global("tsvfs")["createSystem"](files).template as<_js_jts_dSystem>();
+	}
+	inline auto _impl_js_j_qtsvfs_q::_tcjs_definitions::createVirtualCompilerHost(_js_jts_dSystem sys, _js_jts_dCompilerOptions compilerOptions, tc::js::any /*AnonymousType=typeof ts*/ ts) noexcept {
+		return emscripten::val::global("tsvfs")["createVirtualCompilerHost"](sys, compilerOptions, ts).template as<tc::js::any /*AnonymousTypeWithLiteralType={ compilerHost: CompilerHost; updateFile: (sourceFile: SourceFile) => boolean; }[compilerHost, updateFile]*/>();
+	}
+	inline auto _impl_js_j_qtsvfs_q::_tcjs_definitions::createVirtualLanguageServiceHost(_js_jts_dSystem sys, _js_Array<tc::js::string> rootFiles, _js_jts_dCompilerOptions compilerOptions, tc::js::any /*AnonymousType=typeof ts*/ ts, tc::jst::union_t<_js_jts_dCustomTransformers, tc::js::undefined> customTransformers) noexcept {
+		return emscripten::val::global("tsvfs")["createVirtualLanguageServiceHost"](sys, rootFiles, compilerOptions, ts, customTransformers).template as<tc::js::any /*AnonymousTypeWithLiteralType={ languageServiceHost: LanguageServiceHost; updateFile: (sourceFile: SourceFile) => void; }[languageServiceHost, updateFile]*/>();
+	}
+	inline auto _impl_js_j_qtsvfs_q::_tcjs_definitions::createVirtualTypeScriptEnvironment(_js_jts_dSystem sys, _js_Array<tc::js::string> rootFiles, tc::js::any /*AnonymousType=typeof ts*/ ts, tc::jst::union_t<_js_jts_dCompilerOptions, tc::js::undefined> compilerOptions, tc::jst::union_t<_js_jts_dCustomTransformers, tc::js::undefined> customTransformers) noexcept {
+		return emscripten::val::global("tsvfs")["createVirtualTypeScriptEnvironment"](sys, rootFiles, ts, compilerOptions, customTransformers).template as<_js_j_qtsvfs_q_dVirtualTypeScriptEnvironment>();
+	}
+	inline auto _impl_js_j_qtsvfs_q::_tcjs_definitions::addAllFilesFromFolder() noexcept { return emscripten::val::global("tsvfs")["addAllFilesFromFolder"].template as<tc::jst::function<void(_js_Map<tc::js::string, tc::js::string>, tc::js::string)>>(); }
+	inline auto _impl_js_j_qtsvfs_q::_tcjs_definitions::addFilesForTypesIntoFolder() noexcept { return emscripten::val::global("tsvfs")["addFilesForTypesIntoFolder"].template as<tc::jst::function<void(_js_Map<tc::js::string, tc::js::string>)>>(); }
+	inline auto _impl_js_j_qtsvfs_q::_tcjs_definitions::createDefaultMapFromCDN() noexcept { return emscripten::val::global("tsvfs")["createDefaultMapFromCDN"].template as<tc::jst::function<_js_Promise<_js_Map<tc::js::string, tc::js::string>>(_js_jts_dCompilerOptions, tc::js::string, bool /*false*/, tc::js::any /*AnonymousType=typeof ts*/, tc::js::any /*UnionWithUnsupportedSubtype=[tc::js::undefined,tc::js::any]*/, tc::js::any /*UnionWithUnsupportedSubtype=[tc::js::undefined,tc::js::any]*/, tc::js::any /*UnionWithUnsupportedSubtype=[tc::js::undefined,tc::js::any]*/)>>(); }
+	inline auto _impl_js_j_qtsvfs_q::_tcjs_definitions::createDefaultMapFromNodeModules() noexcept { return emscripten::val::global("tsvfs")["createDefaultMapFromNodeModules"].template as<tc::jst::function<_js_Map<tc::js::string, tc::js::string>(_js_jts_dCompilerOptions, tc::js::any /*UnionWithUnsupportedSubtype=[tc::js::undefined,tc::js::any]*/)>>(); }
+	inline auto _impl_js_j_qtsvfs_q::_tcjs_definitions::knownLibFilesForCompilerOptions() noexcept { return emscripten::val::global("tsvfs")["knownLibFilesForCompilerOptions"].template as<tc::jst::function<_js_Array<tc::js::string>(_js_jts_dCompilerOptions, tc::js::any /*AnonymousType=typeof ts*/)>>(); }
+	inline auto _impl_js_j_qtsvfs_q_dVirtualTypeScriptEnvironment::sys() noexcept { return this->template _getProperty<_js_jts_dSystem>("sys"); }
+	inline void _impl_js_j_qtsvfs_q_dVirtualTypeScriptEnvironment::sys(_js_jts_dSystem v) noexcept { this->template _setProperty("sys", v); }
+	inline auto _impl_js_j_qtsvfs_q_dVirtualTypeScriptEnvironment::languageService() noexcept { return this->template _getProperty<_js_jts_dLanguageService>("languageService"); }
+	inline void _impl_js_j_qtsvfs_q_dVirtualTypeScriptEnvironment::languageService(_js_jts_dLanguageService v) noexcept { this->template _setProperty("languageService", v); }
+	inline auto _impl_js_j_qtsvfs_q_dVirtualTypeScriptEnvironment::getSourceFile() noexcept { return this->template _getProperty<tc::jst::function<tc::jst::union_t<_js_jts_dSourceFile, tc::js::undefined>(tc::js::string)>>("getSourceFile"); }
+	inline void _impl_js_j_qtsvfs_q_dVirtualTypeScriptEnvironment::getSourceFile(tc::jst::function<tc::jst::union_t<_js_jts_dSourceFile, tc::js::undefined>(tc::js::string)> v) noexcept { this->template _setProperty("getSourceFile", v); }
+	inline auto _impl_js_j_qtsvfs_q_dVirtualTypeScriptEnvironment::createFile() noexcept { return this->template _getProperty<tc::jst::function<void(tc::js::string, tc::js::string)>>("createFile"); }
+	inline void _impl_js_j_qtsvfs_q_dVirtualTypeScriptEnvironment::createFile(tc::jst::function<void(tc::js::string, tc::js::string)> v) noexcept { this->template _setProperty("createFile", v); }
+	inline auto _impl_js_j_qtsvfs_q_dVirtualTypeScriptEnvironment::updateFile() noexcept { return this->template _getProperty<tc::jst::function<void(tc::js::string, tc::js::string, tc::jst::union_t<_js_jts_dTextSpan, tc::js::undefined>)>>("updateFile"); }
+	inline void _impl_js_j_qtsvfs_q_dVirtualTypeScriptEnvironment::updateFile(tc::jst::function<void(tc::js::string, tc::js::string, tc::jst::union_t<_js_jts_dTextSpan, tc::js::undefined>)> v) noexcept { this->template _setProperty("updateFile", v); }
 	inline auto _impl_js_jts_dAmdDependency::path() noexcept { return this->template _getProperty<tc::js::string>("path"); }
 	inline void _impl_js_jts_dAmdDependency::path(tc::js::string v) noexcept { this->template _setProperty("path", v); }
 	inline auto _impl_js_jts_dAmdDependency::name() noexcept { return this->template _getProperty<tc::jst::union_t<tc::js::string, tc::js::undefined>>("name"); }
@@ -16246,4 +16309,5 @@ namespace tc::js_defs {
 }; // namespace tc::js_defs
 namespace tc::js {
 			using ts = js_defs::_js_j_qts_q;
+			using tsvfs = js_defs::_js_j_qtsvfs_q;
 } // namespace tc::js
