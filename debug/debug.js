@@ -1,3 +1,3 @@
-import typescriptenc from '../build/typescriptenc/typescriptenc.js';
-import typescriptencWasm from '../build/typescriptenc/typescriptenc.wasm';
+import typescriptenc from '../typescriptenc/typescriptenc.js';
+import typescriptencWasm from '../typescriptenc/typescriptenc.wasm';
 

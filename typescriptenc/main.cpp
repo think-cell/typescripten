@@ -734,7 +734,7 @@ void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept
 
 int main(int cArgs, char* apszArgs[]) {
 #ifdef DEBUG_DEVTOOLS 
-	// See Debugging.md for an explanation on how to setup interactive debugging with Chrome DevTools
+	// See README.md for an explanation on how to setup interactive debugging with Chrome DevTools
 	static struct Callback final {
 		ts::CompilerOptions m_jtsCompilerOptions;
 
@@ -759,7 +759,7 @@ int main(int cArgs, char* apszArgs[]) {
 				m_jtsCompilerOptions, 
 				tc::js::any(emscripten::val::global("ts"))
 			);
-			auto const jtsProgram = ts::createProgram(ReadonlyArray<string>(create_js_object, rngstrFileNames), m_jtsCompilerOptions, ts::CompilerHost(host.getEmval()["compilerHost"]));
+			auto const jtsProgram = ts::createProgram(ReadonlyArray<string>(create_js_object, rngstrFileNames), m_jtsCompilerOptions, ts::CompilerHost(jtsHost.getEmval()["compilerHost"]));
 			CompileProgram(jtsProgram, rngstrFileNames);
 		}
 	} cb;

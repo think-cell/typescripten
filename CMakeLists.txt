@@ -15,6 +15,9 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
   # Let's nicely support folders in IDEs
   set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+  # See README.md for an explanation on how to setup interactive debugging in Chrome
+  option(DEBUG_DEVTOOLS "Build for interactive debugging with Chrome DevTools" OFF)
 endif()
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -39,6 +42,7 @@ set(TYPESCRIPTEN_COMPILE_OPTIONS
   "-Wall" "-Wextra" "-fdiagnostics-absolute-paths" "-fno-char8_t" "-Wno-unused-parameter"
   "$<$<CONFIG:DEBUG>:-D_DEBUG;-g;>"
   "$<$<CONFIG:RELEASE>:-Oz;-flto;-gseparate-dwarf;>"
+  "$<$<BOOL:${DEBUG_DEVTOOLS}>:-DDEBUG_DEVTOOLS>"
 )
 
 set(TYPESCRIPTEN_LINK_OPTIONS 
@@ -53,6 +57,21 @@ add_subdirectory(typescripten)
 # Build the typescripten compiler. 
 add_custom_target(typescripten_install_node_packages npm install)
 add_subdirectory(typescriptenc)
+
+if(DEBUG_DEVTOOLS)
+  add_custom_target(
+    typescriptenc_debug 
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+      ${CMAKE_SOURCE_DIR}/debug
+      ${CMAKE_BINARY_DIR}/debug
+    COMMAND npx webpack --config ${CMAKE_BINARY_DIR}/debug/webpack.config.js
+    COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan "Open http://localhost:8000/debug/ in Google Chrome to debug the typescriptenc compiler."
+    COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan "Edit debug/index.html or ${CMAKE_BINARY_DIR}/debug/index.html to debug typescriptenc with different input."
+    COMMAND python3 -m http.server
+    DEPENDS ${CMAKE_BINARY_DIR}/typescriptenc/typescriptenc.js
+    USES_TERMINAL
+  )
+endif()
 
 # Testing only available if this is the main app
 # Emergency override MODERN_CMAKE_BUILD_TESTING provided as well

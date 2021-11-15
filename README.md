@@ -140,9 +140,31 @@ add_typescripten_target(
 )
 ```
 
-Now you can include `<lib.dom.d.h>` in your C++ files. 
+Now you can include `<lib.dom.d.h>` in your C++ files. In order to build your project, download [emscripten](https://emscripten.org/) and boost, and run 
 
-See `example` and its associated README. The tests still run with the legacy Ninja-based generator and will be moved to CMake as well. 
+```
+source path/to/emsdk/emsdk_env.sh
+emcmake cmake -S . -B build 
+cmake --build build
+```
+
+See `example` and its associated README. 
+
+(All tests still run with the legacy Ninja-based generator and will be moved to CMake as well.) 
+
+# Debugging
+
+`typescriptenc` debug builds are built with DWARF debug information. Google Chrome Dev builds can interactively debug WebAssembly applications with debug info. See [this Chrome blog entry on how to setup Chrome for debugging.](https://developer.chrome.com/blog/wasm-debugging-2020/) 
+
+In order to build with debugging support set the `DEBUG_DEVTOOLS` options. If you build the `typescriptenc_debug` target, cmake will package `typescripten` with webpack so it can run in a browser and it will start a web server for you:
+
+```
+source path/to/emsdk/emsdk_env.sh
+emcmake cmake -S . -B build -DDEBUG_DEVTOOLS=ON 
+cmake --build build --target typescriptenc_debug
+```
+
+Now you should be able to open [http://localhost:8000/debug] in Chrome and in the DevTools console you should be able to see the C++ sources, set breakpoints, look at local variables etc. This debug build cannot read local files from disk, so the input file is hard-coded in `debug/index.html`. Change that file and rebuild or change the live version in `build/debug/index.html` and reload the running page.
 
 # Naming conventions
 We use [Hungarian Notation](https://en.wikipedia.org/wiki/Hungarian_notation) in our code base, i.e.,

@@ -5,7 +5,7 @@ module.exports = {
   entry: ['./debug/debug.js'],
   output: {
     filename: 'main.js',
-    path: path.resolve(__dirname, 'debug')
+    path: path.resolve(__dirname)
   },
   module: {
     rules: [
