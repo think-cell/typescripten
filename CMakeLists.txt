@@ -34,6 +34,8 @@ FetchContent_MakeAvailable(tcrange)
 
 find_package(Boost 1.73 REQUIRED)
 
+execute_process(COMMAND npm install WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+
 set(CMAKE_CXX_STANDARD 20 CACHE STRING "The C++ standard to use")
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -55,7 +57,6 @@ set(TYPESCRIPTEN_LINK_OPTIONS
 add_subdirectory(typescripten)
 
 # Build the typescripten compiler. 
-add_custom_target(typescripten_install_node_packages npm install)
 add_subdirectory(typescriptenc)
 
 if(DEBUG_DEVTOOLS)

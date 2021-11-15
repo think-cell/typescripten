@@ -123,8 +123,8 @@ FetchContent_MakeAvailable(typescripten)
 # Include the CMake helper function
 include(${typescripten_SOURCE_DIR}/cmake/TypeScripten.cmake)
 
-# Install the types you need via npm
-add_custom_target(install_node_packages npm install)
+# Install the types you need via npm (at configure time)
+execute_process(COMMAND npm install WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 
 # Add your executable target
 add_executable(test ...)
@@ -136,7 +136,6 @@ add_typescripten_target(
   TARGET test
   INPUTS ${PROJECT_SOURCE_DIR}/node_modules/typescript/lib/lib.dom.d.ts
   OUTPUT lib.dom.d.h
-  DEPENDSON install_node_packages
 )
 ```
 

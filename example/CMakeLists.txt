@@ -17,6 +17,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(typescripten)
 include(${typescripten_SOURCE_DIR}/cmake/TypeScripten.cmake)
+execute_process(COMMAND npm install WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 
 set(CMAKE_CXX_STANDARD 20 CACHE STRING "The C++ standard to use")
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -24,13 +25,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_executable(typescripten_test main.cpp)
 
-add_custom_target(install_node_packages npm install)
-
 add_typescripten_target(
   TARGET typescripten_test
   INPUTS ${PROJECT_SOURCE_DIR}/node_modules/typescript/lib/lib.dom.d.ts
   OUTPUT lib.dom.d.h
-  DEPENDSON install_node_packages
 )
 
 target_compile_options(typescripten_test PRIVATE "-Wall" "-Wextra" "-Wno-unused-parameter")
