@@ -770,7 +770,7 @@ int main(int cArgs, char* apszArgs[]) {
 		tc::append(
 			std::cerr, 
 			"Not enough arguments\n"
-			"Syntax: node typescriptenc.js <TypeScript interface definition.d.ts> [-o <output>]\n"		
+			"Syntax: node typescriptenc.js <TypeScript interface definition.d.ts>\n"		
 		);
 		return 1;	
 	}

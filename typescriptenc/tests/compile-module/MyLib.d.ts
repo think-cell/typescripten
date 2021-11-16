@@ -88,5 +88,3 @@ declare namespace Foo {
         "$foo": number;
     }
 }
-
-export = Foo;

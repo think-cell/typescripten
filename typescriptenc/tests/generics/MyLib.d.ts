@@ -1,26 +1,26 @@
+declare module "MyLib" {
+    export interface Token<TKind extends SyntaxKind> {
+        readonly kind: TKind;
+    }
 
-export interface Token<TKind extends SyntaxKind> {
-    readonly kind: TKind;
+    export enum SyntaxKind {
+        Unknown = 0,
+        EndOfFileToken = 1,
+        SingleLineCommentTrivia = 2,
+        MultiLineCommentTrivia = 3   
+    }
+
+    export type UnknownToken = Token<SyntaxKind.Unknown|SyntaxKind.SingleLineCommentTrivia>;
+    export type CommentKind = SyntaxKind.SingleLineCommentTrivia | SyntaxKind.MultiLineCommentTrivia;
+
+    export interface TestEnum {
+        prop?: SyntaxKind;
+        func(a: SyntaxKind.Unknown|SyntaxKind.EndOfFileToken) : void;
+    }
+
+    export interface TestEnum2<TKind extends CommentKind> extends Token<TKind> {}
+    export type CommentToken = Token<CommentKind>;
 }
-
-export enum SyntaxKind {
-    Unknown = 0,
-    EndOfFileToken = 1,
-    SingleLineCommentTrivia = 2,
-    MultiLineCommentTrivia = 3   
-}
-
-export type UnknownToken = Token<SyntaxKind.Unknown|SyntaxKind.SingleLineCommentTrivia>;
-export type CommentKind = SyntaxKind.SingleLineCommentTrivia | SyntaxKind.MultiLineCommentTrivia;
-
-export interface TestEnum {
-    prop?: SyntaxKind;
-    func(a: SyntaxKind.Unknown|SyntaxKind.EndOfFileToken) : void;
-}
-
-export interface TestEnum2<TKind extends CommentKind> extends Token<TKind> {}
-export type CommentToken = Token<CommentKind>;
-
 // interface NodeListOf<TNode> {
 // //     length: number;
 // //     item(index: number): TNode;
@@ -82,3 +82,12 @@ export type CommentToken = Token<CommentKind>;
 // // T extends keyof A
 // // Type1 extends Type2 ? Type3 : Type4
 
+
+// interface IndexedAccessType {
+//     "foo": string;
+//     "bar": number;
+// }
+
+// interface Test {
+//     func<K extends keyof IndexedAccessType>(type: K, listener: (this: Test, ev: IndexedAccessType[K]) => any): void;
+// }

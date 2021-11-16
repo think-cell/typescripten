@@ -2,19 +2,19 @@
 
 #pragma push_macro("assert")
 #undef assert
-#include "lib.dom.d.h"
+#include <lib.dom.d.h>
 #pragma pop_macro("assert")
 
 int main() {
 	tc::js::document()->title(tc::js::string("Hello World from C++!"));
 	static struct Clicker {
-		int number = 1;
+		int i = 1;
 		TC_JS_MEMBER_FUNCTION(Clicker, m_jfuncOnClick, tc::js::any, (tc::js::MouseEvent ev)) {
-		printf("Got click, number is %d; x=%f, y=%f\n", number, ev->x(), ev->y());
+		std::printf("Got click, number is %d; x=%f, y=%f\n", i, ev->x(), ev->y());
 			tc::js::document()->title(tc::js::string(tc::concat(
-				"Hello World from C++! number = ", tc::as_dec(number)
+				"Hello World from C++! number = ", tc::as_dec(i)
 			)));
-			number++;
+			i++;
 			return tc::js::undefined{};
 		}
 	} clicker;
@@ -22,5 +22,5 @@ int main() {
 
 	// tc::js::document()->addEventListener(tc::js::string("click"), clicker.m_jfuncOnClick);
 
-	printf("Success!\n");
+	std::printf("Success!\n");
 }
