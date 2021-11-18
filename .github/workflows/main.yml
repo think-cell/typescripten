@@ -39,11 +39,8 @@ jobs:
       run: |
         em++ -v
     - name: CMake configure 
-      if: ${{ !contains(runner.os, 'windows') }}
+      shell: bash
       run: emcmake cmake -S . -B build -DBoost_INCLUDE_DIR=$GITHUB_WORKSPACE/boost_1_73_0/ -DBoost_LIBRARY_DIR=$GITHUB_WORKSPACE/boost_1_73_0/      
-    - name: CMake configure 
-      if: ${{ contains(runner.os, 'windows') }}
-      run: emcmake cmake -S . -B build -DBoost_INCLUDE_DIR=$env:GITHUB_WORKSPACE/boost_1_73_0/ -DBoost_LIBRARY_DIR=$env:GITHUB_WORKSPACE/boost_1_73_0/
     - name: CMake build
       run: cmake --build build
     - name: CMake run tests
