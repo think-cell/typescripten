@@ -43,4 +43,4 @@ jobs:
     - name: CMake build
       run: cmake --build build
     - name: CMake run tests
-      cmake --build build --target test
+      run: cmake --build build --target test
