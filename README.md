@@ -130,8 +130,7 @@ execute_process(COMMAND npm install WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 add_executable(test ...)
 
 # Compile the downloaded TypeScript interface definitions (here lib.dom.d.ts)
-# into a header and add dependencies so that the build order is 
-# install_node_packages < typescripten compiler < test
+# into a header before 'test' is built.
 add_typescripten_target(
   TARGET test
   INPUTS ${PROJECT_SOURCE_DIR}/node_modules/typescript/lib/lib.dom.d.ts
