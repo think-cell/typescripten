@@ -39,7 +39,7 @@ jobs:
       run: |
         em++ -v
     - name: CMake configure 
-      run: emcmake cmake -S . -B build -DBoost_INCLUDE_DIR=boost_1_73_0/ -DBoost_LIBRARY_DIR=boost_1_73_0/
+      run: emcmake cmake -S . -B build -DBoost_INCLUDE_DIR=$GITHUB_WORKSPACE/boost_1_73_0/ -DBoost_LIBRARY_DIR=$GITHUB_WORKSPACE/boost_1_73_0/
     - name: CMake build
       run: cmake --build build
     - name: CMake run tests
