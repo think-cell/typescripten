@@ -41,6 +41,10 @@ jobs:
     - name: CMake configure
       if: ${{ !contains(runner.os, 'windows') }}
       run: emcmake cmake -S . -B build -DBoost_INCLUDE_DIR=$GITHUB_WORKSPACE/boost_1_73_0/ -DBoost_LIBRARY_DIR=$GITHUB_WORKSPACE/boost_1_73_0/              
+    - name: Install npm packages
+      if: ${{ contains(runner.os, 'windows') }}
+      shell: cmd
+      run: npm install
     - name: CMake configure 
       if: ${{ contains(runner.os, 'windows') }}
       shell: cmd
