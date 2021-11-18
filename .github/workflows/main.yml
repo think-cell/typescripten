@@ -22,11 +22,6 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
-    - name: Setup think-cell/range
-      shell: bash
-      run: |
-        curl -L https://github.com/think-cell/range/archive/refs/heads/clang_12_cpp2a.zip --output range.zip
-        unzip range.zip
     - name: Setup Boost 1.73.0
       shell: bash
       run: |
@@ -37,25 +32,15 @@ jobs:
       with:
         version: 2.0.27
         actions-cache-folder: 'emsdk-cache'
-    - name: Install ninja-build tool
-      uses: seanmiddleditch/gha-setup-ninja@master
+    - name: Install cmake
+      uses: lukka/get-cmake@latest
     - name: Verify Emscripten
       shell: bash
       run: |
         em++ -v
-    - name: Setup build config (Ubuntu)
-      if: ${{ !contains(runner.os, 'windows') }}
-      shell: bash
-      run: ./github_action_configure.py range-clang_12_cpp2a boost_1_73_0
-    - name: Setup build config (Windows)
-      if: ${{ contains(runner.os, 'windows') }}
-      shell: cmd
-      run: python ./github_action_configure.py range-clang_12_cpp2a boost_1_73_0
-    - name: Run all library examples (Ubuntu)
-      if: ${{ !contains(runner.os, 'windows') }}
-      shell: bash
-      run: ./testall.py 
-    - name: Run all library examples (Windows)
-      if: ${{ contains(runner.os, 'windows') }}
-      shell: cmd
-      run: python testall.py 
+    - name: CMake configure 
+      run: emcmake cmake -S . -B build -DBoost_INCLUDE_DIR=boost_1_73_0/ -DBoost_LIBRARY_DIR=boost_1_73_0/
+    - name: CMake build
+      run: cmake --build build
+    - name: CMake run tests
+      cmake --build build --target test
