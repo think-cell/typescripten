@@ -7,7 +7,7 @@ function(add_typescripten_target)
         set(TSTARGET_WORKING_DIRECTORY ${typescripten_BINARY_DIR}/typescriptenc)
     endif()
 
-    if (WIN32)
+    if (CMAKE_HOST_WIN32)
         set(RUNNODE runnode.cmd)
     else()
         set(RUNNODE runnode.sh)
@@ -19,7 +19,7 @@ function(add_typescripten_target)
         OUTPUT ${RUN_TYPESCRIPTEN_DIR}/${TSTARGET_OUTPUT}
         COMMAND ${CMAKE_COMMAND} -E make_directory ${RUN_TYPESCRIPTEN_DIR}
         COMMAND ${typescripten_SOURCE_DIR}/cmake/${RUNNODE} ${typescripten_BINARY_DIR}/typescriptenc/typescriptenc.js ${RUN_TYPESCRIPTEN_DIR}/${TSTARGET_OUTPUT} ${TSTARGET_INPUTS} 
-        DEPENDS typescriptenc ${TSTARGET_DEPENDSON}
+        DEPENDS typescriptenc ${TSTARGET_DEPENDSON} ${TSTARGET_INPUTS}
         WORKING_DIRECTORY ${TSTARGET_WORKING_DIRECTORY}
     )
     target_sources(${TSTARGET_TARGET} PRIVATE ${RUN_TYPESCRIPTEN_DIR}/${TSTARGET_OUTPUT})
