@@ -44,6 +44,7 @@ ECppType CppType(ts::Symbol jsymType) noexcept {
 			case ts::TypeFlags::BigInt:
 			case ts::TypeFlags::Undefined:
 			case ts::TypeFlags::Object:
+            case ts::TypeFlags::TypeParameter:
 				return true;
 			default:
 				return false;
@@ -299,13 +300,6 @@ bool SJsVariableLike::IsVoid() const& noexcept {
     return ts::TypeFlags::Void==m_jtypeDeclared->getFlags();
 }
 
-SMangledType const& SJsVariableLike::MangleType() const& noexcept {
-    if (!m_omtType) {
-        m_omtType = ::MangleType(m_jtypeDeclared);
-    }
-    return *m_omtType;
-}
-
 STypeParameter::STypeParameter(ts::TypeParameterDeclaration typeparamdecl) noexcept
     : m_etypeparam(etypeparamTYPE)
     , m_strName(tc::explicit_cast<std::string>(tc::js::string(typeparamdecl->name()->escapedText())))
@@ -377,27 +371,6 @@ SJsFunctionLike::SJsFunctionLike(ts::Symbol jsym, ts::SignatureDeclaration jsign
     }
 }
 
-namespace {
-    // FIXME: We must generalize this
-    // https://github.com/think-cell/tcjs/issues/3
-    // All data structures should point to their parent (e.g. parameter -> function -> class -> class)
-    // In circumstances where we want to mangle type parameters as types, we need to walk this list 
-    // and resolve the type parameter to a type.
-    SMangledType MangleVariableTypeParameterAsType(SJsFunctionLike const& jsfunction, SJsVariableLike const& jsvariable) noexcept {
-        auto mt = jsvariable.MangleType();
-        if(ts::TypeFlags::TypeParameter==jsvariable.m_jtypeDeclared->getFlags()) {
-            if(auto const ittypeparam = tc::find_first<tc::return_element_or_null>(
-                tc::transform(jsfunction.m_vectypeparam, TC_MEMBER(.m_strName)), mt.ExpandType()
-            ).element_base()) {
-                if(etypeparamTYPE != ittypeparam->m_etypeparam) {
-                    return {ittypeparam->Type()};
-                }
-            }
-        } 
-        return mt;
-    }
-}
-
 std::string SJsFunctionLike::CppifiedParametersWithCommentsDecl() const& noexcept {
     // Trailing function arguments of type 'x | undefined' can be defaulted to undefined
     auto const itjsvariablelike = tc::find_last_if<tc::return_border_after_or_begin>(m_vecjsvariablelikeParameters, [](auto const& jsvariablelike) noexcept {
@@ -411,10 +384,10 @@ std::string SJsFunctionLike::CppifiedParametersWithCommentsDecl() const& noexcep
     return tc::explicit_cast<std::string>(tc::join_separated(
         tc::concat(
             tc::transform(tc::take(m_vecjsvariablelikeParameters, itjsvariablelike), [this](SJsVariableLike const& jsvariablelikeParameter) noexcept {
-                return tc::concat(MangleVariableTypeParameterAsType(*this, jsvariablelikeParameter).m_strWithComments, " ", jsvariablelikeParameter.m_strCppifiedName);
+                return tc::concat(jsvariablelikeParameter.MangleType(m_vectypeparam).m_strWithComments, " ", jsvariablelikeParameter.m_strCppifiedName);
             }),
             tc::transform(tc::drop(m_vecjsvariablelikeParameters, itjsvariablelike), [this](SJsVariableLike const& jsvariablelikeParameter) noexcept {
-                return tc::concat(MangleVariableTypeParameterAsType(*this, jsvariablelikeParameter).m_strWithComments, " ", jsvariablelikeParameter.m_strCppifiedName, " = tc::js::undefined()");
+                return tc::concat(jsvariablelikeParameter.MangleType(m_vectypeparam).m_strWithComments, " ", jsvariablelikeParameter.m_strCppifiedName, " = tc::js::undefined()");
             })
         ),
         ", "
@@ -424,7 +397,7 @@ std::string SJsFunctionLike::CppifiedParametersWithCommentsDecl() const& noexcep
 std::string SJsFunctionLike::CppifiedParametersWithCommentsDef() const& noexcept {
     return tc::explicit_cast<std::string>(tc::join_separated(
         tc::transform(m_vecjsvariablelikeParameters, [&](SJsVariableLike const& jsvariablelikeParameter) noexcept {
-            return tc::concat(MangleVariableTypeParameterAsType(*this, jsvariablelikeParameter).m_strWithComments, " ", jsvariablelikeParameter.m_strCppifiedName);
+            return tc::concat(jsvariablelikeParameter.MangleType(m_vectypeparam).m_strWithComments, " ", jsvariablelikeParameter.m_strCppifiedName);
         }),
         ", "
     ));
@@ -434,7 +407,7 @@ std::string const& SJsFunctionLike::CanonizedParameterCppTypes() const& noexcept
     if(tc::empty(m_strCanonizedParameterCppTypes)) {
         m_strCanonizedParameterCppTypes = tc::explicit_cast<std::string>(tc::join_separated(
             tc::transform(m_vecjsvariablelikeParameters, [&](SJsVariableLike const& jsvariablelikeParameter) noexcept {
-                return jsvariablelikeParameter.MangleType().ExpandType();
+                return jsvariablelikeParameter.MangleType(m_vectypeparam).ExpandType();
             }),
             ", "
         ));

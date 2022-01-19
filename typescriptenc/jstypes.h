@@ -74,8 +74,34 @@ public:
     SJsVariableLike& operator=(SJsVariableLike&&) noexcept = default;
 
     bool IsVoid() const& noexcept;
-    SMangledType const& MangleType() const& noexcept;
+    
+    // FIXME: We must generalize this
+    // https://github.com/think-cell/tcjs/issues/3
+    // All data structures should point to their parent (e.g. parameter -> function -> class -> class)
+    // In circumstances where we want to mangle type parameters as types, we need to walk this list 
+    // and resolve the type parameter to a type.
+    template<typename RngTypeParam>
+    SMangledType MangleType(RngTypeParam const& rngtypeparam) const& noexcept {
+        if (!m_omtType) {
+            m_omtType = ::MangleType(m_jtypeDeclared);
+        }
+        
+        if(ts::TypeFlags::TypeParameter==m_jtypeDeclared->getFlags()) {
+            if(auto const ittypeparam = tc::find_first<tc::return_element_or_null>(
+                tc::transform(rngtypeparam, TC_MEMBER(.m_strName)), m_omtType->ExpandType()
+            ).element_base()) {
+                if(etypeparamTYPE != ittypeparam->m_etypeparam) {
+                    return {ittypeparam->Type()};
+                }
+            }
+        } 
+        return *m_omtType;
+    }
 };
+
+
+
+
 static_assert(std::is_nothrow_move_constructible<SJsVariableLike>::value);
 static_assert(std::is_nothrow_move_assignable<SJsVariableLike>::value);
 

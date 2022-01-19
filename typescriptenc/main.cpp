@@ -492,14 +492,14 @@ void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept
 					)),
 					tc::join(tc::transform(
 						pjsclass->m_vecjsvariablelikeExport,
-						[](SJsVariableLike const& jsvariablelikeVariable) noexcept {
+						[&](SJsVariableLike const& jsvariablelikeVariable) noexcept {
 							return tc::concat(
 								"\t\t\tstatic auto ", jsvariablelikeVariable.m_strCppifiedName, "() noexcept;\n",
 								tc_conditional_range(
 									jsvariablelikeVariable.m_bReadonly,
 									"",
 									tc::concat(
-										"\t\t\tstatic void ", jsvariablelikeVariable.m_strCppifiedName, "(", jsvariablelikeVariable.MangleType().m_strWithComments, " v) noexcept;\n"
+										"\t\t\tstatic void ", jsvariablelikeVariable.m_strCppifiedName, "(", jsvariablelikeVariable.MangleType(pjsclass->m_vectypeparam).m_strWithComments, " v) noexcept;\n"
 									)
 								)
 							);
@@ -508,14 +508,14 @@ void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept
 					"\t\t};\n",
 					tc::join(tc::transform(
 						pjsclass->m_vecjsvariablelikeProperty,
-						[](SJsVariableLike const& jsvariablelikeProperty) noexcept {
+						[&](SJsVariableLike const& jsvariablelikeProperty) noexcept {
 							return tc::concat(
 								"\t\tauto ", jsvariablelikeProperty.m_strCppifiedName, "() noexcept;\n",
 								tc_conditional_range(
 									jsvariablelikeProperty.m_bReadonly,
 									"",
 									tc::concat(
-										"\t\tvoid ", jsvariablelikeProperty.m_strCppifiedName, "(", jsvariablelikeProperty.MangleType().m_strWithComments, " v) noexcept;\n"
+										"\t\tvoid ", jsvariablelikeProperty.m_strCppifiedName, "(", jsvariablelikeProperty.MangleType(pjsclass->m_vectypeparam).m_strWithComments, " v) noexcept;\n"
 									)
 								)
 							);
@@ -565,12 +565,12 @@ void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept
 							return tc::concat(
 								TemplateDecl("\t", *pjsclass),
 								"\tinline auto ", strClassNamespace, "_tcjs_definitions::", jsvariablelikeVariable.m_strCppifiedName, "() noexcept "
-								"{ return ", strClassInstanceRetrieve, "[\"", jsvariablelikeVariable.m_strJsName, "\"].template as<", jsvariablelikeVariable.MangleType().m_strWithComments, ">(); }\n",
+								"{ return ", strClassInstanceRetrieve, "[\"", jsvariablelikeVariable.m_strJsName, "\"].template as<", jsvariablelikeVariable.MangleType(pjsclass->m_vectypeparam).m_strWithComments, ">(); }\n",
 								tc_conditional_range(
 									!jsvariablelikeVariable.m_bReadonly,
 									tc::concat(
 										TemplateDecl("\t", *pjsclass),
-										"\tinline void ", strClassNamespace, "_tcjs_definitions::", jsvariablelikeVariable.m_strCppifiedName, "(", jsvariablelikeVariable.MangleType().m_strWithComments, " v) noexcept "
+										"\tinline void ", strClassNamespace, "_tcjs_definitions::", jsvariablelikeVariable.m_strCppifiedName, "(", jsvariablelikeVariable.MangleType(pjsclass->m_vectypeparam).m_strWithComments, " v) noexcept "
 										"{ ", strClassInstanceRetrieve, ".set(\"", jsvariablelikeVariable.m_strJsName, "\", v); }\n"
 									)
 								)
@@ -583,12 +583,12 @@ void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept
 							return tc::concat(
 								TemplateDecl("\t", *pjsclass),
 								"\tinline auto ", strClassNamespace, jsvariablelikeProperty.m_strCppifiedName, "() noexcept "
-								"{ return this->template _getProperty<", jsvariablelikeProperty.MangleType().m_strWithComments, ">(\"", jsvariablelikeProperty.m_strJsName, "\"); }\n",
+								"{ return this->template _getProperty<", jsvariablelikeProperty.MangleType(pjsclass->m_vectypeparam).m_strWithComments, ">(\"", jsvariablelikeProperty.m_strJsName, "\"); }\n",
 								tc_conditional_range(
 									!jsvariablelikeProperty.m_bReadonly,
 									tc::concat(
 										TemplateDecl("\t", *pjsclass),
-										"\tinline void ", strClassNamespace, jsvariablelikeProperty.m_strCppifiedName, "(", jsvariablelikeProperty.MangleType().m_strWithComments, " v) noexcept "
+										"\tinline void ", strClassNamespace, jsvariablelikeProperty.m_strCppifiedName, "(", jsvariablelikeProperty.MangleType(pjsclass->m_vectypeparam).m_strWithComments, " v) noexcept "
 										"{ this->template _setProperty(\"", jsvariablelikeProperty.m_strJsName, "\", v); }\n"
 									)
 								)
@@ -664,12 +664,12 @@ void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept
 				[&](SJsVariableLike const& jsvariablelikeVariable) noexcept {
 					return tc::concat(
 						"\tinline auto ", jsvariablelikeVariable.m_strCppifiedName, "() noexcept "
-						"{ return emscripten::val::global(\"", jsvariablelikeVariable.m_strJsName, "\").template as<", jsvariablelikeVariable.MangleType().m_strWithComments, ">(); }\n",
+						"{ return emscripten::val::global(\"", jsvariablelikeVariable.m_strJsName, "\").template as<", jsvariablelikeVariable.MangleType(tc::make_empty_range<STypeParameter>()).m_strWithComments, ">(); }\n",
 						tc_conditional_range(
 							jsvariablelikeVariable.m_bReadonly,
 							"",
 							tc::concat(
-								"\tinline void ", jsvariablelikeVariable.m_strCppifiedName, "(", jsvariablelikeVariable.MangleType().m_strWithComments, " v) noexcept "
+								"\tinline void ", jsvariablelikeVariable.m_strCppifiedName, "(", jsvariablelikeVariable.MangleType(tc::make_empty_range<STypeParameter>()).m_strWithComments, " v) noexcept "
 								"{ emscripten::val::global().set(\"", jsvariablelikeVariable.m_strJsName, "\", v); }\n"
 							)
 						)

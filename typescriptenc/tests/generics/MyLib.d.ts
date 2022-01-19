@@ -20,45 +20,55 @@ declare module "MyLib" {
 
     export interface TestEnum2<TKind extends CommentKind> extends Token<TKind> {}
     export type CommentToken = Token<CommentKind>;
+
+    export interface Node {}
+    export interface DerivedNode extends Node {}
+
+    interface NodeListOf<TNode> {
+             forEach(callbackfn: (value: TNode, key: number, parent: NodeListOf<TNode>) => void, thisArg?: any): void;
+             [index: number]: TNode;
+    }
+    
+    interface A {
+     some_property() : string;
+     p: Record<string, number>;
+    }
+
+    interface Collection<K> {
+        item(index: number) : K;
+        item_or_null(index: number) : K | null;
+
+        item_generic<T>(index: T) : K | null;
+        // TypeScript permits type parameter shadowing, but C++ will not
+        // item_generic_shadowing<K extends A>(index: number) : K;
+
+        item_generic2<T extends keyof Node>(index: T) : Array<[number, string]>;
+    }
+    
+    type CollectionUnion = Collection<number> | Collection<A> | A;
+
+    interface B<K, T> {
+        get_collection(k: K) : Collection<T>;
+    }
+
+    interface C<K extends A> extends B<K, string> {
+    }
+
+    export type TestAlias<K> = K | string | number;
+
+    interface IndexedAccessType {
+        "foo": string;
+        "bar": number;
+    }
+
+    interface Test {
+        func<K extends keyof IndexedAccessType>(type: K, listener: (this: Test, ev: IndexedAccessType[K]) => any): void;
+    }
 }
-// interface NodeListOf<TNode> {
-// //     length: number;
-// //     item(index: number): TNode;
-// //     /**
-// //      * Performs the specified action for each node in an list.
-// //      * @param callbackfn  A function that accepts up to three arguments. forEach calls the callbackfn function one time for each element in the list.
-// //      * @param thisArg  An object to which the this keyword can refer in the callbackfn function. If thisArg is omitted, undefined is used as the this value.
-// //      */
-//      forEach(callbackfn: (value: TNode, key: number, parent: NodeListOf<TNode>) => void, thisArg?: any): void;
-// //     // [index: number]: TNode;
-// }
 
-// interface A {
-//     // some_property() : string;
-//     p: Record<string, number>;
-// }
 
-// interface Collection<K> {
-//     item(index: number) : K;
-//     item_or_null(index: number) : K | null;
 
-//     // item_generic<T>(index: T) : K | null;
-//     // TypeScript permits type parameter shadowing, but C++ will not
-//     // item_generic_shadowing<K extends A>(index: number) : K;
 
-//     item_generic<T extends keyof Node>(index: T) : Array<[number, string]>;
-// }
-
-// type CollectionUnion = Collection<number> | Collection<A> | A;
-
-// interface B<K, T> {
-//     get_collection(k: K) : Collection<T>;
-// }
-
-// interface C<K extends A> extends B<K, string> {
-// }
-
-// type Test<K> = K | string | number;
 
 // // interface D<K extends typeof v> extends B<K, string> {
 // // }
@@ -81,13 +91,3 @@ declare module "MyLib" {
 
 // // T extends keyof A
 // // Type1 extends Type2 ? Type3 : Type4
-
-
-// interface IndexedAccessType {
-//     "foo": string;
-//     "bar": number;
-// }
-
-// interface Test {
-//     func<K extends keyof IndexedAccessType>(type: K, listener: (this: Test, ev: IndexedAccessType[K]) => any): void;
-// }

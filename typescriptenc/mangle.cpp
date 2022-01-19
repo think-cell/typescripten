@@ -299,11 +299,13 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 								ts::Signature const jtsSignature = *(*g_ojtsTypeChecker)->getSignatureFromDeclaration(
 									ts::CallSignatureDeclaration(tc::front(*jsymSignature->declarations()))
 								);
+								
+								// TODO: Can we have TypeParameters here?
 								auto mtReturnType = MangleType(jtsSignature->getReturnType());
 								auto const vecmtParameters = tc::make_vector(tc::transform(jtsSignature->getParameters(),
 									[&](ts::Symbol const jsymParameter) noexcept -> SMangledType {
 										SJsVariableLike jsvariable(jsymParameter);
-										return jsvariable.MangleType();
+										return jsvariable.MangleType(tc::make_empty_range<STypeParameter>());
 									}
 								));
 
