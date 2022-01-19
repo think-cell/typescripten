@@ -52,7 +52,7 @@ namespace tc::js_defs {
 	constexpr tc::js::ts::NodeFlags operator&(tc::js::ts::NodeFlags a, tc::js::ts::NodeFlags b) { return static_cast<tc::js::ts::NodeFlags>(static_cast<int>(a) & static_cast<int>(b)); }
 } // namespace tc::js_defs
 
-JS_RANGE_WITH_ITERATORS(tc::js::ts, NodeArray)
+JS_RANGE_WITH_ITERATORS_TMPL(tc::js::ts, NodeArray)
 
 namespace tc::js::ts_ext {
 	// TODO: Anonymous union type https://github.com/think-cell/tcjs/issues/16

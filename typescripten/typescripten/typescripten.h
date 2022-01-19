@@ -245,33 +245,35 @@ inline bool IsBootstrapType(std::string const& strName) noexcept {
 
 JS_HAS_MEM_FN_XXX_TRAIT_DEF(item, std::declval<double>())
 
+namespace tc::jst::range_detail {
+	namespace no_adl {
+		template<typename Rng>
+		struct FJsRangeIndexedAccess final {
+		private:
+			Rng m_rng;
+
+		public:
+			FJsRangeIndexedAccess(Rng rng) : m_rng(tc_move(rng)) {}
+
+			template<typename S = Rng, std::enable_if_t< has_mem_fn_item<S>::value >* = nullptr>
+			auto operator()(int i) const& noexcept {
+				return m_rng->item(i);
+			}
+
+			template<typename S = Rng, std::enable_if_t< !has_mem_fn_item<S>::value >* = nullptr>
+			auto operator()(int i) const& noexcept {
+				return m_rng[i];
+			}
+		};
+	}
+}
+
 // Define iterator types for tc::js::Array and tc::js::ReadonlyArray
-#define JS_RANGE_WITH_ITERATORS(JsNamespace, JsType)                                                               \
+#define JS_RANGE_WITH_ITERATORS_TMPL(JsNamespace, JsType)                                                          \
 	namespace tc::jst::range_detail {                                                                              \
-		namespace no_adl {                                                                                         \
-			template<typename T>                                                                                   \
-			struct FGet##JsType##Index final {                                                                     \
-			  private:                                                                                             \
-				JsNamespace::JsType<T> m_t;                                                                        \
-                                                                                                                   \
-			  public:                                                                                              \
-				FGet##JsType##Index(JsNamespace::JsType<T> t) : m_t(tc_move(t)) {}                                 \
-																												   \
-				template<typename S = T, std::enable_if_t< has_mem_fn_item<JsNamespace::JsType<S>>::value >* = nullptr>				\
-				auto operator()(int i) const& noexcept {                                                              \
-					return m_t->item(i);                                                                           \
-				}                                                                                                  \
-																												   \
-				template<typename S = T, std::enable_if_t< !has_mem_fn_item<JsNamespace::JsType<S>>::value >* = nullptr>				\
-				auto operator()(int i) const& noexcept {                                                              \
-					return m_t[i];                                                                                 \
-				}                                                                                                  \
-			};                                                                                                     \
-		}                                                                                                          \
-                                                                                                                   \
 		template<typename T>                                                                                       \
 		using JsType##Iterator = boost::transform_iterator<                                                        \
-			no_adl::FGet##JsType##Index<T>,                                                                        \
+			no_adl::FJsRangeIndexedAccess<JsNamespace::JsType<T>>,                                                 \
 			tc::counting_iterator<int>>;                                                                           \
 	}                                                                                                              \
                                                                                                                    \
@@ -293,10 +295,38 @@ JS_HAS_MEM_FN_XXX_TRAIT_DEF(item, std::declval<double>())
 			}                                                                                                      \
 			template<typename T>                                                                                   \
 			tc::jst::range_detail::JsType##Iterator<T> end(begin_end_tag_t, JsNamespace::JsType<T> t) noexcept {   \
-				return tc::jst::range_detail::JsType##Iterator<T>(t->length(), tc_move(t));                        \
+				return tc::jst::range_detail::JsType##Iterator<T>(tc::explicit_cast<int>(t->length()), tc_move(t));                        \
 			}                                                                                                      \
 		}                                                                                                          \
 	}
 
-JS_RANGE_WITH_ITERATORS(tc::js, ReadonlyArray)
-JS_RANGE_WITH_ITERATORS(tc::js, Array)
+#define JS_RANGE_WITH_ITERATORS(JsNamespace, JsType)                                                               \
+	namespace tc::jst::range_detail {                                                                              \
+		using JsType##Iterator = boost::transform_iterator<                                                        \
+			no_adl::FJsRangeIndexedAccess<JsNamespace::JsType>,                                                    \
+			tc::counting_iterator<int>>;                                                                           \
+	}                                                                                                              \
+                                                                                                                   \
+	namespace boost {	\
+		template<>                                                                                              \
+		struct range_mutable_iterator<JsNamespace::JsType> {                                                    \
+			using type = tc::jst::range_detail::JsType##Iterator;                                               \
+		}; \
+		template<>                                                                                               \
+		struct range_const_iterator<JsNamespace::JsType> {                                                      \
+			using type = tc::jst::range_detail::JsType##Iterator;                                               \
+		};                                                                                                         \
+	}                                                                                                              \
+	namespace tc {                                                                                                 \
+		namespace begin_end_adl {                                                                                  \
+			tc::jst::range_detail::JsType##Iterator begin(begin_end_tag_t, JsNamespace::JsType t) noexcept { \
+				return tc::jst::range_detail::JsType##Iterator(0, tc_move(t));                                  \
+			}                                                                                                      \
+			tc::jst::range_detail::JsType##Iterator end(begin_end_tag_t, JsNamespace::JsType t) noexcept {   \
+				return tc::jst::range_detail::JsType##Iterator(tc::explicit_cast<int>(t->length()), tc_move(t));   \
+			}                                                                                                      \
+		}                                                                                                          \
+	}
+
+JS_RANGE_WITH_ITERATORS_TMPL(tc::js, ReadonlyArray)
+JS_RANGE_WITH_ITERATORS_TMPL(tc::js, Array)
