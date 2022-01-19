@@ -155,8 +155,38 @@ namespace tc::jst {
 		} // namespace no_adl	
 	} // namespace callback_detail
 
-	template<typename T>
-	using function = ref<callback_detail::no_adl::function<T>>;
+	namespace function_detail {
+		template<class... Args1> struct zip {
+			template<class... Args2> struct with
+			{
+				typedef tc::type::list<std::pair<Args1, Args2>...> type;
+			};
+		};
+
+		template<typename>
+		struct is_convertible_pair;
+
+		template<typename T1, typename T2>
+		struct is_convertible_pair<std::pair<T1, T2>> : tc::is_safely_convertible<T1, T2> {};
+	}
+
+	template<typename>
+	struct function;
+	
+	template<typename R, typename... Args>
+	struct function<R(Args...)> : ref<callback_detail::no_adl::function<R(Args...)>> {
+		using base = ref<callback_detail::no_adl::function<R(Args...)>>;
+		explicit function(emscripten::val const& _emval) noexcept : base(_emval) {}
+		explicit function(emscripten::val&& _emval) noexcept : base(tc_move(_emval)) {}
+
+		template<typename R_, typename... Args_, typename = std::enable_if_t<
+			tc::is_safely_convertible<R, R_>::value
+			&& tc::type::all_of<typename function_detail::zip<Args_...>::template with<Args...>::type, function_detail::is_convertible_pair>::value
+		>>
+		operator function<R_(Args_...)>() const& noexcept {
+			return function<R_(Args_...)>(this->getEmval());
+		}
+	};
 
 	namespace callback_detail {
 		using FirstArgument = void*;
