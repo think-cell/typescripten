@@ -13,7 +13,7 @@ add_custom_command(
     USES_TERMINAL
 )
 
-# em_link_pre_js(${TEST_NAME} runbrowserglobal.js)
+em_link_pre_js(${TEST_NAME} runbrowserglobal.js)
 add_typescripten_target(
     TARGET ${TEST_NAME}
     OUTPUT MyLib.d.h
@@ -21,4 +21,4 @@ add_typescripten_target(
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-# add_test(NAME ${TEST_NAME} COMMAND node ${CMAKE_CURRENT_BINARY_DIR}/${TEST_NAME}.js)
+add_test(NAME ${TEST_NAME} COMMAND node ${CMAKE_CURRENT_BINARY_DIR}/${TEST_NAME}.js)
