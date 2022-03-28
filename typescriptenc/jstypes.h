@@ -90,7 +90,8 @@ public:
             if(auto const ittypeparam = tc::find_first<tc::return_element_or_null>(
                 tc::transform(rngtypeparam, TC_MEMBER(.m_strName)), m_omtType->ExpandType()
             ).element_base()) {
-                if(etypeparamTYPE != ittypeparam->m_etypeparam) {
+                if(etypeparamTYPE != ittypeparam->m_etypeparam
+                && etypeparamKEYOF != ittypeparam->m_etypeparam) {
                     return {ittypeparam->Type()};
                 }
             }
@@ -98,9 +99,6 @@ public:
         return *m_omtType;
     }
 };
-
-
-
 
 static_assert(std::is_nothrow_move_constructible<SJsVariableLike>::value);
 static_assert(std::is_nothrow_move_assignable<SJsVariableLike>::value);

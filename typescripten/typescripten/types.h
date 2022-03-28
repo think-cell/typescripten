@@ -11,6 +11,8 @@
 #include <emscripten/val.h>
 #include <emscripten/wire.h>
 
+#include <boost/hana/string.hpp>
+
 #include <string>
 #include <type_traits>
 #include <utility>
@@ -388,6 +390,9 @@ public:
 	struct IsJsInteropable<tc::js::string> : std::true_type {
 	};
 
+	template<char ...Args>
+	struct IsJsInteropable<boost::hana::string<Args...>> : std::true_type {};
+
 	template<typename T>
 	struct IsJsInteropable<T, std::enable_if_t<IsJsIntegralEnum<T>::value>> : std::true_type {
 	};
@@ -486,6 +491,15 @@ namespace emscripten::internal {
 			return tc::find_first_if<tc::return_element>(umValueToUnderlying, [&](auto const& kv) {
 				return kv.second.getEmval().strictlyEquals(underlying.getEmval());
 			})->first;
+		}
+	};
+
+	template<char ...Args>
+	struct BindingType<boost::hana::string<Args...>> {
+		typedef typename BindingType<char const*>::WireType WireType;
+
+		static WireType toWireType(boost::hana::string<Args...> const& str) {
+			return BindingType<char const*>::toWireType(str.c_str());
 		}
 	};
 } // namespace emscripten::internal

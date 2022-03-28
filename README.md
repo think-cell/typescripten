@@ -148,8 +148,6 @@ cmake --build build
 
 See `example` and its associated README. 
 
-(All tests still run with the legacy Ninja-based generator and will be moved to CMake as well.) 
-
 # Debugging
 
 `typescriptenc` debug builds are built with DWARF debug information. Google Chrome Dev builds can interactively debug WebAssembly applications with debug info. See [this Chrome blog entry on how to setup Chrome for debugging.](https://developer.chrome.com/blog/wasm-debugging-2020/) 

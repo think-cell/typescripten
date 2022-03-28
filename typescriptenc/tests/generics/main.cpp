@@ -55,4 +55,18 @@ int main() {
         MyLib::TestAlias<MyLib::Node>,
         tc::jst::union_t<MyLib::Node, double, string>
     >);
+
+    static_assert(std::is_same_v<
+        decltype(
+            std::declval<MyLib::Test>()->func("foo"_s, std::declval<string>())
+        ),
+        void
+    >);
+
+    static_assert(std::is_same_v<
+        decltype(
+            std::declval<MyLib::Test>()->func("bar"_s, std::declval<double>())
+        ),
+        void
+    >);
 }

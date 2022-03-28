@@ -41,7 +41,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(TYPESCRIPTEN_COMPILE_OPTIONS 
-  "-Wall" "-Wextra" "-fdiagnostics-absolute-paths" "-fno-char8_t" "-Wno-unused-parameter"
+  "-Wall" "-Wextra" "-fdiagnostics-absolute-paths" "-fno-char8_t" "-Wno-unused-parameter" "-DBOOST_HANA_CONFIG_ENABLE_STRING_UDL"
   "$<$<CONFIG:DEBUG>:-D_DEBUG;-g;>"
   "$<$<CONFIG:RELEASE>:-Oz;-flto;-gseparate-dwarf;>"
   "$<$<BOOL:${DEBUG_DEVTOOLS}>:-DDEBUG_DEVTOOLS>"

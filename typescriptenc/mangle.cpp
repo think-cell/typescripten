@@ -336,6 +336,13 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 				} else {
 					return {mangling_error, tc::make_str("tc::js::any /*UnknownObjectType=", tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->typeToString(jobjecttypeRoot)), " objectFlags=", tc::as_dec(static_cast<int>(jobjecttypeRoot->objectFlags())), "*/")};
 				}
+			} else if(ts::TypeFlags::IndexedAccess==jtypeRoot->getFlags()) {
+				ts::IndexedAccessType jidxtype(jtypeRoot);
+				return {
+					tc::make_str(
+						"typename decltype(+", MangleType(jidxtype->objectType()).ExpandType(), "::keyof[", MangleType(jidxtype->indexType()).ExpandType(), "{}])::type"
+					)
+				}; 
 			} else {
 				return {
 					mangling_error, 

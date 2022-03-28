@@ -8,7 +8,7 @@ std::string FullyQualifiedName(ts::Symbol jsymType) noexcept;
 tc::jst::optional<tc::js::ts::Symbol> OptSymbolOrAliasSymbol(tc::js::ts::Type jtype) noexcept;
 tc::js::ts::Symbol SymbolOrAliasSymbol(tc::js::ts::Type jtype) noexcept;
 
-DEFINE_ENUM(ETypeParameter, etypeparam, (TYPE)(ENUM)(NUMBER))
+DEFINE_ENUM(ETypeParameter, etypeparam, (TYPE)(ENUM)(NUMBER)(KEYOF))
 
 DEFINE_ADL_TAG_TYPE(mangling_error)
 

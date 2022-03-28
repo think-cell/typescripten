@@ -62,7 +62,7 @@ declare module "MyLib" {
     }
 
     interface Test {
-        func<K extends keyof IndexedAccessType>(type: K, listener: (this: Test, ev: IndexedAccessType[K]) => any): void;
+        func<K extends keyof IndexedAccessType>(type: K, ev: IndexedAccessType[K]): void;
     }
 }
 

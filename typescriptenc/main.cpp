@@ -234,7 +234,7 @@ void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept
 							tc::transform(js.m_vectypeparam,
 								[](auto const& typeparam) noexcept {
 									return tc_conditional_range(
-										etypeparamTYPE==typeparam.m_etypeparam,
+										etypeparamTYPE==typeparam.m_etypeparam || etypeparamKEYOF == typeparam.m_etypeparam,
 										tc::concat("typename ", typeparam.m_strName),
 										tc::concat(typeparam.Type(), " ", typeparam.m_strName)
 									);
@@ -351,6 +351,15 @@ void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept
 		};
 
 		tc::append(std::cout,
+			"#include <boost/hana/assert.hpp>\n"
+			"#include <boost/hana/integral_constant.hpp>\n"
+			"#include <boost/hana/map.hpp>\n"
+			"#include <boost/hana/pair.hpp>\n"
+			"#include <boost/hana/type.hpp>\n"
+			"#include <boost/hana/string.hpp>\n"
+			"#include <boost/hana/hash.hpp>\n"
+			"#include <boost/hana/at_key.hpp>\n"
+			"using namespace boost::hana::literals;\n"
 			"namespace tc::js_defs {\n",
 			tc::join(tc::transform(g_setjsenum, [](SJsEnum const& jsenumEnum) noexcept {
 				// We have to mark enums as IsJsIntegralEnum before using in js interop.
@@ -469,6 +478,18 @@ void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept
 					),
 					" {\n",
 					"\t\tstruct _tcjs_definitions {\n",
+					"\t\t\tstatic constexpr auto keyof = boost::hana::make_map(\n",
+					tc::join_separated(tc::transform(
+						tc::concat(pjsclass->m_vecjsvariablelikeExport, pjsclass->m_vecjsvariablelikeProperty),
+						[&](SJsVariableLike const& jsvariablelikeVariable) noexcept {
+							// TODO: keyof T also considers member functions as keys
+							return tc::concat(
+								"\t\t\t\tboost::hana::make_pair(\"", jsvariablelikeVariable.m_strCppifiedName, "\"_s, "
+								"boost::hana::type_c<", jsvariablelikeVariable.MangleType(pjsclass->m_vectypeparam).m_strWithComments ,">)"
+							);
+						}
+					), ",\n"),
+					"\n\t\t\t);\n",
 					tc::join(tc::transform(
 						pjsclass->m_vecjsenumExport,
 						ClassExportTypeUsingDecl

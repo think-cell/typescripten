@@ -330,6 +330,10 @@ STypeParameter::STypeParameter(ts::TypeParameterDeclaration typeparamdecl) noexc
                 // ts::SymbolFlags::Class|ts::SymbolFlags::Interface|ts::SymbolFlags::TypeParameter|ts::SymbolFlags::TypeAlias
                 UnsupportedConstraint();
             }
+        } else if(ts::SyntaxKind::TypeOperator == (*otypenode)->kind()
+        && ts::SyntaxKind::KeyOfKeyword == ts::TypeOperatorNode(*otypenode)->operator_()) {
+            m_etypeparam = etypeparamKEYOF;
+            m_ojtype = (*g_ojtsTypeChecker)->getTypeFromTypeNode(ts::TypeOperatorNode(*otypenode)->type());
         } else {
             // ts::SyntaxKind::TypeOperator == (*otypenode)->kind() // e.g. keyof declaration
             // || ts::SyntaxKind::UnionType == (*otypenode)->kind()
@@ -341,7 +345,7 @@ STypeParameter::STypeParameter(ts::TypeParameterDeclaration typeparamdecl) noexc
 }
 
 std::string STypeParameter::Type() const& noexcept {
-    _ASSERT(etypeparamTYPE!=m_etypeparam);
+    _ASSERT(etypeparamTYPE!=m_etypeparam && etypeparamKEYOF!=m_etypeparam);
     return etypeparamNUMBER==m_etypeparam
         ? tc::make_str("double")
         : MangleType(*m_ojtype).ExpandType();
@@ -568,6 +572,15 @@ void SJsClass::ResolveBaseClasses() & noexcept {
             tc::cont_emplace_back(m_vecpjsclassSortDependency, std::addressof(*ojsclass));
         }
     };
+
+    tc::for_each(m_vecjsfunctionlikeMethod, [&](auto const& jsfunctionlike) noexcept {
+        tc::for_each(
+            tc::filter(jsfunctionlike.m_vectypeparam, [](auto const& typeparam) noexcept { return etypeparamKEYOF==typeparam.m_etypeparam; }),
+            [&](auto const& typeparam) noexcept {
+                AddBaseClassDependency(*(*typeparam.m_ojtype)->getSymbol());
+            }
+        );
+    });
 
     if (auto jointerfacetypeClass = (*g_ojtsTypeChecker)->getDeclaredTypeOfSymbol(m_jsym)->isClassOrInterface()) {
         tc::for_each((*g_ojtsTypeChecker)->getBaseTypes(*jointerfacetypeClass),
