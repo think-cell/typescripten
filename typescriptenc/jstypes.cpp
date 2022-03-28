@@ -351,9 +351,8 @@ std::string STypeParameter::Type() const& noexcept {
         : MangleType(*m_ojtype).ExpandType();
 }
 
-SJsFunctionLike::SJsFunctionLike(ts::Symbol jsym, ts::SignatureDeclaration jsigndecl) noexcept
+SJsFunctionLike::SJsFunctionLike(ts::Symbol jsym, ts::SignatureDeclaration jsigndecl, bool bIndexSignature) noexcept
     : m_jsym(jsym)
-    , m_strCppifiedName(CppifyName(m_jsym, enamectxFUNCTION))
     , m_jsignature(*(*g_ojtsTypeChecker)->getSignatureFromDeclaration(jsigndecl))
     , m_vecjsvariablelikeParameters(tc::make_vector(tc::transform(
         m_jsignature->getParameters(),
@@ -362,8 +361,10 @@ SJsFunctionLike::SJsFunctionLike(ts::Symbol jsym, ts::SignatureDeclaration jsign
         }
     )))
     , m_vectypeparam(tc::make_vector(tc::transform(ts::getEffectiveTypeParameterDeclarations(jsigndecl), tc::fn_explicit_cast<STypeParameter>())))
+    , m_strCppifiedName(bIndexSignature ? std::string("operator[]") : CppifyName(m_jsym, enamectxFUNCTION))
+    , m_bIndexSignature(bIndexSignature)
 { 
-    if(ts::ModifierFlags::None!=(~(ts::ModifierFlags::Export|ts::ModifierFlags::Ambient) & ts::getCombinedModifierFlags(jsigndecl))) {
+    if(ts::ModifierFlags::None!=(~(ts::ModifierFlags::Export|ts::ModifierFlags::Ambient|ts::ModifierFlags::Readonly) & ts::getCombinedModifierFlags(jsigndecl))) {
         tc::append(std::cerr,
             "Unknown getCombinedModifierFlags for jsigndecl ",
             tc::explicit_cast<std::string>(m_jsym->getName()),
@@ -374,6 +375,14 @@ SJsFunctionLike::SJsFunctionLike(ts::Symbol jsym, ts::SignatureDeclaration jsign
         _ASSERTFALSE;
     }
 }
+
+SJsFunctionLike::SJsFunctionLike(ts::Symbol jsym, ts::SignatureDeclaration jsigndecl) noexcept 
+    : SJsFunctionLike(jsym, jsigndecl, false)
+{}
+
+SJsFunctionLike::SJsFunctionLike(ts::Symbol jsym, ts::IndexSignatureDeclaration jsigndecl) noexcept 
+    : SJsFunctionLike(jsym, jsigndecl, true)
+{}
 
 std::string SJsFunctionLike::CppifiedParametersWithCommentsDecl() const& noexcept {
     // Trailing function arguments of type 'x | undefined' can be defaulted to undefined
@@ -464,7 +473,7 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
             tc::filter(*ojarrsymMembers, [](ts::Symbol jsymMember) noexcept {
                 // TODO: Support optional member functions
                 // https://github.com/think-cell/tcjs/issues/13
-                return static_cast<bool>((ts::SymbolFlags::Method|ts::SymbolFlags::Constructor) & jsymMember->getFlags())
+                return static_cast<bool>((ts::SymbolFlags::Method|ts::SymbolFlags::Constructor|ts::SymbolFlags::Signature) & jsymMember->getFlags())
                     && !static_cast<bool>(ts::SymbolFlags::Optional & jsymMember->getFlags());
             }),
             [&](ts::Symbol jsymMethod) noexcept {
@@ -474,6 +483,8 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
                             tc::cont_emplace_back(m_vecjsfunctionlikeMethod, SJsFunctionLike(jsymMethod, *jotsMethodSignature));
                         } else if (auto const jotsMethodDeclaration = ts::isMethodDeclaration(jdecl)) { // In classes.
                             tc::cont_emplace_back(m_vecjsfunctionlikeMethod, SJsFunctionLike(jsymMethod, *jotsMethodDeclaration));
+                        } else if (auto const jotsIndexSigDeclaration = ts::isIndexSignatureDeclaration(jdecl)) { // In classes.
+                            tc::cont_emplace_back(m_vecjsfunctionlikeMethod, SJsFunctionLike(jsymMethod, *jotsIndexSigDeclaration));
                         } else if (auto const jotsConstructorDeclaration = ts::isConstructorDeclaration(jdecl)) {
                              tc::cont_emplace_back(m_vecjsfunctionlikeCtor, SJsFunctionLike(jsymMethod, *jotsConstructorDeclaration));
                         }

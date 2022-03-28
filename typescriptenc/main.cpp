@@ -653,14 +653,28 @@ void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept
 								FunctionImpl(
 									strClassNamespace,
 									[&]() noexcept {
-										return tc::concat("this->template _call<", MangleType(jsfunctionlike.m_jsignature->getReturnType()).m_strWithComments, ">(", 
-											tc::join_separated(
-												tc::concat(
-													tc::single(tc::concat("\"", tc::explicit_cast<std::string>(jsfunctionlike.m_jsym->getName()), "\"")),
-													tc::transform(jsfunctionlike.m_vecjsvariablelikeParameters, TC_MEMBER(.m_strCppifiedName))
+										return tc::concat(
+											tc_conditional_range(
+												jsfunctionlike.m_bIndexSignature,
+												"this->template _getProperty<", 
+												"this->template _call<"
+											),
+												MangleType(jsfunctionlike.m_jsignature->getReturnType()).m_strWithComments, 
+											">(", 
+											tc_conditional_range(
+												jsfunctionlike.m_bIndexSignature,
+												tc::join_separated(
+													tc::transform(jsfunctionlike.m_vecjsvariablelikeParameters, TC_MEMBER(.m_strCppifiedName)),
+													", "
 												),
-												", "
-											), 
+												tc::join_separated(
+													tc::concat(
+														tc::single(tc::concat("\"", tc::explicit_cast<std::string>(jsfunctionlike.m_jsym->getName()), "\"")),
+														tc::transform(jsfunctionlike.m_vecjsvariablelikeParameters, TC_MEMBER(.m_strCppifiedName))
+													),
+													", "
+												)
+											),
 											")"
 										);
 									},

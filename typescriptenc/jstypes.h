@@ -114,18 +114,24 @@ struct STypeParameter final {
 
 struct SJsFunctionLike final {
     tc::js::ts::Symbol m_jsym;
-    std::string m_strCppifiedName;
     tc::js::ts::Signature m_jsignature;
     std::vector<SJsVariableLike> m_vecjsvariablelikeParameters;
     std::vector<STypeParameter> m_vectypeparam;
+
+    std::string m_strCppifiedName;
+    bool m_bIndexSignature;
 
 private:
     // Cached
     std::string mutable m_strCanonizedParameterCppTypes;
     std::string const& CanonizedParameterCppTypes() const& noexcept;
 
+    SJsFunctionLike(tc::js::ts::Symbol jsym, tc::js::ts::SignatureDeclaration jsigndecl, bool bIndexSignature) noexcept;
+
 public:
     SJsFunctionLike(tc::js::ts::Symbol jsym, tc::js::ts::SignatureDeclaration jsigndecl) noexcept;
+    SJsFunctionLike(tc::js::ts::Symbol jsym, tc::js::ts::IndexSignatureDeclaration jsigndecl) noexcept;
+
     SJsFunctionLike(SJsFunctionLike&&) noexcept = default;
     SJsFunctionLike& operator=(SJsFunctionLike&&) noexcept = default;
 
