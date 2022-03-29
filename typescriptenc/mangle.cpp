@@ -135,6 +135,16 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 		// We currently don't disambiguate the template parameter names so we will
 		// produce a compiler error when a method redeclares the same template
 		// argument as a class.
+		if(auto ojsym = jtypeRoot->getSymbol()) {
+			// for some reason, 'this' Type also identifies as a TypeParameter, as in
+			// interface A {
+			//	   test() : this;
+			// }	
+			// but it has a symbol.
+			if(auto oit = tc::cont_find<tc::return_element_or_null>(g_setjsclass, FullyQualifiedName(*ojsym))) {
+				return oit->m_strMangledName;
+			}
+		}
 		return {tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->typeToString(jtypeRoot))};
 	default:
 		{
