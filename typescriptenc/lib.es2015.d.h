@@ -310,9 +310,9 @@ namespace tc::js_defs {
 		void length(double v) noexcept;
 		static auto _tcjs_construct(tc::jst::union_t<double, tc::js::undefined> arrayLength = tc::js::undefined()) noexcept;
 		static auto _tcjs_construct(double arrayLength) noexcept;
-		static auto _tcjs_construct(_js_jArray<T> items) noexcept;
-		auto concat(_js_jArray<_js_jConcatArray<T>> items) noexcept;
-		auto concat(_js_jArray<tc::jst::union_t<T, _js_jConcatArray<T>>> items) noexcept;
+		static auto _tcjs_construct(tc::jst::variadic_arg_t, T items) noexcept;
+		auto concat(tc::jst::variadic_arg_t, _js_jConcatArray<T> items) noexcept;
+		auto concat(tc::jst::variadic_arg_t, tc::jst::union_t<T, _js_jConcatArray<T>> items) noexcept;
 		auto copyWithin(double target, double start, tc::jst::union_t<double, tc::js::undefined> end = tc::js::undefined()) noexcept;
 		auto entries() noexcept;
 		template<typename S>
@@ -336,7 +336,7 @@ namespace tc::js_defs {
 		auto map(tc::jst::function<U(T, double, _js_jArray<T>)> callbackfn, tc::js::any thisArg) noexcept;
 		auto operator[](double n) noexcept;
 		auto pop() noexcept;
-		auto push(_js_jArray<T> items) noexcept;
+		auto push(tc::jst::variadic_arg_t, T items) noexcept;
 		auto reduce(tc::jst::function<T(T, T, double, _js_jArray<T>)> callbackfn) noexcept;
 		auto reduce(tc::jst::function<T(T, T, double, _js_jArray<T>)> callbackfn, T initialValue) noexcept;
 		template<typename U>
@@ -350,11 +350,11 @@ namespace tc::js_defs {
 		auto slice(tc::jst::union_t<double, tc::js::undefined> start = tc::js::undefined(), tc::jst::union_t<double, tc::js::undefined> end = tc::js::undefined()) noexcept;
 		auto some(tc::jst::function<tc::js::any(T, double, _js_jArray<T>)> predicate, tc::js::any thisArg) noexcept;
 		auto sort(tc::jst::union_t<tc::js::undefined, tc::jst::function<double(T, T)>> compareFn = tc::js::undefined()) noexcept;
-		auto splice(double start, double deleteCount, _js_jArray<T> items) noexcept;
+		auto splice(double start, double deleteCount, tc::jst::variadic_arg_t, T items) noexcept;
 		auto splice(double start, tc::jst::union_t<double, tc::js::undefined> deleteCount = tc::js::undefined()) noexcept;
 		auto toLocaleString() noexcept;
 		auto toString() noexcept;
-		auto unshift(_js_jArray<T> items) noexcept;
+		auto unshift(tc::jst::variadic_arg_t, T items) noexcept;
 		auto values() noexcept;
 	};
 	struct _impl_js_jArrayBuffer : virtual object_base {
@@ -420,7 +420,7 @@ namespace tc::js_defs {
 		auto from(tc::jst::union_t<_js_jArrayLike<T>, _js_jIterable<T>> iterable, tc::jst::function<U(T, double)> mapfn, tc::js::any thisArg) noexcept;
 		auto isArray(tc::js::any arg) noexcept;
 		template<typename T>
-		auto of(_js_jArray<T> items) noexcept;
+		auto of(tc::jst::variadic_arg_t, T items) noexcept;
 	};
 	template<typename T>
 	struct _impl_js_jArrayLike : virtual object_base {
@@ -467,10 +467,10 @@ namespace tc::js_defs {
 		auto caller() noexcept;
 		void caller(_js_jFunction v) noexcept;
 		auto name() noexcept;
-		static auto _tcjs_construct(_js_jArray<tc::js::string> args) noexcept;
+		static auto _tcjs_construct(tc::jst::variadic_arg_t, tc::js::string args) noexcept;
 		auto apply(tc::js::any thisArg, tc::js::any argArray) noexcept;
-		auto bind(tc::js::any thisArg, _js_jArray<tc::js::any> argArray) noexcept;
-		auto call(tc::js::any thisArg, _js_jArray<tc::js::any> argArray) noexcept;
+		auto bind(tc::js::any thisArg, tc::jst::variadic_arg_t, tc::js::any argArray) noexcept;
+		auto call(tc::js::any thisArg, tc::jst::variadic_arg_t, tc::js::any argArray) noexcept;
 		auto toString() noexcept;
 	};
 	struct _impl_js_jCallableFunction : virtual _impl_js_jFunction {
@@ -492,7 +492,7 @@ namespace tc::js_defs {
 		template<typename T, typename A0, typename A1, typename A2, typename A3, typename A, typename R>
 		auto bind(T thisArg, A0 arg0, A1 arg1, A2 arg2, A3 arg3) noexcept;
 		template<typename T, typename AX, typename R>
-		auto bind(T thisArg, _js_jArray<AX> args) noexcept;
+		auto bind(T thisArg, tc::jst::variadic_arg_t, AX args) noexcept;
 		template<typename T>
 		auto bind(tc::js::any /* unsupported type flags =16777216: ThisParameterType<T>*/ thisArg) noexcept;
 		template<typename T, typename A, typename R>
@@ -733,7 +733,7 @@ namespace tc::js_defs {
 		auto from(_js_jArrayLike<T> arrayLike, tc::jst::function<double(T, double)> mapfn, tc::js::any thisArg) noexcept;
 		auto from(_js_jArrayLike<double> arrayLike) noexcept;
 		auto from(_js_jIterable<double> arrayLike, tc::jst::union_t<tc::js::undefined, tc::jst::function<double(double, double)>> mapfn, tc::js::any thisArg) noexcept;
-		auto of(_js_jArray<double> items) noexcept;
+		auto of(tc::jst::variadic_arg_t, double items) noexcept;
 	};
 	struct _impl_js_jFloat64Array : virtual object_base {
 		struct _tcjs_definitions {
@@ -801,7 +801,7 @@ namespace tc::js_defs {
 		auto from(_js_jArrayLike<T> arrayLike, tc::jst::function<double(T, double)> mapfn, tc::js::any thisArg) noexcept;
 		auto from(_js_jArrayLike<double> arrayLike) noexcept;
 		auto from(_js_jIterable<double> arrayLike, tc::jst::union_t<tc::js::undefined, tc::jst::function<double(double, double)>> mapfn, tc::js::any thisArg) noexcept;
-		auto of(_js_jArray<double> items) noexcept;
+		auto of(tc::jst::variadic_arg_t, double items) noexcept;
 	};
 	struct _impl_js_jFunctionConstructor : virtual object_base {
 		struct _tcjs_definitions {
@@ -944,7 +944,7 @@ namespace tc::js_defs {
 		auto from(_js_jArrayLike<T> arrayLike, tc::jst::function<double(T, double)> mapfn, tc::js::any thisArg) noexcept;
 		auto from(_js_jArrayLike<double> arrayLike) noexcept;
 		auto from(_js_jIterable<double> arrayLike, tc::jst::union_t<tc::js::undefined, tc::jst::function<double(double, double)>> mapfn, tc::js::any thisArg) noexcept;
-		auto of(_js_jArray<double> items) noexcept;
+		auto of(tc::jst::variadic_arg_t, double items) noexcept;
 	};
 	struct _impl_js_jInt32Array : virtual object_base {
 		struct _tcjs_definitions {
@@ -1013,7 +1013,7 @@ namespace tc::js_defs {
 		auto from(_js_jArrayLike<T> arrayLike, tc::jst::function<double(T, double)> mapfn, tc::js::any thisArg) noexcept;
 		auto from(_js_jArrayLike<double> arrayLike) noexcept;
 		auto from(_js_jIterable<double> arrayLike, tc::jst::union_t<tc::js::undefined, tc::jst::function<double(double, double)>> mapfn, tc::js::any thisArg) noexcept;
-		auto of(_js_jArray<double> items) noexcept;
+		auto of(tc::jst::variadic_arg_t, double items) noexcept;
 	};
 	struct _impl_js_jInt8Array : virtual object_base {
 		struct _tcjs_definitions {
@@ -1082,7 +1082,7 @@ namespace tc::js_defs {
 		auto from(_js_jArrayLike<T> arrayLike, tc::jst::function<double(T, double)> mapfn, tc::js::any thisArg) noexcept;
 		auto from(_js_jArrayLike<double> arrayLike) noexcept;
 		auto from(_js_jIterable<double> arrayLike, tc::jst::union_t<tc::js::undefined, tc::jst::function<double(double, double)>> mapfn, tc::js::any thisArg) noexcept;
-		auto of(_js_jArray<double> items) noexcept;
+		auto of(tc::jst::variadic_arg_t, double items) noexcept;
 	};
 	struct _impl_js_jIntl : virtual object_base {
 		struct _tcjs_definitions {
@@ -1574,14 +1574,14 @@ namespace tc::js_defs {
 		auto expm1(double x) noexcept;
 		auto floor(double x) noexcept;
 		auto fround(double x) noexcept;
-		auto hypot(_js_jArray<double> values) noexcept;
+		auto hypot(tc::jst::variadic_arg_t, double values) noexcept;
 		auto imul(double x, double y) noexcept;
 		auto log(double x) noexcept;
 		auto log10(double x) noexcept;
 		auto log1p(double x) noexcept;
 		auto log2(double x) noexcept;
-		auto max(_js_jArray<double> values) noexcept;
-		auto min(_js_jArray<double> values) noexcept;
+		auto max(tc::jst::variadic_arg_t, double values) noexcept;
+		auto min(tc::jst::variadic_arg_t, double values) noexcept;
 		auto pow(double x, double y) noexcept;
 		auto random() noexcept;
 		auto round(double x) noexcept;
@@ -1614,7 +1614,7 @@ namespace tc::js_defs {
 		template<typename A0, typename A1, typename A2, typename A3, typename A, typename R>
 		auto bind(tc::js::any thisArg, A0 arg0, A1 arg1, A2 arg2, A3 arg3) noexcept;
 		template<typename AX, typename R>
-		auto bind(tc::js::any thisArg, _js_jArray<AX> args) noexcept;
+		auto bind(tc::js::any thisArg, tc::jst::variadic_arg_t, AX args) noexcept;
 		template<typename T, typename A>
 		auto call(T thisArg, A args) noexcept;
 	};
@@ -1691,7 +1691,7 @@ namespace tc::js_defs {
 		auto assign(T target, U source1, V source2) noexcept;
 		template<typename T, typename U, typename V, typename W>
 		auto assign(T target, U source1, V source2, W source3) noexcept;
-		auto assign(tc::js::any /* unsupported type flags =67108864: object*/ target, _js_jArray<tc::js::any> sources) noexcept;
+		auto assign(tc::js::any /* unsupported type flags =67108864: object*/ target, tc::jst::variadic_arg_t, tc::js::any sources) noexcept;
 		auto create(tc::js::any /*UnionWithUnsupportedSubtype=[tc::js::null,tc::js::any]*/ o) noexcept;
 		auto create(tc::js::any /*UnionWithUnsupportedSubtype=[tc::js::null,tc::js::any]*/ o, tc::js::any /* unsupported type flags =2097152: PropertyDescriptorMap & ThisType<any>*/ properties) noexcept;
 		template<typename T>
@@ -1841,8 +1841,8 @@ namespace tc::js_defs {
 			);
 		};
 		auto length() noexcept;
-		auto concat(_js_jArray<_js_jConcatArray<T>> items) noexcept;
-		auto concat(_js_jArray<tc::jst::union_t<T, _js_jConcatArray<T>>> items) noexcept;
+		auto concat(tc::jst::variadic_arg_t, _js_jConcatArray<T> items) noexcept;
+		auto concat(tc::jst::variadic_arg_t, tc::jst::union_t<T, _js_jConcatArray<T>> items) noexcept;
 		auto entries() noexcept;
 		template<typename S>
 		auto every(tc::jst::function<bool /*false*/(T, double, _js_jReadonlyArray<T>)> predicate, tc::js::any thisArg) noexcept;
@@ -2083,7 +2083,7 @@ namespace tc::js_defs {
 		auto charAt(double pos) noexcept;
 		auto charCodeAt(double index) noexcept;
 		auto codePointAt(double pos) noexcept;
-		auto concat(_js_jArray<tc::js::string> strings) noexcept;
+		auto concat(tc::jst::variadic_arg_t, tc::js::string strings) noexcept;
 		auto endsWith(tc::js::string searchString, tc::jst::union_t<double, tc::js::undefined> endPosition = tc::js::undefined()) noexcept;
 		auto fixed() noexcept;
 		auto fontcolor(tc::js::string color) noexcept;
@@ -2137,9 +2137,9 @@ namespace tc::js_defs {
 			);
 		};
 		auto prototype() noexcept;
-		auto fromCharCode(_js_jArray<double> codes) noexcept;
-		auto fromCodePoint(_js_jArray<double> codePoints) noexcept;
-		auto raw(tc::js::any /*AnonymousTypeWithLiteralType={ raw: readonly string[] | ArrayLike<string>; }[raw]*/ template_, _js_jArray<tc::js::any> substitutions) noexcept;
+		auto fromCharCode(tc::jst::variadic_arg_t, double codes) noexcept;
+		auto fromCodePoint(tc::jst::variadic_arg_t, double codePoints) noexcept;
+		auto raw(tc::js::any /*AnonymousTypeWithLiteralType={ raw: readonly string[] | ArrayLike<string>; }[raw]*/ template_, tc::jst::variadic_arg_t, tc::js::any substitutions) noexcept;
 	};
 	struct _impl_js_jSymbol : virtual object_base {
 		struct _tcjs_definitions {
@@ -2342,7 +2342,7 @@ namespace tc::js_defs {
 		auto from(_js_jArrayLike<T> arrayLike, tc::jst::function<double(T, double)> mapfn, tc::js::any thisArg) noexcept;
 		auto from(_js_jArrayLike<double> arrayLike) noexcept;
 		auto from(_js_jIterable<double> arrayLike, tc::jst::union_t<tc::js::undefined, tc::jst::function<double(double, double)>> mapfn, tc::js::any thisArg) noexcept;
-		auto of(_js_jArray<double> items) noexcept;
+		auto of(tc::jst::variadic_arg_t, double items) noexcept;
 	};
 	struct _impl_js_jUint32Array : virtual object_base {
 		struct _tcjs_definitions {
@@ -2411,7 +2411,7 @@ namespace tc::js_defs {
 		auto from(_js_jArrayLike<T> arrayLike, tc::jst::function<double(T, double)> mapfn, tc::js::any thisArg) noexcept;
 		auto from(_js_jArrayLike<double> arrayLike) noexcept;
 		auto from(_js_jIterable<double> arrayLike, tc::jst::union_t<tc::js::undefined, tc::jst::function<double(double, double)>> mapfn, tc::js::any thisArg) noexcept;
-		auto of(_js_jArray<double> items) noexcept;
+		auto of(tc::jst::variadic_arg_t, double items) noexcept;
 	};
 	struct _impl_js_jUint8Array : virtual object_base {
 		struct _tcjs_definitions {
@@ -2480,7 +2480,7 @@ namespace tc::js_defs {
 		auto from(_js_jArrayLike<T> arrayLike, tc::jst::function<double(T, double)> mapfn, tc::js::any thisArg) noexcept;
 		auto from(_js_jArrayLike<double> arrayLike) noexcept;
 		auto from(_js_jIterable<double> arrayLike, tc::jst::union_t<tc::js::undefined, tc::jst::function<double(double, double)>> mapfn, tc::js::any thisArg) noexcept;
-		auto of(_js_jArray<double> items) noexcept;
+		auto of(tc::jst::variadic_arg_t, double items) noexcept;
 	};
 	struct _impl_js_jUint8ClampedArray : virtual object_base {
 		struct _tcjs_definitions {
@@ -2549,7 +2549,7 @@ namespace tc::js_defs {
 		auto from(_js_jArrayLike<T> arrayLike, tc::jst::function<double(T, double)> mapfn, tc::js::any thisArg) noexcept;
 		auto from(_js_jArrayLike<double> arrayLike) noexcept;
 		auto from(_js_jIterable<double> arrayLike, tc::jst::union_t<tc::js::undefined, tc::jst::function<double(double, double)>> mapfn, tc::js::any thisArg) noexcept;
-		auto of(_js_jArray<double> items) noexcept;
+		auto of(tc::jst::variadic_arg_t, double items) noexcept;
 	};
 	template<typename K, typename V>
 	struct _impl_js_jWeakMap : virtual object_base {
@@ -2607,15 +2607,15 @@ namespace tc::js_defs {
 		return _js_jArray<T>(emscripten::val::global("Array").new_(arrayLength));
 	}
 	template<typename T>
-	inline auto _impl_js_jArray<T>::_tcjs_construct(_js_jArray<T> items) noexcept {
+	inline auto _impl_js_jArray<T>::_tcjs_construct(tc::jst::variadic_arg_t, T items) noexcept {
 		return _js_jArray<T>(emscripten::val::global("Array").new_(items));
 	}
 	template<typename T>
-	inline auto _impl_js_jArray<T>::concat(_js_jArray<_js_jConcatArray<T>> items) noexcept {
+	inline auto _impl_js_jArray<T>::concat(tc::jst::variadic_arg_t, _js_jConcatArray<T> items) noexcept {
 		return this->template _call<_js_jArray<T>>("concat", items);
 	}
 	template<typename T>
-	inline auto _impl_js_jArray<T>::concat(_js_jArray<tc::jst::union_t<T, _js_jConcatArray<T>>> items) noexcept {
+	inline auto _impl_js_jArray<T>::concat(tc::jst::variadic_arg_t, tc::jst::union_t<T, _js_jConcatArray<T>> items) noexcept {
 		return this->template _call<_js_jArray<T>>("concat", items);
 	}
 	template<typename T>
@@ -2703,7 +2703,7 @@ namespace tc::js_defs {
 		return this->template _call<tc::jst::union_t<T, tc::js::undefined>>("pop");
 	}
 	template<typename T>
-	inline auto _impl_js_jArray<T>::push(_js_jArray<T> items) noexcept {
+	inline auto _impl_js_jArray<T>::push(tc::jst::variadic_arg_t, T items) noexcept {
 		return this->template _call<double>("push", items);
 	}
 	template<typename T>
@@ -2753,7 +2753,7 @@ namespace tc::js_defs {
 		return this->template _call<_js_jArray>("sort", compareFn);
 	}
 	template<typename T>
-	inline auto _impl_js_jArray<T>::splice(double start, double deleteCount, _js_jArray<T> items) noexcept {
+	inline auto _impl_js_jArray<T>::splice(double start, double deleteCount, tc::jst::variadic_arg_t, T items) noexcept {
 		return this->template _call<_js_jArray<T>>("splice", start, deleteCount, items);
 	}
 	template<typename T>
@@ -2769,7 +2769,7 @@ namespace tc::js_defs {
 		return this->template _call<tc::js::string>("toString");
 	}
 	template<typename T>
-	inline auto _impl_js_jArray<T>::unshift(_js_jArray<T> items) noexcept {
+	inline auto _impl_js_jArray<T>::unshift(tc::jst::variadic_arg_t, T items) noexcept {
 		return this->template _call<double>("unshift", items);
 	}
 	template<typename T>
@@ -2826,7 +2826,7 @@ namespace tc::js_defs {
 		return result;
 	}
 	template<typename T>
-	inline auto _impl_js_jArrayConstructor::of(_js_jArray<T> items) noexcept {
+	inline auto _impl_js_jArrayConstructor::of(tc::jst::variadic_arg_t, T items) noexcept {
 		return this->template _call<_js_jArray<T>>("of", items);
 	}
 	template<typename T>
@@ -2850,16 +2850,16 @@ namespace tc::js_defs {
 	inline auto _impl_js_jFunction::caller() noexcept { return this->template _getProperty<_js_jFunction>("caller"); }
 	inline void _impl_js_jFunction::caller(_js_jFunction v) noexcept { this->template _setProperty("caller", v); }
 	inline auto _impl_js_jFunction::name() noexcept { return this->template _getProperty<tc::js::string>("name"); }
-	inline auto _impl_js_jFunction::_tcjs_construct(_js_jArray<tc::js::string> args) noexcept {
+	inline auto _impl_js_jFunction::_tcjs_construct(tc::jst::variadic_arg_t, tc::js::string args) noexcept {
 		return _js_jFunction(emscripten::val::global("Function").new_(args));
 	}
 	inline auto _impl_js_jFunction::apply(tc::js::any thisArg, tc::js::any argArray) noexcept {
 		return this->template _call<tc::js::any>("apply", thisArg, argArray);
 	}
-	inline auto _impl_js_jFunction::bind(tc::js::any thisArg, _js_jArray<tc::js::any> argArray) noexcept {
+	inline auto _impl_js_jFunction::bind(tc::js::any thisArg, tc::jst::variadic_arg_t, tc::js::any argArray) noexcept {
 		return this->template _call<tc::js::any>("bind", thisArg, argArray);
 	}
-	inline auto _impl_js_jFunction::call(tc::js::any thisArg, _js_jArray<tc::js::any> argArray) noexcept {
+	inline auto _impl_js_jFunction::call(tc::js::any thisArg, tc::jst::variadic_arg_t, tc::js::any argArray) noexcept {
 		return this->template _call<tc::js::any>("call", thisArg, argArray);
 	}
 	inline auto _impl_js_jFunction::toString() noexcept {
@@ -2890,7 +2890,7 @@ namespace tc::js_defs {
 		return this->template _call<tc::jst::function<R(A)>>("bind", thisArg, arg0, arg1, arg2, arg3);
 	}
 	template<typename T, typename AX, typename R>
-	inline auto _impl_js_jCallableFunction::bind(T thisArg, _js_jArray<AX> args) noexcept {
+	inline auto _impl_js_jCallableFunction::bind(T thisArg, tc::jst::variadic_arg_t, AX args) noexcept {
 		return this->template _call<tc::jst::function<R(_js_jArray<AX>)>>("bind", thisArg, args);
 	}
 	template<typename T>
@@ -3290,7 +3290,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_jFloat32ArrayConstructor::from(_js_jIterable<double> arrayLike, tc::jst::union_t<tc::js::undefined, tc::jst::function<double(double, double)>> mapfn, tc::js::any thisArg) noexcept {
 		return this->template _call<_js_jFloat32Array>("from", arrayLike, mapfn, thisArg);
 	}
-	inline auto _impl_js_jFloat32ArrayConstructor::of(_js_jArray<double> items) noexcept {
+	inline auto _impl_js_jFloat32ArrayConstructor::of(tc::jst::variadic_arg_t, double items) noexcept {
 		return this->template _call<_js_jFloat32Array>("of", items);
 	}
 	inline auto _impl_js_jFloat64Array::BYTES_PER_ELEMENT() noexcept { return this->template _getProperty<double>("BYTES_PER_ELEMENT"); }
@@ -3417,7 +3417,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_jFloat64ArrayConstructor::from(_js_jIterable<double> arrayLike, tc::jst::union_t<tc::js::undefined, tc::jst::function<double(double, double)>> mapfn, tc::js::any thisArg) noexcept {
 		return this->template _call<_js_jFloat64Array>("from", arrayLike, mapfn, thisArg);
 	}
-	inline auto _impl_js_jFloat64ArrayConstructor::of(_js_jArray<double> items) noexcept {
+	inline auto _impl_js_jFloat64ArrayConstructor::of(tc::jst::variadic_arg_t, double items) noexcept {
 		return this->template _call<_js_jFloat64Array>("of", items);
 	}
 	inline auto _impl_js_jFunctionConstructor::prototype() noexcept { return this->template _getProperty<_js_jFunction>("prototype"); }
@@ -3579,7 +3579,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_jInt16ArrayConstructor::from(_js_jIterable<double> arrayLike, tc::jst::union_t<tc::js::undefined, tc::jst::function<double(double, double)>> mapfn, tc::js::any thisArg) noexcept {
 		return this->template _call<_js_jInt16Array>("from", arrayLike, mapfn, thisArg);
 	}
-	inline auto _impl_js_jInt16ArrayConstructor::of(_js_jArray<double> items) noexcept {
+	inline auto _impl_js_jInt16ArrayConstructor::of(tc::jst::variadic_arg_t, double items) noexcept {
 		return this->template _call<_js_jInt16Array>("of", items);
 	}
 	inline auto _impl_js_jInt32Array::BYTES_PER_ELEMENT() noexcept { return this->template _getProperty<double>("BYTES_PER_ELEMENT"); }
@@ -3709,7 +3709,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_jInt32ArrayConstructor::from(_js_jIterable<double> arrayLike, tc::jst::union_t<tc::js::undefined, tc::jst::function<double(double, double)>> mapfn, tc::js::any thisArg) noexcept {
 		return this->template _call<_js_jInt32Array>("from", arrayLike, mapfn, thisArg);
 	}
-	inline auto _impl_js_jInt32ArrayConstructor::of(_js_jArray<double> items) noexcept {
+	inline auto _impl_js_jInt32ArrayConstructor::of(tc::jst::variadic_arg_t, double items) noexcept {
 		return this->template _call<_js_jInt32Array>("of", items);
 	}
 	inline auto _impl_js_jInt8Array::BYTES_PER_ELEMENT() noexcept { return this->template _getProperty<double>("BYTES_PER_ELEMENT"); }
@@ -3839,7 +3839,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_jInt8ArrayConstructor::from(_js_jIterable<double> arrayLike, tc::jst::union_t<tc::js::undefined, tc::jst::function<double(double, double)>> mapfn, tc::js::any thisArg) noexcept {
 		return this->template _call<_js_jInt8Array>("from", arrayLike, mapfn, thisArg);
 	}
-	inline auto _impl_js_jInt8ArrayConstructor::of(_js_jArray<double> items) noexcept {
+	inline auto _impl_js_jInt8ArrayConstructor::of(tc::jst::variadic_arg_t, double items) noexcept {
 		return this->template _call<_js_jInt8Array>("of", items);
 	}
 	inline auto _impl_js_jIntl_dCollator::_tcjs_construct(tc::jst::union_t<_js_jArray<tc::js::string>, tc::js::string, tc::js::undefined> locales, tc::jst::union_t<_js_jIntl_dCollatorOptions, tc::js::undefined> options) noexcept {
@@ -4196,7 +4196,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_jMath::fround(double x) noexcept {
 		return this->template _call<double>("fround", x);
 	}
-	inline auto _impl_js_jMath::hypot(_js_jArray<double> values) noexcept {
+	inline auto _impl_js_jMath::hypot(tc::jst::variadic_arg_t, double values) noexcept {
 		return this->template _call<double>("hypot", values);
 	}
 	inline auto _impl_js_jMath::imul(double x, double y) noexcept {
@@ -4214,10 +4214,10 @@ namespace tc::js_defs {
 	inline auto _impl_js_jMath::log2(double x) noexcept {
 		return this->template _call<double>("log2", x);
 	}
-	inline auto _impl_js_jMath::max(_js_jArray<double> values) noexcept {
+	inline auto _impl_js_jMath::max(tc::jst::variadic_arg_t, double values) noexcept {
 		return this->template _call<double>("max", values);
 	}
-	inline auto _impl_js_jMath::min(_js_jArray<double> values) noexcept {
+	inline auto _impl_js_jMath::min(tc::jst::variadic_arg_t, double values) noexcept {
 		return this->template _call<double>("min", values);
 	}
 	inline auto _impl_js_jMath::pow(double x, double y) noexcept {
@@ -4279,7 +4279,7 @@ namespace tc::js_defs {
 		return this->template _call<tc::js::any /*AnonymousTypeWithLiteralType=new (...args: A) => R[__new]*/>("bind", thisArg, arg0, arg1, arg2, arg3);
 	}
 	template<typename AX, typename R>
-	inline auto _impl_js_jNewableFunction::bind(tc::js::any thisArg, _js_jArray<AX> args) noexcept {
+	inline auto _impl_js_jNewableFunction::bind(tc::js::any thisArg, tc::jst::variadic_arg_t, AX args) noexcept {
 		return this->template _call<tc::js::any /*AnonymousTypeWithLiteralType=new (...args: AX[]) => R[__new]*/>("bind", thisArg, args);
 	}
 	template<typename T, typename A>
@@ -4370,7 +4370,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_jObjectConstructor::assign(T target, U source1, V source2, W source3) noexcept {
 		return this->template _call<tc::js::any /* unsupported type flags =2097152: T & U & V & W*/>("assign", target, source1, source2, source3);
 	}
-	inline auto _impl_js_jObjectConstructor::assign(tc::js::any /* unsupported type flags =67108864: object*/ target, _js_jArray<tc::js::any> sources) noexcept {
+	inline auto _impl_js_jObjectConstructor::assign(tc::js::any /* unsupported type flags =67108864: object*/ target, tc::jst::variadic_arg_t, tc::js::any sources) noexcept {
 		return this->template _call<tc::js::any>("assign", target, sources);
 	}
 	inline auto _impl_js_jObjectConstructor::create(tc::js::any /*UnionWithUnsupportedSubtype=[tc::js::null,tc::js::any]*/ o) noexcept {
@@ -4542,11 +4542,11 @@ namespace tc::js_defs {
 	template<typename T>
 	inline auto _impl_js_jReadonlyArray<T>::length() noexcept { return this->template _getProperty<double>("length"); }
 	template<typename T>
-	inline auto _impl_js_jReadonlyArray<T>::concat(_js_jArray<_js_jConcatArray<T>> items) noexcept {
+	inline auto _impl_js_jReadonlyArray<T>::concat(tc::jst::variadic_arg_t, _js_jConcatArray<T> items) noexcept {
 		return this->template _call<_js_jArray<T>>("concat", items);
 	}
 	template<typename T>
-	inline auto _impl_js_jReadonlyArray<T>::concat(_js_jArray<tc::jst::union_t<T, _js_jConcatArray<T>>> items) noexcept {
+	inline auto _impl_js_jReadonlyArray<T>::concat(tc::jst::variadic_arg_t, tc::jst::union_t<T, _js_jConcatArray<T>> items) noexcept {
 		return this->template _call<_js_jArray<T>>("concat", items);
 	}
 	template<typename T>
@@ -4887,7 +4887,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_jString::codePointAt(double pos) noexcept {
 		return this->template _call<tc::jst::union_t<double, tc::js::undefined>>("codePointAt", pos);
 	}
-	inline auto _impl_js_jString::concat(_js_jArray<tc::js::string> strings) noexcept {
+	inline auto _impl_js_jString::concat(tc::jst::variadic_arg_t, tc::js::string strings) noexcept {
 		return this->template _call<tc::js::string>("concat", strings);
 	}
 	inline auto _impl_js_jString::endsWith(tc::js::string searchString, tc::jst::union_t<double, tc::js::undefined> endPosition) noexcept {
@@ -5026,13 +5026,13 @@ namespace tc::js_defs {
 		return this->template _call<tc::js::string>("valueOf");
 	}
 	inline auto _impl_js_jStringConstructor::prototype() noexcept { return this->template _getProperty<_js_jString>("prototype"); }
-	inline auto _impl_js_jStringConstructor::fromCharCode(_js_jArray<double> codes) noexcept {
+	inline auto _impl_js_jStringConstructor::fromCharCode(tc::jst::variadic_arg_t, double codes) noexcept {
 		return this->template _call<tc::js::string>("fromCharCode", codes);
 	}
-	inline auto _impl_js_jStringConstructor::fromCodePoint(_js_jArray<double> codePoints) noexcept {
+	inline auto _impl_js_jStringConstructor::fromCodePoint(tc::jst::variadic_arg_t, double codePoints) noexcept {
 		return this->template _call<tc::js::string>("fromCodePoint", codePoints);
 	}
-	inline auto _impl_js_jStringConstructor::raw(tc::js::any /*AnonymousTypeWithLiteralType={ raw: readonly string[] | ArrayLike<string>; }[raw]*/ template_, _js_jArray<tc::js::any> substitutions) noexcept {
+	inline auto _impl_js_jStringConstructor::raw(tc::js::any /*AnonymousTypeWithLiteralType={ raw: readonly string[] | ArrayLike<string>; }[raw]*/ template_, tc::jst::variadic_arg_t, tc::js::any substitutions) noexcept {
 		return this->template _call<tc::js::string>("raw", template_, substitutions);
 	}
 	inline auto _impl_js_jSymbol::toString() noexcept {
@@ -5232,7 +5232,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_jUint16ArrayConstructor::from(_js_jIterable<double> arrayLike, tc::jst::union_t<tc::js::undefined, tc::jst::function<double(double, double)>> mapfn, tc::js::any thisArg) noexcept {
 		return this->template _call<_js_jUint16Array>("from", arrayLike, mapfn, thisArg);
 	}
-	inline auto _impl_js_jUint16ArrayConstructor::of(_js_jArray<double> items) noexcept {
+	inline auto _impl_js_jUint16ArrayConstructor::of(tc::jst::variadic_arg_t, double items) noexcept {
 		return this->template _call<_js_jUint16Array>("of", items);
 	}
 	inline auto _impl_js_jUint32Array::BYTES_PER_ELEMENT() noexcept { return this->template _getProperty<double>("BYTES_PER_ELEMENT"); }
@@ -5362,7 +5362,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_jUint32ArrayConstructor::from(_js_jIterable<double> arrayLike, tc::jst::union_t<tc::js::undefined, tc::jst::function<double(double, double)>> mapfn, tc::js::any thisArg) noexcept {
 		return this->template _call<_js_jUint32Array>("from", arrayLike, mapfn, thisArg);
 	}
-	inline auto _impl_js_jUint32ArrayConstructor::of(_js_jArray<double> items) noexcept {
+	inline auto _impl_js_jUint32ArrayConstructor::of(tc::jst::variadic_arg_t, double items) noexcept {
 		return this->template _call<_js_jUint32Array>("of", items);
 	}
 	inline auto _impl_js_jUint8Array::BYTES_PER_ELEMENT() noexcept { return this->template _getProperty<double>("BYTES_PER_ELEMENT"); }
@@ -5492,7 +5492,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_jUint8ArrayConstructor::from(_js_jIterable<double> arrayLike, tc::jst::union_t<tc::js::undefined, tc::jst::function<double(double, double)>> mapfn, tc::js::any thisArg) noexcept {
 		return this->template _call<_js_jUint8Array>("from", arrayLike, mapfn, thisArg);
 	}
-	inline auto _impl_js_jUint8ArrayConstructor::of(_js_jArray<double> items) noexcept {
+	inline auto _impl_js_jUint8ArrayConstructor::of(tc::jst::variadic_arg_t, double items) noexcept {
 		return this->template _call<_js_jUint8Array>("of", items);
 	}
 	inline auto _impl_js_jUint8ClampedArray::BYTES_PER_ELEMENT() noexcept { return this->template _getProperty<double>("BYTES_PER_ELEMENT"); }
@@ -5622,7 +5622,7 @@ namespace tc::js_defs {
 	inline auto _impl_js_jUint8ClampedArrayConstructor::from(_js_jIterable<double> arrayLike, tc::jst::union_t<tc::js::undefined, tc::jst::function<double(double, double)>> mapfn, tc::js::any thisArg) noexcept {
 		return this->template _call<_js_jUint8ClampedArray>("from", arrayLike, mapfn, thisArg);
 	}
-	inline auto _impl_js_jUint8ClampedArrayConstructor::of(_js_jArray<double> items) noexcept {
+	inline auto _impl_js_jUint8ClampedArrayConstructor::of(tc::jst::variadic_arg_t, double items) noexcept {
 		return this->template _call<_js_jUint8ClampedArray>("of", items);
 	}
 	template<typename K, typename V>

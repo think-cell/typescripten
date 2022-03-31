@@ -57,13 +57,13 @@ struct SJsEnum final : public boost::intrusive::set_base_hook<boost::intrusive::
 static_assert(std::is_nothrow_move_constructible<SJsEnum>::value);
 static_assert(std::is_nothrow_move_assignable<SJsEnum>::value);
 
-struct SJsVariableLike final {
+struct SJsVariableLike {
     tc::js::ts::Symbol m_jsym;
     std::string m_strJsName;
     std::string m_strCppifiedName;
 
-private:
-    tc::js::ts::Declaration m_jdeclVariableLike; // There may be multiple declarations, we ensure they do not conflict.
+protected:
+tc::js::ts::Declaration m_jdeclVariableLike; // There may be multiple declarations, we ensure they do not conflict.
     std::optional<SMangledType> mutable m_omtType; // cached
 
 public:
@@ -101,6 +101,14 @@ public:
     }
 };
 
+struct SJsParameter : SJsVariableLike {
+    bool m_bVariadic = false; // test(...param: any[]) is really a method with variadic arguments
+
+    SJsParameter(tc::js::ts::Symbol jsymName) noexcept;
+    SJsParameter(SJsParameter&&) noexcept = default;
+    SJsParameter& operator=(SJsParameter&&) noexcept = default;
+};
+
 static_assert(std::is_nothrow_move_constructible<SJsVariableLike>::value);
 static_assert(std::is_nothrow_move_assignable<SJsVariableLike>::value);
 
@@ -116,7 +124,7 @@ struct STypeParameter final {
 struct SJsFunctionLike final {
     tc::js::ts::Symbol m_jsym;
     tc::js::ts::Signature m_jsignature;
-    std::vector<SJsVariableLike> m_vecjsvariablelikeParameters;
+    std::vector<SJsParameter> m_vecjsparam;
     std::vector<STypeParameter> m_vectypeparam;
 
     std::string m_strCppifiedName;

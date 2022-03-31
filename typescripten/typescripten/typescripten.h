@@ -100,6 +100,20 @@ inline bool IsBootstrapType(std::string const& strName) noexcept {
 	);
 }
 
+namespace tc::jst {
+	// JavaScript tolerates ambiguous overloads such as
+	// interface Array<T> {
+	// 	constructor(length: number);
+	// 	constructor(...items: T);
+	// }
+	// which is ambigous if T = number and one arg is passed. 
+	// JS chooses the first overload.
+	//
+	// We insert variadic_arg_tag into the argument list
+	// to disambiguate both.
+	DEFINE_TAG_TYPE(variadic_arg)
+}
+
 #define JS_HAS_MEM_FN_XXX_TRAIT_DEF( name, ... ) \
 	template<typename U> \
 	struct has_mem_fn_ ## name { \

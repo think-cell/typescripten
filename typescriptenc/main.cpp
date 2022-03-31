@@ -266,6 +266,8 @@ void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept
 
 		auto FunctionImpl = [&TemplateDecl](auto&& rngstrNamespace, auto const& CallExpression, SJsFunctionLike const& jsfunctionlike) noexcept {
 			auto ojstypenode = ts::SignatureDeclarationBase(jsfunctionlike.m_jsignature->getDeclaration())->type();
+			// TODO: Generate overloads when the last argument of jsfunctionlike is variadic https://github.com/think-cell/typescripten/issues/23
+			// our output variadic template argument list?
 			return tc::concat(
 				TemplateDecl("\t", jsfunctionlike),
 				"\tinline auto ", std::forward<decltype(rngstrNamespace)>(rngstrNamespace), jsfunctionlike.m_strCppifiedName, "(", jsfunctionlike.CppifiedParametersWithCommentsDef(), ") noexcept {\n",
@@ -284,7 +286,7 @@ void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept
 									tc::concat(
 										"tc::js::any(",
 										tc::find_first_if<tc::return_element>(
-											jsfunctionlike.m_vecjsvariablelikeParameters,
+											jsfunctionlike.m_vecjsparam,
 											[&](auto const& jsvariable) noexcept {
 												return jsvariable.m_strJsName==tc::explicit_cast<std::string>(ts::idText(ts::TypePredicateNode(*ojstypenode)->parameterName().get<ts::Identifier>()));
 											}
@@ -318,7 +320,7 @@ void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept
 						return tc::concat(
 							RetrieveSymbolFromCpp(jsfunctionlike.m_jsym), "(", 
 								tc::join_separated(
-									tc::transform(jsfunctionlike.m_vecjsvariablelikeParameters, TC_MEMBER(.m_strCppifiedName)),
+									tc::transform(jsfunctionlike.m_vecjsparam, TC_MEMBER(.m_strCppifiedName)),
 									", "
 								), 
 							")"
@@ -634,7 +636,7 @@ void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept
 								"\tinline auto ", strClassNamespace, "_tcjs_construct(", jsfunctionlike.CppifiedParametersWithCommentsDef(), ") noexcept {\n"
 									"\t\treturn ", pjsclass->m_strMangledName, TemplateArgs(*pjsclass), "(", 
 										strClassInstanceRetrieve, ".new_(", 
-											tc::join_separated(tc::transform(jsfunctionlike.m_vecjsvariablelikeParameters, TC_MEMBER(.m_strCppifiedName)), ", "), 
+											tc::join_separated(tc::transform(jsfunctionlike.m_vecjsparam, TC_MEMBER(.m_strCppifiedName)), ", "), 
 										"));\n"
 								"\t}\n"
 							);
@@ -674,13 +676,13 @@ void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept
 											tc_conditional_range(
 												jsfunctionlike.m_bIndexSignature,
 												tc::join_separated(
-													tc::transform(jsfunctionlike.m_vecjsvariablelikeParameters, TC_MEMBER(.m_strCppifiedName)),
+													tc::transform(jsfunctionlike.m_vecjsparam, TC_MEMBER(.m_strCppifiedName)),
 													", "
 												),
 												tc::join_separated(
 													tc::concat(
 														tc::single(tc::concat("\"", tc::explicit_cast<std::string>(jsfunctionlike.m_jsym->getName()), "\"")),
-														tc::transform(jsfunctionlike.m_vecjsvariablelikeParameters, TC_MEMBER(.m_strCppifiedName))
+														tc::transform(jsfunctionlike.m_vecjsparam, TC_MEMBER(.m_strCppifiedName))
 													),
 													", "
 												)

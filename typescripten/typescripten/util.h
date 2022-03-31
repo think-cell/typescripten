@@ -9,11 +9,11 @@ JS_RANGE_WITH_ITERATORS_TMPL(tc::js, Array)
 namespace tc::jst {
 	template<typename T, typename Rng>
 	tc::js::Array<T> make_Array(Rng&& rng) noexcept {
-		tc::js::any result(::emscripten::val::array());
+		tc::js::Array<T> result(::emscripten::val::array());
 		::tc::for_each(::std::forward<Rng>(rng), [&](auto&& value) noexcept {
-			result.getEmval().call<double>("push", ::tc::explicit_cast<T>(::std::forward<decltype(value)>(value)));
+			result->push(::tc::jst::variadic_arg, ::tc::explicit_cast<T>(::std::forward<decltype(value)>(value)));
 		});
-		return tc::explicit_cast<tc::js::Array<T>>(result);
+		return result;
 	}
 
 	template<typename T, typename Rng>

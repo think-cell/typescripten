@@ -46,16 +46,15 @@ int main() {
 		_ASSERTEQUAL(arr[2], 3);
 	}
 
-	// FIXME: push method is n-ary, not taking an array
-	// {
-	// 	Array<double> const arr = tc::jst::make_Array<double>(tc::empty_range());
-	// 	_ASSERT(tc::empty(arr));
-	// 	_ASSERTEQUAL(arr->length(), 0);
-	// 	arr->push(tc::jst::make_Array<double>(tc::single(10.0)));
-	// 	_ASSERT(!tc::empty(arr));
-	// 	_ASSERTEQUAL(arr->length(), 1);
-	// 	_ASSERTEQUAL(arr[0], 10);
-	// }
+	{
+		Array<double> const arr = tc::jst::make_Array<double>(tc::empty_range());
+		_ASSERT(tc::empty(arr));
+		_ASSERTEQUAL(arr->length(), 0);
+		arr->push(tc::jst::variadic_arg, 10.0);
+		_ASSERT(!tc::empty(arr));
+		_ASSERTEQUAL(arr->length(), 1);
+		_ASSERTEQUAL(arr[0], 10);
+	}
 
 	{
 		Array<string> const arr = tc::jst::make_Array<string>(std::initializer_list<char const*>{"Hello", "Hi!"});
@@ -67,8 +66,11 @@ int main() {
 	}
 
 	{
-	    constexpr char str[] = "Test";
-        Array<string> const arr = tc::jst::make_Array<string>(tc::single(str));
+        Array<string> const arr(
+			tc::jst::create_js_object,
+			tc::jst::variadic_arg,
+			string("Test")
+		);
         _ASSERTEQUAL(arr->length(), 1);
         _ASSERTEQUAL(arr[0].length(), 4);
 	}

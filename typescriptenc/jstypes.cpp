@@ -301,6 +301,27 @@ bool SJsVariableLike::IsVoid() const& noexcept {
     return ts::TypeFlags::Void==m_jtypeDeclared->getFlags();
 }
 
+SJsParameter::SJsParameter(tc::js::ts::Symbol jsymName) noexcept 
+    : SJsVariableLike(jsymName) 
+{
+    if(auto odotdot = (*ts::isParameter(m_jdeclVariableLike))->dotDotDotToken()) {
+        // TODO https://github.com/think-cell/typescripten/issues/23:
+        // m_jtypeDeclared may also be a reference to a type parameter
+        // TypeParameterDeclaration::constraint() would resolve to the any[]
+        // interface CallableFunction extends Function {
+        //     apply<T, A extends any[], R>(this: (this: T, ...args: A) => R, thisArg: T, args: A): R;
+        // }
+        if(static_cast<bool>(ts::TypeFlags::Object & m_jtypeDeclared->getFlags())) {
+            m_bVariadic = true;
+            _ASSERT(static_cast<bool>(ts::ObjectFlags::Reference & ts::ObjectType(m_jtypeDeclared)->objectFlags()));
+
+            auto const atype = (*g_ojtsTypeChecker)->getTypeArguments(ts::TypeReference(m_jtypeDeclared));
+            _ASSERTEQUAL(tc::size(atype), 1);
+            m_jtypeDeclared = tc::front(atype);
+        }
+    }
+}
+
 STypeParameter::STypeParameter(ts::TypeParameterDeclaration typeparamdecl) noexcept
     : m_etypeparam(etypeparamTYPE)
     , m_strName(tc::explicit_cast<std::string>(tc::js::string(typeparamdecl->name()->escapedText())))
@@ -355,10 +376,10 @@ std::string STypeParameter::Type() const& noexcept {
 SJsFunctionLike::SJsFunctionLike(ts::Symbol jsym, ts::SignatureDeclaration jsigndecl, bool bIndexSignature) noexcept
     : m_jsym(jsym)
     , m_jsignature(*(*g_ojtsTypeChecker)->getSignatureFromDeclaration(jsigndecl))
-    , m_vecjsvariablelikeParameters(tc::make_vector(tc::transform(
+    , m_vecjsparam(tc::make_vector(tc::transform(
         m_jsignature->getParameters(),
         [](ts::Symbol const jsymParameter) noexcept {
-            return SJsVariableLike(jsymParameter);
+            return SJsParameter(jsymParameter);
         }
     )))
     , m_vectypeparam(tc::make_vector(tc::transform(ts::getEffectiveTypeParameterDeclarations(jsigndecl), tc::fn_explicit_cast<STypeParameter>())))
@@ -387,7 +408,7 @@ SJsFunctionLike::SJsFunctionLike(ts::Symbol jsym, ts::IndexSignatureDeclaration 
 
 std::string SJsFunctionLike::CppifiedParametersWithCommentsDecl() const& noexcept {
     // Trailing function arguments of type 'x | undefined' can be defaulted to undefined
-    auto const itjsvariablelike = tc::find_last_if<tc::return_border_after_or_begin>(m_vecjsvariablelikeParameters, [](auto const& jsvariablelike) noexcept {
+    auto const itjsvariablelike = tc::find_last_if<tc::return_border_after_or_begin>(m_vecjsparam, [](auto const& jsvariablelike) noexcept {
         if(auto ounion = jsvariablelike.m_jtypeDeclared->isUnion()) {
             return !tc::find_first_if<tc::return_bool>((*ounion)->types(), [](auto const& type) noexcept {
                 return ts::TypeFlags::Undefined==type->flags();
@@ -395,13 +416,21 @@ std::string SJsFunctionLike::CppifiedParametersWithCommentsDecl() const& noexcep
         }
         return true;
     });
+    // Variadic arguments and arguments that can be defaulted to undefined are mutually exclusive
+    _ASSERT(!tc::any_of(m_vecjsparam, TC_MEMBER(.m_bVariadic)) || itjsvariablelike==tc::end(m_vecjsparam));
     return tc::explicit_cast<std::string>(tc::join_separated(
         tc::concat(
-            tc::transform(tc::take(m_vecjsvariablelikeParameters, itjsvariablelike), [this](SJsVariableLike const& jsvariablelikeParameter) noexcept {
-                return tc::concat(jsvariablelikeParameter.MangleType(m_vectypeparam).m_strWithComments, " ", jsvariablelikeParameter.m_strCppifiedName);
+            tc::transform(tc::take(m_vecjsparam, itjsvariablelike), [this](SJsParameter const& jsparam) noexcept {
+                return tc::concat(
+                        tc_conditional_range(
+                            jsparam.m_bVariadic,
+                            "tc::jst::variadic_arg_t, "
+                        ),
+                        jsparam.MangleType(m_vectypeparam).m_strWithComments, " ", jsparam.m_strCppifiedName
+                    );
             }),
-            tc::transform(tc::drop(m_vecjsvariablelikeParameters, itjsvariablelike), [this](SJsVariableLike const& jsvariablelikeParameter) noexcept {
-                return tc::concat(jsvariablelikeParameter.MangleType(m_vectypeparam).m_strWithComments, " ", jsvariablelikeParameter.m_strCppifiedName, " = tc::js::undefined()");
+            tc::transform(tc::drop(m_vecjsparam, itjsvariablelike), [this](SJsParameter const& jsparam) noexcept {
+                return tc::concat(jsparam.MangleType(m_vectypeparam).m_strWithComments, " ", jsparam.m_strCppifiedName, " = tc::js::undefined()");
             })
         ),
         ", "
@@ -410,8 +439,14 @@ std::string SJsFunctionLike::CppifiedParametersWithCommentsDecl() const& noexcep
 
 std::string SJsFunctionLike::CppifiedParametersWithCommentsDef() const& noexcept {
     return tc::explicit_cast<std::string>(tc::join_separated(
-        tc::transform(m_vecjsvariablelikeParameters, [&](SJsVariableLike const& jsvariablelikeParameter) noexcept {
-            return tc::concat(jsvariablelikeParameter.MangleType(m_vectypeparam).m_strWithComments, " ", jsvariablelikeParameter.m_strCppifiedName);
+        tc::transform(m_vecjsparam, [&](SJsParameter const& jsparam) noexcept {
+            return tc::concat(
+                tc_conditional_range(
+                    jsparam.m_bVariadic,
+                    "tc::jst::variadic_arg_t, "
+                ),
+                jsparam.MangleType(m_vectypeparam).m_strWithComments, " ", jsparam.m_strCppifiedName
+            );
         }),
         ", "
     ));
@@ -420,8 +455,14 @@ std::string SJsFunctionLike::CppifiedParametersWithCommentsDef() const& noexcept
 std::string const& SJsFunctionLike::CanonizedParameterCppTypes() const& noexcept {
     if(tc::empty(m_strCanonizedParameterCppTypes)) {
         m_strCanonizedParameterCppTypes = tc::explicit_cast<std::string>(tc::join_separated(
-            tc::transform(m_vecjsvariablelikeParameters, [&](SJsVariableLike const& jsvariablelikeParameter) noexcept {
-                return jsvariablelikeParameter.MangleType(m_vectypeparam).ExpandType();
+            tc::transform(m_vecjsparam, [&](SJsParameter const& jsparam) noexcept {
+                return tc::concat( 
+                    tc_conditional_range(
+                        jsparam.m_bVariadic,
+                        "tc::jst::variadic_arg_t, "
+                    ),
+                    jsparam.MangleType(m_vectypeparam).ExpandType()
+                );
             }),
             ", "
         ));
