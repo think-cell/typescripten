@@ -7,6 +7,8 @@
 #include <tc/assert_defs.h>
 #include <typescripten/typescripten.h>
 
+#include "lib.es2015.h"
+
 using tc::jst::create_js_object;
 using tc::js::string;
 using tc::js::any;

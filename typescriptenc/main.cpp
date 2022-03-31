@@ -1,4 +1,5 @@
 #include "precompiled.h"
+#include "typescript.d.bootstrap.h"
 
 #include "mangle.h"
 #include "walk_symbol.h"
@@ -8,7 +9,6 @@ using tc::jst::create_js_object;
 using tc::js::string;
 using tc::jst::optional;
 using tc::js::any;
-using tc::js::console;
 using tc::js::ts;
 using tc::js::Array;
 using tc::js::ReadonlyArray;
@@ -83,6 +83,14 @@ namespace {
 SetJsEnum g_setjsenum;
 SetJsClass g_setjsclass;
 SetJsTypeAlias g_setjstypealias;
+
+std::unordered_set<std::string> g_setstrIgnoredSymbols;
+bool IsIgnoredSymbol(std::string const& strFullyQualified) noexcept {
+	return tc::cont_find<tc::return_bool>(
+		g_setstrIgnoredSymbols,
+		strFullyQualified
+	);
+}
 
 template<typename Rng>
 void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept {
@@ -360,6 +368,8 @@ void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept
 			"#include <boost/hana/hash.hpp>\n"
 			"#include <boost/hana/at_key.hpp>\n"
 			"using namespace boost::hana::literals;\n"
+			"#pragma push_macro(\"assert\")\n"
+			"#undef assert\n"
 			"namespace tc::js_defs {\n",
 			tc::join(tc::transform(g_setjsenum, [](SJsEnum const& jsenumEnum) noexcept {
 				// We have to mark enums as IsJsIntegralEnum before using in js interop.
@@ -763,6 +773,7 @@ void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept
 				}
 			)),
 			"} // namespace tc::js\n"
+			"#pragma pop_macro(\"assert\")\n"
 		);
 	}
 }
@@ -810,6 +821,12 @@ int main(int cArgs, char* apszArgs[]) {
 		return 1;	
 	}
 
+	// TODO: Add command line parameter to ignore symbols
+	// These are all part of lib.es5.d.ts
+	tc::cont_must_emplace(g_setstrIgnoredSymbols, "ClassDecorator");
+	tc::cont_must_emplace(g_setstrIgnoredSymbols, "MethodDecorator");
+	tc::cont_must_emplace(g_setstrIgnoredSymbols, "IDBValidKey"); 
+
 	auto const rngstrFileNames = tc::counted(boost::next(apszArgs), cArgs - 1);
 	tc::for_each(rngstrFileNames, [](tc::ptr_range<char> rngch) noexcept {
 		tc::for_each(rngch, [](auto& ch) noexcept { 
@@ -822,11 +839,16 @@ int main(int cArgs, char* apszArgs[]) {
 	jtsCompilerOptions->target(ts::ScriptTarget::ES5);
 	jtsCompilerOptions->module(ts::ModuleKind::CommonJS);
 
-	ts::Program const jtsProgram = ts::createProgram(ReadonlyArray<string>(create_js_object, rngstrFileNames), jtsCompilerOptions);
+	ts::Program const jtsProgram = ts::createProgram(tc::jst::make_ReadonlyArray<js::string>(rngstrFileNames), jtsCompilerOptions);
 	{
 		auto const jtsReadOnlyArrayDiagnostics = ts::getPreEmitDiagnostics(jtsProgram);
-		if (jtsReadOnlyArrayDiagnostics->length()) {
-			console::log(ts::formatDiagnosticsWithColorAndContext(jtsReadOnlyArrayDiagnostics, ts::FormatDiagnosticsHost(ts::createCompilerHost(jtsCompilerOptions).getEmval())));
+		if(!tc::empty(jtsReadOnlyArrayDiagnostics)) {
+			tc::append(
+				std::cerr, 
+				tc::explicit_cast<std::string>(
+					ts::formatDiagnosticsWithColorAndContext(jtsReadOnlyArrayDiagnostics, ts::FormatDiagnosticsHost(ts::createCompilerHost(jtsCompilerOptions).getEmval()))
+				)
+			);
 			return 1;
 		}
 	}

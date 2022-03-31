@@ -2,6 +2,7 @@
 #include "MyLib.d.h"
 #include <random>
 #include <emscripten/em_asm.h>
+#include <typescripten/util.h>
 
 namespace {
     constexpr int c_STEPS = 10;

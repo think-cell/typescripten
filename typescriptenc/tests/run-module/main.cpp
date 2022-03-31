@@ -1,5 +1,6 @@
 #include "../../precompiled.h"
 #include "MyLib.d.h"
+#include <typescripten/util.h>
 
 int main() {
 	_ASSERTEQUAL(tc::js::MyLib::sumOfTwo(10, 20), 30);

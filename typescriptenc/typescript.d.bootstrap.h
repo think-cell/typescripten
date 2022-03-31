@@ -30,7 +30,9 @@ and limitations under the License.
 #include <emscripten/val.h>
 #include <optional>
 
+#include "lib.es2015.d.h"
 #include "ts.d.inl"
+#include <typescripten/util.h>
 
 namespace tc::js_defs {
 	// Manually implemented instead of DEFINE_CONTIGUOUS_ENUM + enumset to avoid manually checking that all enums are indeed contiguous.

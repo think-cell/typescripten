@@ -10,6 +10,7 @@ enum ECppType {
 };
 BITMASK_OPS(ECppType);
 ECppType CppType(tc::js::ts::Symbol jsymType) noexcept;
+bool IsIgnoredSymbol(std::string const& strFullyQualified) noexcept;
 
 tc::ptr_range<char const> StripQuotes(tc::ptr_range<char const> str) noexcept;
 
@@ -262,15 +263,18 @@ template<typename Rng>
 void SJsScope::Initialize(Rng&& rngjsym) & noexcept {
      tc::for_each(rngjsym, [&](tc::js::ts::Symbol const& jsymType) noexcept {
         // We assume that ts::Symbol::exports() returns a symbol list without duplicates.
-        auto const ecpptype = CppType(jsymType);
-        if(ecpptypeENUM&ecpptype) {
-            m_vecjsenumExport.emplace_back(jsymType);
-        }
-        if(ecpptypeCLASS&ecpptype) {
-            m_vecjsclassExport.emplace_back(jsymType);
-        }
-        if(ecpptypeTYPEALIAS&ecpptype) {
-            m_vecjstypealiasExport.emplace_back(jsymType); 
+        auto const str = FullyQualifiedName(jsymType);
+        if(!IsBootstrapType(str) && !IsIgnoredSymbol(str)) {
+            auto const ecpptype = CppType(jsymType);
+            if(ecpptypeENUM&ecpptype) {
+                m_vecjsenumExport.emplace_back(jsymType);
+            }
+            if(ecpptypeCLASS&ecpptype) {
+                m_vecjsclassExport.emplace_back(jsymType);
+            }
+            if(ecpptypeTYPEALIAS&ecpptype) {
+                m_vecjstypealiasExport.emplace_back(jsymType); 
+            }
         }
     });
     tc::for_each(m_vecjsenumExport, TC_MEMBER(.Initialize()));

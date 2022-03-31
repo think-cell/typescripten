@@ -1,4 +1,5 @@
 #include "precompiled.h"
+#include "typescript.d.bootstrap.h"
 
 #include "mangle.h"
 #include "walk_symbol.h"
@@ -159,7 +160,7 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 								return {ojstypealias->m_strMangledName};
 							}
 						} else if(IsBootstrapType(strName)) {
-							auto strMangled = tc::make_str("_js_", strName);
+							auto strMangled = tc::make_str("_js_j", strName);
 							if(auto const oatypeargs = jtypeRoot->aliasTypeArguments()) {
 								return MangleTypeArguments(strMangled, strMangled, *oatypeargs, tc::repeat_n(tc::size(*oatypeargs), etypeparamTYPE));
 							} else {
@@ -181,7 +182,7 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 			if (auto const jouniontypeRoot = jtypeRoot->isUnion()) {
 				_ASSERT(0!=static_cast<int>(jtypeRoot->getFlags() & ts::TypeFlags::Union));
 				
-				auto const cUnionTypes = (*jouniontypeRoot)->types()->length();
+				auto const cUnionTypes = tc::size((*jouniontypeRoot)->types());
 				_ASSERT(1 < cUnionTypes);
 
 				if((ts::TypeFlags::EnumLiteral | ts::TypeFlags::Union)==jtypeRoot->getFlags()) {
@@ -305,7 +306,7 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 						if(tc::equal(rngstrMemberName, tc::single("__call"))) {
 							ts::Symbol jsymSignature = tc::front(vecjsymMember);
 							_ASSERTEQUAL(jsymSignature->getFlags(), ts::SymbolFlags::Signature);
-							if(1==(*jsymSignature->declarations())->length()) {
+							if(1==tc::size(*jsymSignature->declarations())) {
 								ts::Signature const jtsSignature = *(*g_ojtsTypeChecker)->getSignatureFromDeclaration(
 									ts::CallSignatureDeclaration(tc::front(*jsymSignature->declarations()))
 								);

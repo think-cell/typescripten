@@ -60,7 +60,7 @@ SMangledType MangleClassOrInterface(std::string const& strFullyQualifiedName, Rn
 			return MangleTypeArguments(ojsclass->m_strMangledName, ojsclass->m_strMangledName, rngtypearg, tc::transform(ojsclass->m_vectypeparam, TC_MEMBER(.m_etypeparam)));
 		}
 	} else if(IsBootstrapType(strFullyQualifiedName)) {
-		auto str = tc::make_str("_js_", strFullyQualifiedName);
+		auto str = tc::make_str("_js_j", strFullyQualifiedName);
 		if(tc::empty(rngtypearg)) {
 			return {str};
 		} else {

@@ -1,4 +1,5 @@
 #include "precompiled.h"
+#include "typescript.d.bootstrap.h"
 
 #include "jstypes.h"
 #include "mangle.inl"
@@ -270,7 +271,7 @@ SJsVariableLike::SJsVariableLike(ts::Symbol jsym) noexcept
                 auto const nModifierFlagsCurrent = ts::getCombinedModifierFlags(jdeclCurrent);
                 auto const jtypeCurrent = (*g_ojtsTypeChecker)->getTypeOfSymbolAtLocation(m_jsym, jdeclCurrent);
                 if (nModifierFlagsCurrent != nModifierFlagsFirst || !jtypeCurrent.getEmval().strictlyEquals(jtypeFirst.getEmval())) {
-                    tc::append(std::cerr, "JSVariableLike of symbol '", m_strJsName, "' has ", tc::as_dec((*m_jsym->declarations())->length()), " conflicting declarations\n");
+                    tc::append(std::cerr, "JSVariableLike of symbol '", m_strJsName, "' has ", tc::as_dec(tc::size(*m_jsym->declarations())), " conflicting declarations\n");
                     _ASSERTFALSE;
                 }
             });
