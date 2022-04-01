@@ -168,7 +168,7 @@ void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept
 		}()
 	);
 
-	tc::for_each(g_setjsclass, TC_MEMBER(.ResolveBaseClasses()));
+	tc::for_each(g_setjsclass, TC_MEMBER(.ResolveBaseClassesAndSortDependencies()));
 
 	// Can call MangleType once construction of the global scope is complete 
 	g_bGlobalScopeConstructionComplete = true;
@@ -492,12 +492,34 @@ void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept
 					"\t\tstruct _tcjs_definitions {\n",
 					"\t\t\tstatic constexpr auto keyof = boost::hana::make_map(\n",
 					tc::join_separated(tc::transform(
-						tc::concat(pjsclass->m_vecjsvariablelikeExport, pjsclass->m_vecjsvariablelikeProperty),
-						[&](SJsVariableLike const& jsvariablelikeVariable) noexcept {
-							// TODO: keyof T also considers member functions as keys
+						// We enumerate all properties of pjsclass, including properties of derived classes
+						// TODO: keyof T also considers member functions as key
+						(*g_ojtsTypeChecker)->getPropertiesOfType(pjsclass->m_jtype),
+						[&](auto const& jsym) noexcept {
 							return tc::concat(
-								"\t\t\t\tboost::hana::make_pair(\"", jsvariablelikeVariable.m_strCppifiedName, "\"_s, "
-								"boost::hana::type_c<", jsvariablelikeVariable.MangleType(pjsclass->m_vectypeparam).m_strWithComments ,">)"
+								"\t\t\t\tboost::hana::make_pair(\"", tc::explicit_cast<std::string>(jsym->getName()), "\"_s, "
+								"boost::hana::type_c<", 
+									[&]() noexcept {
+										// This resolves the type of jsym in the context of pjsclass, i.e.,
+										// interface B<T> {
+										// 	t: T;
+										// }
+										// interface A extends B<string> {}
+										//
+										// A has a property t of type "string".
+										//
+										auto jtype = (*g_ojtsTypeChecker)->getTypeOfSymbolAtLocation(jsym, tc::front(*pjsclass->m_jsym->declarations()));
+										if(static_cast<bool>(ts::TypeFlags::TypeParameter&jtype->getFlags())) {
+											STypeParameter typeparam(ts::TypeParameterDeclaration(tc::front(*(*jtype->getSymbol())->declarations())));
+											if(etypeparamNUMBER==typeparam.m_etypeparam) {
+												return tc::make_str("number");
+											} else if(etypeparamENUM==typeparam.m_etypeparam) {
+												jtype = *typeparam.m_ojtype;
+											}
+										}
+										return MangleType(jtype).m_strWithComments;
+									}(),
+								">)"
 							);
 						}
 					), ",\n"),

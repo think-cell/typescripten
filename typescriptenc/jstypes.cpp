@@ -483,6 +483,7 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
     , m_strCppifiedName(CppifyName(m_jsym, enamectxCLASS))
     , m_strMangledName(MangleSymbolName(m_jsym, enamectxCLASS))
     , m_bHasImplicitDefaultConstructor(false)
+    , m_jtype((*g_ojtsTypeChecker)->getDeclaredTypeOfSymbol(m_jsym))
 {
     SJsScope::Initialize(
         tc_conditional_range(
@@ -596,11 +597,10 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
         //     exclude?: string[];
         //     [option: string]: string[] | boolean | undefined;
         // }
-        auto jstype = (*g_ojtsTypeChecker)->getDeclaredTypeOfSymbol(m_jsym);
         m_bHasImplicitDefaultConstructor = tc::empty(m_vecjsfunctionlikeCtor) 
             && tc::all_of(
                 // Type::getProperties will include properties (and member functions) of base classes
-                tc::transform(jstype->getProperties(), [](ts::Symbol jsymMember) noexcept {
+                tc::transform(m_jtype->getProperties(), [](ts::Symbol jsymMember) noexcept {
                     return ((ts::SymbolFlags::Property|ts::SymbolFlags::Optional) == ((ts::SymbolFlags::Property|ts::SymbolFlags::Optional) & jsymMember->getFlags()))
                     || tc::all_of(*jsymMember->declarations(), [](auto jsdecl) noexcept {
                         if(auto ojsindexdecl = ts::isIndexSignatureDeclaration(jsdecl)) {
@@ -619,8 +619,8 @@ void SJsClass::Initialize() & noexcept {
     tc::intrusive_cont_must_insert(g_setjsclass, *this);
 }
 
-void SJsClass::ResolveBaseClasses() & noexcept {
-    auto AddBaseClassDependency = [this](ts::Symbol jsymBase) noexcept {
+void SJsClass::ResolveBaseClassesAndSortDependencies() & noexcept {
+    auto AddSortDependency = [this](ts::Symbol jsymBase) noexcept {
         if(auto ojsclass = tc::cont_find<tc::return_element_or_null>(g_setjsclass, FullyQualifiedName(jsymBase))) {
             tc::cont_emplace_back(m_vecpjsclassSortDependency, std::addressof(*ojsclass));
         }
@@ -630,7 +630,7 @@ void SJsClass::ResolveBaseClasses() & noexcept {
         tc::for_each(
             tc::filter(jsfunctionlike.m_vectypeparam, [](auto const& typeparam) noexcept { return etypeparamKEYOF==typeparam.m_etypeparam; }),
             [&](auto const& typeparam) noexcept {
-                AddBaseClassDependency(*(*typeparam.m_ojtype)->getSymbol());
+                AddSortDependency(*(*typeparam.m_ojtype)->getSymbol());
             }
         );
     });
@@ -645,7 +645,7 @@ void SJsClass::ResolveBaseClasses() & noexcept {
 
                 // FIXME: Add dependency for type arguments?
                 if(auto ojsym = tc::implicit_cast<ts::Type>(jbasetype)->getSymbol()) {
-                    AddBaseClassDependency(*ojsym);
+                    AddSortDependency(*ojsym);
                 }
             }
         );
@@ -664,7 +664,7 @@ void SJsClass::ResolveBaseClasses() & noexcept {
                                 }
 
                                 if(auto josymImplements = jtypeImplements->getSymbol()) {
-                                    AddBaseClassDependency(*josymImplements);
+                                    AddSortDependency(*josymImplements);
                                 } else {    
                                     tc::append(std::cerr,
                                         "Unable to determine 'implements' symbol for class '",

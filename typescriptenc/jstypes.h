@@ -195,18 +195,19 @@ struct SJsClass final : public SJsScope, public boost::intrusive::set_base_hook<
     std::vector<SJsFunctionLike> m_vecjsfunctionlikeMethod;
     std::vector<SJsVariableLike> m_vecjsvariablelikeProperty;
     std::vector<SJsClass const*> m_vecpjsclassSortDependency;
-    std::vector<SMangledType> m_vecmtBaseClass;
+    std::vector<SMangledType> m_vecmtBaseClass; // Also contains implemented interfaces, superset of m_vecpjsclassBaseClass
 
     std::vector<STypeParameter> m_vectypeparam;
 
     bool m_bHasImplicitDefaultConstructor;
-
+    tc::js::ts::Type m_jtype; 
+    
     SJsClass(tc::js::ts::Symbol jsymClass) noexcept;
     SJsClass(SJsClass&&) noexcept = default;
     SJsClass& operator=(SJsClass&&) noexcept = default;
     
     void Initialize() & noexcept;
-    void ResolveBaseClasses() & noexcept;
+    void ResolveBaseClassesAndSortDependencies() & noexcept;
 };
 static_assert(std::is_nothrow_move_constructible<SJsClass>::value);
 static_assert(std::is_nothrow_move_assignable<SJsClass>::value);
