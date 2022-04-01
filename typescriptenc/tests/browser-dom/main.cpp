@@ -1,9 +1,6 @@
 #include "../../precompiled.h"
 
-#pragma push_macro("assert")
-#undef assert
 #include <lib.dom.d.h>
-#pragma pop_macro("assert")
 
 int main() {
 	tc::js::document()->title(tc::js::string("Hello World from C++!"));

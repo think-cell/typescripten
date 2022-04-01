@@ -1,9 +1,6 @@
 #include <typescripten/typescripten.h>
 
-#pragma push_macro("assert")
-#undef assert
 #include <lib.dom.d.h>
-#pragma pop_macro("assert")
 
 namespace js = tc::js; // top-level JS namespace 
 
