@@ -351,7 +351,7 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 				ts::IndexedAccessType jidxtype(jtypeRoot);
 				return {
 					tc::make_str(
-						"typename decltype(+", MangleType(jidxtype->objectType()).ExpandType(), "::keyof[", MangleType(jidxtype->indexType()).ExpandType(), "{}])::type"
+						"typename decltype(+(", MangleType(jidxtype->objectType()).ExpandType(), "::keyof()[", MangleType(jidxtype->indexType()).ExpandType(), "{}]))::type"
 					)
 				}; 
 			} else {

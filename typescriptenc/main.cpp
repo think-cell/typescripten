@@ -490,40 +490,54 @@ void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept
 					),
 					" {\n",
 					"\t\tstruct _tcjs_definitions {\n",
-					"\t\t\tstatic constexpr auto keyof = boost::hana::make_map(\n",
-					tc::join_separated(tc::transform(
-						// We enumerate all properties of pjsclass, including properties of derived classes
-						// TODO: keyof T also considers member functions as key
-						(*g_ojtsTypeChecker)->getPropertiesOfType(pjsclass->m_jtype),
-						[&](auto const& jsym) noexcept {
-							return tc::concat(
-								"\t\t\t\tboost::hana::make_pair(\"", tc::explicit_cast<std::string>(jsym->getName()), "\"_s, "
-								"boost::hana::type_c<", 
-									[&]() noexcept {
-										// This resolves the type of jsym in the context of pjsclass, i.e.,
-										// interface B<T> {
-										// 	t: T;
-										// }
-										// interface A extends B<string> {}
-										//
-										// A has a property t of type "string".
-										//
-										auto jtype = (*g_ojtsTypeChecker)->getTypeOfSymbolAtLocation(jsym, tc::front(*pjsclass->m_jsym->declarations()));
-										if(static_cast<bool>(ts::TypeFlags::TypeParameter&jtype->getFlags())) {
-											STypeParameter typeparam(ts::TypeParameterDeclaration(tc::front(*(*jtype->getSymbol())->declarations())));
-											if(etypeparamNUMBER==typeparam.m_etypeparam) {
-												return tc::make_str("number");
-											} else if(etypeparamENUM==typeparam.m_etypeparam) {
-												jtype = *typeparam.m_ojtype;
-											}
-										}
-										return MangleType(jtype).m_strWithComments;
-									}(),
-								">)"
-							);
-						}
-					), ",\n"),
-					"\n\t\t\t);\n",
+					tc_conditional_range(
+						!tc::empty((*g_ojtsTypeChecker)->getPropertiesOfType(pjsclass->m_jtype)),
+						tc::concat(
+							"\t\t\ttemplate<typename __TYPESCRIPTEN_DUMMY_ARG = tc::js::any>\n"
+							"\t\t\tstatic auto constexpr keyof() noexcept { return boost::hana::make_map(\n"
+							// We put the keyof map in a templated method to reduce compile times.
+							// If the return value depends on the (defaulted) template argument, the
+							// compiler does not need to compute the return type unless keyof() is 
+							// actually called. This reduces compile times by 90%. 
+							"\t\t\t\tboost::hana::make_pair(\"__typescripten_dummy_key\"_s, boost::hana::type_c<__TYPESCRIPTEN_DUMMY_ARG>),\n",
+							tc::join_separated(
+								tc::transform(
+									// We enumerate all properties of pjsclass, including properties of derived classes
+									// TODO: keyof T also considers member functions as key
+									(*g_ojtsTypeChecker)->getPropertiesOfType(pjsclass->m_jtype),
+									[&](auto const& jsym) noexcept {
+										return tc::concat(
+											"\t\t\t\tboost::hana::make_pair(\"", tc::explicit_cast<std::string>(jsym->getName()), "\"_s, "
+											"boost::hana::type_c<", 
+												[&]() noexcept {
+													// This resolves the type of jsym in the context of pjsclass, i.e.,
+													// interface B<T> {
+													// 	t: T;
+													// }
+													// interface A extends B<string> {}
+													//
+													// A has a property t of type "string".
+													//
+													auto jtype = (*g_ojtsTypeChecker)->getTypeOfSymbolAtLocation(jsym, tc::front(*pjsclass->m_jsym->declarations()));
+													if(static_cast<bool>(ts::TypeFlags::TypeParameter&jtype->getFlags())) {
+														STypeParameter typeparam(ts::TypeParameterDeclaration(tc::front(*(*jtype->getSymbol())->declarations())));
+														if(etypeparamNUMBER==typeparam.m_etypeparam) {
+															return tc::make_str("number");
+														} else if(etypeparamENUM==typeparam.m_etypeparam) {
+															jtype = *typeparam.m_ojtype;
+														}
+													}
+													return MangleType(jtype).m_strWithComments;
+												}(),
+											">)"
+										);
+									}
+								),
+								",\n"
+							),
+							"\n\t\t\t); }\n"
+						)
+					),
 					tc::join(tc::transform(
 						pjsclass->m_vecjsenumExport,
 						ClassExportTypeUsingDecl
