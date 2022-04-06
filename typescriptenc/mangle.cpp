@@ -22,11 +22,7 @@ tc::jst::optional<tc::js::ts::Symbol> OptSymbolOrAliasSymbol(ts::Type jtype) noe
 }
 
 tc::js::ts::Symbol SymbolOrAliasSymbol(ts::Type jtype) noexcept {
-    if(auto ojsym = OptSymbolOrAliasSymbol(jtype)) {
-        return *ojsym;
-    } else {
-        _ASSERTFALSE;
-    }
+    return *OptSymbolOrAliasSymbol(jtype);
 }
 
 SMangledType::SMangledType(std::string strCppCanonized) noexcept

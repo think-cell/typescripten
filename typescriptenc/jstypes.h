@@ -315,11 +315,12 @@ void SJsScope::Initialize(Rng&& rngjsym) & noexcept {
                 tc::filter(
                     rngjsym,
                     [](tc::js::ts::Symbol jsymExport) noexcept {
-                        // TODO: Leave equality check here for now. 
-                        // tc::js::ts::SymbolFlags::FunctionScopedVariable|tc::js::ts::SymbolFlags::Interface is not turned into a variable but is 
-                        // merged into a class
-                        return tc::js::ts::SymbolFlags::FunctionScopedVariable == jsymExport->getFlags()
-                            || tc::js::ts::SymbolFlags::BlockScopedVariable == jsymExport->getFlags();
+                        // tc::js::ts::SymbolFlags::FunctionScopedVariable|tc::js::ts::SymbolFlags::Interface is not turned into a variable but is merged into a class
+                        // see e.g. XmlHttpRequest in lib.dom.d.ts
+                        return (static_cast<bool>(tc::js::ts::SymbolFlags::FunctionScopedVariable & jsymExport->getFlags())
+                             || static_cast<bool>(tc::js::ts::SymbolFlags::BlockScopedVariable & jsymExport->getFlags()))
+                             && !static_cast<bool>(tc::js::ts::SymbolFlags::Interface & jsymExport->getFlags())
+                             && !static_cast<bool>(tc::js::ts::SymbolFlags::TypeAlias & jsymExport->getFlags());
                     }
                 ),
                 [](tc::js::ts::Symbol jsymVariable) noexcept {

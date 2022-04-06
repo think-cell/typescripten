@@ -15,7 +15,6 @@ using tc::js::string;
 using tc::js::any;
 using tc::js::Array;
 using tc::js::ReadonlyArray;
-// using tc::js::console;
 
 enum class MyIntEnum { Foo = 10 };
 
@@ -39,7 +38,7 @@ int main() {
 		auto const arr = tc::jst::make_ReadonlyArray<double>(std::initializer_list<double>{1, 2, 3});
 		static_assert(!tc::is_explicit_castable<ReadonlyArray<double>, double>::value);
 		static_assert(std::is_same_v<tc::range_value_t<ReadonlyArray<double>>, double>);
-		// console::log(arr);
+		tc::js::console()->log(tc::jst::variadic_arg, arr);
 		_ASSERTEQUAL(arr->length(), 3);
 		_ASSERTEQUAL(arr[0], 1);
 		_ASSERTEQUAL(arr[1], 2);
@@ -84,7 +83,7 @@ int main() {
 	auto const arr = tc::jst::make_Array<double>(std::initializer_list<double>{1, 2, 3});
 	static_assert(!tc::is_explicit_castable<Array<double>, double>::value);
 	static_assert(std::is_same_v<tc::range_value_t<Array<double>>, double>);
-	// console::log(arr);
+	tc::js::console()->log(tc::jst::variadic_arg, arr);
 	_ASSERTEQUAL(arr->length(), 3);
 	_ASSERTEQUAL(arr[1], 2);
 	// arr->_setIndex(1, 15);

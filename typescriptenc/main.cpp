@@ -163,7 +163,7 @@ void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept
 			tc::sort_unique_inplace(vecjsymExportedSymbol, tc::projected(tc::fn_less(), [](ts::Symbol jsym) noexcept {
 				return FullyQualifiedName(jsym);
 			}));
-			
+
 			return vecjsymExportedSymbol;
 		}()
 	);
