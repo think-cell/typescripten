@@ -15,6 +15,11 @@ namespace MyLib {
         foo(x: number): string { return "base"; }
     }
 
+    export interface SomeObjectEventMap {
+        test: string;
+        other: string;
+    }
+
     export class SomeObject extends SomeBaseClass {
         str: string = "";
         arr: Array<SomeObject> = [];
@@ -31,6 +36,14 @@ namespace MyLib {
         };
 
         foo(x: number) { return "foo() retval " + (typeof x) + " " + x; }
+
+        test_keyof<K extends keyof SomeObjectEventMap>(k : K) : SomeObjectEventMap[K] {
+            if(k === "test") {
+                return "hello world";
+            } else {
+                return "other hello world";
+            }
+        }
     }
 
     export class SomeObjectWithConstructor {

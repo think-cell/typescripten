@@ -134,7 +134,8 @@ namespace tc::jst::range_detail {
 			Rng m_rng;
 
 		public:
-			FJsRangeIndexedAccess(Rng rng) : m_rng(tc_move(rng)) {}
+			FJsRangeIndexedAccess() noexcept : m_rng(emscripten::val::undefined()) {}
+			FJsRangeIndexedAccess(Rng rng) noexcept : m_rng(tc_move(rng)) {}
 
 			template<typename S = Rng, std::enable_if_t< has_mem_fn_item<S>::value >* = nullptr>
 			auto operator()(int i) const& noexcept {

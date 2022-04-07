@@ -15,6 +15,9 @@ int main() {
 	_ASSERT(tc::empty(obj->arr()));
 	_ASSERTEQUAL(tc::explicit_cast<std::string>(obj->foo(10)), "foo() retval number 10");
 
+	_ASSERTEQUAL(tc::explicit_cast<std::string>(obj->test_keyof("test"_s)), "hello world");
+	_ASSERTEQUAL(tc::explicit_cast<std::string>(obj->test_keyof("other"_s)), "other hello world");
+
 	tc::js::MyLib::SomeBaseClass objBase = obj;
 	_ASSERT(objBase.getEmval().strictlyEquals(obj.getEmval()));
 	_ASSERTEQUAL(tc::explicit_cast<std::string>(objBase->foo(10)), "foo() retval number 10");

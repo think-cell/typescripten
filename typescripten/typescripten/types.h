@@ -493,13 +493,23 @@ namespace emscripten::internal {
 			})->first;
 		}
 	};
+	
+	template<typename T> struct IsBoostHanaString : std::false_type {};
+	template<char ...Args> struct IsBoostHanaString<boost::hana::string<Args...>> : std::true_type {};
 
-	template<char ...Args>
-	struct BindingType<boost::hana::string<Args...>> {
-		typedef typename BindingType<char const*>::WireType WireType;
-
-		static WireType toWireType(boost::hana::string<Args...> const& str) {
-			return BindingType<char const*>::toWireType(str.c_str());
+	template<typename T>
+	struct TypeID<T, typename std::enable_if<IsBoostHanaString<typename std::remove_cv<typename std::remove_reference<T>::type>::type>::value, void>::type> {
+		static constexpr TYPEID get() {
+			return TypeID<std::string>::get();
 		}
+	};
+
+	template<typename T>
+	struct BindingType<T, typename std::enable_if<IsBoostHanaString<T>::value, void>::type> {
+		typedef typename BindingType<std::string>::WireType WireType;
+
+		constexpr static WireType toWireType(const T& v) {
+			return BindingType<std::string>::toWireType(std::string(v.c_str()));
+		}	
 	};
 } // namespace emscripten::internal
