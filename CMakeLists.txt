@@ -43,14 +43,14 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(TYPESCRIPTEN_COMPILE_OPTIONS 
   "-Wall" "-Wextra" "-fdiagnostics-absolute-paths" "-fno-char8_t" "-Wno-unused-parameter" "-DBOOST_HANA_CONFIG_ENABLE_STRING_UDL"
   "$<$<CONFIG:DEBUG>:-D_DEBUG;-g;>"
-  "$<$<CONFIG:RELEASE>:-Oz;-flto;-gseparate-dwarf;>"
+  "$<$<CONFIG:RELEASE>:-Os;-flto;-g0>"
   "$<$<BOOL:${DEBUG_DEVTOOLS}>:-DDEBUG_DEVTOOLS>"
 )
 
 set(TYPESCRIPTEN_LINK_OPTIONS 
-  "-fno-char8_t" "--bind" "SHELL:-s DEMANGLE_SUPPORT=1"
-  "$<$<CONFIG:DEBUG>:-g;SHELL:-s SAFE_HEAP=1;SHELL:-s ASSERTIONS=2;>"
-  "$<$<CONFIG:RELEASE>:-Oz;-flto;-gseparate-dwarf;>"
+  "-fno-char8_t" "--bind"
+  "$<$<CONFIG:DEBUG>:-g;SHELL:-s SAFE_HEAP=1;SHELL:-s ASSERTIONS=2;SHELL:-s DEMANGLE_SUPPORT=1>"
+  "$<$<CONFIG:RELEASE>:-Os;-flto;--emit-symbol-map>"
 )
 
 # Build the support library. Any user of typescripten generated headers has to link against typescripten target
@@ -99,4 +99,24 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   foreach(subdir ${TYPESCRIPTENC_TESTS})
       add_subdirectory(${subdir})
   endforeach()
+endif()
+
+
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+  add_custom_target(dist 
+    COMMAND ${CMAKE_COMMAND} -E rm -rf ${PROJECT_SOURCE_DIR}/dist
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${PROJECT_SOURCE_DIR}/dist/bin
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/bin ${PROJECT_SOURCE_DIR}/dist/bin
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${PROJECT_SOURCE_DIR}/dist/lib
+    COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/typescriptenc/typescriptenc.js ${PROJECT_SOURCE_DIR}/dist/lib
+    COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/typescriptenc/typescriptenc.js.symbols ${PROJECT_SOURCE_DIR}/dist/lib
+    COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/typescriptenc/typescriptenc.wasm ${PROJECT_SOURCE_DIR}/dist/lib
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${PROJECT_SOURCE_DIR}/dist/include/typescripten
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/typescripten/typescripten ${PROJECT_SOURCE_DIR}/dist/include/typescripten
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${PROJECT_SOURCE_DIR}/dist/src
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/typescripten/src ${PROJECT_SOURCE_DIR}/dist/src
+    COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/*.md ${PROJECT_SOURCE_DIR}/dist
+    COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/package.json ${PROJECT_SOURCE_DIR}/dist
+  ) 
+  add_dependencies(dist typescriptenc)
 endif()

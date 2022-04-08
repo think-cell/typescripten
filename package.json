@@ -1,11 +1,40 @@
 {
+  "name": "@think-cell/typescripten",
+  "version": "1.0.0",
+  "description": "Typescripten converts TypeScript interface definitions into C++ headers for emscripten projects",
+  "main": "lib/typescriptenc.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/think-cell/typescripten.git"
+  },
+  "keywords": [
+    "TypeScript",
+    "emscripten",
+    "WebAssembly",
+    "C++"
+  ],
+  "author": "Sebastian Theophil",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/think-cell/typescripten/issues"
+  },
+  "homepage": "https://github.com/think-cell/typescripten#readme",
+  "publishConfig": {
+    "@think-cell:registry": "https://npm.pkg.github.com"
+  },
+  "bin": {
+    "typescriptenc": "./bin/typescriptenc.js"
+  },
   "dependencies": {
-    "typescript": "=4.4"
+    "typescript": "=4.4",
+    "@typescript/vfs": "^1.3.5"
   },
   "devDependencies": {
     "@types/lz-string": "^1.3.34",
     "@types/node": "^13.7.6",
-    "@typescript/vfs": "^1.3.5",
     "exports-loader": "^3.1.0",
     "file-loader": "^6.2.0",
     "lz-string": "^1.4.4",

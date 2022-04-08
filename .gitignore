@@ -3,13 +3,13 @@
 *.pdb
 *.wasm
 *.wasm.map
-**/main.ninja
 node_modules/
+example/node_modules
 /build-config.cmd
 /build-config.sh
-bin/
 obj/
 debug/main.js
 /.vs/
 .DS_Store
 /build*
+/dist
