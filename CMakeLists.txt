@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.21)
 
 project(
   typescripten
-  VERSION 0.9
+  VERSION 1.0.2
   LANGUAGES C CXX
 )
 
@@ -31,6 +31,10 @@ FetchContent_Declare(
   GIT_TAG        clang_12_cpp2a
 )
 FetchContent_MakeAvailable(tcrange)
+
+# typescripten only needs some header-only boost libraries. If you downloaded boost, 
+# you can configure cmake with the command line 
+# emcmake cmake -S . -B build -DBoost_INCLUDE_DIR=/path/to/boost_1_73_0/ -DBoost_LIBRARY_DIR=/path/to/boost_1_73_0/
 
 find_package(Boost 1.73 REQUIRED)
 

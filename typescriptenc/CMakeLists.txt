@@ -28,9 +28,10 @@ target_precompile_headers(typescriptenc
     "typescript.d.bootstrap.h"
 )
 
+# Building without exceptions
 target_compile_options(typescriptenc PRIVATE ${TYPESCRIPTEN_COMPILE_OPTIONS})
 
 em_link_pre_js(typescriptenc main-pre.js)
 
-target_link_options(typescriptenc PRIVATE ${TYPESCRIPTEN_LINK_OPTIONS})
+target_link_options(typescriptenc PRIVATE ${TYPESCRIPTEN_LINK_OPTIONS} "-sENVIRONMENT=node")
 target_link_libraries(typescriptenc typescripten Boost::boost)

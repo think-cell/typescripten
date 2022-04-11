@@ -173,8 +173,6 @@ void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept
 	// Can call MangleType once construction of the global scope is complete 
 	g_bGlobalScopeConstructionComplete = true;
 
-	tc::append(std::cerr, "\n========== GENERATED CODE ==========\n");
-
 	{
 
 		tc::for_each(g_setjsclass, [&](SJsClass& jsclass) noexcept {

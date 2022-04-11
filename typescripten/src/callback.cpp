@@ -1,4 +1,4 @@
-#include <typescripten/callback.h>
+#include <typescripten/callback_fwd.h> // No external dependencies
 #include <emscripten/bind.h>
 
 namespace tc::jst {

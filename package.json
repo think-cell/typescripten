@@ -1,6 +1,6 @@
 {
   "name": "@think-cell/typescripten",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Typescripten converts TypeScript interface definitions into C++ headers for emscripten projects",
   "main": "lib/typescriptenc.js",
   "scripts": {
@@ -22,9 +22,6 @@
     "url": "https://github.com/think-cell/typescripten/issues"
   },
   "homepage": "https://github.com/think-cell/typescripten#readme",
-  "publishConfig": {
-    "@think-cell:registry": "https://npm.pkg.github.com"
-  },
   "bin": {
     "typescriptenc": "./bin/typescriptenc.js"
   },

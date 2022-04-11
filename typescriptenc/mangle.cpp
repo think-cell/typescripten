@@ -242,7 +242,7 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 						_ASSERT(!tc::empty(vecmtType));
 
 						if(cExpectedUnionTypes != cUnionTypes) {
-							tc::append(std::cerr, "[warning] Union of literals ", 
+							tc::append(std::cerr, "warning: Union of literals ", 
 								tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->typeToString(jtypeRoot)), 
 								" cannot be represented in C++. (", tc::as_dec(cExpectedUnionTypes), " != ", tc::as_dec(cUnionTypes),") \n"
 							);

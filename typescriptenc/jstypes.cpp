@@ -331,7 +331,7 @@ STypeParameter::STypeParameter(ts::TypeParameterDeclaration typeparamdecl) noexc
     // by enabling class with template<typename T, std::enable_if_t<std::is_base_of<tc::js::ts::Node, T>::value>* = nullptr>
     if(auto const otypenode = typeparamdecl->constraint()) {
         auto UnsupportedConstraint = [&]() noexcept {
-            tc::append(std::cerr, "[warning] Unsupported type constraint declaration ", tc::explicit_cast<std::string>(typeparamdecl->getFullText()), " (", tc::as_dec(static_cast<int>((*otypenode)->kind())), ")\n");
+            tc::append(std::cerr, "warning: Unsupported type constraint declaration ", tc::explicit_cast<std::string>(typeparamdecl->getFullText()), " (", tc::as_dec(static_cast<int>((*otypenode)->kind())), ")\n");
         };
 
         if(ts::SyntaxKind::NumberKeyword == (*otypenode)->kind()) {
