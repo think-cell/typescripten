@@ -142,6 +142,14 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 				return oit->m_strMangledName;
 			}
 		}
+		if(auto ojtypedecl = (*g_ojtsTypeChecker)->typeParameterToDeclaration(ts::TypeParameter(jtypeRoot))) {;
+			if(auto ojconstraint = (*ojtypedecl)->constraint()) {
+				// TODO: What about enum constraints? See generics2 unit test
+				if(ts::SyntaxKind::NumberKeyword==(*ojconstraint)->kind()) {
+					return {"double"};
+				}
+			}
+		}
 		return {tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->typeToString(jtypeRoot))};
 	default:
 		{
@@ -345,11 +353,24 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 				}
 			} else if(ts::TypeFlags::IndexedAccess==jtypeRoot->getFlags()) {
 				ts::IndexedAccessType jidxtype(jtypeRoot);
-				return {
-					tc::make_str(
-						"typename decltype(+(", MangleType(jidxtype->objectType()).ExpandType(), "::keyof()[", MangleType(jidxtype->indexType()).ExpandType(), "{}]))::type"
-					)
-				}; 
+				if(tc::cont_find<tc::return_bool>(g_setjsclass, FullyQualifiedName(SymbolOrAliasSymbol(jidxtype->objectType())))) {
+					auto jtypeIndex = jidxtype->indexType();
+					if(static_cast<bool>(jtypeIndex->getFlags() & ts::TypeFlags::TypeParameter)) {
+						if(auto oajdecl = SymbolOrAliasSymbol(jtypeIndex)->declarations()) {
+							if(1==tc::size(*oajdecl)) {
+								STypeParameter typeparam(ts::TypeParameterDeclaration(tc::front(*oajdecl)));
+								if(etypeparamKEYOF==typeparam.m_etypeparam) {
+									return {
+										tc::make_str(
+											"typename decltype(+(", MangleType(jidxtype->objectType()).ExpandType(), "::keyof()[", MangleType(jidxtype->indexType()).ExpandType(), "{}]))::type"
+										)
+									};
+								}
+							}
+						}
+					}
+				}
+				return {mangling_error, tc::make_str("tc::js::any /*UnknownIndexedAccessType=", tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->typeToString(jidxtype)), "*/")};
 			} else {
 				return {
 					mangling_error, 

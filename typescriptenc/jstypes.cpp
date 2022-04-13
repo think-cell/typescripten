@@ -106,10 +106,11 @@ namespace {
             case '.': tc::append(strMangled, "_d"); break;
             case '-': tc::append(strMangled, "_m"); break;
             case '"': tc::append(strMangled, "_q"); break;
+            case '/': tc::append(strMangled, "_s"); break;
+            case '@': tc::append(strMangled, "_a"); break;
             default:
                 if(!tc::isasciidigit(c) && !tc::isasciilower(c) && !tc::isasciiupper(c)) {
                     tc::append(std::cerr, "Invalid character in symbol name ", strQualified, "\n");
-                    _ASSERTFALSE;
                 }
                 tc::cont_emplace_back(strMangled, c); break;
             }
