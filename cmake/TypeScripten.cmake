@@ -39,4 +39,7 @@ function(add_typescripten_target)
 
     target_include_directories(${TSTARGET_TARGET} AFTER PRIVATE ${RUN_TYPESCRIPTEN_DIR})
     target_link_libraries(${TSTARGET_TARGET} typescripten)
+
+    target_compile_options(${TSTARGET_TARGET} PRIVATE "-DBOOST_HANA_CONFIG_ENABLE_STRING_UDL")
+    target_link_options(${TSTARGET_TARGET} PRIVATE "-lembind")
 endfunction()
