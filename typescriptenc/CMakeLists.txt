@@ -28,8 +28,16 @@ target_precompile_headers(typescriptenc
     "typescript.d.bootstrap.h"
 )
 
+include(FetchContent)
+FetchContent_Declare(
+  cppunicodelib
+  GIT_REPOSITORY https://github.com/yhirose/cpp-unicodelib
+)
+FetchContent_MakeAvailable(cppunicodelib)
+
 # Building without exceptions
 target_compile_options(typescriptenc PRIVATE ${TYPESCRIPTEN_COMPILE_OPTIONS})
+target_include_directories(typescriptenc PRIVATE ${cppunicodelib_SOURCE_DIR})
 
 em_link_pre_js(typescriptenc main-pre.js)
 

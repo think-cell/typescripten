@@ -4,6 +4,9 @@
 #include "jstypes.h"
 #include "mangle.inl"
 
+#include "unicode.h"
+#include <unicodelib.h>
+
 using tc::js::ts;
 namespace jst = tc::jst;
 namespace js = tc::js;
@@ -92,43 +95,71 @@ namespace {
         return strName;
     }
 
+    // https://262.ecma-international.org/6.0/#sec-names-and-keywords
+    // https://github.com/frenchy64/typescript-parser/blob/master/typescript.ebnf
+    
+    // JavaScript uses UCS-2
+    // https://mathiasbynens.be/notes/javascript-identifiers
+
+    // JavaScript identifiers are Unicode Annex 31 (like C++) but may contain zero-width joiner and $
+    // JavaScript property names can be string literals containing any character
+
+    // C++ identifiers must be normalized to NFC
+
+    // clang 14 implements normalized UAX identifiers
+    // https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p1949r7.html
+    // https://clang.llvm.org/cxx_status.html#cxx23
+
+    // We currently create names with double underscores, which are reserved,
+    // but only in our namespace. 
+    auto NormalizedCppIdentifier(tc::ptr_range<char const> strInput) noexcept {
+        auto const strConverted = tc::make_str(tc::must_convert_enc<char32_t>(strInput));
+
+        auto strNormalized = unicode::to_nfc(strConverted.c_str(), tc::size(strConverted));
+        if(strConverted!=strNormalized) {
+            tc::append(std::cerr, "Identifier ", strInput, " is not a normalized unicode string. It will be normalized in C++ and this may cause naming collisions.\n");
+        } 
+
+        auto IsValidCharacter = [](auto const& rngintvlch, char32_t ch) noexcept {
+            auto const itintvl = tc::upper_bound<tc::return_border_before_or_end>(
+                tc::transform(
+                    rngintvlch,
+                    TC_MEMBER(.begin)
+                ),
+                ch
+            ).border_base();
+            if(itintvl!=tc::end(rngintvlch)) {
+                return itintvl->begin<=ch && ch<=itintvl->end;
+            }
+            return false;
+        };
+
+        // no std::ranges::replace_if in Clang14
+        // no tc::replace_if either
+        std::replace_if(
+            tc::begin(strNormalized),
+            tc::end(strNormalized),
+            [&](char32_t ch) noexcept {
+                return !IsValidCharacter(tc::jst::unicode_detail::c_aintvlXContinue, ch);
+            },
+            U'_'
+        );
+        
+        if(!IsValidCharacter(tc::jst::unicode_detail::c_aintvlXStart, tc::front(strNormalized))) {
+            strNormalized.insert(0, 1, U'_');
+        } 
+            
+        return tc::must_convert_enc<char>(tc_move(strNormalized));
+    }
+
     // MangleSymbolName returns the name used internally that should be globally unique 
     // (that is why it is based on the fully qualified name).
     // We define all classes in a single namespace, sorted in a C++ compatible declaration order,
     // and export them with using declarations.
     std::string MangleSymbolName(ts::Symbol jsymType, ENameContext enamectx) noexcept {
-        std::string strMangled = "_js_j";
-        auto const strQualified = FullyQualifiedName(jsymType);
-        tc::for_each(strQualified, [&](char c) noexcept {
-            switch (c) {
-            case '_': tc::append(strMangled, "_u"); break;
-            case ',': tc::append(strMangled, "_c"); break;
-            case '.': tc::append(strMangled, "_d"); break;
-            case '-': tc::append(strMangled, "_m"); break;
-            case '"': tc::append(strMangled, "_q"); break;
-            case '/': tc::append(strMangled, "_s"); break;
-            case '@': tc::append(strMangled, "_a"); break;
-            default:
-                if(!tc::isasciidigit(c) && !tc::isasciilower(c) && !tc::isasciiupper(c)) {
-                    tc::append(std::cerr, "Invalid character in symbol name ", strQualified, "\n");
-                }
-                tc::cont_emplace_back(strMangled, c); break;
-            }
-        });
-        return MakeUniqueName(jsymType, tc_move(strMangled), enamectx);
+        return MakeUniqueName(jsymType, tc::make_str("_js_j", NormalizedCppIdentifier(FullyQualifiedName(jsymType))), enamectx);
     }
-}
 
-tc::ptr_range<char const> StripQuotes(tc::ptr_range<char const> strNoQuotes) noexcept {
-    _ASSERT(!tc::empty(strNoQuotes));
-    if ('"' == tc::front(strNoQuotes) && '"' == tc::back(strNoQuotes)) {
-        tc::drop_first_inplace(strNoQuotes);
-        tc::drop_last_inplace(strNoQuotes);
-    }
-    return strNoQuotes;
-}
-
-namespace {
    constexpr char const* c_apszReserved[] = {
        "alignas", "alignof", "and", "and_eq", "asm", "auto", 
        "bitand", "bitor", "bool", "break", 
@@ -152,33 +183,28 @@ namespace {
        "xor", "xor_eq"
     };
     static_assert(tc::is_sorted(c_apszReserved, tc::lessfrom3way(tc::fn_lexicographical_compare_3way())));
-}
 
-// CppifyName returns the user-visible name that we export from namespaces/classes
-std::string CppifyName(ts::Symbol jsym, ENameContext enamectx) noexcept {
-    // TODO: https://en.cppreference.com/w/cpp/language/identifiers
-    // JavaScript identifiers are actually Unicode and C++ compilers support Unicode, 
-    // so we are needlessly restrictive here. 
-    std::string strResult;
-    tc::for_each(
-        StripQuotes(tc::as_pointers(tc::as_lvalue(tc::explicit_cast<std::string>(jsym->getName())))),
-        [&](char c) noexcept {
-            if(tc::isasciidigit(c) || tc::isasciilower(c) || tc::isasciiupper(c)) {
-                tc::cont_emplace_back(strResult, c);
-            } else if(!tc::empty(strResult) && '_' == tc::back(strResult)) {
-                tc::append(strResult, "u_");
-            } else {
-                tc::append(strResult, "_");
-            }
+    tc::ptr_range<char const> StripQuotes(tc::ptr_range<char const> strNoQuotes) noexcept {
+        _ASSERT(!tc::empty(strNoQuotes));
+        if ('"' == tc::front(strNoQuotes) && '"' == tc::back(strNoQuotes)) {
+            tc::drop_first_inplace(strNoQuotes);
+            tc::drop_last_inplace(strNoQuotes);
         }
-    );
-
-    if(tc::binary_find_unique<tc::return_bool>(c_apszReserved, strResult, tc::lessfrom3way(tc::fn_lexicographical_compare_3way()))) {
-        _ASSERT('_'!=tc::back(strResult));
-        tc::append(strResult, "_");
+        return strNoQuotes;
     }
-    _ASSERT(!tc::empty(strResult));
-    return MakeUniqueName(jsym, tc_move(strResult), enamectx);
+
+    // CppifyName returns the user-visible name that we export from namespaces/classes 
+    std::string CppifyName(ts::Symbol jsym, ENameContext enamectx) noexcept {
+        std::string strResult = tc::make_str(NormalizedCppIdentifier(
+            StripQuotes(tc::as_pointers(tc::as_lvalue(tc::explicit_cast<std::string>(jsym->getName()))))
+        ));
+        if(tc::binary_find_unique<tc::return_bool>(c_apszReserved, strResult, tc::lessfrom3way(tc::fn_lexicographical_compare_3way()))) {
+            _ASSERT('_'!=tc::back(strResult));
+            tc::append(strResult, "_");
+        }
+        _ASSERT(!tc::empty(strResult));
+        return MakeUniqueName(jsym, tc_move(strResult), enamectx);
+    }
 }
 
 SJsEnumOption::SJsEnumOption(ts::Symbol jsym) noexcept

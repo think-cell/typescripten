@@ -58,7 +58,7 @@ int main() {
 	_ASSERTEQUAL(obj3->arr()->length(), 0);
 	_ASSERT(tc::empty(obj3->arr()));
 
-	tc::js::MyLib::double_u_underscore();
+	tc::js::MyLib::double__underscore();
 
 	_ASSERTEQUAL(tc::js::MyLib::runCallback(tc::jst::lambda([](double a, double b) noexcept {
 		_ASSERTEQUAL(a, 20);

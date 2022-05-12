@@ -12,11 +12,7 @@ BITMASK_OPS(ECppType);
 ECppType CppType(tc::js::ts::Symbol jsymType) noexcept;
 bool IsIgnoredSymbol(std::string const& strFullyQualified) noexcept;
 
-tc::ptr_range<char const> StripQuotes(tc::ptr_range<char const> str) noexcept;
-
-DEFINE_ENUM(ENameContext, enamectx, (NONE)(ENUM)(CLASS)(TYPEALIAS)(FUNCTION));
-std::string CppifyName(tc::js::ts::Symbol jsymSymbol, ENameContext enamectx) noexcept;
-
+    DEFINE_ENUM(ENameContext, enamectx, (NONE)(ENUM)(CLASS)(TYPEALIAS)(FUNCTION));
 struct SJsEnumOption final {
     tc::js::ts::Symbol m_jsym;
     std::string m_strJsName;
