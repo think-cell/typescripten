@@ -16,7 +16,7 @@ struct SMangledType {
 	std::string m_strCppCanonized; // may be empty, i.e., type could not be mangled, implies tc::js::any
 	std::string m_strWithComments; // never empty, may include comment
 
-	SMangledType(std::string strCppCanonized) noexcept;	
+	SMangledType(std::string strCppCanonized) noexcept;
 	SMangledType(std::string strCppCanonized, std::string strWithComments) noexcept;
 	SMangledType(mangling_error_t, std::string strWithComments) noexcept;
 
