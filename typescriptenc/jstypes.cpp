@@ -122,9 +122,10 @@ namespace {
 		}
 
 		auto IsValidCharacter = [](auto const& rngintvlch, char32_t ch) noexcept {
-			auto const itintvl =
-				tc::upper_bound<tc::return_border_before_or_end>(tc::transform(rngintvlch, TC_MEMBER(.begin)), ch).border_base();
+			auto itintvl =
+				tc::upper_bound<tc::return_border>(tc::transform(rngintvlch, TC_MEMBER(.begin)), ch).border_base();
 			if(itintvl != tc::end(rngintvlch)) {
+				--itintvl;
 				return itintvl->begin <= ch && ch <= itintvl->end;
 			}
 			return false;
