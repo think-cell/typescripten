@@ -1,12 +1,12 @@
 #pragma once
 
-using tc::js::ts;
+using ts = tc::js::ts;
 namespace jst = tc::jst;
 namespace js = tc::js;
 
 std::string FullyQualifiedName(ts::Symbol jsymType) noexcept;
-tc::jst::optional<tc::js::ts::Symbol> OptSymbolOrAliasSymbol(tc::js::ts::Type jtype) noexcept;
-tc::js::ts::Symbol SymbolOrAliasSymbol(tc::js::ts::Type jtype) noexcept;
+jst::optional<ts::Symbol> OptSymbolOrAliasSymbol(ts::Type jtype) noexcept;
+ts::Symbol SymbolOrAliasSymbol(ts::Type jtype) noexcept;
 
 DEFINE_ENUM(ETypeParameter, etypeparam, (TYPE)(ENUM)(NUMBER)(KEYOF))
 
@@ -21,7 +21,7 @@ struct SMangledType {
 	SMangledType(mangling_error_t, std::string strWithComments) noexcept;
 
 	std::string ExpandType() const& noexcept;
-	operator bool() const& noexcept;
+	explicit operator bool() const& noexcept;
 	friend bool operator<(SMangledType const& lhs, SMangledType const& rhs) noexcept;
 };
 
