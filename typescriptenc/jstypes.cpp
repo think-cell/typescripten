@@ -29,7 +29,8 @@ ECppType CppType(ts::Symbol jsymType) noexcept {
 	if(static_cast<bool>(
 		   (ts::SymbolFlags::Class | ts::SymbolFlags::Interface | ts::SymbolFlags::ValueModule | ts::SymbolFlags::NamespaceModule)
 		   & jsymType->getFlags()
-	   )) {
+	   ))
+	{
 		ecpptype |= ecpptypeCLASS;
 	}
 
@@ -186,7 +187,8 @@ namespace {
 		));
 		if(tc::binary_find_unique<tc::return_bool>(
 			   c_apszReserved, strResult, tc::lessfrom3way(tc::fn_lexicographical_compare_3way())
-		   )) {
+		   ))
+		{
 			_ASSERT('_' != tc::back(strResult));
 			tc::append(strResult, "_");
 		}
@@ -238,7 +240,8 @@ SJsEnum::SJsEnum(ts::Symbol jsym) noexcept
 				   ->getTypeAtLocation(tc::find_first_if<tc::return_value>(
 					   *m_jsym->declarations(), [](auto jdecl) noexcept { return ts::isEnumDeclaration(jdecl); }
 				   ))
-				   ->isUnion()) {
+				   ->isUnion())
+		{
 			// unless all enum members have specified values,
 			// an enum is not a union of literals
 			return tc::size((*ojunion)->types());
@@ -304,7 +307,8 @@ SJsVariableLike::SJsVariableLike(ts::Symbol jsym) noexcept
 	  ) {
 	ts::ModifierFlags const nModifierFlags = ts::getCombinedModifierFlags(m_jdeclVariableLike);
 	if(ts::ModifierFlags::None
-	   != (~(ts::ModifierFlags::Export | ts::ModifierFlags::Readonly | ts::ModifierFlags::Ambient) & nModifierFlags)) {
+	   != (~(ts::ModifierFlags::Export | ts::ModifierFlags::Readonly | ts::ModifierFlags::Ambient) & nModifierFlags))
+	{
 		tc::append(
 			std::cerr,
 			"Unknown getCombinedModifierFlags for jdeclVariableLike ",
@@ -367,7 +371,8 @@ STypeParameter::STypeParameter(ts::TypeParameterDeclaration typeparamdecl) noexc
 				m_ojtype = jtype;
 			} else if(static_cast<bool>(ts::TypeFlags::Union & jtype->getFlags()) && tc::all_of(ts::UnionType(jtype)->types(), [](auto jtypeInternal) noexcept {
 						  return (ts::TypeFlags::NumberLiteral | ts::TypeFlags::EnumLiteral) == jtypeInternal->getFlags();
-					  })) {
+					  }))
+			{
 				// FIXME: Check if all literals belong to single enum
 				m_etypeparam = etypeparamENUM;
 				m_ojtype = jtype;
@@ -376,7 +381,8 @@ STypeParameter::STypeParameter(ts::TypeParameterDeclaration typeparamdecl) noexc
 				UnsupportedConstraint();
 			}
 		} else if(ts::SyntaxKind::TypeOperator == (*otypenode)->kind()
-        && ts::SyntaxKind::KeyOfKeyword == ts::TypeOperatorNode(*otypenode)->operator_()) {
+        && ts::SyntaxKind::KeyOfKeyword == ts::TypeOperatorNode(*otypenode)->operator_())
+		{
 			m_etypeparam = etypeparamKEYOF;
 			m_ojtype = (*g_ojtsTypeChecker)->getTypeFromTypeNode(ts::TypeOperatorNode(*otypenode)->type());
 		} else {
@@ -408,7 +414,8 @@ SJsFunctionLike::SJsFunctionLike(ts::Symbol jsym, ts::SignatureDeclaration jsign
 	, m_bIndexSignature(bIndexSignature) {
 	if(ts::ModifierFlags::None
 	   != (~(ts::ModifierFlags::Export | ts::ModifierFlags::Ambient | ts::ModifierFlags::Readonly)
-		   & ts::getCombinedModifierFlags(jsigndecl))) {
+		   & ts::getCombinedModifierFlags(jsigndecl)))
+	{
 		tc::append(
 			std::cerr,
 			"Unknown getCombinedModifierFlags for jsigndecl ",
@@ -537,7 +544,8 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
 		   } else {
 			   return std::nullopt;
 		   }
-	   }()) {
+	   }())
+	{
 		m_vectypeparam = tc::make_vector(tc::transform(
 			ts::getEffectiveTypeParameterDeclarations(*ojdeclwithtypeparam), tc::fn_explicit_cast<STypeParameter>()
 		));
@@ -563,7 +571,8 @@ SJsClass::SJsClass(ts::Symbol jsym) noexcept
 						tc::cont_emplace_back(m_vecjsfunctionlikeMethod, SJsFunctionLike(jsymMethod, *jotsMethodSignature));
 					} else if(auto const jotsMethodDeclaration = ts::isMethodDeclaration(jdecl)) { // In classes.
 						tc::cont_emplace_back(m_vecjsfunctionlikeMethod, SJsFunctionLike(jsymMethod, *jotsMethodDeclaration));
-					} else if(auto const jotsIndexSigDeclaration = ts::isIndexSignatureDeclaration(jdecl)) { // In classes.
+					} else if(auto const jotsIndexSigDeclaration = ts::isIndexSignatureDeclaration(jdecl))
+					{ // In classes.
 						tc::cont_emplace_back(
 							m_vecjsfunctionlikeMethod, SJsFunctionLike(jsymMethod, *jotsIndexSigDeclaration)
 						);
@@ -703,7 +712,8 @@ void SJsClass::ResolveBaseClassesAndSortDependencies() & noexcept {
 		tc::for_each(*m_jsym->declarations(), [&](ts::Declaration jdeclClass) noexcept {
 			if(auto joclassdeclarationClass = ts::isClassDeclaration(jdeclClass)) {
 				if(auto jorarrHeritageClause =
-					   tc::implicit_cast<ts::ClassLikeDeclarationBase>(*joclassdeclarationClass)->heritageClauses()) {
+					   tc::implicit_cast<ts::ClassLikeDeclarationBase>(*joclassdeclarationClass)->heritageClauses())
+				{
 					tc::for_each(*jorarrHeritageClause, [&](ts::HeritageClause jtsHeritageClause) noexcept {
 						if(ts::SyntaxKind::ImplementsKeyword == jtsHeritageClause->token()) {
 							tc::for_each(jtsHeritageClause->types(), [&](ts::Node jnodeImplementsType) noexcept {
@@ -768,7 +778,8 @@ SMangledType SJsTypeAlias::MangleType() const& noexcept {
 	// This does not work in all cases, see https://github.com/microsoft/TypeScript/issues/28197
 	if(ts::TypeFlags::Object == m_jtype->flags()
 	   && static_cast<bool>(ts::ObjectFlags::Mapped & ts::ObjectType(m_jtype)->objectFlags())
-	   && static_cast<bool>(ts::ObjectFlags::Instantiated & ts::ObjectType(m_jtype)->objectFlags())) {
+	   && static_cast<bool>(ts::ObjectFlags::Instantiated & ts::ObjectType(m_jtype)->objectFlags()))
+	{
 		// If the right-hand side of a type alias is e.g. a Record, e.g.,
 		//   type Exports = Record<number, Table>;
 		// the rhs is a "Mapped" type, i.e.,
