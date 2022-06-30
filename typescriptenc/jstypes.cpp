@@ -306,8 +306,7 @@ SJsVariableLike::SJsVariableLike(ts::Symbol jsym) noexcept
 		  || static_cast<bool>(ts::NodeFlags::Const & m_jdeclVariableLike->parent()->flags())
 	  ) {
 	ts::ModifierFlags const nModifierFlags = ts::getCombinedModifierFlags(m_jdeclVariableLike);
-	if(ts::ModifierFlags::None
-	   != (~(ts::ModifierFlags::Export | ts::ModifierFlags::Readonly | ts::ModifierFlags::Ambient) & nModifierFlags))
+	if(static_cast<bool>(nModifierFlags & (ts::ModifierFlags::Async | ts::ModifierFlags::Static | ts::ModifierFlags::Const)))
 	{
 		tc::append(
 			std::cerr,
@@ -412,9 +411,10 @@ SJsFunctionLike::SJsFunctionLike(ts::Symbol jsym, ts::SignatureDeclaration jsign
 	  ))
 	, m_strCppifiedName(bIndexSignature ? std::string("operator[]") : CppifyName(m_jsym, enamectxFUNCTION))
 	, m_bIndexSignature(bIndexSignature) {
-	if(ts::ModifierFlags::None
-	   != (~(ts::ModifierFlags::Export | ts::ModifierFlags::Ambient | ts::ModifierFlags::Readonly)
-		   & ts::getCombinedModifierFlags(jsigndecl)))
+	if(static_cast<bool>(
+		   ts::getCombinedModifierFlags(jsigndecl)
+		   & (ts::ModifierFlags::Async | ts::ModifierFlags::Static | ts::ModifierFlags::Const)
+	   ))
 	{
 		tc::append(
 			std::cerr,

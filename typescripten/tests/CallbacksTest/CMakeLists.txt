@@ -7,6 +7,7 @@ target_link_options(${TEST_NAME} PRIVATE ${TYPESCRIPTEN_LINK_OPTIONS})
 include(${CMAKE_SOURCE_DIR}/cmake/TypeScripten.cmake)
 add_typescripten_target(
     TARGET ${TEST_NAME}
+    INPUTS "${PROJECT_SOURCE_DIR}/node_modules/typescript/lib/lib.es2015.d.ts"
     OUTPUT lib.es2015.h
 )
 

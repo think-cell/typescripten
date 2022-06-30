@@ -1,8 +1,8 @@
-declare function TestFunction() : test2.FooBar;
+export function TestFunction(): test2.FooBar;
 
-interface Global {}
-interface Memory {}
-interface Table {}
+interface Global { }
+interface Memory { }
+interface Table { }
 
 type ExportValue = Function | Global | Memory | Table;
 
@@ -15,7 +15,7 @@ type GenericValueType<T> = T;
 type Test = string | number | Record<string, number>;
 
 declare namespace test2 {
-    export function TestFunction() : test.FooBar;
+    export function TestFunction(): test.FooBar;
     export type FooBar2 = test.FooBar;
     export type FooBar3 = A | number;
     export type FooBar = test.SFoo | test.SBar;
@@ -24,25 +24,25 @@ declare namespace test2 {
         a: test.FooBar;
     }
 
-    export function TestFunction2() : test2.A;
+    export function TestFunction2(): test2.A;
 }
 
 declare namespace test {
-    export function TestFunction() : test2.FooBar;
+    export function TestFunction(): test2.FooBar;
 
     export interface B {
         b: test2.FooBar;
     }
 
     export interface SFoo {
-        a:string;
+        a: string;
         b: number;
     }
-    
+
     export type FooBar = SFoo | SBar;
 
     export interface SBar {
-        c:string;
+        c: string;
         d: number;
     }
 }

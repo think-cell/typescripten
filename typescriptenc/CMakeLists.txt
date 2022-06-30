@@ -35,9 +35,15 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(cppunicodelib)
 
+FetchContent_Declare(
+  structopt
+  GIT_REPOSITORY https://github.com/p-ranav/structopt
+)
+FetchContent_MakeAvailable(structopt)
+
 # Building without exceptions
 target_compile_options(typescriptenc PRIVATE ${TYPESCRIPTEN_COMPILE_OPTIONS})
-target_include_directories(typescriptenc PRIVATE ${cppunicodelib_SOURCE_DIR})
+target_include_directories(typescriptenc PRIVATE ${cppunicodelib_SOURCE_DIR} ${structopt_SOURCE_DIR}/include)
 
 em_link_pre_js(typescriptenc main-pre.js)
 

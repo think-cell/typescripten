@@ -10,7 +10,25 @@ extern std::optional<tc::js::ts::TypeChecker> g_ojtsTypeChecker;
 extern bool g_bGlobalScopeConstructionComplete;
 
 std::string FullyQualifiedName(ts::Symbol jsymType) noexcept {
-	return tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->getFullyQualifiedName(jsymType));
+	auto const str = tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->getFullyQualifiedName(jsymType));
+
+	if(auto ojdecl = jsymType->declarations()) {
+		// External module symbol names start with the path to the module
+		// e.g. "node_modules/@types/argparse/index".ArgumentParser
+		// We strip the path.
+		auto const DeclaredInExternalModule = [](auto jdecl) noexcept {
+			return ts::isExternalModule(jdecl->getSourceFile());
+		};
+		if(tc::any_of(*ojdecl, DeclaredInExternalModule) && tc::starts_with<tc::return_bool>(str, "\"")) {
+			_ASSERT(tc::all_of(*ojdecl, DeclaredInExternalModule));
+
+			auto rng = tc::find_first<tc::return_drop_after>(tc::begin_next<tc::return_drop>(str), '\"');
+			_ASSERTEQUAL(tc::front(rng), '.');
+			tc::drop_first_inplace(rng);
+			return tc::make_str(rng);
+		}
+	}
+	return str;
 }
 
 tc::jst::optional<tc::js::ts::Symbol> OptSymbolOrAliasSymbol(ts::Type jtype) noexcept {
@@ -407,7 +425,8 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 			}
 		} else if(ts::TypeFlags::IndexedAccess == jtypeRoot->getFlags()) {
 			ts::IndexedAccessType jidxtype(jtypeRoot);
-			if(tc::cont_find<tc::return_bool>(g_setjsclass, FullyQualifiedName(SymbolOrAliasSymbol(jidxtype->objectType())))) {
+			if(tc::cont_find<tc::return_bool>(g_setjsclass, FullyQualifiedName(SymbolOrAliasSymbol(jidxtype->objectType()))))
+			{
 				auto jtypeIndex = jidxtype->indexType();
 				if(static_cast<bool>(jtypeIndex->getFlags() & ts::TypeFlags::TypeParameter)) {
 					if(auto oajdecl = SymbolOrAliasSymbol(jtypeIndex)->declarations()) {

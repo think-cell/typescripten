@@ -5,13 +5,11 @@
 #include "walk_symbol.h"
 #include "jstypes.h"
 
-using tc::js::any;
-using tc::js::Array;
-using tc::js::ReadonlyArray;
-using tc::js::string;
-using tc::js::ts;
-using tc::jst::create_js_object;
-using tc::jst::optional;
+#include <structopt/app.hpp>
+
+using ts = tc::js::ts;
+namespace jst = tc::jst;
+namespace js = tc::js;
 
 std::optional<ts::TypeChecker> g_ojtsTypeChecker;
 bool g_bGlobalScopeConstructionComplete = true;
@@ -84,34 +82,33 @@ bool IsIgnoredSymbol(std::string const& strFullyQualified) noexcept {
 	return tc::cont_find<tc::return_bool>(g_setstrIgnoredSymbols, strFullyQualified);
 }
 
-template<typename Rng>
-void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept {
-	*g_ojtsTypeChecker = jtsProgram->getTypeChecker();
+void CompileProgram(ts::Program jProgram) noexcept {
+	*g_ojtsTypeChecker = jProgram->getTypeChecker();
 
 	// Iterate over source files, enumerate global symbols and then walk the tree of child symbols
 	SJsScope scopeGlobal([&]() noexcept {
 		std::vector<ts::Symbol> vecjsymExportedSymbol;
 		tc::for_each(
 			tc::filter(
-				jtsProgram->getSourceFiles(),
-				[&](ts::SourceFile jtsSourceFile) noexcept {
-					// Only generate output for our input source files, not for their dependencies
-					// return tc::find_unique<tc::return_bool>(rngstrFileNames,
-					// tc::explicit_cast<std::string>(jtsSourceFile->fileName()));
-					return tc::find_unique<tc::return_bool>(
-						rngstrFileNames, tc::explicit_cast<std::string>(jtsSourceFile->fileName())
-					);
-				}
+				jProgram->getSourceFiles(),
+				[](ts::SourceFile jtsSourceFile) noexcept { return jtsSourceFile->isDeclarationFile(); }
 			),
 			[&](ts::SourceFile jtsSourceFile) noexcept {
-				if(auto const josymSourceFile = (*g_ojtsTypeChecker)->getSymbolAtLocation(jtsSourceFile)) {
-					// Program::isSourceFileFromExternalLibrary(file: SourceFile): boolean;
-					// Program::isSourceFileDefaultLibrary(file: SourceFile): boolean;
+				if(auto const josymSourceFile = (*g_ojtsTypeChecker)->getSymbolAtLocation(jtsSourceFile);
+				   josymSourceFile && !ts::isExternalModule(jtsSourceFile))
+				{
+					// Source files defining an internal module like
+					// declare module "MyLib" {
+					// }
+					// should expose the top-level symbol MyLib
+					// "External typescript modules" are source files with export statements.
+					// By default, the module name is the relative or absolute path to the file.
+					// We ignore these top-level modules.
 					tc::cont_emplace_back(vecjsymExportedSymbol, *josymSourceFile);
 				} else {
 					ts::forEachChild(
 						jtsSourceFile,
-						tc::jst::lambda([&](ts::Node jnodeChild) noexcept -> tc::jst::union_t<double, tc::js::undefined> {
+						jst::lambda([&](ts::Node jnodeChild) noexcept -> jst::union_t<double, tc::js::undefined> {
 							if(auto const jotsFunctionDeclaration = ts::isFunctionDeclaration(jnodeChild)) {
 								tc::cont_emplace_back(
 									vecjsymExportedSymbol,
@@ -231,10 +228,9 @@ void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept
 					if(ts::SyntaxKind::TypeReference == jtypenode->kind()) {
 						auto jtype = (*g_ojtsTypeChecker)->getTypeFromTypeNode(jtypenode);
 						if(auto const ojsym = jtype->aliasSymbol()) {
-							if(auto const itjstypealias = tc::cont_find<tc::return_element_or_null>(
-								   g_setjstypealias,
-								   FullyQualifiedName(*ojsym)
-							   )) { // stop dfs when the child class is not part of our source files
+							if(auto const itjstypealias =
+								   tc::cont_find<tc::return_element_or_null>(g_setjstypealias, FullyQualifiedName(*ojsym)))
+							{ // stop dfs when the child class is not part of our source files
 								ForEachChild(*itjstypealias);
 							}
 						}
@@ -242,8 +238,7 @@ void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept
 							tc::for_each(*oatypeargs, [&](auto jtype) noexcept {
 								if(auto ojsym = OptSymbolOrAliasSymbol(jtype)) {
 									if(auto const itjstypealias = tc::cont_find<tc::return_element_or_null>(
-										   g_setjstypealias,
-										   FullyQualifiedName(*ojsym)
+										   g_setjstypealias, FullyQualifiedName(*ojsym)
 									   )) { // stop dfs when the child class is not part of our source files
 										ForEachChild(*itjstypealias);
 									}
@@ -590,7 +585,8 @@ void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept
 															->getTypeOfSymbolAtLocation(
 																jsym, tc::front(*pjsclass->m_jsym->declarations())
 															);
-													if(static_cast<bool>(ts::TypeFlags::TypeParameter & jtype->getFlags())) {
+													if(static_cast<bool>(ts::TypeFlags::TypeParameter & jtype->getFlags()))
+													{
 														STypeParameter typeparam(ts::TypeParameterDeclaration(
 															tc::front(*(*jtype->getSymbol())->declarations())
 														));
@@ -952,6 +948,16 @@ void CompileProgram(ts::Program jtsProgram, Rng const& rngstrFileNames) noexcept
 	}
 }
 
+struct SCommandLine final {
+	std::optional<std::string> tsconfig_file;
+	std::optional<std::string> output_file;
+
+	// remaining arguments
+	// e.g., ./typescriptenc file1 file2 file3
+	std::vector<std::string> files;
+};
+STRUCTOPT(SCommandLine, tsconfig_file, output_file, files);
+
 int main(int cArgs, char* apszArgs[]) {
 #ifdef DEBUG_DEVTOOLS
 	// See README.md for an explanation on how to setup interactive debugging with Chrome DevTools
@@ -971,17 +977,15 @@ int main(int cArgs, char* apszArgs[]) {
 							   .call<emscripten::val>("getElementById", emscripten::val("text"))["innerHTML"])
 			);
 
-			auto rngstrFileNames = tc::single("index.ts");
-
 			auto const jtsHost = tc::js::tsvfs::createVirtualCompilerHost(
 				tc::js::tsvfs::createSystem(mapstrstr), m_jtsCompilerOptions, tc::js::any(emscripten::val::global("ts"))
 			);
-			auto const jtsProgram = ts::createProgram(
-				ReadonlyArray<string>(create_js_object, rngstrFileNames),
+			auto const jProgram = ts::createProgram(
+				ReadonlyArray<string>(create_js_object, tc::single("index.ts")),
 				m_jtsCompilerOptions,
 				ts::CompilerHost(jtsHost.getEmval()["compilerHost"])
 			);
-			CompileProgram(jtsProgram, rngstrFileNames);
+			CompileProgram(jProgram);
 		}
 	} cb;
 
@@ -995,52 +999,60 @@ int main(int cArgs, char* apszArgs[]) {
 	  js::undefined())
 		->then(cb.WithDefaultMap);
 #else
-	// Use https://github.com/p-ranav/structopt to parse command line arguments
+	try {
+		auto options = structopt::app("typescriptenc").parse<SCommandLine>(cArgs, apszArgs);
 
-	if(cArgs < 2) {
-		tc::append(
-			std::cerr,
-			"Not enough arguments\n"
-			"Syntax: node typescriptenc.js <TypeScript interface definition.d.ts>\n"
-		);
+		tc::cont_must_emplace(g_setstrIgnoredSymbols, "ClassDecorator");
+		tc::cont_must_emplace(g_setstrIgnoredSymbols, "MethodDecorator");
+		tc::cont_must_emplace(g_setstrIgnoredSymbols, "IDBValidKey");
+
+		tc::for_each(options.files, [](tc::ptr_range<char> rngch) noexcept {
+			tc::for_each(rngch, [](auto& ch) noexcept {
+				if('\\' == ch)
+					ch = '/'; // typescript createProgram does not support backslashes
+			});
+		});
+
+		ts::CompilerOptions jCompilerOptions(jst::create_js_object);
+		jCompilerOptions->strict(true);
+		jCompilerOptions->target(ts::ScriptTarget::ES5);
+		jCompilerOptions->lib(jst::make_Array<js::string>(tc::single("lib.es2015.d.ts")));
+		jCompilerOptions->module(ts::ModuleKind::CommonJS);
+		jCompilerOptions->types(jst::make_Array<js::string>(tc::empty_range()));
+
+		if(options.tsconfig_file) {
+			if(auto ojParsedCommandLine = ts::getParsedCommandLineOfConfigFile(
+				   js::string(*options.tsconfig_file),
+				   jCompilerOptions,
+				   ts::ParseConfigFileHost(emscripten::val::module_property("CreateParseConfigHost")())
+			   ))
+			{
+				jCompilerOptions = (*ojParsedCommandLine)->options();
+				tc::for_each((*ojParsedCommandLine)->fileNames(), [&](auto const& jstring) noexcept {
+					tc::cont_emplace_back(options.files, tc::explicit_cast<std::string>(jstring));
+				});
+			} else {
+				tc::append(std::cerr, "Loading ", *options.tsconfig_file, " failed.\n");
+			}
+		}
+
+		ts::Program const jProgram = ts::createProgram(jst::make_ReadonlyArray<js::string>(options.files), jCompilerOptions);
+		{
+			auto const jarrDiagnostics = ts::getPreEmitDiagnostics(jProgram);
+			if(!tc::empty(jarrDiagnostics)) {
+				tc::append(
+					std::cerr,
+					tc::explicit_cast<std::string>(ts::formatDiagnosticsWithColorAndContext(
+						jarrDiagnostics, ts::FormatDiagnosticsHost(ts::createCompilerHost(jCompilerOptions).getEmval())
+					))
+				);
+				return 1;
+			}
+		}
+		CompileProgram(jProgram);
+	} catch(structopt::exception& e) {
+		tc::append(std::cerr, e.what(), e.help());
 		return 1;
 	}
-
-	// TODO: Add command line parameter to ignore symbols
-	// These are all part of lib.es5.d.ts
-	tc::cont_must_emplace(g_setstrIgnoredSymbols, "ClassDecorator");
-	tc::cont_must_emplace(g_setstrIgnoredSymbols, "MethodDecorator");
-	tc::cont_must_emplace(g_setstrIgnoredSymbols, "IDBValidKey");
-
-	auto const rngstrFileNames = tc::counted(boost::next(apszArgs), cArgs - 1);
-	tc::for_each(rngstrFileNames, [](tc::ptr_range<char> rngch) noexcept {
-		tc::for_each(rngch, [](auto& ch) noexcept {
-			if('\\' == ch)
-				ch = '/'; // typescript createProgram does not support backslashes
-		});
-	});
-
-	ts::CompilerOptions const jtsCompilerOptions(create_js_object);
-	jtsCompilerOptions->strict(true);
-	jtsCompilerOptions->target(ts::ScriptTarget::ES5);
-	jtsCompilerOptions->module(ts::ModuleKind::CommonJS);
-
-	ts::Program const jtsProgram =
-		ts::createProgram(tc::jst::make_ReadonlyArray<js::string>(rngstrFileNames), jtsCompilerOptions);
-	{
-		auto const jtsReadOnlyArrayDiagnostics = ts::getPreEmitDiagnostics(jtsProgram);
-		if(!tc::empty(jtsReadOnlyArrayDiagnostics)) {
-			tc::append(
-				std::cerr,
-				tc::explicit_cast<std::string>(ts::formatDiagnosticsWithColorAndContext(
-					jtsReadOnlyArrayDiagnostics,
-					ts::FormatDiagnosticsHost(ts::createCompilerHost(jtsCompilerOptions).getEmval())
-				))
-			);
-			return 1;
-		}
-	}
-
-	CompileProgram(jtsProgram, rngstrFileNames);
 #endif
 }
