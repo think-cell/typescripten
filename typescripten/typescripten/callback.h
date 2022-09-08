@@ -194,19 +194,11 @@ namespace tc::jst {
 		using PointerNumber = std::uintptr_t;
 
 		namespace no_adl {
-			// See comments about memory correctness in js_callback.cpp.
-			struct RequireRelaxedPointerSafety {
-				RequireRelaxedPointerSafety() noexcept {
-					_ASSERT(std::pointer_safety::preferred == std::get_pointer_safety() || std::pointer_safety::relaxed == std::get_pointer_safety());
-				}
-			};
-
 			// We do not care about slicing to ref<> or moving from this class, because
 			// it is only stored as a by-value const field.
 			template<typename T>
 			struct CUniqueDetachableJsFunction 
 				: private tc::nonmovable
-				, private RequireRelaxedPointerSafety
 				, tc::jst::function<T> 
 			{
 				CUniqueDetachableJsFunction(FunctionPointer pfunc, FirstArgument arg0) noexcept
