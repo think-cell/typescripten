@@ -951,12 +951,13 @@ void CompileProgram(ts::Program jProgram) noexcept {
 struct SCommandLine final {
 	std::optional<std::string> tsconfig_file;
 	std::optional<std::string> output_file;
+	std::optional<std::vector<std::string>> lib; // lib because that is what typescript calls it
 
 	// remaining arguments
 	// e.g., ./typescriptenc file1 file2 file3
 	std::vector<std::string> files;
 };
-STRUCTOPT(SCommandLine, tsconfig_file, output_file, files);
+STRUCTOPT(SCommandLine, tsconfig_file, output_file, lib, files);
 
 int main(int cArgs, char* apszArgs[]) {
 #ifdef DEBUG_DEVTOOLS
@@ -999,60 +1000,72 @@ int main(int cArgs, char* apszArgs[]) {
 	  js::undefined())
 		->then(cb.WithDefaultMap);
 #else
-	try {
-		auto options = structopt::app("typescriptenc").parse<SCommandLine>(cArgs, apszArgs);
+	auto app = structopt::app("typescriptenc");
+	if(1==cArgs) {
+		app.help();
+		return EXIT_FAILURE;
+	} else {
+		try {
+			auto options = app.parse<SCommandLine>(cArgs, apszArgs);
 
-		tc::cont_must_emplace(g_setstrIgnoredSymbols, "ClassDecorator");
-		tc::cont_must_emplace(g_setstrIgnoredSymbols, "MethodDecorator");
-		tc::cont_must_emplace(g_setstrIgnoredSymbols, "IDBValidKey");
+			tc::cont_must_emplace(g_setstrIgnoredSymbols, "ClassDecorator");
+			tc::cont_must_emplace(g_setstrIgnoredSymbols, "MethodDecorator");
+			tc::cont_must_emplace(g_setstrIgnoredSymbols, "IDBValidKey");
 
-		tc::for_each(options.files, [](tc::ptr_range<char> rngch) noexcept {
-			tc::for_each(rngch, [](auto& ch) noexcept {
-				if('\\' == ch)
-					ch = '/'; // typescript createProgram does not support backslashes
-			});
-		});
-
-		ts::CompilerOptions jCompilerOptions(jst::create_js_object);
-		jCompilerOptions->strict(true);
-		jCompilerOptions->target(ts::ScriptTarget::ES5);
-		jCompilerOptions->lib(jst::make_Array<js::string>(tc::single("lib.es2015.d.ts")));
-		jCompilerOptions->module(ts::ModuleKind::CommonJS);
-		jCompilerOptions->types(jst::make_Array<js::string>(tc::empty_range()));
-
-		if(options.tsconfig_file) {
-			if(auto ojParsedCommandLine = ts::getParsedCommandLineOfConfigFile(
-				   js::string(*options.tsconfig_file),
-				   jCompilerOptions,
-				   ts::ParseConfigFileHost(emscripten::val::module_property("CreateParseConfigHost")())
-			   ))
-			{
-				jCompilerOptions = (*ojParsedCommandLine)->options();
-				tc::for_each((*ojParsedCommandLine)->fileNames(), [&](auto const& jstring) noexcept {
-					tc::cont_emplace_back(options.files, tc::explicit_cast<std::string>(jstring));
+			tc::for_each(options.files, [](tc::ptr_range<char> rngch) noexcept {
+				tc::for_each(rngch, [](auto& ch) noexcept {
+					if('\\' == ch)
+						ch = '/'; // typescript createProgram does not support backslashes
 				});
-			} else {
-				tc::append(std::cerr, "Loading ", *options.tsconfig_file, " failed.\n");
-			}
-		}
+			});
 
-		ts::Program const jProgram = ts::createProgram(jst::make_ReadonlyArray<js::string>(options.files), jCompilerOptions);
-		{
-			auto const jarrDiagnostics = ts::getPreEmitDiagnostics(jProgram);
-			if(!tc::empty(jarrDiagnostics)) {
-				tc::append(
-					std::cerr,
-					tc::explicit_cast<std::string>(ts::formatDiagnosticsWithColorAndContext(
-						jarrDiagnostics, ts::FormatDiagnosticsHost(ts::createCompilerHost(jCompilerOptions).getEmval())
-					))
-				);
-				return 1;
+			ts::CompilerOptions jCompilerOptions(jst::create_js_object);
+			jCompilerOptions->strict(true);
+			jCompilerOptions->target(ts::ScriptTarget::ES5);
+			jCompilerOptions->module(ts::ModuleKind::CommonJS);
+			jCompilerOptions->types(jst::make_Array<js::string>(tc::empty_range()));
+
+			if(options.tsconfig_file) {
+				if(auto ojParsedCommandLine = ts::getParsedCommandLineOfConfigFile(
+					js::string(*options.tsconfig_file),
+					jCompilerOptions,
+					ts::ParseConfigFileHost(emscripten::val::module_property("CreateParseConfigHost")())
+				))
+				{
+					jCompilerOptions = (*ojParsedCommandLine)->options();
+					tc::for_each((*ojParsedCommandLine)->fileNames(), [&](auto const& jstring) noexcept {
+						tc::cont_emplace_back(options.files, tc::explicit_cast<std::string>(jstring));
+					});
+				} else {
+					tc::append(std::cerr, "Loading ", *options.tsconfig_file, " failed.\n");
+				}
+			} else {
+				if(options.lib) {
+					jCompilerOptions->lib(jst::make_Array<js::string>(*options.lib));
+				} else {
+					jCompilerOptions->lib(jst::make_Array<js::string>(tc::single("lib.es2015.d.ts")));
+				}
 			}
+
+			ts::Program const jProgram = ts::createProgram(jst::make_ReadonlyArray<js::string>(options.files), jCompilerOptions);
+			{
+				auto const jarrDiagnostics = ts::getPreEmitDiagnostics(jProgram);
+				if(!tc::empty(jarrDiagnostics)) {
+					tc::append(
+						std::cerr,
+						tc::explicit_cast<std::string>(ts::formatDiagnosticsWithColorAndContext(
+							jarrDiagnostics, ts::FormatDiagnosticsHost(ts::createCompilerHost(jCompilerOptions).getEmval())
+						))
+					);
+					return 1;
+				}
+			}
+			CompileProgram(jProgram);
+			return EXIT_SUCCESS;
+		} catch(structopt::exception& e) {
+			tc::append(std::cerr, e.what(), e.help());
+			return EXIT_FAILURE;
 		}
-		CompileProgram(jProgram);
-	} catch(structopt::exception& e) {
-		tc::append(std::cerr, e.what(), e.help());
-		return 1;
 	}
 #endif
 }
