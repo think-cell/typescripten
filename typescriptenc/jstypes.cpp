@@ -718,7 +718,43 @@ void SJsClass::ResolveBaseClassesAndSortDependencies() & noexcept {
 						if(ts::SyntaxKind::ImplementsKeyword == jtsHeritageClause->token()) {
 							tc::for_each(jtsHeritageClause->types(), [&](ts::Node jnodeImplementsType) noexcept {
 								auto jtypeImplements = (*g_ojtsTypeChecker)->getTypeAtLocation(jnodeImplementsType);
-								auto mt = MangleType(jtypeImplements);
+								auto mt = [&]() noexcept {
+									if(auto const jouniontypeRoot = jtypeImplements->isUnion()) {
+										return MangleUnionType(*jouniontypeRoot);
+									} else {
+										_ASSERT(static_cast<bool>(ts::TypeFlags::Object & jtypeImplements->getFlags()));
+
+										ts::ObjectType jobjecttype(jtypeImplements);
+										if(static_cast<bool>(ts::ObjectFlags::Reference & jobjecttype->objectFlags())) {
+											_ASSERT(!static_cast<bool>(ts::ObjectFlags::Tuple & jobjecttype->objectFlags()));
+							
+											ts::TypeReference jtypereference(jtypeImplements);
+											auto jinterfacetypeTarget = *jtypereference->target()->isClassOrInterface();
+
+											// implements statements referring to generics get an additional type argument
+											// which is this class itself. We filter that. 
+											if(auto ojatypeargs = jtypereference->typeArguments()) {
+												return MangleClassOrInterface(
+													jinterfacetypeTarget, 
+													tc::make_vector(tc::filter(*ojatypeargs, [&](auto const& jtype) noexcept {
+														if(auto ojsym = jtype->getSymbol()) {
+															return !tc::equal(m_strQualifiedName, FullyQualifiedName(*ojsym));
+														} else {
+															return true;
+														}
+													}))
+												);
+											} else {
+												return MangleClassOrInterface(jinterfacetypeTarget);
+											}
+										} else {
+											auto oclassorinterface = jtypeImplements->isClassOrInterface();
+											_ASSERT(oclassorinterface);
+											return MangleClassOrInterface(*oclassorinterface);
+										}
+									}
+								}();							
+								
 								if(mt) {
 									tc::cont_emplace_back(m_vecmtBaseClass, tc_move(mt));
 								}

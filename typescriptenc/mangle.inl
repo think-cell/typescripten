@@ -25,7 +25,23 @@ SMangledType MangleTypeArguments(
 		}
 		return std::get<0>(tupmtojsenum);
 	};
-	_ASSERT(tc::size(atypeArguments) == tc::size(rngetype));
+	if(tc::size(atypeArguments) != tc::size(rngetype)) {
+		tc::append(std::cerr, "Type ", strCppCanonized," has ", tc::as_dec(tc::size(atypeArguments)), " type arguments and ",
+			tc::as_dec(tc::size(rngetype)), " type parameters.\n"
+		);
+		tc::append(std::cerr, "Type Arguments: ", tc::join_separated(
+			tc::transform(atypeArguments, [](auto jtype) noexcept {
+				auto ojsym = OptSymbolOrAliasSymbol(jtype);
+				return tc::concat(
+					ojsym ? FullyQualifiedName(*ojsym) : "[no symbol]",
+					", flags = ", tc::as_dec(static_cast<int>(jtype->getFlags()))
+				);
+			}),
+			", "
+		), 
+		"\n");
+		std::exit(EXIT_FAILURE);
+	}
 
 	auto const vecmt = tc::make_vector(tc::transform(
 		tc::zip(atypeArguments, rngetype),
@@ -73,7 +89,7 @@ SMangledType MangleClassOrInterface(std::string const& strFullyQualifiedName, Rn
 				rngtypearg,
 				tc::transform(ojsclass->m_vectypeparam, TC_MEMBER(.m_etypeparam))
 			);
-		}
+		} 
 	} else if(IsBootstrapType(strFullyQualifiedName)) {
 		auto str = tc::make_str("_js_j", strFullyQualifiedName);
 		if(tc::empty(rngtypearg)) {
@@ -85,3 +101,12 @@ SMangledType MangleClassOrInterface(std::string const& strFullyQualifiedName, Rn
 		return {mangling_error, tc::make_str("tc::js::any /*UnknownClassOrInterface=", strFullyQualifiedName, "*/")};
 	}
 }
+
+template<typename Rng>
+SMangledType MangleClassOrInterface(ts::InterfaceType jinterfacetypeRoot, Rng const& rngtypearg) noexcept {
+	auto const strName = FullyQualifiedName(*jinterfacetypeRoot->getSymbol());
+	_ASSERT(!jinterfacetypeRoot->outerTypeParameters()); // TODO: Not supported
+	return ::MangleClassOrInterface(strName, rngtypearg);
+}
+
+SMangledType MangleClassOrInterface(ts::InterfaceType jinterfacetypeRoot) noexcept;

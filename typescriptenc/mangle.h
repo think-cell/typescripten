@@ -25,4 +25,5 @@ struct SMangledType {
 	friend bool operator<(SMangledType const& lhs, SMangledType const& rhs) noexcept;
 };
 
+SMangledType MangleUnionType(ts::UnionType juniontype) noexcept;
 SMangledType MangleType(ts::Type jtypeRoot, bool bUseTypeAlias = true) noexcept;

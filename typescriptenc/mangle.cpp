@@ -69,20 +69,9 @@ bool operator<(SMangledType const& lhs, SMangledType const& rhs) noexcept {
 	return lhs.m_strCppCanonized < rhs.m_strCppCanonized;
 }
 
-namespace {
-	SMangledType MangleClassOrInterface(
-		ts::InterfaceType jinterfacetypeRoot, jst::optional<js::ReadonlyArray<ts::Type>> oajtypeArgs = js::undefined()
-	) noexcept {
-		auto const strName = FullyQualifiedName(*jinterfacetypeRoot->getSymbol());
-		_ASSERT(!jinterfacetypeRoot->outerTypeParameters()); // TODO: Not supported at the moment
-
-		if(oajtypeArgs && !tc::empty(*oajtypeArgs)) {
-			return ::MangleClassOrInterface(strName, *oajtypeArgs);
-		} else {
-			return ::MangleClassOrInterface(strName, tc::make_empty_range<ts::Type>());
-		}
-	}
-} // namespace
+SMangledType MangleClassOrInterface(ts::InterfaceType jinterfacetypeRoot) noexcept {
+	return ::MangleClassOrInterface(jinterfacetypeRoot, tc::make_empty_range<ts::Type>());
+}
 
 SMangledType CommentType(std::string strCppType, tc::js::ts::Type const jtypeRoot) noexcept {
 	return {
@@ -108,7 +97,116 @@ std::tuple<SMangledType, SJsEnum const*> LookupEnumFromLiteral(ts::Type jtype) n
 	}
 }
 
-SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept {
+SMangledType MangleUnionType(ts::UnionType juniontype) noexcept {
+	_ASSERT(0 != static_cast<int>(juniontype->getFlags() & ts::TypeFlags::Union));
+	auto const cUnionTypes = tc::size(juniontype->types());
+	_ASSERT(1 < cUnionTypes);
+
+	if((ts::TypeFlags::EnumLiteral | ts::TypeFlags::Union) == juniontype->getFlags()) {
+		// Enum as TypeParameter constraint:
+		//
+		// enum E {a, b}
+		// interface T<K extends E> {}
+		// The E in "extends E" is EnumLiteral|Union
+		//
+		// Whereas in type S = T<E.a|E.b>
+		// E.a|E.b is simply a union (which is handled below)
+		// with a two element types array of NumberLiteral|EnumLiteral
+		//
+		auto jsym = SymbolOrAliasSymbol(juniontype);
+		// _ASSERT(static_cast<bool>(ts::SymbolFlags::None!=(ts::SymbolFlags::RegularEnum&jsym->getFlags())));
+
+		auto const strName = FullyQualifiedName(jsym);
+		if(auto ojsenum = tc::cont_find<tc::return_element_or_null>(g_setjsenum, strName)) {
+			return {ojsenum->m_strMangledName};
+		} else {
+			return {mangling_error, tc::make_str("tc::js::any /*UnknownMangledEnum=", strName, "*/")};
+		}
+	} else {
+		int cExpectedUnionTypes = 0;
+		std::unordered_set<SJsEnum const*> setpjsenum;
+
+		auto vecmtType = tc::make_vector(tc::transform(
+			juniontype->types(),
+			[&](ts::Type const jtypeUnionOption) noexcept -> SMangledType {
+				// TypeScript represents a reference to enum types as a union of the
+				// possible values. Thus 	export type OtherUnion = undefined |
+				// SyntaxKind; is a union of undefined and *all* possible values of
+				// SyntaxKind.
+				//
+				// We can represent that as union_t<undefined, SyntaxKind>
+				//
+				// 	export type OtherUnion = undefined | SyntaxKind.Unknown |
+				// SyntaxKind.Comment;
+				//
+				// is therefore a union of undefined and two values of SyntaxKind.
+				// We cannot represent that and it becomes union_t<undefined,
+				// SyntaxKind> as well.
+				//
+				// We issue a warning below when our C++ union has less member types
+				// than we expect.
+
+				if((ts::TypeFlags::NumberLiteral | ts::TypeFlags::EnumLiteral) == jtypeUnionOption->getFlags()) {
+					auto tupmtojsenum = LookupEnumFromLiteral(jtypeUnionOption);
+					if(std::get<1>(tupmtojsenum)
+						&& tc::cont_try_emplace(setpjsenum, std::get<1>(tupmtojsenum)).second) {
+						cExpectedUnionTypes += std::get<1>(tupmtojsenum)->m_cTypes;
+					}
+					return std::get<0>(tupmtojsenum);
+				} else {
+					++cExpectedUnionTypes;
+					return MangleType(jtypeUnionOption);
+				}
+			}
+		));
+		if(tc::all_of(vecmtType)) {
+			// NOTE: sort_unique works with final names which go to C++. It may
+			// potentially hide some errors in mangling (e.g. if two different types map
+			// to the same type in C++).
+			tc::sort_unique_inplace(vecmtType);
+			_ASSERT(!tc::empty(vecmtType));
+
+			if(cExpectedUnionTypes != cUnionTypes) {
+				tc::append(
+					std::cerr,
+					"warning: Union of literals ",
+					tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->typeToString(juniontype)),
+					" cannot be represented in C++. (",
+					tc::as_dec(cExpectedUnionTypes),
+					" != ",
+					tc::as_dec(cUnionTypes),
+					") \n"
+				);
+			}
+
+			if(1 == tc::size(vecmtType)) {
+				return tc::front(vecmtType);
+			} else {
+				return {
+					tc::make_str(
+						"tc::jst::union_t<",
+						tc::join_separated(tc::transform(vecmtType, TC_MEMBER(.m_strCppCanonized)), ", "),
+						">"
+					),
+					tc::make_str(
+						"tc::jst::union_t<",
+						tc::join_separated(tc::transform(vecmtType, TC_MEMBER(.m_strWithComments)), ", "),
+						">"
+					)};
+			}
+		} else {
+			return {
+				mangling_error,
+				tc::make_str(
+					"tc::js::any /*UnionWithUnsupportedSubtype=[",
+					tc::join_separated(tc::transform(vecmtType, TC_MEMBER(.ExpandType())), ","),
+					"]*/"
+				)};
+		}
+	}
+}
+
+SMangledType MangleType(ts::Type jtypeRoot, bool bUseTypeAlias) noexcept {
 	_ASSERT(g_bGlobalScopeConstructionComplete);
 
 	switch(jtypeRoot->flags()) {
@@ -206,113 +304,7 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 			}
 		}
 		if(auto const jouniontypeRoot = jtypeRoot->isUnion()) {
-			_ASSERT(0 != static_cast<int>(jtypeRoot->getFlags() & ts::TypeFlags::Union));
-
-			auto const cUnionTypes = tc::size((*jouniontypeRoot)->types());
-			_ASSERT(1 < cUnionTypes);
-
-			if((ts::TypeFlags::EnumLiteral | ts::TypeFlags::Union) == jtypeRoot->getFlags()) {
-				// Enum as TypeParameter constraint:
-				//
-				// enum E {a, b}
-				// interface T<K extends E> {}
-				// The E in "extends E" is EnumLiteral|Union
-				//
-				// Whereas in type S = T<E.a|E.b>
-				// E.a|E.b is simply a union (which is handled below)
-				// with a two element types array of NumberLiteral|EnumLiteral
-				//
-				auto jsym = SymbolOrAliasSymbol(jtypeRoot);
-				// _ASSERT(static_cast<bool>(ts::SymbolFlags::None!=(ts::SymbolFlags::RegularEnum&jsym->getFlags())));
-
-				auto const strName = FullyQualifiedName(jsym);
-				if(auto ojsenum = tc::cont_find<tc::return_element_or_null>(g_setjsenum, strName)) {
-					return {ojsenum->m_strMangledName};
-				} else {
-					return {mangling_error, tc::make_str("tc::js::any /*UnknownMangledEnum=", strName, "*/")};
-				}
-			} else {
-				int cExpectedUnionTypes = 0;
-				std::unordered_set<SJsEnum const*> setpjsenum;
-
-				auto vecmtType = tc::make_vector(tc::transform(
-					(*jouniontypeRoot)->types(),
-					[&](ts::Type const jtypeUnionOption) noexcept -> SMangledType {
-						// TypeScript represents a reference to enum types as a union of the
-						// possible values. Thus 	export type OtherUnion = undefined |
-						// SyntaxKind; is a union of undefined and *all* possible values of
-						// SyntaxKind.
-						//
-						// We can represent that as union_t<undefined, SyntaxKind>
-						//
-						// 	export type OtherUnion = undefined | SyntaxKind.Unknown |
-						// SyntaxKind.Comment;
-						//
-						// is therefore a union of undefined and two values of SyntaxKind.
-						// We cannot represent that and it becomes union_t<undefined,
-						// SyntaxKind> as well.
-						//
-						// We issue a warning below when our C++ union has less member types
-						// than we expect.
-
-						if((ts::TypeFlags::NumberLiteral | ts::TypeFlags::EnumLiteral) == jtypeUnionOption->getFlags()) {
-							auto tupmtojsenum = LookupEnumFromLiteral(jtypeUnionOption);
-							if(std::get<1>(tupmtojsenum)
-							   && tc::cont_try_emplace(setpjsenum, std::get<1>(tupmtojsenum)).second) {
-								cExpectedUnionTypes += std::get<1>(tupmtojsenum)->m_cTypes;
-							}
-							return std::get<0>(tupmtojsenum);
-						} else {
-							++cExpectedUnionTypes;
-							return MangleType(jtypeUnionOption);
-						}
-					}
-				));
-				if(tc::all_of(vecmtType)) {
-					// NOTE: sort_unique works with final names which go to C++. It may
-					// potentially hide some errors in mangling (e.g. if two different types map
-					// to the same type in C++).
-					tc::sort_unique_inplace(vecmtType);
-					_ASSERT(!tc::empty(vecmtType));
-
-					if(cExpectedUnionTypes != cUnionTypes) {
-						tc::append(
-							std::cerr,
-							"warning: Union of literals ",
-							tc::explicit_cast<std::string>((*g_ojtsTypeChecker)->typeToString(jtypeRoot)),
-							" cannot be represented in C++. (",
-							tc::as_dec(cExpectedUnionTypes),
-							" != ",
-							tc::as_dec(cUnionTypes),
-							") \n"
-						);
-					}
-
-					if(1 == tc::size(vecmtType)) {
-						return tc::front(vecmtType);
-					} else {
-						return {
-							tc::make_str(
-								"tc::jst::union_t<",
-								tc::join_separated(tc::transform(vecmtType, TC_MEMBER(.m_strCppCanonized)), ", "),
-								">"
-							),
-							tc::make_str(
-								"tc::jst::union_t<",
-								tc::join_separated(tc::transform(vecmtType, TC_MEMBER(.m_strWithComments)), ", "),
-								">"
-							)};
-					}
-				} else {
-					return {
-						mangling_error,
-						tc::make_str(
-							"tc::js::any /*UnionWithUnsupportedSubtype=[",
-							tc::join_separated(tc::transform(vecmtType, TC_MEMBER(.ExpandType())), ","),
-							"]*/"
-						)};
-				}
-			}
+			return MangleUnionType(*jouniontypeRoot);
 		} else if(ts::TypeFlags::Object == jtypeRoot->getFlags()) {
 			ts::ObjectType jobjecttypeRoot(tc_move(jtypeRoot));
 			if(static_cast<bool>(ts::ObjectFlags::Reference & jobjecttypeRoot->objectFlags())) {
@@ -342,10 +334,13 @@ SMangledType MangleType(tc::js::ts::Type jtypeRoot, bool bUseTypeAlias) noexcept
 					// 	forEach(callbackfn: (value: TNode, key: number, parent:
 					// NodeListOf<TNode>) => void, thisArg?: any): void;
 					// }
-
-					return MangleClassOrInterface(
-						*jtypereferenceRoot->target()->isClassOrInterface(), jtypereferenceRoot->typeArguments()
-					);
+					auto jinterfacetypeRoot = *jtypereferenceRoot->target()->isClassOrInterface();
+					auto oajtypeArgs = jtypereferenceRoot->typeArguments();
+					if(oajtypeArgs && !tc::empty(*oajtypeArgs)) {
+						return MangleClassOrInterface(jinterfacetypeRoot, *oajtypeArgs);
+					} else {
+						return MangleClassOrInterface(jinterfacetypeRoot);
+					}
 				}
 			} else if(static_cast<bool>(ts::ObjectFlags::Anonymous & jobjecttypeRoot->objectFlags())) {
 				auto josymTypeSymbol = jobjecttypeRoot->getSymbol();
