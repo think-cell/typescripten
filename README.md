@@ -23,9 +23,7 @@ Compare the JavaScript statements in the comments to the C++ code:
 
 _typescripten_ uses the [parser API provided by typescript](https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API). It is now self-hosting, i.e., it can the parse interface definition file for the typescript parser itself.
 
-[A short overview of _typescripten_ has been presented at CppNow 2021](https://youtu.be/Cmud1jO__VA)  
-
-[_typescripten_ has been presented more fully at CppCon 2021. The recording will be published later in 2021.](https://sched.co/nvAY)
+[_typescripten_ has been presented at CppCon 2021](https://www.youtube.com/watch?v=CLuhogat6aY) and in a slightly extended talk [at CppNow 2022](https://www.youtube.com/watch?v=fOagTqBYHug).
 
 # Example
 
@@ -109,7 +107,15 @@ Both the [TypeScript Playground](https://www.typescriptlang.org/play) and the [T
 
 # Setup
 
-It is easiest to use `typescripten` via CMake. In your CMake file add the following:
+It is easiest to download `typescripten` from npm. 
+
+```
+npm install -g @think-cell/typescripten
+```
+
+I am working on integrating typescripten with emscripten. 
+
+If you want to include it in a project of yours, add the following to your Cmake file:
 
 ```CMake
 # Download typescripten (The name must not be changed)
