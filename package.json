@@ -1,6 +1,6 @@
 {
   "name": "@think-cell/typescripten",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Typescripten converts TypeScript interface definitions into C++ headers for emscripten projects",
   "main": "lib/typescriptenc.js",
   "scripts": {
